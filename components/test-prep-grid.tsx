@@ -19,10 +19,10 @@ const exams = [
 
 export function TestPrepGrid() {
   return (
-    <section className="py-20 bg-white">
+    <section className="py-20 bg-white sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-5xl font-extrabold text-center mb-16">
-          <span className="text-brand-orange">Test</span> Preparation
+        <h2 className="text-5xl font-extrabold text-center mb-16 border-b-2 border-brand-orange pb-[15px] ">
+          <span className="text-brand-orange">Test</span> <span className="text-[#626363]">Preparation</span> 
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {exams.map((exam, i) => (
@@ -35,7 +35,7 @@ export function TestPrepGrid() {
               )}
             >
               <h3 className="text-3xl font-black mb-2">{exam.name}</h3>
-              <p className="text-sm text-white/90 leading-relaxed max-w-[200px]">{exam.desc}</p>
+              <p className="text-base text-white/90 leading-relaxed max-w-[400px]">{exam.desc}</p>
             </div>
           ))}
         </div>

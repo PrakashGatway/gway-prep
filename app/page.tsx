@@ -6,7 +6,7 @@ import { ServicesGrid } from "@/components/services-grid"
 import { RegistrationSection } from "@/components/registration-section"
 import { TestPrepGrid } from "@/components/test-prep-grid"
 import { WorkingProcess } from "@/components/working-process"
-import { VideoTestimonials, TextTestimonials } from "@/components/testimonials"
+import { TextTestimonials, VideoTestimonialCard } from "@/components/testimonials"
 import { BlogSlider } from "@/components/blog-slider"
 import { PartnerSection } from "@/components/partner-section"
 import { Footer } from "@/components/footer"
@@ -28,56 +28,72 @@ function DestinationsAndConsultants() {
     "Italy",
     "Brazil",
   ]
-  const cities = ["Udaipur", "Jodhpur", "Bikaner", "Delhi", "Ajmer", "Sikar", "Alwar", "Kota"]
+  const cities = [
+    "Udaipur",
+    "Jodhpur",
+    "Bikaner",
+    "Delhi",
+    "Ajmer",
+    "Sikar",
+    "Alwar",
+    "Kota",
+    "Jaipur",
+    "Mumbai",
+    "Pune",
+    "Ahmedabad",
+    "Surat",
+    "Indore",
+    "Bhopal",
+    "Gwalior",
+    "Noida",
+    "Gurugram",
+    "Faridabad",
+    "Chandigarh",
+    "Amritsar",
+    "Ludhiana",
+    "Patiala",
+    "Bathinda"
+  ]
+
 
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4">
-        <h3 className="text-3xl font-extrabold text-brand-orange mb-8">Choose Your Destination</h3>
-        <div className="flex flex-wrap gap-4 mb-20">
-          {destinations.map((d) => (
-            <div
-              key={d}
-              className="px-6 py-2 rounded-full border border-gray-300 text-gray-600 hover:border-brand-orange hover:text-brand-orange transition-colors cursor-pointer font-medium"
-            >
-              {d}
-            </div>
-          ))}
-        </div>
+    <>
+      <section className="py-10 px-6 px-8 lg:px-0  bg-gray-100">
+        <div className="sm:px-6 lg:px-8 mx-auto ">
+          <h3 className="text-3xl font-extrabold text-brand-orange mb-5">Choose Your Destination</h3>
+          <div className="flex flex-wrap gap-4 mb-20">
+            {destinations.map((d) => (
+              <div
+                key={d}
+                className="px-6 py-2 rounded-full border-2 border-brand-orange text-gray-600 hover:border-brand-orange hover:text-brand-orange transition-colors cursor-pointer font-medium"
+              >
+                {d}
+              </div>
+            ))}
+          </div>
 
-        <h3 className="text-3xl font-extrabold text-brand-orange mb-8">Study Abroad Consultants in</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-12">
-          {cities.map((c) => (
-            <div
-              key={c}
-              className="px-4 py-2 rounded-full border border-gray-300 text-gray-600 text-center text-sm font-medium hover:bg-gray-50 transition-colors"
-            >
-              {c}
-            </div>
-          ))}
-        </div>
+          <h3 className="text-3xl font-extrabold text-brand-orange mb-5">Study Abroad Consultants in</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 ">
+            {cities.map((c) => (
+              <div
+                key={c}
+                className="px-2 py-2 rounded-full border-2 border-brand-orange text-gray-600 text-center text-sm font-medium hover:bg-gray-50 transition-colors"
+              >
+                {c}
+              </div>
+            ))}
+          </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4 mb-20">
-          {Array.from({ length: 16 }).map((_, i) => (
-            <div key={i} className="h-10 border border-brand-orange/30 rounded-xl" />
-          ))}
-        </div>
 
-        <div className="relative h-[250px] rounded-[3rem] overflow-hidden shadow-2xl">
-          <Image
-            src="/images/gaway-20prep-20final-202.jpg"
-            alt="London Skyline"
-            fill
-            className="object-cover"
-            style={{ objectPosition: "0px 935px" }}
-          />
+
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   )
 }
 
 import Image from "next/image"
+import Studentrankslider from "@/components/studentRank"
 
 export default function Home() {
   return (
@@ -87,25 +103,10 @@ export default function Home() {
       <AboutSection />
       <ServicesGrid />
       <RegistrationSection />
-      <div className="bg-white py-10 overflow-hidden">
-        <div className="flex gap-4 animate-infinite-scroll whitespace-nowrap">
-          {Array.from({ length: 10 }).map((_, i) => (
-            <div
-              key={i}
-              className="inline-flex items-center gap-4 bg-white border border-gray-100 rounded-xl p-3 shadow-sm min-w-[250px]"
-            >
-              <div className="w-12 h-12 rounded-full bg-gray-100" />
-              <div>
-                <div className="font-bold text-sm text-gray-800">Abhinandan Singh</div>
-                <div className="text-xs text-brand-orange font-bold">GMAT 710</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      <Studentrankslider />
       <TestPrepGrid />
       <WorkingProcess />
-      <VideoTestimonials />
+      <VideoTestimonialCard />
       <TextTestimonials />
       <BlogSlider />
       <PartnerSection />

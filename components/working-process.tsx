@@ -30,10 +30,10 @@ const steps = [
 
 export function WorkingProcess() {
   return (
-    <section className="py-20 bg-gray-50 overflow-hidden">
+    <section className="py-20 bg-gray-100 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-4xl font-extrabold text-center mb-4">
-          <span className="text-brand-orange">Our Working</span> Process
+          <span className="text-brand-orange">Our Working</span> <span className="text-[#626363]">Process</span> 
         </h2>
         <p className="text-center text-gray-600 mb-20 max-w-2xl mx-auto">
           A platform that takes care of everything beforehand. Gateway Abroad sources, vets, matches and manages all the
@@ -51,7 +51,7 @@ export function WorkingProcess() {
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-brand-orange mb-2">{step.title}</h3>
-                    <p className="text-gray-600 leading-relaxed text-sm max-w-md">{step.desc}</p>
+                    <p className="text-gray-600 leading-relaxed text-base max-w-md">{step.desc}</p>
                   </div>
                 </div>
               )

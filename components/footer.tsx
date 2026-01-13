@@ -1,122 +1,145 @@
+"use client"
+
 import { Facebook, Instagram, Linkedin, Youtube } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import ThreeDButton from "./3dbutton"
 
 export function Footer() {
   return (
-    <footer className="bg-white pt-20 pb-10 border-t border-gray-100">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
-          <div className="lg:col-span-1">
-            <Image
-              src="/images/gaway-20prep-20final-202.jpg"
-              alt="Gaway Prep"
-              width={140}
-              height={50}
-              className="mb-6 h-12 w-auto"
-              style={{ objectFit: "contain", objectPosition: "left top" }}
-            />
-            <p className="text-gray-600 text-sm leading-relaxed mb-8">
-              Your trusted partner for global education, university admissions, and international study planning.
-            </p>
-            <button className="flex items-center gap-2 bg-brand-orange text-white px-6 py-2 rounded-full font-bold shadow-md hover:opacity-90 transition-all text-sm">
-              Get in touch
-            </button>
+    <>
+      {/* Footer */}
+      <footer className="bg-gray-100 pt-32 pb-20 overflow-visible">
+        <div className=" mx-auto px-4 sm:px-6 lg:px-8 overflow-visible">
+
+          {/* ================= MAIN FOOTER CARD with Orange Border ================= */}
+          <div className="rounded-[50px] px-6 md:px-12 pt-8 pb-12 relative bg-white">
+
+            {/* ================= TOP IMAGE STRIP with Orange Border - Positioned Upward ================= */}
+            <div className="w-full mb-12 -mt-16 md:-mt-20">
+              <div className="relative h-[120px] md:h-[180px] rounded-[50px] border-[10px] border-l-30 border-r-30 border-[#f46c44] overflow-hidden bg-white shadow-xl">
+                <img
+                  src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1200&h=300&fit=crop"
+                  alt="European Landmarks"
+                  className="w-full h-full object-cover grayscale"
+                  style={{ objectPosition: "center center" }}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col lg:flex-row">
+
+              {/* BRAND */}
+              <div className="w-full lg:w-1/4 pr-0 lg:pr-8 mb-10 lg:mb-0">
+                <Image
+                  src="image/logo.png"
+                  alt="GAway Global"
+                  width={150}
+                  height={50}
+                  className="mb-4"
+                />
+                <h3 className="text-xl font-bold text-gray-800 mb-3">GA Way Global</h3>
+                <p className="text-gray-600 text-sm leading-relaxed mb-6">
+                  Your trusted partner for global education, university admissions, and international study planning.
+                </p>
+
+                <ThreeDButton children="Get In Touch" textColor="text-white" />
+              </div>
+
+              {/* CONTENT AREA WITH DIVIDERS */}
+              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:flex lg:flex-row">
+                
+                {/* STUDY DESTINATIONS */}
+                <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0">
+                  <div className="h-full flex flex-col">
+                    <h4 className="text-orange-500 font-bold text-lg mb-4">
+                      Study Destinations
+                    </h4>
+                    <ul className="space-y-2 text-gray-700 text-sm flex-1">
+                      <li>USA Universities</li>
+                      <li>UK Universities</li>
+                      <li>Germany Public Universities</li>
+                      <li>Italy & France</li>
+                      <li>Canada & Australia</li>
+                    </ul>
+                  </div>
+                  {/* Right divider - only on lg screens */}
+                  <div className="hidden lg:block absolute right-0 top-0 w-[4px] h-full bg-[#e87a4d] rounded-full"></div>
+                </div>
+
+                {/* SERVICES */}
+                <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0">
+                  <div className="h-full flex flex-col">
+                    <h4 className="text-orange-500 font-bold text-lg mb-4">
+                      Our Services
+                    </h4>
+                    <ul className="space-y-2 text-gray-700 text-sm flex-1">
+                      <li>Profile Evaluation</li>
+                      <li>University Shortlisting</li>
+                      <li>SOP & LOR Guidance</li>
+                      <li>Visa Assistance</li>
+                      <li>Scholarship Support</li>
+                    </ul>
+                  </div>
+                  {/* Right divider - only on lg screens */}
+                  <div className="hidden lg:block absolute right-0 top-0 w-[4px] h-full bg-[#e87a4d] rounded-full"></div>
+                </div>
+
+                {/* RESOURCES */}
+                <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0">
+                  <div className="h-full flex flex-col">
+                    <h4 className="text-orange-500 font-bold text-lg mb-4">
+                      Resources
+                    </h4>
+                    <ul className="space-y-2 text-gray-700 text-sm flex-1">
+                      <li>Blogs</li>
+                      <li>Case Studies</li>
+                      <li>Student Testimonials</li>
+                      <li>FAQs</li>
+                      <li>Events & Webinars</li>
+                    </ul>
+                  </div>
+                  {/* Right divider - only on lg screens */}
+                  <div className="hidden lg:block absolute right-0 top-0 w-[4px] h-full bg-[#e87a4d] rounded-full"></div>
+                </div>
+
+                {/* CONNECT */}
+                <div className="flex-1 px-0 sm:px-4 lg:px-6">
+                  <div className="h-full flex flex-col">
+                    <h4 className="text-orange-500 font-bold text-lg mb-4">
+                      Connect
+                    </h4>
+                    <ul className="space-y-2 text-gray-700 text-sm flex-1">
+                      <li>Instagram</li>
+                      <li>Facebook</li>
+                      <li>LinkedIn</li>
+                      <li>YouTube</li>
+                      <li>Contact Us</li>
+                    </ul>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+            
+
           </div>
 
-          <div>
-            <h4 className="font-bold text-lg mb-6 text-brand-orange">Study Destinations</h4>
-            <ul className="space-y-3 text-gray-600 text-sm">
-              <li>
-                <Link href="#">USA Universities</Link>
-              </li>
-              <li>
-                <Link href="#">UK Universities</Link>
-              </li>
-              <li>
-                <Link href="#">Germany Public Universities</Link>
-              </li>
-              <li>
-                <Link href="#">Italy & France</Link>
-              </li>
-              <li>
-                <Link href="#">Canada & Australia</Link>
-              </li>
-            </ul>
+          {/* ================= BOTTOM BAR ================= */}
+          <div className="mt-10 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 gap-4">
+            <p>© 2023 GAway Global. All rights reserved.</p>
+
+            <div className="flex gap-4 md:gap-6 flex-wrap justify-center">
+              <a href="#" className="hover:text-orange-500">Privacy Policy</a>
+              <a href="#" className="hover:text-orange-500">Terms of Service</a>
+              <a href="#" className="hover:text-orange-500">Cookie Policy</a>
+            </div>
           </div>
 
-          <div>
-            <h4 className="font-bold text-lg mb-6 text-brand-orange">Our Services</h4>
-            <ul className="space-y-3 text-gray-600 text-sm">
-              <li>
-                <Link href="#">Profile Evaluation</Link>
-              </li>
-              <li>
-                <Link href="#">University Shortlisting</Link>
-              </li>
-              <li>
-                <Link href="#">SOP & LOR Guidance</Link>
-              </li>
-              <li>
-                <Link href="#">Visa Assistance</Link>
-              </li>
-              <li>
-                <Link href="#">Scholarship Support</Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-lg mb-6 text-brand-orange">Resources</h4>
-            <ul className="space-y-3 text-gray-600 text-sm">
-              <li>
-                <Link href="#">Blogs</Link>
-              </li>
-              <li>
-                <Link href="#">Case Studies</Link>
-              </li>
-              <li>
-                <Link href="#">Student Testimonials</Link>
-              </li>
-              <li>
-                <Link href="#">FAQs</Link>
-              </li>
-              <li>
-                <Link href="#">Events & Webinars</Link>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-lg mb-6 text-brand-orange">Connect</h4>
-            <ul className="space-y-3 text-gray-600 text-sm mb-6">
-              <li className="flex items-center gap-2">
-                <Instagram size={16} /> Instagram
-              </li>
-              <li className="flex items-center gap-2">
-                <Facebook size={16} /> Facebook
-              </li>
-              <li className="flex items-center gap-2">
-                <Linkedin size={16} /> LinkedIn
-              </li>
-              <li className="flex items-center gap-2">
-                <Youtube size={16} /> YouTube
-              </li>
-              <li className="flex items-center gap-2">
-                <Link href="#">Contact Us</Link>
-              </li>
-            </ul>
-          </div>
         </div>
-
-        <div className="flex flex-col md:flex-row justify-between items-center py-8 border-t border-gray-100 text-xs text-gray-400">
-          <p>© 2026 Gaway Prep. All rights reserved.</p>
-          <div className="flex gap-6 mt-4 md:mt-0">
-            <Link href="#">Privacy Policy</Link>
-            <Link href="#">Terms of Service</Link>
-          </div>
-        </div>
-      </div>
-    </footer>
+      </footer>
+    </>
   )
 }

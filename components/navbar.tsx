@@ -10,55 +10,40 @@ const navItems = [
   { name: "Home", href: "/" },
   { 
     name: "About Us", 
-    href: "#about", 
+    href: "/about", 
     icon: GraduationCap,
-    dropdownItems: [
-      { name: "Our Mission", href: "#mission", description: "Learn about our educational goals" },
-      { name: "Our Team", href: "#team", description: "Meet our expert instructors" },
-      { name: "Success Stories", href: "#success", description: "Student achievements" },
-      { name: "Facilities", href: "#facilities", description: "State-of-the-art learning environment" }
-    ]
+   
   },
   { 
-    name: "Spoken English", 
+    name: "Services", 
     href: "#", 
-    hasDropdown: true,
+    hasDropdown: false,
     icon: MessageSquare,
-    dropdownItems: [
-      { name: "Beginner Course", href: "#beginner", description: "Start your English journey" },
-      { name: "Intermediate Course", href: "#intermediate", description: "Enhance your fluency" },
-      { name: "Advanced Course", href: "#advanced", description: "Master professional English" },
-      { name: "Business English", href: "#business", description: "Corporate communication skills" }
-    ]
+ 
   },
   { 
     name: "Test Prep", 
-    href: "#", 
+    href: "/preparation", 
     hasDropdown: true,
     icon: Target,
     dropdownItems: [
-      { name: "IELTS Preparation", href: "#ielts", description: "Comprehensive IELTS coaching" },
-      { name: "TOEFL Preparation", href: "#toefl", description: "Score high in TOEFL" },
-      { name: "PTE Academic", href: "#pte", description: "Pearson Test of English" },
-      { name: "Duolingo Test", href: "#duolingo", description: "Modern English proficiency test" }
+      { name: "IELTS Preparation", slug: "ielts", description: "Comprehensive IELTS coaching" },
+      { name: "GMAT Preparation", slug: "gmat", description: "Score high in GMAT" },
+      { name: "PTE Academic", slug: "pte", description: "Pearson Test of English" },
+      { name: "GRE Preparation", slug: "gre" , description: "Regular practice tests and mock exams" }
     ]
   },
   { 
     name: "Blogs", 
-    href: "#", 
-    hasDropdown: true,
+    href: "/blog", 
+    hasDropdown: false,
     icon: FileText,
-    dropdownItems: [
-      { name: "Study Tips", href: "#tips", description: "Effective learning strategies" },
-      { name: "Grammar Guide", href: "#grammar", description: "Master English grammar" },
-      { name: "Vocabulary Building", href: "#vocabulary", description: "Expand your word power" },
-      { name: "Latest Updates", href: "#updates", description: "News and announcements" }
-    ]
+   
   },
   { 
     name: "Career", 
-    href: "#", 
-    hasDropdown: true,
+    href: "/career", 
+    hasDropdown: false,
     icon: Briefcase,
     dropdownItems: [
       { name: "Job Opportunities", href: "#jobs", description: "Join our team" },
@@ -69,7 +54,7 @@ const navItems = [
   },
   { 
     name: "Contact Us", 
-    href: "#",
+    href: "/contact",
     icon: Phone
   },
 ]
@@ -88,7 +73,7 @@ export function Navbar() {
   }, [])
 
   return (
-    <nav className={`sticky top-0 z-50 bg-white border-b border-gray-200 transition-all duration-300 ${
+    <nav className={`sticky top-0 z-1000 bg-white border-b border-gray-200 transition-all duration-300 ${
       scrolled ? "shadow py-2" : "py-2"
     }`}>
       {/* ===== Container ===== */}
@@ -120,7 +105,7 @@ export function Navbar() {
               >
                 <Link
                   href={item.href}
-                  className="flex items-center gap-2 text-[15px] font-semibold text-gray-800 hover:text-orange-500 transition-all duration-200 px-3 py-2 rounded-lg hover:bg-orange-50"
+                  className="flex items-center gap-2 text-lg font-medium font-semibold text-gray-800 hover:text-orange-500 transition-all duration-200 px-3 py-2 rounded-lg hover:bg-orange-50"
                 >
                   {/* {item.icon && <item.icon size={16} />} */}
                   <span>{item.name}</span>
@@ -153,7 +138,8 @@ export function Navbar() {
                           transition={{ delay: index * 0.05 }}
                         >
                           <Link
-                            href={dropdownItem.href}
+                          key={dropdownItem.slug}
+                            href={`/preparation/${dropdownItem.slug}`}
                             className="block px-5 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 group/item transition-all duration-200 border-l-2 border-transparent hover:border-orange-400"
                           >
                             <div className="font-semibold text-gray-800 group-hover/item:text-orange-600 transition-colors">
@@ -166,15 +152,7 @@ export function Navbar() {
                         </motion.div>
                       ))}
                       
-                      <div className="px-5 pt-3 mt-2 border-t border-gray-100">
-                        <Link
-                          href={item.href}
-                          className="inline-flex items-center text-xs font-semibold text-orange-500 hover:text-orange-600 transition-colors"
-                        >
-                          View all {item.name.toLowerCase()}
-                          <ChevronDown size={12} className="ml-1 rotate-270" />
-                        </Link>
-                      </div>
+                    
                     </motion.div>
                   </div>
                 )}

@@ -1,64 +1,91 @@
 "use client"
 
-import {
-  Users,
-  UserCheck,
-  BarChart,
-  BookOpen,
-  Clock,
-  ThumbsUp,
-  Activity,
-  IndianRupee,
-} from "lucide-react"
-
-const services = [
-  { Icon: Users, title: "Experienced and qualified coaches" },
-  { Icon: UserCheck, title: "Personalized attention" },
-  { Icon: BarChart, title: "Proven track record of success" },
-  { Icon: BookOpen, title: "Comprehensive study materials" },
-  { Icon: Clock, title: "Flexible scheduling" },
-  { Icon: ThumbsUp, title: "Positive student testimonials" },
-  { Icon: Activity, title: "Regular progress tracking" },
-  { Icon: IndianRupee, title: "Affordable fees" },
-]
+import Image from "next/image"
 
 export function ServicesGrid() {
   return (
     <section className="py-24 bg-white">
-      <div className="max-w-7xl mx-auto px-2">
+      <div className="sm:mx-6 lg:px-8 mx-auto">
+
         {/* Heading */}
         <h2 className="text-4xl font-extrabold text-center mb-20">
           <span className="text-brand-orange">Best in the Industry</span>{" "}
-          <span className="text-gray-700">Coaching Services</span>
+          <span className="text-[#626363]">Coaching Services</span>
         </h2>
 
         {/* Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 border-t border-l border-brand-orange/40">
-          {services.map((service, index) => {
-            const Icon = service.Icon
+        <div className="grid grid-cols-2 md:grid-cols-4">
 
-            return (
-              <div
-                key={index}
-                className="flex flex-col items-center text-center px-6 py-12
-                           border-r border-b border-brand-orange/40"
-              >
-                {/* Icon */}
-                <div className="mb-4">
-                  <Icon
-                    size={44}
-                    strokeWidth={1.5}
-                    className="text-brand-orange"
-                  />
-                </div>
+          {/* ===== ROW 1 ===== */}
 
-                {/* Text */}
-                <p className="text-gray-600 font-medium leading-snug max-w-[180px]">
-                  {service.title}
-                </p>
-              </div>
-            )
-          })}
+          <div className="relative flex flex-col items-center text-center px-6 py-12">
+            <span className="absolute right-0 top-0 h-full w-[3px] bg-brand-orange" />
+            <span className="absolute left-0 bottom-0 w-full h-[2px] bg-brand-orange" />
+            <Image src="/icon/coach.png" alt="" width={84} height={44} />
+            <p className="mt-4 text-gray-600 font-medium max-w-[180px]">
+              Experienced and qualified coaches
+            </p>
+          </div>
+
+          <div className="relative flex flex-col items-center text-center px-6 py-12">
+            <span className="absolute right-0 top-0 h-full w-[2px] bg-brand-orange" />
+            <span className="absolute left-0 bottom-0 w-full h-[2px] bg-brand-orange" />
+            <Image src="/icon/attention.png" alt="" width={84} height={44} />
+            <p className="mt-4 text-gray-600 font-medium max-w-[180px]">
+              Personalized attention
+            </p>
+          </div>
+
+          <div className="relative flex flex-col items-center text-center px-6 py-12">
+            <span className="absolute right-0 top-0 h-full w-[2px] bg-brand-orange" />
+            <span className="absolute left-0 bottom-0 w-full h-[2px] bg-brand-orange" />
+            <Image src="/icon/track.png" alt="" width={84} height={44} />
+            <p className="mt-4 text-gray-600 font-medium max-w-[180px]">
+              Proven track record of success
+            </p>
+          </div>
+
+          <div className="relative flex flex-col items-center text-center px-6 py-12">
+            <span className="absolute left-0 bottom-0 w-full h-[2px] bg-brand-orange" />
+            <Image src="/icon/material.png" alt="" width={84} height={44} />
+            <p className="mt-4 text-gray-600 font-medium max-w-[180px]">
+              Comprehensive study materials
+            </p>
+          </div>
+
+          {/* ===== ROW 2 ===== */}
+
+          <div className="relative flex flex-col items-center text-center px-6 py-12">
+            <span className="absolute right-0 top-0 h-full w-[3px] bg-brand-orange" />
+            <Image src="/icon/scheduling.png" alt="" width={84} height={44} />
+            <p className="mt-4 text-gray-600 font-medium max-w-[180px]">
+              Flexible scheduling
+            </p>
+          </div>
+
+          <div className="relative flex flex-col items-center text-center px-6 py-12">
+            <span className="absolute right-0 top-0 h-full w-[2px] bg-brand-orange" />
+            <Image src="/icon/testinomial.png" alt="" width={84} height={44} />
+            <p className="mt-4 text-gray-600 font-medium max-w-[180px]">
+              Positive student testimonials
+            </p>
+          </div>
+
+          <div className="relative flex flex-col items-center text-center px-6 py-12">
+            <span className="absolute right-0 top-0 h-full w-[2px] bg-brand-orange" />
+            <Image src="/icon/progress.png" alt="" width={84} height={44} />
+            <p className="mt-4 text-gray-600 font-medium max-w-[180px]">
+              Regular progress tracking
+            </p>
+          </div>
+
+          <div className="relative flex flex-col items-center text-center px-6 py-12 ">
+            <Image src="/icon/fees.png" alt="" width={84} height={44} />
+            <p className="mt-4 text-gray-600 font-medium max-w-[180px]">
+              Affordable fees
+            </p>
+          </div>
+
         </div>
       </div>
     </section>

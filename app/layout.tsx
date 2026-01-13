@@ -4,14 +4,15 @@ import { Poppins } from "next/font/google"
 import "./globals.css"
 import { Topbar } from "@/components/topbar"
 import { Navbar } from "@/components/navbar"
+import { Noto_Sans } from "next/font/google";
 import { Footer } from "@/components/footer"
 
-const poppins = Poppins({
+const notoSans = Noto_Sans({
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  variable: "--font-poppins",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-noto-sans",
   display: "swap",
-})
+});
 
 export default function RootLayout({
   children,
@@ -21,8 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.className} bg-white text-gray-900`}
-      >
+        className={`${notoSans.className} bg-white text-gray-900`}
+      suppressHydrationWarning>
         <Topbar />
         <Navbar />
         {children}
