@@ -1,12 +1,127 @@
 "use client"
 import { ChevronDown } from "lucide-react"
 import Image from "next/image"
-
-import { useState } from "react"
 import ThreeDButton from "../3dbutton"
+import { useKeenSlider } from "keen-slider/react";
+import "keen-slider/keen-slider.min.css";
+import { useState, useEffect, useRef } from "react";
+
 
 
 export default function Gre(){
+
+    const testimonials = [
+  {
+    id: 1,
+    name: "Sarah Mitchell",
+    score: 10,
+    rating: 5,
+    testimonial:
+      "Absolutely transformed our workflow! The intuitive design and seamless integration saved us countless hours. Best decision we made this year.",
+  },
+  {
+    id: 2,
+    name: "James Chen",
+    score: 9,
+    rating: 5,
+    testimonial:
+      "Outstanding service and support. The team went above and beyond to ensure everything was perfect. Highly recommend to anyone looking for quality.",
+  },
+  {
+    id: 3,
+    name: "Emily Rodriguez",
+    score: 10,
+    rating: 5,
+    testimonial:
+      "Game-changer for our business. The results exceeded our expectations and the ROI was visible within the first month. Couldn't be happier!",
+  },
+  {
+    id: 4,
+    name: "Michael Thompson",
+    score: 9,
+    rating: 4,
+    testimonial:
+      "Professional, reliable, and incredibly efficient. They delivered exactly what was promised and more. A pleasure to work with from start to finish.",
+  },
+  {
+    id: 5,
+    name: "Lisa Anderson",
+    score: 10,
+    rating: 5,
+    testimonial:
+      "From the first consultation to final delivery, the experience was flawless. Their attention to detail and commitment to excellence is unmatched.",
+  },
+];
+
+
+
+ const [currentSlide, setCurrentSlide] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
+    initial: 0,
+    loop: true,
+    mode: "snap",
+    slides: {
+      origin: "center",
+      perView: 1.5,
+      spacing: 16,
+    },
+    breakpoints: {
+      "(min-width: 640px)": {
+        slides: {
+          origin: "center",
+          perView: 2.2,
+          spacing: 20,
+        },
+      },
+      "(min-width: 1024px)": {
+        slides: {
+          origin: "center",
+          perView: 3,
+          
+        },
+      },
+    },
+    slideChanged(slider) {
+      setCurrentSlide(slider.track.details.rel);
+    },
+  });
+
+  // Auto-play functionality
+  useEffect(() => {
+    const startAutoPlay = () => {
+      timerRef.current = setInterval(() => {
+        instanceRef.current?.next();
+      }, 4000);
+    };
+
+    startAutoPlay();
+
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [instanceRef]);
+
+  // Pause on hover
+  const handleMouseEnter = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    timerRef.current = setInterval(() => {
+      instanceRef.current?.next();
+    }, 4000);
+  };
+
+
+
+
+    
 
 
 
@@ -352,50 +467,32 @@ export default function Gre(){
         </div>
 
         {/* Testimonial Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-          {/* Left Card - Blurred */}
-          <div className="hidden lg:block opacity-40">
-            <div className="bg-white border-2 border-orange-500 rounded-3xl p-6 md:p-8">
-              <div className="space-y-3 mb-4">
-                <div className="h-2 bg-gray-300 rounded w-3/4"></div>
-                <div className="h-2 bg-gray-300 rounded w-4/4"></div>
-                <div className="h-2 bg-gray-300 rounded w-3/4"></div>
-              </div>
+        <section className="py-16 px-4  ">
+      <div className=" mx-auto">
+       
+        
+        <div
+          ref={sliderRef}
+          className="keen-slider"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
+          {testimonials.map((testimonial, index) => (
+            <div key={testimonial.id} className="keen-slider__slide">
+              <TestimonialCard
+                name={testimonial.name}
+                score={testimonial.score}
+                rating={testimonial.rating}
+                testimonial={testimonial.testimonial}
+                isActive={currentSlide === index}
+              />
             </div>
-          </div>
-
-          {/* Center Card - Featured */}
-          <div className="lg:col-span-1 relative">
-            <div className="bg-white border-2 border-orange-500 rounded-3xl p-6 md:p-8 shadow-lg">
-              <div className="mb-4">
-                <h4 className="text-orange-500 font-bold text-lg md:text-xl">Khushal: 80</h4>
-                <div className="flex gap-1 mt-2">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className="text-yellow-400">
-                      ★
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <p className="text-gray-600 text-sm md:text-base leading-relaxed text-balance">
-                My journey with Gateway Abroad Jaipur went beyond my expectations. The mock tests provided by my
-                trainers gave an accurate simulation of the real exam, regular feedback on my performance was
-                invaluable. With their help, I aced my PTE exam.
-              </p>
-            </div>
-          </div>
-
-          {/* Right Card - Blurred */}
-          <div className="hidden lg:block opacity-40">
-            <div className="bg-white border-2 border-orange-500 rounded-3xl p-6 md:p-8">
-              <div className="space-y-3 mb-4">
-                <div className="h-2 bg-gray-300 rounded w-3/4"></div>
-                <div className="h-2 bg-gray-300 rounded w-4/4"></div>
-                <div className="h-2 bg-gray-300 rounded w-3/4"></div>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
+
+       
+      </div>
+    </section>
 
        
       </div>
@@ -403,104 +500,255 @@ export default function Gre(){
 
 
 
-      <section className="bg-white px-4 py-16 md:py-24">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-3 text-orange-500">Plans & Pricing</h2>
-          <p className="text-gray-600 text-base md:text-lg">
-            We are accepting PayPal, Paytm, PhonePe and Debit & Credit Card
-          </p>
-        </div>
+        {/* Pricing Section */}
+<section className="relative -left-5   py-12 md:py-20 lg:w-[90%]">
+  <div className=" mx-auto ">
+    <div className="mb-12 ml-30">
+      <h2 className="text-2xl md:text-4xl font-bold text-brand-orange mb-2">Plans & Pricing</h2>
+      <p className="text-zinc-500 text-lg font-medium">We are accepting PayPal, Paytm, PhonePe and Debit & Credit Card</p>
+    </div>
 
-        {/* Pricing Cards */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
-          {/* Classroom Training */}
-          <div className="bg-gray-600 text-white rounded-2xl p-6 md:p-8">
-            <h3 className="text-2xl md:text-3xl font-bold mb-4">Classroom training</h3>
-            <p className="text-sm md:text-base leading-relaxed mb-6 text-balance">
-              Gateway Abroad Jaipur empowers you to achieve your GRE goals with top-notch instructors. They provide
-              in-person guidance through a comprehensive offline preparation program. Don't let academic hurdles hold
-              you back from achieving success. Conquer the GRE exam entirely offline and unlock the door to a thriving
-              academic journey.
-            </p>
-            <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-6 rounded-full transition-colors mt-8">
-              Choose Plan
-            </button>
+    <div className="backdrop-blur-lg bg-[#636363] shadow-2xl rounded-3xl  px-4 md:px-6 md:pt-15">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {/* Classroom Training */}
+        <div className="px-4 md:px-6 ">
+          <h5 className="text-2xl md:text-[28px] font-medium text-white mb-6 ml-10 ">Classroom training</h5>
+          <div className="mb-8">
+            <ul className="space-y-4 min-h-[200px] md:min-h-[242px] lg:w-80">
+              <li className="relative text-white font-medium text-justify pl-8  before:absolute before:left-0 before:top-0 before:w-5 before:h-5 before:bg-[url('https://www.gatewayabroadeducations.com/_next/static/media/check-circle.532cdb95.svg')] before:bg-cover">
+                Gateway Abroad Jaipur empowers you to achieve your goals with top-notch instructors. They provide
+                in-person guidance through a comprehensive offline preparation program.
+              </li>
+              <li className="relative text-white font-medium text-justify pl-8 pb-15 before:absolute before:left-0 before:top-0 before:w-5 before:h-5 before:bg-[url('https://www.gatewayabroadeducations.com/_next/static/media/check-circle.532cdb95.svg')] before:bg-cover">
+                Don't let academic hurdles hold you back from achieving success. Conquer the  exam entirely offline and
+                unlock the door to a thriving academic journey.
+              </li>
+            </ul>
           </div>
-
-          {/* Live Online Training */}
-          <div className="bg-gray-600 text-white rounded-2xl p-6 md:p-8">
-            <h3 className="text-2xl md:text-3xl font-bold mb-4">Live online training</h3>
-            <p className="text-sm md:text-base leading-relaxed mb-6 text-balance">
-              Level Up Your Scores: Anytime, Anywhere. Conquer standardized tests from the comfort of your home with our
-              interactive online prep courses. Our flexible online classes and dedicated support ensure you can progress
-              at your own pace, tailoring your learning journey to your busy schedule.
-            </p>
-            <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-2 px-6 rounded-full transition-colors mt-8">
-              Choose Plan
-            </button>
-          </div>
-
-          {/* Hybrid - Most Popular */}
-          <div className="relative lg:col-span-1">
-            <div className="absolute -top-4 right-6 bg-gray-700 text-white px-4 py-1 rounded-full text-sm font-semibold">
-              Most Popular
-            </div>
-            <div className="bg-orange-500 rounded-3xl p-6 md:p-8 text-white h-full flex flex-col justify-between pt-8">
-              <div>
-                <h3 className="text-2xl md:text-3xl font-bold mb-4">Hybrid</h3>
-                <p className="text-sm md:text-base leading-relaxed mb-6 text-balance">
-                  Get the best of both worlds with our hybrid courses - the flexibility of online learning combined with
-                  the personalized support of in-person instruction! Why choose between online convenience and offline
-                  expertise when you can have both? Experience the ultimate exam prep fusion with our hybrid courses!
-                </p>
-              </div>
-              <button className="bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-6 rounded-full transition-colors mt-8">
-                Choose Plan
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-
-      <section className="bg-white px-4 py-16 md:py-24">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-balance">
-          <span className="text-orange-500">Free GRE Prep</span> <span className="text-gray-700">Resources</span>
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {resources.map((resource, index) => (
-            <div
-              key={index}
-              className="border-2 border-orange-500 rounded-2xl overflow-hidden hover:shadow-lg transition-shadow"
+          <div className="text-center absolute -bottom-5 left-35">
+            <button
+            
+              className="text-white text-base md:text-lg font-bold bg-brand-orange shadow-lg px-12 py-3 rounded-full transition-colors duration-300"
             >
-              {/* Image Placeholder */}
-              <div className="w-full h-48 md:h-56 bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
-                <span className="text-white text-center px-4 font-semibold text-sm md:text-base">{resource.image}</span>
-              </div>
+              Choose Plan
+            </button>
+          </div>
+        </div>
 
-              {/* Content */}
-              <div className="p-6 md:p-8">
-                <h3 className="text-xl md:text-2xl font-bold text-orange-500 mb-3">{resource.title}</h3>
-                <p className="text-gray-600 text-sm md:text-base mb-6 text-balance">{resource.description}</p>
-                <button className="w-full bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-full transition-colors">
-                  Take GRE Practice Material
-                </button>
-              </div>
-            </div>
-          ))}
+        <div className="w-[2px] h-90 bg-white mx-auto lg:absolute left-110"></div>
+
+
+        {/* Live Online Training */}
+        <div className="px-4 md:px-6">
+          <h5 className="text-2xl md:text-[28px] font-medium text-white mb-6">Live online training</h5>
+          <div className="mb-8">
+            <ul className="space-y-4 min-h-[200px] md:min-h-[242px]">
+              <li className="relative text-white font-medium text-justify  before:absolute before:left-0 before:top-0 before:w-5 before:h-5 before:bg-[url('https://www.gatewayabroadeducations.com/_next/static/media/check-circle.532cdb95.svg')] before:bg-cover lg:w-80">
+                Level Up Your Scores: Anytime, Anywhere. Conquer standardized tests from the comfort of your home with our
+                interactive online prep courses.
+              </li>
+              <li className="relative text-white font-medium text-justify before:absolute before:left-0 before:top-0 before:w-5 before:h-5 before:bg-[url('https://www.gatewayabroadeducations.com/_next/static/media/check-circle.532cdb95.svg')] before:bg-cover lg:w-80">
+                Our flexible online classes and dedicated support ensure you can progress at your own pace, tailoring your learning
+                journey to your busy schedule.
+              </li>
+            </ul>
+          </div>
+          <div className="text-center absolute -bottom-5 left-150 ">
+            <button
+             
+              className="text-white text-base md:text-lg font-bold bg-brand-orange shadow-lg px-12 py-3 rounded-full transition-colors duration-300"
+            >
+              Choose Plan
+            </button>
+          </div>
+        </div>
+
+        {/* Hybrid - Most Popular */}
+        <div className="px-4 md:px-6 bg-brand-orange shadow-2xl rounded-4xl p-6 md:p-8 md:-mt-30 md:mr-8 mb-5 relative">
+            <div className="bg-gradient-to-b from-white to-orange-100 
+ absolute inset-0 rounded-4xl -z-1 p-49 -left-[3px]" />
+          <div className="text-right ">
+            <span className="text-white text-[16px] font-extrabold bg-[#636363] tracking-wider px-6 py-2 absolute right-11 rounded-full">
+              Most Popular
+            </span>
+          </div>
+          <h5 className="text-2xl pl-8 md:text-[28px] font-medium text-white mb-6">Hybrid</h5>
+          <div className="mb-8">
+            <ul className="space-y-4 min-h-[200px] md:min-h-[242px]">
+              <li className="relative text-white font-medium text-justify pl-8 before:absolute before:left-0 before:top-0 before:w-5 before:h-5 before:bg-[url('https://www.gatewayabroadeducations.com/_next/static/media/check-circle-2.3eccd6cf.svg')] before:bg-cover">
+                Get the best of both worlds with our hybrid courses - the flexibility of online learning combined with the
+                personalized support of in-person instruction!
+              </li>
+              <li className="relative text-white font-medium text-justify pl-8 before:absolute before:left-0 before:top-0 before:w-5 before:h-5 before:bg-[url('https://www.gatewayabroadeducations.com/_next/static/media/check-circle-2.3eccd6cf.svg')] before:bg-cover">
+                Why choose between online convenience and offline expertise when you can have both? Experience the ultimate exam
+                prep fusion with our hybrid courses!
+              </li>
+            </ul>
+          </div>
+          <div className="text-center absolute bottom-2 right-22">
+            <button
+             
+              className="text-white text-base md:text-lg font-bold bg-[#636363] shadow-lg px-12 py-3 rounded-full hover:bg-gray-800 transition-colors duration-300"
+            >
+              Choose Plan
+            </button>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
+</section>
+
+
+      <section className=" py-20">
+  <div className="max-w-7xl mx-auto px-4">
+
+    {/* Heading */}
+    <h2 className="text-4xl font-bold text-center mb-16">
+      <span className="text-[#FF6A3D]">Free GRE Prep</span>{" "}
+      <span className="text-gray-600">Resources</span>
+    </h2>
+
+    {/* Cards */}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 ">
+
+      {/* CARD 1 */}
+     {/* CARD */}
+<div className="relative rounded-[36px]">
+
+  {/* BACKSIDE GRADIENT BORDER */}
+  <div className="absolute inset-0 rounded-[36px] 
+    bg-gradient-to-b from-gray-300 via-gray-200 to-orange-500 
+    translate-x-[2px] translate-y-[2px] -left-1">
+  </div>
+
+  {/* MAIN CARD */}
+  <div className="relative rounded-[36px] bg-white overflow-hidden ">
+
+    {/* IMAGE */}
+    <div className="h-[210px] bg-gray-100">
+      <img
+        src="/image/blog-img.jpg"
+        alt="Practice Material"
+        className="w-full h-full object-cover"
+      />
+    </div>
+
+    {/* CONTENT */}
+    <div className="px-6 pt-8 pb-14 text-center">
+      <h3 className="text-3xl font-bold text-[#FF6A3D] mb-3">
+        Practice Material
+      </h3>
+
+      <p className="text-gray-600 text-sm font-bold mb-8">
+        Take the GRE practice material and begin your GRE preparation now
+      </p>
+
+   
+    </div>
+    
+
+  </div>
+     {/* BUTTON */}
+      <button className="bg-[#4A4A4A] w-70 text-white px-3 py-3 rounded-full font-semibold shadow-md absolute left-1/2 -translate-x-1/2 -bottom-5 ">
+        Take GRE Practice Material
+      </button>
+</div>
+
+
+      {/* CARD 2 */}
+      <div className="relative rounded-[36px]">
+
+  {/* BACKSIDE GRADIENT BORDER */}
+  <div className="absolute inset-0 rounded-[36px] 
+    bg-gradient-to-b from-gray-300 via-gray-200 to-orange-500 
+    translate-x-[2px] translate-y-[2px] -left-1">
+  </div>
+
+  {/* MAIN CARD */}
+  <div className="relative rounded-[36px] bg-white overflow-hidden ">
+
+    {/* IMAGE */}
+    <div className="h-[210px] bg-gray-100">
+      <img
+        src="/image/blog-img.jpg"
+        alt="Practice Material"
+        className="w-full h-full object-cover"
+      />
+    </div>
+
+    {/* CONTENT */}
+    <div className="px-6 pt-8 pb-14 text-center">
+      <h3 className="text-3xl font-bold text-[#FF6A3D] mb-3">
+        Practice Material
+      </h3>
+
+      <p className="text-gray-600 text-sm font-bold mb-8">
+        Take the GRE practice material and begin your GRE preparation now
+      </p>
+
+   
+    </div>
+    
+
+  </div>
+     {/* BUTTON */}
+      <button className="bg-[#4A4A4A] w-70 text-white px-3 py-3 rounded-full font-semibold shadow-md absolute left-1/2 -translate-x-1/2 -bottom-5 ">
+        Take GRE Practice Material
+      </button>
+</div>
+
+      {/* CARD 3 */}
+      <div className="relative rounded-[36px]">
+
+  {/* BACKSIDE GRADIENT BORDER */}
+  <div className="absolute inset-0 rounded-[36px] 
+    bg-gradient-to-b from-gray-300 via-gray-300 to-orange-500 
+    translate-x-[2px] translate-y-[2px] -left-1">
+  </div>
+
+  {/* MAIN CARD */}
+  <div className="relative rounded-[36px] bg-white overflow-hidden ">
+
+    {/* IMAGE */}
+    <div className="h-[210px] bg-gray-100">
+      <img
+        src="/image/blog-img.jpg"
+        alt="Practice Material"
+        className="w-full h-full object-cover"
+      />
+    </div>
+
+    {/* CONTENT */}
+    <div className="px-6 pt-8 pb-14 text-center">
+      <h3 className="text-3xl font-bold text-[#FF6A3D] mb-3">
+        Practice Material
+      </h3>
+
+      <p className="text-gray-600 text-sm font-bold mb-8">
+        Take the GRE practice material and begin your GRE preparation now
+      </p>
+
+   
+    </div>
+    
+
+  </div>
+     {/* BUTTON */}
+      <button className="bg-[#4A4A4A] w-70 text-white px-3 py-3 rounded-full font-semibold shadow-md absolute left-1/2 -translate-x-1/2 -bottom-5 ">
+        Take GRE Practice Material
+      </button>
+</div>
+
+    </div>
+  </div>
+</section>
+
 
 
 
      <section className="bg-gray-50 px-4 py-16 md:py-24">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold mb-2 text-center text-orange-500">Frequently asked questions</h2>
         <p className="text-center text-gray-600 mb-12 text-base md:text-lg">
           Can't find the answer you are looking for?
@@ -598,4 +846,48 @@ export default function Gre(){
     
         </>
     )
+}
+
+
+import { Star } from "lucide-react";
+
+function TestimonialCard({ name, score, rating, testimonial, isActive }) {
+  return (
+      <div
+      className={`
+        relative max-w-[520px] rounded-3xl bg-white px-6 py-20
+        transition-all duration-500 ease-out
+        ${
+          isActive
+            ? "border-2 border-orange-500 shadow-2xl scale-100 opacity-100 z-20"
+            : "border border-orange-300 scale-90 opacity-40 blur-[1.5px] z-10 -mx-8 "
+        }
+      `}
+    >
+      {/* HEADER */}
+      <div className="flex items-center gap-2 mb-4">
+        <span className="font-bold text-xl text-orange-500">
+          {name}: {score}
+        </span>
+
+        <div className="flex gap-1 ml-3">
+          {Array.from({ length: 5 }).map((_, i) => (
+            <Star
+              key={i}
+              className={`w-5 h-5 ${
+                i < rating
+                  ? "fill-orange-500 text-orange-500"
+                  : "text-gray-300"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* CONTENT */}
+      <p className="text-gray-600 text-lg font-semibold leading-relaxed">
+        {testimonial}
+      </p>
+    </div>
+  );
 }

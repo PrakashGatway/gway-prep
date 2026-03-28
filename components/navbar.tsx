@@ -241,7 +241,7 @@ export function Navbar() {
                         {item.dropdownItems.map((dropdownItem) => (
                           <Link
                             key={dropdownItem.name}
-                            href={dropdownItem.href}
+                            href={"/preparation/" + dropdownItem.slug}
                             onClick={() => setIsOpen(false)}
                             className="block py-3 text-gray-600 hover:text-orange-500 border-l-2 border-gray-200 hover:border-orange-400 pl-4"
                           >
