@@ -8,6 +8,10 @@ import { Noto_Sans } from "next/font/google";
 import { Footer } from "@/components/footer";
 import Script from "next/script";
 
+
+
+
+
 const notoSans = Noto_Sans({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
