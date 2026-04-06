@@ -35,9 +35,8 @@ export function WorkingProcess() {
         <h2 className="text-4xl font-extrabold text-center mb-4">
           <span className="text-brand-orange">Our Working</span> <span className="text-[#626363]">Process</span> 
         </h2>
-        <p className="text-center text-gray-600 mb-20 max-w-2xl mx-auto">
-          A platform that takes care of everything beforehand. Gateway Abroad sources, vets, matches and manages all the
-          talents.
+        <p className="text-center font-semibold text-gray-600 mb-20 max-w-2xl mx-auto">
+          A Platform that takes care of everything beforehand. Gateway Abroad sources, vets, matches and manages all the lalents.
         </p>
 
         <div className="relative flex flex-col lg:flex-row items-center gap-20">

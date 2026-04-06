@@ -10,6 +10,8 @@ import { BlogSlider } from "@/components/blog-slider"
 import { PartnerSection } from "@/components/partner-section"
 import { DestinationsAndConsultants } from "@/components/destinations-consultants"
 import Studentrankslider from "@/components/studentRank"
+import {Baners} from "@/components/baner"
+import {HomeStudent} from "@/components/home-student"
 
 export const metadata: Metadata = {
   title: "Gateway Abroad Education - Best Study Abroad Consultants in Jaipur",
@@ -21,12 +23,14 @@ export default function Home() {
   return (
     <main className="min-h-screen">
       <Hero />
+      <RegistrationSection />
       <AboutSection />
       <ServicesGrid />
-      <RegistrationSection />
-      <Studentrankslider />
       <TestPrepGrid />
+      <Baners />
       <WorkingProcess />
+      <HomeStudent />
+      <Studentrankslider />
       <VideoTestimonialCard />
       <TextTestimonials />
       <BlogSlider />

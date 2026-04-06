@@ -1,15 +1,18 @@
 "use client"
 
-import { motion } from "framer-motion"
-import Image from "next/image"
-import ThreeDButton from "./3dbutton"
 
-export function AboutSection() {
+
+export function Baners() {
   return (
     <section className="py-12 md:py-16 lg:py-20 bg-white" id="about">
       <div className="max-w-7xl mx-auto">
         
-       
+            <h2 className="text-4xl text-[#626363] font-semibold text-center mb-20">
+         Everything you need to {" "}
+          <span className="text-brand-orange">prep any time</span>{" "}
+         
+        </h2> 
+
         <img         
           src="/image/about.jpeg"
           alt="About Us" 

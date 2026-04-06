@@ -1,91 +1,208 @@
-"use client"
+"use client";
 
-import { Phone, Calendar, PhoneCall } from "lucide-react"
-import Image from "next/image"
-import { useEffect, useRef, useState } from "react"
-import ThreeDButton from "./3dbutton"
+import { Phone } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import ThreeDButton from "./3dbutton";
+import { text } from "stream/consumers";
+
+const images = [
+  {
+    url: "https://t3.ftcdn.net/jpg/06/23/84/22/360_F_623842281_ECGgEpMEkQdH83gbmexIn5l3ACl7V3M0.jpg",
+    score: 8,
+    name: "swati gupta",
+    score_type: "Gmat Score",
+  },
+  {
+    url: "https://img.freepik.com/premium-photo/young-handsome-man-pointing-camera-choosing-you-university-student-concept_1194-262936.jpg",
+    score: 9,
+    name: "john doe",
+    score_type: "ACT Score",
+  },
+  {
+    url: "https://as2.ftcdn.net/jpg/05/29/12/57/1000_F_529125762_omW1yTehDLLFJKwLJjRET0G3sXiQnK5g.jpg",
+    score: 7,
+    name: "jane smith",
+    score_type: "PSAT Score",
+  },
+];
+
+const data = [
+  {
+    number: "20+",
+    text: "Years of Experience",
+  },
+  {
+    number: "3000+",
+    text: "Happy Students",
+  },
+  {
+    number: "4.8/5",
+    text: "Overall  Rating",
+  },
+  {
+    number: "20000+",
+    text: "Total Hours Lectured",
+  },
+];
 
 export function Hero() {
-  const bookCallRef = useRef<HTMLButtonElement>(null)
-  const callUsRef = useRef<HTMLButtonElement>(null)
-  const [isDesktop, setIsDesktop] = useState(false)
+  const bookCallRef = useRef<HTMLButtonElement>(null);
+  const callUsRef = useRef<HTMLButtonElement>(null);
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  const [index, setIndex] = useState(0);
+
+  // AUTO SLIDE
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % images.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const checkDesktop = () => {
-      setIsDesktop(window.innerWidth >= 1024)
-    }
-    
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+
     // Initial check
-    checkDesktop()
-    
+    checkDesktop();
+
     // Set initial transforms for desktop
     if (isDesktop) {
       if (bookCallRef.current) {
-        bookCallRef.current.style.transform = "rotateY(37deg)"
+        bookCallRef.current.style.transform = "rotateY(37deg)";
       }
       if (callUsRef.current) {
-        callUsRef.current.style.transform = "rotateY(25deg)"
+        callUsRef.current.style.transform = "rotateY(25deg)";
       }
     }
-    
+
     // Listen for resize
-    window.addEventListener('resize', checkDesktop)
-    
+    window.addEventListener("resize", checkDesktop);
+
     return () => {
-      window.removeEventListener('resize', checkDesktop)
-    }
-  }, [isDesktop])
-
-
+      window.removeEventListener("resize", checkDesktop);
+    };
+  }, [isDesktop]);
 
   return (
-    <section className="relative overflow-hidden bg-gray-50 py-6 md:py-12 lg:py-20
-      bg-[url('/image/bg-test-pre.jpg')]
+    <section
+      className="relative overflow-hidden bg-gray-50 
+      bg-[url('/image/bg.jpeg')]
       bg-cover
       bg-center
-      bg-no-repeat">
-      <div className=" mx-auto px-4 sm:px-6 lg:pl-25 flex flex-col lg:flex-row items-center gap-12 md:gap-12">
-        
+      bg-no-repeat 
+      flex gap-12 items-center justify-center flex-wrap"
+    >
+      <div className=" mx-auto px-4 sm:px-6 mb-20 flex flex-col lg:flex-row  items-center gap-12 md:gap-12">
         {/* Left Content Section */}
-        <div className="lg:w-1/2 w-full">
-          <div className="bg-white/20 backdrop-blur-xl text-white rounded-2xl md:rounded-3xl px-4 py-4 md:px-6 md:py-10 
-                     shadow-[inset_0_0_10px_rgba(255,255,255,0.45)] border-2 md:border-3 border-white/50 
-                     text-center transform rotate-0">
-            <h1 className="text-2xl  sm:text-3xl md:text-4xl font-semibold leading-snug text-gray-800">
-              <span className="text-brand-orange">Welcome to</span> <span className="text-[#626363]">The Best Study
-              Abroad Consultants in Jaipur</span> 
+        <div className="lg:w-1/2 w-full pt-20">
+          <div className="">
+            <h1 className="text-2xl  md:text-3xl lg:text-5xl font-bold leading-snug text-white">
+              World's Leading Test <br /> Prep, Tutoring & Collage <br />{" "}
+              Admissions Centre
             </h1>
 
-            <p className="text-gray-600 mt-4 md:mt-6 leading-relaxed text-sm sm:text-base md:text-base">
-              At Gateway Abroad Education, we are a trusted Overseas education
-              consultants dedicated to helping students achieve their dreams of
-              pursuing overseas study. Our expert team supports you at every step.
+            <h1 className="text-xl  md:text-2xl lg:text-4xl font-semibold leading-snug text-white mt-6">
+              Coaching for SAT, AP, IB,IGCSE, A<br /> -Levels & Competitive
+              Entrance Exams
+            </h1>
+
+            <p className=" mt-4 md:mt-6 leading-relaxed text-lg text-white font-medium">
+              Live online exam preparation, score optimisation, and personalised
+              admissions mentorship.
             </p>
           </div>
-          
-          {/* 3D Buttons */}
-          <div className="flex mt-10">
-           <ThreeDButton icon="Phone" children={  "Book A Call"} bgColor="bg-white" textColor="text-black" border="none" />
-         <ThreeDButton icon="Calendar" children="Call Us" bgColor="bg-white" textColor="text-black" border="none"/>
 
-          </div>
-        
+          <button
+            type="button"
+            className="flex gap-2 bg-white text-orange-500 py-2 font-bold mt-10 px-4 rounded-md hover:bg-gray-200 transition-colors"
+          >
+            <Phone /> Book A Free Consultation
+          </button>
         </div>
 
         {/* Right Image Section */}
-        <div className="lg:w-1/2 w-full relative min-h-[300px] sm:min-h-[350px] md:min-h-[400px] flex items-center justify-center mt-4 sm:mt-0">
-          <div className="relative w-full max-w-lg mx-auto">
-            <Image
-              src="/image/hero.png"
-              alt="Hero Image"
-              width={500}
-              height={500}
-              className="w-full h-auto object-cover"
-              priority
-            />
+
+        {/* ================= LEFT CONTENT ================= */}
+        <div className="lg:w-1/2 w-full flex flex-col gap-4">
+          {/* IMAGE SLIDER */}
+          <div className="relative w-[250px] h-[250px] sm:w-[22rem] sm:h-[22rem] lg:w-[25rem] lg:h-[25rem] mx-auto">
+            {/* Slider */}
+            <div className="lg:relative lg:w-[100%] lg:h-[100%]">
+              {/* MASKED IMAGE */}
+              <div
+                className="lg:absolute inset-0 z-10 lg:top-[40px] lg:left-[40px]"
+                style={{
+                  backgroundImage: `url(${images[index].url})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  WebkitMaskRepeat: "no-repeat",
+                  WebkitMaskSize: "100% 100%",
+                  maskRepeat: "no-repeat",
+                  maskSize: "100% 100%",
+                  width: "20rem",
+                  height: "327px",
+                  borderRadius: "93px",
+                }}
+              />
+
+              {/* FRAME BORDER IMAGE */}
+              <img
+                src="/image/student-rank-img.png"
+                alt="frame"
+                className="absolute inset-0 w-full h-full z-20 pointer-events-none"
+              />
+            </div>
+
+            {/* NAME + SCORE */}
+
+            <div
+              style={{
+                backgroundImage: `url('/hero-r-removebg-preview.png')`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                width: "24rem",
+                height: "8rem",
+                borderRadius: "93px",
+              }}
+              className="flex gap-4 items-center justify-around capitalize"
+            >
+              <h2 className="text-2xl font-bold text-white">
+                {images[index].name}
+              </h2>
+              <ul className="text-lg text-white">
+                <li>{images[index].score_type}</li>
+                <li className="text-3xl font-extrabold text-center">
+                  {images[index].score}
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* 3D Buttons */}
+      <div className="flex flex-wrap mb-20 mx-20 gap-16">
+        {data.map((ele, index) => (
+          <div key={index} className="relative min-w-[18rem]">
+            <div
+              className="absolute  w-full h-full 
+                   border-2 border-orange-500 rounded-[26px] 
+                   -rotate-5 "
+            />
+
+            <div className="bg-white p-4 rounded-[26px] text-center shadow-sm relative">
+              <h2 className="text-4xl font-bold text-orange-500 mb-2">
+                {ele.number}
+              </h2>
+              <p className="text-gray-600 text-xl">{ele.text}</p>
+            </div>
+          </div>
+        ))}
+      </div>
     </section>
-  )
+  );
 }

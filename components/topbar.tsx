@@ -15,7 +15,7 @@ export function Topbar() {
             <MapPin size={14} className="text-brand-orange" />
             <span>Our Centres</span>
           </div>
-          <button className="bg-brand-yellow text-black px-4 py-1 rounded font-bold hover:bg-yellow-400 transition-colors">
+          <button className=" text-white px-4 py-1 rounded font-bold transition-colors">
             Free Demo
           </button>
           <div className="flex items-center gap-1">
