@@ -1,41 +1,138 @@
 import Image from "next/image"
-import ThreeDButton from "./3dbutton"
+import { Phone, MessageCircle, Mail, MapPin, Facebook, Twitter, Instagram, Youtube } from "lucide-react"
 
 export function PartnerSection() {
   return (
-    <section className="py-12 md:py-16 lg:py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row justify-between items-center gap-12 md:gap-16">
-          <div className="p-6 sm:p-8 md:p-12 lg:w-1/2 w-full">
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-brand-orange mb-4 md:mb-6 border-b-4 border-brand-orange">
-              Become a Partner
+    <section className="py-12 md:py-16 lg:py-20  bg-[url('/image/bg.jpeg')] bg-cover bg-center relative overflow-hidden" id="partner">
+     
+     
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="flex flex-col lg:flex-row justify-between items-start gap-12 text-white">
+          
+          {/* Left Column: Contact Info */}
+          <div className="lg:w-1/2 w-full space-y-6">
+            <h2 className="text-3xl md:text-4xl font-bold">Get Started</h2>
+            <h2 className="text-3xl md:text-5xl font-bold leading-tight">
+              Ready to Build <br/> Your Score Strategy?
             </h2>
-            <p className="text-gray-700 text-base sm:text-lg md:text-xl mb-6 md:mb-8 leading-relaxed max-w-md">
-              Join thousand of instructors and earn money hassle free!
+            <p className="text-lg opacity-90 max-w-md">
+              Take the first step towards your dream university. Our experts will help you plan your roadmap to success.
             </p>
-            <div className="w-full sm:w-auto">
-              <ThreeDButton children="Apply Now" bgColor="bg-[#666666]" textColor="text-white" border="none" />
-            </div>
-          </div>
 
-          <div className="relative w-full lg:w-1/2 flex justify-center">
-            <div className="relative">
-              {/* Orange background elements - smaller on mobile */}
-              <div className="absolute h-32 sm:h-40 md:h-48 lg:h-50 -top-2 sm:-top-3 -left-2 sm:-left-3 w-32 sm:w-40 md:w-48 lg:w-50 bg-brand-orange z-0 rounded-3xl md:rounded-4xl"></div>
-              <div className="absolute h-32 sm:h-40 md:h-48 lg:h-50 -bottom-2 sm:-bottom-3 -right-2 sm:-right-3 w-32 sm:w-40 md:w-48 lg:w-50 bg-brand-orange z-0 rounded-3xl md:rounded-4xl"></div>
+            <div className="space-y-6 pt-4">
+              {/* WhatsApp */}
+              <div className="flex items-center gap-4">
+                <div className="bg-white p-3 rounded-lg"><MessageCircle className="text-black w-8 h-8" /></div>
+                <div>
+                  <p className="text-2xl font-bold">WhatsApp Us</p>
+                  <p className="text-xl">+91 97403 35125</p>
+                </div>
+              </div>
 
-              <div className="relative">
-                <Image
-                  src="https://img.freepik.com/premium-photo/close-uphandshake-business-people-modern-officeconcept-partnership_252847-15482.jpg"
-                  alt="Become a Partner"
-                  height={500}
-                  width={500}
-                  className="object-cover z-50 rounded-2xl sm:rounded-3xl md:rounded-4xl w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg"
-                  style={{ objectPosition: "center" }}
-                />
+              {/* Call Us */}
+              <div className="flex items-center gap-4">
+                <div className="bg-white p-3 rounded-lg"><Phone className="text-black w-8 h-8" /></div>
+                <div>
+                  <p className="text-2xl font-bold">Call Us</p>
+                  <p className="text-xl">+91 97403 35170</p>
+                </div>
+              </div>
+
+              {/* Email */}
+              <div className="flex items-center gap-4">
+                <div className="bg-white p-3 rounded-lg"><Mail className="text-black w-8 h-8" /></div>
+                <div>
+                  <p className="text-2xl font-bold">Email Us</p>
+                  <p className="text-xl">info@questforsuccess.in</p>
+                </div>
+              </div>
+
+              {/* Location */}
+              <div className="flex items-center gap-4">
+                <div className="bg-white p-3 rounded-lg"><MapPin className="text-black w-8 h-8" /></div>
+                <div>
+                  <p className="text-2xl font-bold">Location</p>
+                  <p className="text-xl">Bangalore, India</p>
+                </div>
               </div>
             </div>
+
+            {/* Social Media */}
+            <div className="flex items-center gap-4 pt-6">
+              <span className="text-2xl font-bold">Follow Us</span>
+              <Facebook className="w-6 h-6" />
+              <Twitter className="w-6 h-6" />
+              <Instagram className="w-6 h-6" />
+              <Youtube className="w-6 h-6" />
+            </div>
           </div>
+
+          {/* Right Column: Inquiry Form */}
+          <div className="lg:w-1/2 w-full bg-white rounded-3xl p-8 text-gray-800 shadow-2xl">
+            <form className="space-y-4">
+              <div>
+                <label className="block text-sm font-semibold mb-1">Student's Name *</label>
+                <input type="text" placeholder="Student's Name" className="w-full p-3 bg-gray-50 border rounded-md" />
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold mb-1">Email *</label>
+                  <input type="email" placeholder="Email" className="w-full p-3 bg-gray-50 border rounded-md" />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold mb-1">Contact No. *</label>
+                  <input type="tel" placeholder="081234 56789" className="w-full p-3 bg-gray-50 border rounded-md" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">City *</label>
+                <input type="text" placeholder="City" className="w-full p-3 bg-gray-50 border rounded-md" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">School Name *</label>
+                <input type="text" placeholder="School Name" className="w-full p-3 bg-gray-50 border rounded-md" />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">Student Grade *</label>
+                <select className="w-full p-3 bg-gray-50 border rounded-md">
+                  <option value="">Select Grade</option>
+                  <option value="1">Grade 1</option>
+                  <option value="2">Grade 2</option>
+                  <option value="3">Grade 3</option>
+                  {/* Add more options as needed */}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">Which Program are you looking for? *</label>
+                <div className="flex flex-wrap gap-3 text-xs">
+                  {['SAT', 'AP', 'IB-Tutoring', 'IGCSE', 'A LEVELS - Tutoring', 'Counselling', 'Others'].map(prog => (
+                    <label key={prog} className="flex items-center gap-1">
+                      <input type="checkbox" /> {prog}
+                    </label>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-semibold mb-1">Comment or Message *</label>
+                <textarea placeholder="Message" className="w-full p-3 bg-gray-50 border rounded-md h-24"></textarea>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold mb-1">How did you come to know about us?</label>
+                <select id="2" className="w-full p-3 bg-gray-50 border rounded-md ">
+                  <option value="" hidden>Select an option</option>
+                  {['Google Search', 'Social Media', 'Advertisement', 'Other'].map(source => (
+                    <option key={source} value={source}>{source}</option>
+                  ))}
+                </select>
+              </div>
+              <button className="w-full py-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg transition">
+                Send Message
+              </button>
+            </form>
+          </div>
+
         </div>
       </div>
     </section>

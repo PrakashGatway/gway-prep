@@ -94,9 +94,9 @@ export function Hero() {
       bg-cover
       bg-center
       bg-no-repeat 
-      flex gap-12 items-center justify-center flex-wrap"
+      flex gap-12 items-center justify-center flex-wrap h-auto lg:h-screen"
     >
-      <div className=" mx-auto px-4 sm:px-6 mb-20 flex flex-col lg:flex-row  items-center gap-12 md:gap-12">
+      <div className=" mx-auto p-4 sm:px-6 mb-20 flex flex-col lg:flex-row  items-center gap-12 md:gap-12">
         {/* Left Content Section */}
         <div className="lg:w-1/2 w-full pt-20">
           <div className="">
@@ -129,12 +129,12 @@ export function Hero() {
         {/* ================= LEFT CONTENT ================= */}
         <div className="lg:w-1/2 w-full flex flex-col gap-4">
           {/* IMAGE SLIDER */}
-          <div className="relative w-[250px] h-[250px] sm:w-[22rem] sm:h-[22rem] lg:w-[25rem] lg:h-[25rem] mx-auto">
+          <div className="relative w-[22rem] h-[22rem] lg:w-[25rem] lg:h-[25rem] mx-auto">
             {/* Slider */}
-            <div className="lg:relative lg:w-[100%] lg:h-[100%]">
+            <div className="lg:relative lg:w-[100%] lg:h-[100%] mb-10">
               {/* MASKED IMAGE */}
               <div
-                className="lg:absolute inset-0 z-10 lg:top-[40px] lg:left-[40px]"
+                className="lg:absolute inset-0 z-10 top-[40px] lg:left-[40px]"
                 style={{
                   backgroundImage: `url(${images[index].url})`,
                   backgroundSize: "cover",
@@ -144,7 +144,7 @@ export function Hero() {
                   maskRepeat: "no-repeat",
                   maskSize: "100% 100%",
                   width: "20rem",
-                  height: "327px",
+                  height: "20rem",
                   borderRadius: "93px",
                 }}
               />
@@ -153,7 +153,7 @@ export function Hero() {
               <img
                 src="/image/student-rank-img.png"
                 alt="frame"
-                className="absolute inset-0 w-full h-full z-20 pointer-events-none"
+                className="hidden lg:block absolute inset-0 w-full h-full z-20 pointer-events-none"
               />
             </div>
 
@@ -168,7 +168,7 @@ export function Hero() {
                 height: "8rem",
                 borderRadius: "93px",
               }}
-              className="flex gap-4 items-center justify-around capitalize"
+              className="flex gap-4 items-center justify-around capitalize mb-10"
             >
               <h2 className="text-2xl font-bold text-white">
                 {images[index].name}
@@ -185,7 +185,7 @@ export function Hero() {
       </div>
 
       {/* 3D Buttons */}
-      <div className="flex flex-wrap mb-20 mx-20 gap-16">
+      <div className="flex flex-wrap my-20 mx-20 gap-16">
         {data.map((ele, index) => (
           <div key={index} className="relative min-w-[18rem]">
             <div
