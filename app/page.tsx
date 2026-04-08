@@ -13,6 +13,7 @@ import Studentrankslider from "@/components/studentRank"
 import {Baners} from "@/components/baner"
 import {HomeStudent} from "@/components/home-student"
 import {Mission} from "@/components/mission"
+import {Aboutresult} from "@/components/about_result"
 
 export const metadata: Metadata = {
   title: "Gateway Abroad Education - Best Study Abroad Consultants in Jaipur",
@@ -25,11 +26,13 @@ export default function Home() {
     <main className="min-h-screen">
       <Hero />
       <RegistrationSection />
-      <AboutSection />
+      {/* <AboutSection /> */}
+      <Aboutresult />
       <ServicesGrid />
       <TestPrepGrid />
       {/* <Baners img="/image/about.jpeg" heading={'Everything you need to <p class="text-brand-orange">prep any time</p>'}/> */}
       <Baners img="/image/about.jpeg" />
+      
 
       <WorkingProcess />
       <HomeStudent />
