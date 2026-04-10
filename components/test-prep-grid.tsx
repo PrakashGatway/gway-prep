@@ -1,4 +1,7 @@
+"use client"
+
 import { cn } from "@/lib/utils"
+import {motion} from "framer-motion"
 
 // rounded-[0_1rem_0_0]
 
@@ -34,8 +37,16 @@ export function TestPrepGrid() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {exams.map((exam, i) => (
-            <div
-              key={i}
+            <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ amount: 0.2 }} // ones: true for the one time
+            transition={{
+              duration: 0.6,
+              delay: i * 0.1, // 0.1s gap between each item
+            }}
+          
               className={cn(
                 "rounded-3xl p-8 text-white flex flex-col items-center text-center justify-center transition-transform hover:scale-105 shadow-lg",
                 exam.color,
@@ -44,7 +55,7 @@ export function TestPrepGrid() {
             >
               <h3 className="text-3xl font-black mb-2">{exam.name}</h3>
               <p className="text-sm text-white/90 leading-relaxed max-w-[400px]">{exam.desc}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

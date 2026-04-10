@@ -2,8 +2,9 @@
 
 import { Phone } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import ThreeDButton from "./3dbutton";
-import { text } from "stream/consumers";
+import { motion } from "framer-motion";
+
+import CountUp from "react-countup";
 
 const images = [
   {
@@ -11,37 +12,107 @@ const images = [
     score: 8,
     name: "swati gupta",
     score_type: "Gmat Score",
+    data: [
+      {
+        number: "20",
+        text: "Years of Experience",
+        past: "+",
+      },
+      {
+        number: "3000",
+        text: "Happy Students",
+        past: "+",
+      },
+      {
+        number: "4",
+        text: "Overall  Rating",
+        past: ".8/5",
+      },
+      {
+        number: "20000",
+        text: "Total Hours Lectured",
+        past: "+",
+      },
+    ],
   },
   {
     url: "https://img.freepik.com/premium-photo/young-handsome-man-pointing-camera-choosing-you-university-student-concept_1194-262936.jpg",
     score: 9,
     name: "john doe",
     score_type: "ACT Score",
+    data: [
+      {
+        number: "20",
+        text: "Years of Experience",
+        past: "+",
+      },
+      {
+        number: "3000",
+        text: "Happy Students",
+        past: "+",
+      },
+      {
+        number: "4",
+        text: "Overall  Rating",
+        past: ".8/5",
+      },
+      {
+        number: "20000",
+        text: "Total Hours Lectured",
+        past: "+",
+      },
+    ],
   },
   {
     url: "https://as2.ftcdn.net/jpg/05/29/12/57/1000_F_529125762_omW1yTehDLLFJKwLJjRET0G3sXiQnK5g.jpg",
     score: 7,
     name: "jane smith",
     score_type: "PSAT Score",
+    data: [
+      {
+        number: "20",
+        text: "Years of Experience",
+        past: "+",
+      },
+      {
+        number: "3000",
+        text: "Happy Students",
+        past: "+",
+      },
+      {
+        number: "4",
+        text: "Overall  Rating",
+        past: ".8/5",
+      },
+      {
+        number: "20000",
+        text: "Total Hours Lectured",
+        past: "+",
+      },
+    ],
   },
 ];
 
 const data = [
   {
-    number: "20+",
+    number: "20",
     text: "Years of Experience",
+    past: "+",
   },
   {
-    number: "3000+",
+    number: "3000",
     text: "Happy Students",
+    past: "+",
   },
   {
-    number: "4.8/5",
+    number: "4.8",
     text: "Overall  Rating",
+    past: "/5",
   },
   {
-    number: "20000+",
+    number: "20000",
     text: "Total Hours Lectured",
+    past: "+",
   },
 ];
 
@@ -101,8 +172,8 @@ export function Hero() {
         <div className="lg:w-[70%] w-full pt-20">
           <div className="">
             <h1 className="text-2xl  md:text-3xl lg:text-5xl font-bold leading-tight text-white">
-              World's Leading Test <p> Prep, Tutoring & Collage </p>{" "}
-              Admissions Centre
+              World's Leading Test <p> Prep, Tutoring & Collage </p> Admissions
+              Centre
             </h1>
 
             <h1 className="text-xl  md:text-2xl lg:text-4xl font-semibold leading-tight text-white mt-4">
@@ -185,24 +256,29 @@ export function Hero() {
       </div>
 
       {/* 3D Buttons */}
-      <div className="flex flex-wrap my-20 mx-20 gap-16">
-        {data.map((ele, index) => (
-          <div key={index} className="relative min-w-[18rem]">
-            <div
-              className="absolute  w-full h-full 
-                   border-2 border-[#F36C45] rounded-[26px] 
-                   -rotate-5 "
-            />
-
-            <div className="bg-white p-4 rounded-[26px] text-center shadow-sm relative">
-              <h2 className="text-4xl font-bold text-[#F36C45] mb-2">
-                {ele.number}
-              </h2>
-              <p className="text-gray-600 text-xl">{ele.text}</p>
+      <div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="flex flex-wrap my-20 mx-20 gap-16"
+          transition={{ duration: 0.6, delay: 0.2 }}
+         
+        >
+          {images[index].data.map((ele, index) => (
+            <div key={index} className="relative min-w-[18rem]">
+              <div className="absolute  w-full h-full border-2 border-[#F36C45] rounded-[26px] -rotate-5 " />
+              <div className="bg-white p-4 rounded-[26px] text-center shadow-sm relative">
+                <h2 className="text-4xl font-bold text-[#F36C45] mb-2">
+                  <CountUp end={parseInt(ele.number)} duration={1} />
+                  {ele?.past}
+                </h2>
+                <p className="text-gray-600 text-xl">{ele.text}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </motion.div>
       </div>
     </section>
   );
 }
+
