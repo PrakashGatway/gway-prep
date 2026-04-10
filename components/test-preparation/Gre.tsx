@@ -1,7 +1,6 @@
   "use client";
 import { ChevronDown, CircleCheckBig, CircleX } from "lucide-react";
-import Image from "next/image";
-import ThreeDButton from "../3dbutton";
+
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { useState, useEffect, useRef } from "react";
@@ -266,15 +265,15 @@ export default function Gre() {
         <div className="max-w-[90%] ml-auto">
           <div className="flex p-10 lg:flex pt-30 items-center rounded-[0_0_0_10rem] h-[60vh] bg-gray-200">
             <div className="w-1/2 relative">
-              <span className="text-5xl font-bold ">
+              <h1 className="text-5xl font-bold ">
                 The smartest way to{" "}
-                <p className=" my-2 text-orange-600 flex items-center">
+                <span className=" my-2 text-orange-600 flex items-center">
                   master the GRE
                   <p className="mx-1 border-2 border-orange-600 rounded-full text-xl flex items-center justify-center h-8 w-8">
                     R
                   </p>
-                </p>
-              </span>
+                </span>
+              </h1>
 
               <p className=" my-6">
                 The original self-paced GRE course. Get Official GRE quetions,
@@ -664,7 +663,19 @@ import { TextTestimonials } from "../testimonial_gre";
 import PricingSection from "../plan";
 import { DestinationsAndConsultants } from "../destinations-consultants";
 
-function TestimonialCard({ name, score, rating, testimonial, isActive }) {
+function TestimonialCard({ 
+  name = "", 
+  score = 0, 
+  rating = 0, 
+  testimonial = "", 
+  isActive = false 
+}: {
+  name?: string;
+  score?: number;
+  rating?: number;
+  testimonial?: string;
+  isActive?: boolean;
+}) {
   return (
     <div
       className={`
