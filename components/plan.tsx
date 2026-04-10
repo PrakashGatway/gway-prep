@@ -76,7 +76,7 @@ const PricingCard = ({ plan }) => (
   </div>
 );
 
-const PricingSection = ({ plans }) => {
+const PricingSection = ({ plans }:{plans: any}) => {
   return (
     <section className=" px-6 py-12 relative overflow-visible mt-10 ">
         
