@@ -68,7 +68,7 @@ export function RegistrationSection() {
     {/* ================= LEFT CONTENT ================= */}
   
     <div>
-
+        <img src="/home/1.png" alt="img"  />
     </div>
 
     {/* ================= RIGHT FORM ================= */}
@@ -99,7 +99,8 @@ export function RegistrationSection() {
         
           <button
             type="submit"
-            className="w-full bg-brand-orange mt-4 font-bold py-2 sm:py-3 rounded-lg sm:rounded-xl tracking-widest hover:opacity-90 transition text-sm sm:text-base"
+            className="w-full bg-[#F36C45] text-white mt-4 font-bold py-2 sm:py-3 rounded-lg sm:rounded-xl tracking-widest 
+            hover:opacity-90 transition text-sm sm:text-base"
           >
             SUBMIT
           </button>

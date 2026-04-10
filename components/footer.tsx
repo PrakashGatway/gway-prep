@@ -32,7 +32,7 @@ export function Footer() {
               {/* BRAND */}
               <div className="w-full lg:w-1/4 pr-0 lg:pr-8 mb-10 lg:mb-0 flex items-center justify-center flex-col text-center">
                 <Image
-                  src="image/logo.png"
+                  src="home/logo.png"
                   alt="GAway Global"
                   width={150}
                   height={50}
@@ -55,7 +55,7 @@ export function Footer() {
                 <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0">
                   
                   {/* Right divider - only on lg screens */}
-                  <div className="hidden lg:block absolute left-0 top-0 w-[4px] h-full bg-[#e87a4d] rounded-full"></div>
+                  <div className="hidden lg:block absolute left-0 top-0 w-[4px] h-full bg-white rounded-full"></div>
 
                   <div className="h-full flex flex-col">
                     <h4 className=" font-bold text-lg mb-4">
@@ -75,7 +75,7 @@ export function Footer() {
                 <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0">
                   
                   {/* Right divider - only on lg screens */}
-                  <div className="hidden lg:block absolute left-0 top-0 w-[4px] h-full bg-[#e87a4d] rounded-full"></div>
+                  <div className="hidden lg:block absolute left-0 top-0 w-[4px] h-full bg-white rounded-full"></div>
                   <div className="h-full flex flex-col">
                     <h4 className=" font-bold text-lg mb-4">
                       Our Services
@@ -95,7 +95,7 @@ export function Footer() {
                 <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0">
                   
                   {/* Right divider - only on lg screens */}
-                  <div className="hidden lg:block absolute left-0 top-0 w-[4px] h-full bg-[#e87a4d] rounded-full"></div>
+                  <div className="hidden lg:block absolute left-0 top-0 w-[4px] h-full bg-white rounded-full"></div>
 
                   <div className="h-full flex flex-col">
                     <h4 className=" font-bold text-lg mb-4">
@@ -116,7 +116,7 @@ export function Footer() {
                 <div className="relative flex-1 px-0 sm:px-4 lg:px-6">
                   
                   {/* Right divider - only on lg screens */}
-                  <div className="hidden lg:block absolute left-0 top-0 w-[4px] h-full bg-[#e87a4d] rounded-full"></div>
+                  <div className="hidden lg:block absolute left-0 top-0 w-[4px] h-full bg-white rounded-full"></div>
 
                   <div className="h-full flex flex-col">
                     <h4 className=" font-bold text-lg mb-4">

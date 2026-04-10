@@ -30,7 +30,7 @@ export function Mission() {
           </div>
 
           {/* Top Right Image - Small Vertical */}
-          <div className="absolute top-4 right-0 w-[22%]">
+          <div className="absolute top-4 right-0 w-[22%] h-[30%] overflow-hidden">
              <div className="rounded-[30px] overflow-hidden border-[4px] border-white shadow-lg">
                 <img src={data[2].src} alt={data[2].alt} className="w-full h-full object-cover" />
              </div>

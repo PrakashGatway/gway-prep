@@ -1,20 +1,28 @@
 import { cn } from "@/lib/utils"
+
+// rounded-[0_1rem_0_0]
+
 const exams = [
-  { name: "GRE", desc: "Gateway Abroad: Your pathway to triumph in graduate school", color: "bg-[#555] hover:bg-orange-600 cursor-pointer" },
-  { name: "GMAT", desc: "Crack the business school code with our data-driven insights & practice", color: "bg-[#555] hover:bg-orange-600 cursor-pointer" },
+  { name: "GRE", desc: "Gateway Abroad: Your pathway to triumph in graduate school", 
+    color: "bg-[#555] hover:bg-orange-600 cursor-pointer " },
+  { name: "GMAT", desc: "Crack the business school code with our data-driven insights & practice", 
+    color: "bg-[#555] hover:bg-orange-600 cursor-pointer" },
   {
     name: "TOEFL",
     desc: "Open doors to foreign universities with our comprehensive TOEFL prep",
     color: "bg-[#555] hover:bg-orange-600 cursor-pointer",
   },
-  { name: "IELTS", desc: "Master English for global study & migration with expert guidance", color: "bg-[#555] hover:bg-orange-600 cursor-pointer" },
+  { name: "IELTS", desc: "Master English for global study & migration with expert guidance", 
+    color: "bg-[#555] hover:bg-orange-600 cursor-pointer " },
   {
     name: "SAT",
     desc: "Ace US university admissions with personalized strategies & top-notch materials",
     color: "bg-[#555] hover:bg-orange-600 cursor-pointer",
   },
-  { name: "PTE", desc: "Conquer the computer-based test with our flexible & focused prep", color: "bg-[#555] hover:bg-orange-600 cursor-pointer" },
-  { name: "DUOLINGO", desc: "Duolingo", color: "bg-[#555] hover:bg-orange-600 cursor-pointer" },
+  { name: "PTE", desc: "Conquer the computer-based test with our flexible & focused prep",
+     color: "bg-[#555] hover:bg-orange-600 cursor-pointer" },
+  { name: "DUOLINGO", desc: "Duolingo", 
+    color: "bg-[#555] hover:bg-orange-600 cursor-pointer" },
 ]
 
 export function TestPrepGrid() {

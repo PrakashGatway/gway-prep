@@ -151,7 +151,7 @@ const branches = [
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 text-gray-900 placeholder-gray-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#F36C45] focus:ring-2 focus:ring-orange-100 text-gray-900 placeholder-gray-500"
                   style={{ borderColor: "#ddd" }}
                 />
               </div>
@@ -164,7 +164,7 @@ const branches = [
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 text-gray-900 placeholder-gray-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#F36C45] focus:ring-2 focus:ring-orange-100 text-gray-900 placeholder-gray-500"
                   style={{ borderColor: "#ddd" }}
                 />
               </div>
@@ -177,7 +177,7 @@ const branches = [
                   value={formData.phone}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 text-gray-900 placeholder-gray-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#F36C45] focus:ring-2 focus:ring-orange-100 text-gray-900 placeholder-gray-500"
                   style={{ borderColor: "#ddd" }}
                 />
               </div>
@@ -190,7 +190,7 @@ const branches = [
                   value={formData.city}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 text-gray-900 placeholder-gray-500"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#F36C45] focus:ring-2 focus:ring-orange-100 text-gray-900 placeholder-gray-500"
                   style={{ borderColor: "#ddd" }}
                 />
               </div>
@@ -203,7 +203,7 @@ const branches = [
                   value={formData.message}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100 text-gray-900 placeholder-gray-500 resize-none"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#F36C45] focus:ring-2 focus:ring-orange-100 text-gray-900 placeholder-gray-500 resize-none"
                   style={{ borderColor: "#ddd" }}
                 />
               </div>

@@ -41,7 +41,7 @@ export  function DestinationsAndConsultants() {
   return (
     <div className="bg-white max-w-7xl mx-auto rounded-xl  p-6 my-12">
       <h2 className="text-4xl font-semibold text-gray-900 mb-6">
-        Frequently <span className="text-orange-500">Asked Questions</span>
+        Frequently <span className="text-[#F36C45]">Asked Questions</span>
       </h2>
 
       <div className="space-y-2">
@@ -60,7 +60,7 @@ export  function DestinationsAndConsultants() {
               </span>
 
               {openIndex === index ? (
-                <Minus className="w-5 h-5 text-orange-500 cursor-pointer" />
+                <Minus className="w-5 h-5 text-[#F36C45] cursor-pointer" />
               ) : (
                 <Plus className="w-5 h-5 text-gray-500 cursor-pointer" />
               )}

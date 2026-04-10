@@ -14,6 +14,7 @@ import {Baners} from "@/components/baner"
 import {HomeStudent} from "@/components/home-student"
 import {Mission} from "@/components/mission"
 import {Aboutresult} from "@/components/about_result"
+import { Banerhome } from "@/components/banerhome"
 
 export const metadata: Metadata = {
   title: "Gateway Abroad Education - Best Study Abroad Consultants in Jaipur",
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="min-h-screen">
+    <main className="min-w-7xl">
       <Hero />
       <RegistrationSection />
       {/* <AboutSection /> */}
@@ -36,7 +37,7 @@ export default function Home() {
 
       <WorkingProcess />
       <HomeStudent />
-      <Baners img="/image/baner-2.png" />
+      <Banerhome img="/home/08.png" />
       <Mission />
       {/* <Studentrankslider /> */}
       <VideoTestimonialCard />

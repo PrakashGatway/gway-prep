@@ -105,7 +105,7 @@ export function Navbar() {
               >
                 <Link
                   href={item.href}
-                  className="flex items-center gap-2 text-lg font-medium font-semibold text-gray-800 hover:text-orange-500 transition-all duration-200 px-3 py-2 rounded-lg hover:bg-orange-50"
+                  className="flex items-center gap-2 text-lg font-medium font-semibold text-gray-800 hover:text-[#F36C45] transition-all duration-200 px-3 py-2 rounded-lg hover:bg-orange-50"
                 >
                   {/* {item.icon && <item.icon size={16} />} */}
                   <span>{item.name}</span>
@@ -128,7 +128,7 @@ export function Navbar() {
                       transition={{ duration: 0.2 }}
                       className="w-64 rounded-xl bg-white border border-gray-100 shadow-2xl py-4 overflow-hidden"
                     >
-                      {/* <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-400 to-orange-500" /> */}
+                      {/* <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-400 to-[#F36C45]" /> */}
                       
                       {item.dropdownItems?.map((dropdownItem, index) => (
                         <motion.div
@@ -162,7 +162,7 @@ export function Navbar() {
 
           {/* ===== Mobile Menu Button ===== */}
           <button
-            className="lg:hidden text-gray-700 hover:text-orange-500 transition-colors"
+            className="lg:hidden text-gray-700 hover:text-[#F36C45] transition-colors"
             onClick={() => setIsOpen(true)}
           >
             <Menu size={28} />
@@ -193,7 +193,7 @@ export function Navbar() {
               <div className="flex items-center justify-between mb-10 pb-4 border-b border-gray-200">
                 <div className="flex items-center gap-3">
                   <div className="p-2 bg-orange-100 rounded-lg">
-                    <GraduationCap size={24} className="text-orange-500" />
+                    <GraduationCap size={24} className="text-[#F36C45]" />
                   </div>
                   <div>
                     <Image
@@ -221,7 +221,7 @@ export function Navbar() {
                     <Link
                       href={item.href}
                       onClick={() => setIsOpen(false)}
-                      className="flex items-center justify-between py-4 text-lg font-semibold text-gray-800 hover:text-orange-500 transition-colors"
+                      className="flex items-center justify-between py-4 text-lg font-semibold text-gray-800 hover:text-[#F36C45] transition-colors"
                     >
                       <div className="flex items-center gap-3">
                         {item.icon && <item.icon size={18} />}
@@ -243,7 +243,7 @@ export function Navbar() {
                             key={dropdownItem.name}
                             href={"/preparation/" + dropdownItem.slug}
                             onClick={() => setIsOpen(false)}
-                            className="block py-3 text-gray-600 hover:text-orange-500 border-l-2 border-gray-200 hover:border-orange-400 pl-4"
+                            className="block py-3 text-gray-600 hover:text-[#F36C45] border-l-2 border-gray-200 hover:border-orange-400 pl-4"
                           >
                             <div className="font-medium">{dropdownItem.name}</div>
                             <div className="text-sm text-gray-400">{dropdownItem.description}</div>
@@ -257,7 +257,7 @@ export function Navbar() {
 
               {/* Mobile CTA */}
               <div className="mt-10 pt-6 border-t border-gray-200">
-                <button className="w-full py-3.5 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-lg shadow-lg">
+                <button className="w-full py-3.5 bg-gradient-to-r from-[#F36C45] to-orange-600 text-white font-semibold rounded-lg shadow-lg">
                   Start Free Trial
                 </button>
                 <div className="text-center text-xs text-gray-500 mt-3">

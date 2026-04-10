@@ -32,6 +32,26 @@ const data = [
     name : "Mohak Gupta",
     course : "Gmat score",
     score : "999" 
+  },  {
+    "url":"/placeholder-user.jpg",
+    name : "Mohak Gupta",
+    course : "Gmat score",
+    score : "999" 
+  },  {
+    "url":"/placeholder-user.jpg",
+    name : "Mohak Gupta",
+    course : "Gmat score",
+    score : "999" 
+  },  {
+    "url":"/placeholder-user.jpg",
+    name : "Mohak Gupta",
+    course : "Gmat score",
+    score : "999" 
+  },  {
+    "url":"/placeholder-user.jpg",
+    name : "Mohak Gupta",
+    course : "Gmat score",
+    score : "999" 
   }
 ]
 
@@ -47,7 +67,7 @@ export function Aboutresult() {
               <h2 className="font-bold">{ele?.name}</h2>
               <ul>
                 <li className="font-semibold">{ele.course}</li>
-                <li className="bg-orange-500 font-bold text-white mx-2">{ele.score}</li>
+                <li className="bg-[#F36C45] font-bold text-white mx-2">{ele.score}</li>
               </ul>
             </span>
         </div>

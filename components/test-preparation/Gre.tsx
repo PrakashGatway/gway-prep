@@ -1,4 +1,4 @@
-"use client";
+  "use client";
 import { ChevronDown, CircleCheckBig, CircleX } from "lucide-react";
 import Image from "next/image";
 import ThreeDButton from "../3dbutton";
@@ -144,8 +144,6 @@ const priceplan = {
     },
   ],
 };
-
-export default function Gre() {
   const testimonials = [
     {
       id: 1,
@@ -188,6 +186,10 @@ export default function Gre() {
         "From the first consultation to final delivery, the experience was flawless. Their attention to detail and commitment to excellence is unmatched.",
     },
   ];
+
+
+export default function Gre() {
+
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -251,113 +253,18 @@ export default function Gre() {
     }, 4000);
   };
 
-  const cards = [
-    {
-      title: "Analytical Writing (AWA)",
-      description:
-        'Flex your critical thinking muscles! This section includes only one task, "Analyse an Issue," which is timed for 30 minutes. You\'ll showcase your ability to write persuasive, well-structured essays within a limited time.',
-    },
-    {
-      title: "Analytical Writing (AWA)",
-      description:
-        'Flex your critical thinking muscles! This section includes only one task, "Analyse an Issue," which is timed for 30 minutes. You\'ll showcase your ability to write persuasive, well-structured essays within a limited time.',
-    },
-    {
-      title: "Analytical Writing (AWA)",
-      description:
-        'Flex your critical thinking muscles! This section includes only one task, "Analyse an Issue," which is timed for 30 minutes. You\'ll showcase your ability to write persuasive, well-structured essays within a limited time.',
-    },
-  ];
-
-  const countries = [
-    { flag: "🇺🇸", name: "USA" },
-    { flag: "🇨🇦", name: "Canada" },
-    { flag: "🇬🇧", name: "United Kingdom" },
-    { flag: "🇦🇺", name: "Australia" },
-    { flag: "🇩🇪", name: "Germany" },
-    { flag: "🇳🇿", name: "New Zealand" },
-  ];
-
-  const features = [
-    {
-      icon: "👨‍🏫",
-      title: "Elite Instructors",
-      description:
-        "Conquer Quant & Verbal with our GRE gurus, masters of strategy & high scores.",
-    },
-    {
-      icon: "📱",
-      title: "Personalized Playbook",
-      description:
-        "No cookie-cutter prep! We craft a study plan that flexes with your strengths & weaknesses.",
-    },
-    {
-      icon: "🎯",
-      title: "Practice Makes Perfect",
-      description:
-        "Dive into a sea of mock tests & drills, pinpoint your blind spots & slay them.",
-    },
-    {
-      icon: "👨‍🏫",
-      title: "Elite Instructors",
-      description:
-        "Conquer Quant & Verbal with our GRE gurus, masters of strategy & high scores.",
-    },
-    {
-      icon: "📱",
-      title: "Personalized Playbook",
-      description:
-        "No cookie-cutter prep! We craft a study plan that flexes with your strengths & weaknesses.",
-    },
-    {
-      icon: "🎯",
-      title: "Practice Makes Perfect",
-      description:
-        "Dive into a sea of mock tests & drills, pinpoint your blind spots & slay them.",
-    },
-  ];
-
-  const resources = [
-    {
-      title: "Practice Material",
-      description:
-        "Take the GRE practice material and begin your GRE preparation now",
-      image: "Day 1 CPT Programs in the USA",
-    },
-    {
-      title: "Other Resources",
-      description:
-        "Take the GRE practice material and begin your GRE preparation now",
-      image: "Day 1 CPT Programs in the USA",
-    },
-    {
-      title: "Syllabus Download",
-      description:
-        "Take the GRE practice material and begin your GRE preparation now",
-      image: "Day 1 CPT Programs in the USA",
-    },
-  ];
-
   const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const faqs = [
-    { question: "What is the GRE used for?" },
-    { question: "What sections are in the GRE?" },
-    { question: "Does Gateway Abroad Jaipur offer GRE quantitative coaching?" },
-    { question: "How long should I prepare for the GRE?" },
-    { question: "What is a good GRE score?" },
-  ];
 
   const [show, setshow] = useState();
 
   return (
     <>
       <section
-        className="lg:min-h-150 relative overflow-hidden bg-[url('/image/about-hero-bg.jpg')]  bg-cover bg-center
+        className="lg:min-h-150 relative overflow-hidden bg-[url('/Gre/bg.jpg')]  bg-cover bg-center
        bg-no-repeat h-60 "
       >
         <div className="max-w-[90%] ml-auto">
-          <div className="flex p-10 lg:flex  items-center rounded-[0_0_0_10rem] h-[60vh] bg-gray-200">
+          <div className="flex p-10 lg:flex pt-30 items-center rounded-[0_0_0_10rem] h-[60vh] bg-gray-200">
             <div className="w-1/2 relative">
               <span className="text-5xl font-bold ">
                 The smartest way to{" "}
@@ -380,7 +287,9 @@ export default function Gre() {
               </button>
             </div>
 
-            <div className="w-1/2"></div>
+            <div className="w-1/2 pt-10">
+                <img src="/Gre/main.png" alt="img" />
+            </div>
           </div>
         </div>
       </section>
@@ -394,7 +303,7 @@ export default function Gre() {
           <h4 className="text-lg">We offer more</h4>
           <h2 className="flex gap-2 text-2xl md:text-4xl lg:text-5xl font-bold">
             Better scores. Better{" "}
-            <p className="text-orange-500">Price. Guaranteed.</p>
+            <p className="text-[#F36C45]">Price. Guaranteed.</p>
           </h2>
           <p className="text-lg">
             Improve your score by 5 points or your money back.
@@ -424,7 +333,7 @@ export default function Gre() {
             </li>
           </ul>
           <ul>
-            <li className="font-bold text-orange-500 mb-6 text-xl">
+            <li className="font-bold text-[#F36C45] mb-6 text-xl">
               other "Premium" Courses
             </li>
             <li className="flex gap-2 mt-4">
@@ -452,10 +361,10 @@ export default function Gre() {
       </section>
 
       <section
-        className="lg:min-h-150 relative overflow-hidden bg-[url('/image/about-hero-bg.jpg')]  bg-cover bg-center
-       bg-no-repeat h-60 "
+        className="lg:min-h-150 relative overflow-hidden  h-60 "
       >
-        <div className="flex p-10 lg:flex flex-row-reverse items-center max-w-7xl mx-auto h-[60vh] bg-gray-200">
+        <div className="flex p-10 pl-20 lg:flex flex-row-reverse items-center mx-auto h-[60vh] bg-[url('/Gre/bg2.jpg')] pt-20 bg-cover bg-center
+       bg-no-repeat">
           <div className="w-1/2 relative text-white px-auto">
             <span className="text-5xl font-bold ">
               Official GRE Questions
@@ -469,7 +378,9 @@ export default function Gre() {
             </p>
           </div>
 
-          <div className="w-1/2 bg-black z-10  rounded-full"></div>
+          <div className="w-1/2  z-10  rounded-full">
+            <img src="/Gre/laptop.png" alt="img" />
+          </div>
         </div>
       </section>
 
@@ -478,7 +389,7 @@ export default function Gre() {
           {/* Heading */}
           <h2 className="text-3xl md:text-5xl font-extrabold mb-4">
             <span className="text-gray-700">Study smarter with </span>{" "}
-            <span className="text-orange-500">Al</span>{" "}
+            <span className="text-[#F36C45]">Al</span>{" "}
           </h2>
 
           <p className="text-gray-600 mb-12 text-lg">
@@ -486,7 +397,35 @@ export default function Gre() {
             with and expert Al tutor, and practice with Ooshash.
           </p>
 
-          <div className="h-[50vh]"></div>
+          <div className=" flex flex-col gap-6">
+
+          {
+            [
+              {
+              "heading" : "5,000+ Similar Practice Questions",
+              "content" : "Missed a question? Get similar, high-quality Al-genrated problems to practice again",
+              "img":"/Gre/que.png"
+            },
+              {
+              "heading" : "",
+              "content" : "Chat with an Al expert trained on lessons and content and ready to explain whatever you don't grasp.",
+              "img":"/Gre/que.png"
+
+            }
+          ].map((ele,idx) => (
+            <div className={`border-2 rounded-xl w-full flex items-center gap-4  ${idx === 1 && 'flex-row-reverse'}`}>
+                <img src={ele.img} alt="img" className="h-1/4" />
+                <span className="p-4">
+                  <h2>
+                    {ele.heading}
+                  </h2>
+                  <p>{ele.content}</p>
+                </span>
+            </div>
+          ))
+          }
+
+          </div>
         </div>
       </section>
 
@@ -501,7 +440,7 @@ export default function Gre() {
               {" "}
               Choose the best schedule for your test date!{" "}
             </p>
-            <p className="rounded-lg px-6 py-4 bg-orange-500">
+            <p className="rounded-lg px-6 py-4 bg-[#F36C45]">
               {show && "Hide"} GRE Test Dates
             </p>
           </button>
@@ -520,8 +459,8 @@ export default function Gre() {
       </section>
 
       <section
-        className=" relative overflow-hidden bg-[url('/image/about-hero-bg.jpg')]  bg-cover bg-center
-       bg-no-repeat h-auto "
+        className=" relative overflow-hidden bg-[url('/Gre/orangebg.jpg')]  bg-cover bg-start
+       bg-no-repeat h-[100vh] "
       >
         <div className="flex justify-center items-center flex-col w-full mt-20">
           <span className="text-5xl font-bold ">
@@ -535,7 +474,7 @@ export default function Gre() {
               </p>
               Score,
             </p>
-            <p className="text-orange-500 text-center">Guaranted!</p>
+            <p className="text-[#F36C45] text-center">Guaranted!</p>
           </span>
 
           <p className=" my-6">
@@ -614,7 +553,7 @@ export default function Gre() {
           <div className="flex-1 text-center max-w-1/2">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 leading-tight">
               Video explanations for
-              <p className="text-orange-500">every question</p>
+              <p className="text-[#F36C45]">every question</p>
             </h2>
             <p className="text-gray-600 text-lg leading-relaxed">
               Want to go further? We also include 290+ curated lessons shaped by
@@ -656,7 +595,7 @@ export default function Gre() {
               className="border-2 border-gray-500 rounded-3xl md:w-1/2  mt-6 md:mt-0 text-left md:absolute
             top-[7rem] pl-[10rem] pr-10 pt-10 right-[10rem] h-[75%] "
             >
-              <div className="hidden md:block w-1/2 absolute -top-3 left-0 rounded-[0_1rem] h-3 bg-orange-500" />
+              <div className="hidden md:block w-1/2 absolute -top-3 left-0 rounded-[0_1rem] h-3 bg-[#F36C45]" />
 
               <p className="text-gray-700 text-xl leading-relaxed mb-4 ">
                 "The best thing for me about Ooshash prep was the flexibility...
@@ -671,7 +610,7 @@ export default function Gre() {
                     Ooshash Student - 2021
                   </p>
                 </span>
-                <p>"</p>
+                <img src="/Gre/002.png" alt="img" />
               </div>
             </div>
           </div>
@@ -682,8 +621,16 @@ export default function Gre() {
               helpful explanations. Also, the AI tutor helped clear any further
               doubts."
             </p>
-            <p className="font-bold text-gray-900">Atharv V.</p>
-            <p className="text-sm text-gray-500">Magoosh Student - 2025</p>
+            
+              <div className="flex justify-between items-center ">
+                <span>
+                  <p className="font-bold text-gray-900">Eleanore P.</p>
+                  <p className="text-sm text-gray-500">
+                    Ooshash Student - 2021
+                  </p>
+                </span>
+                <img src="/Gre/002.png" alt="img" />
+              </div>
           </div>
 
           <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm text-left">
@@ -692,8 +639,16 @@ export default function Gre() {
               everything was super easy to use! A bonus is that Magoosh has
               official ETS practice sections..."
             </p>
-            <p className="font-bold text-gray-900">Atharv V.</p>
-            <p className="text-sm text-gray-500">Magoosh Student - 2025</p>
+            
+              <div className="flex justify-between items-center ">
+                <span>
+                  <p className="font-bold text-gray-900">Eleanore P.</p>
+                  <p className="text-sm text-gray-500">
+                    Ooshash Student - 2021
+                  </p>
+                </span>
+                <img src="/Gre/002.png" alt="img" />
+              </div>
           </div>
         </div>
       </section>
@@ -717,14 +672,14 @@ function TestimonialCard({ name, score, rating, testimonial, isActive }) {
         transition-all duration-500 ease-out
         ${
           isActive
-            ? "border-2 border-orange-500 shadow-2xl scale-100 opacity-100 z-20"
+            ? "border-2 border-[#F36C45] shadow-2xl scale-100 opacity-100 z-20"
             : "border border-orange-300 scale-90 opacity-40 blur-[1.5px] z-10 -mx-8 "
         }
       `}
     >
       {/* HEADER */}
       <div className="flex items-center gap-2 mb-4">
-        <span className="font-bold text-xl text-orange-500">
+        <span className="font-bold text-xl text-[#F36C45]">
           {name}: {score}
         </span>
 
@@ -733,7 +688,7 @@ function TestimonialCard({ name, score, rating, testimonial, isActive }) {
             <Star
               key={i}
               className={`w-5 h-5 ${
-                i < rating ? "fill-orange-500 text-orange-500" : "text-gray-300"
+                i < rating ? "fill-[#F36C45] text-[#F36C45]" : "text-gray-300"
               }`}
             />
           ))}

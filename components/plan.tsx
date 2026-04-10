@@ -61,7 +61,7 @@ const PricingCard = ({ plan }) => (
             {plan.price}
           </div>
           <button className="absolute -bottom-3 right-0 flex justify-center w-full">
-            <p className="text-center w-1/2 bg-orange-500 hover:bg-orange-600 text-white font-black py-1 rounded-2xl transition-transform active:scale-95">
+            <p className="text-center w-1/2 bg-[#F36C45] hover:bg-orange-600 text-white font-black py-1 rounded-2xl transition-transform active:scale-95">
                  Sign Up Now
             </p>
            
@@ -78,15 +78,15 @@ const PricingCard = ({ plan }) => (
 
 const PricingSection = ({ plans }) => {
   return (
-    <section className=" px-6 py-12 relative overflow-visible mt-30 ">
+    <section className=" px-6 py-12 relative overflow-visible mt-10 ">
         
         <div className="text-xl font-bold mb-10 text-center leading-relaxed">
-          <span className="text-orange-500">"Ooshash prep </span>
+          <span className="text-[#F36C45]">"Ooshash prep </span>
           <span>
             gets rave reviews from students, many of whom <br /> have improved
             their GRE score with this flexible and{" "}
           </span>
-          <span className="text-orange-500">affordable plan."</span>
+          <span className="text-[#F36C45]">affordable plan."</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center max-w-7xl mx-auto mt-30">
