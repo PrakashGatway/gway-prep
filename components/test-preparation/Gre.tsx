@@ -1,10 +1,149 @@
 "use client";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, CircleCheckBig, CircleX } from "lucide-react";
 import Image from "next/image";
 import ThreeDButton from "../3dbutton";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { useState, useEffect, useRef } from "react";
+
+const data = [
+  {
+    start_date: "Saturday, March 14, 2026",
+    end_date: "Friday, March 27, 2026",
+  },
+  {
+    start_date: "Saturday, May 2, 2026",
+    end_date: "Friday, May 15, 2026",
+  },
+  {
+    start_date: "Saturday, June 6, 2026",
+    end_date: "Friday, June 19, 2026",
+  },
+  {
+    start_date: "Saturday, August 22, 2026",
+    end_date: "TBD",
+  },
+  {
+    start_date: "Saturday, September 12, 2026",
+    end_date: "TBD",
+  },
+  {
+    start_date: "Saturday, October 3, 2026",
+    end_date: "TBD",
+  },
+  {
+    start_date: "Saturday, November 7, 2026",
+    end_date: "TBD",
+  },
+  {
+    start_date: "Saturday, December 5, 2026",
+    end_date: "TBD",
+  },
+  {
+    start_date: "Saturday, March 6, 2027",
+    end_date: "TBD",
+  },
+  {
+    start_date: "Saturday, May 1, 2027",
+    end_date: "TBD",
+  },
+  {
+    start_date: "Saturday, June 5, 2027",
+    end_date: "TBD",
+  },
+];
+
+const gerdata = [
+  {
+    title: "Practice Tests",
+    description: "Timed, full-length practice tests from our pool of questions",
+  },
+  {
+    title: "Official Content",
+    description:
+      "8 full sections worth of licensed official GRE® questions from ETS",
+  },
+  {
+    title: "1600+ Practice Questions",
+    description:
+      "Learn from your mistakes with a video explanation to every question",
+  },
+  {
+    title: "Expert Video Lessons",
+    description: "Prepare for every section, on any device and 100% online",
+  },
+  {
+    title: "Custom Study Schedules",
+    description: "Study checklists to stay motivated, 1 week to 6 months long",
+  },
+  {
+    title: "Accurate Score Predictor",
+    description: "Be confident when you're ready with our score predictor tool",
+  },
+];
+
+const priceplan = {
+  testimonial:
+    "Ooshash prep gets rave reviews from students, many of whom have improved their GRE score with this flexible and affordable plan.",
+  pricing_plans: [
+    {
+      plan_name: "Premium · 1 month",
+      subtitle: "Great option for limited study time",
+      content_features: [
+        "8 full sections of official GRE® questions",
+        "290+ video lessons",
+        "Over 1600 practice questions",
+        "Up to 6 practice tests",
+        "Study schedules",
+      ],
+      access_features: [
+        "1 month of access",
+        "+5 total score guarantee",
+        "Ask an expert",
+        "Pause your plan",
+      ],
+      price: "$99 USD",
+    },
+    {
+      plan_name: "Premium · 1 month",
+      is_highlighted: true,
+      subtitle: "Great option for limited study time",
+      content_features: [
+        "8 full sections of official GRE® questions",
+        "290+ video lessons",
+        "Over 1600 practice questions",
+        "Up to 6 practice tests",
+        "Study schedules",
+      ],
+      access_features: [
+        "1 month of access",
+        "+5 total score guarantee",
+        "Ask an expert",
+        "Pause your plan",
+      ],
+      price: "$150 USD",
+    },
+    {
+      plan_name: "Premium · 1 month",
+      subtitle: "Great option for limited study time",
+      bundle_offer: "Bundle and save $854 ($1073 value)",
+      content_features: [
+        "8 full sections of official GRE® questions",
+        "290+ video lessons",
+        "Over 1600 practice questions",
+        "Up to 6 practice tests",
+        "Study schedules",
+      ],
+      access_features: [
+        "1 month of access",
+        "+5 total score guarantee",
+        "Ask an expert",
+        "Pause your plan",
+      ],
+      price: "$170 USD",
+    },
+  ],
+};
 
 export default function Gre() {
   const testimonials = [
@@ -209,29 +348,39 @@ export default function Gre() {
     { question: "What is a good GRE score?" },
   ];
 
+  const [show, setshow] = useState();
+
   return (
     <>
-      <section className="lg:min-h-150 relative overflow-hidden bg-[url('/image/about-hero-bg.jpg')]  bg-cover bg-center
-       bg-no-repeat h-60 ">
+      <section
+        className="lg:min-h-150 relative overflow-hidden bg-[url('/image/about-hero-bg.jpg')]  bg-cover bg-center
+       bg-no-repeat h-60 "
+      >
         <div className="max-w-[90%] ml-auto">
           <div className="flex p-10 lg:flex  items-center rounded-[0_0_0_10rem] h-[60vh] bg-gray-200">
             <div className="w-1/2 relative">
-                <span className="text-5xl font-bold ">
-                  The smartest way to <p className=" my-2 text-orange-600 flex items-center">master the GRE
-                     <p className="mx-1 border-2 border-orange-600 rounded-full text-xl flex items-center justify-center h-8 w-8">R</p>
+              <span className="text-5xl font-bold ">
+                The smartest way to{" "}
+                <p className=" my-2 text-orange-600 flex items-center">
+                  master the GRE
+                  <p className="mx-1 border-2 border-orange-600 rounded-full text-xl flex items-center justify-center h-8 w-8">
+                    R
                   </p>
-                </span>
-
-                <p className=" my-6">
-                  The original self-paced GRE course. Get Official GRE quetions, an Al tutor , video lessons, and top-rated mobile apps at a third of the price of other "premium" options. 
                 </p>
+              </span>
 
-                <button className="bg-black rounded-2xl lg:absolute -bottom-[6rem] left-25 text-lg px-4 py-1 text-white">Full courses starts at $99</button>
+              <p className=" my-6">
+                The original self-paced GRE course. Get Official GRE quetions,
+                an Al tutor , video lessons, and top-rated mobile apps at a
+                third of the price of other "premium" options.
+              </p>
+
+              <button className="bg-black rounded-2xl lg:absolute -bottom-[6rem] left-25 text-lg px-4 py-1 text-white">
+                Full courses starts at $99
+              </button>
             </div>
 
-            <div className="w-1/2">
-
-            </div>
+            <div className="w-1/2"></div>
           </div>
         </div>
       </section>
@@ -240,571 +389,316 @@ export default function Gre() {
 
       <TextTestimonials />
 
-      <section className="bg-gray-100 px-4 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:flex gap-8 lg:gap-16 items-center">
-            {/* Left - Large GRE Text */}
-            <div className="flex items-center justify-center ">
-              <div className="text-blue-900 text-9xl md:text-[180px] italic font-bold opacity-80">
-                GRE
-              </div>
-            </div>
-
-            {/* Right - Content */}
-            <div className="space-y-6 ">
-              <h2 className="text-3xl md:text-4xl font-bold text-balance">
-                <span className="text-orange-500">What is</span>{" "}
-                <span className="text-gray-700">GRE ?</span>
-              </h2>
-              <p className="text-gray-600 leading-relaxed text-balance lg:text-lg">
-                At Gateway Abroad Education, we are a trusted Overseas education
-                consultants dedicated to helping students achieve their dreams
-                of pursuing overseas study. Our expert team supports you at
-                every step, from selecting the ideal course to excelling in test
-                preparation for crucial exams, such as the English Proficiency
-                test like IELTS, TOEFL, GRE, PTE, GMAT, SAT and more. We're more
-                than just educators; we're your mentors and advisors, guiding
-                you toward success in abroad education. Whether it's securing a
-                study abroad scholarship, navigating the study visa process, or
-                applying for a study loan, we are here to make your journey
-                smoother and brighter.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className=" py-16 px-4 ">
-        <div className="max-w-7xl mx-auto">
-          {/* Heading */}
-          <h2 className="text-3xl md:text-4xl font-bold mb-12">
-            <span className="text-[#FF6A3D]">What is on the</span>{" "}
-            <span className="text-gray-700">GRE?</span>
+      <section className="max-w-5xl mx-auto flex flex-col my-20  gap-8">
+        <div className="flex items-center flex-col gap-4">
+          <h4 className="text-lg">We offer more</h4>
+          <h2 className="flex gap-2 text-2xl md:text-4xl lg:text-5xl font-bold">
+            Better scores. Better{" "}
+            <p className="text-orange-500">Price. Guaranteed.</p>
           </h2>
-
-          {/* Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-            {[1, 2, 3].map((_, i) => (
-              <div key={i} className="relative ">
-                {/* Orange offset layer */}
-                <div className="absolute -top-4 -right-4 w-full h-full rounded-tr-[110px] rounded-[30px] bg-[#FF6A3D] -z-11" />
-
-                {/* Main card */}
-
-                <div className="relative bg-[#6B6B6B] text-white rounded-tr-[110px] rounded-[30px] p-18 h-full ">
-                  <div
-                    className="p-50
-                
-                text-white
-                bg-gradient-to-b
-                from-white
-                via-[white]
-                to-[#FF6A3D]
-                shadow-lg absolute inset-0  rounded-tr-[110px] rounded-[30px] -z-1 -left-[3px] "
-                  />
-
-                  <h3 className="text-xl font-semibold mb-4 text-center">
-                    Analytical Writing
-                    <br /> (AWA)
-                  </h3>
-
-                  <p className="text-base leading-relaxed text-center ">
-                    Flex your critical thinking muscles! This section includes
-                    only one task, “Analyse an Issue,” which is timed for 30
-                    minutes. You'll showcase your ability to write persuasive,
-                    well-structured essays within a limited time.
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-gray-100 py-16 px-4">
-        <div className="max-w-7xl mx-auto">
-          {/* Heading */}
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            <span className="text-orange-500">Countries Accepting</span>{" "}
-            <span className="text-gray-700">GRE Scores</span>
-          </h2>
-
-          <p className="text-gray-600 mb-2">
-            GRE is accepted in 160 countries around the world
+          <p className="text-lg">
+            Improve your score by 5 points or your money back.
           </p>
-
-          <p className="text-gray-600 mb-12">
-            Some of the popular countries accepting GRE scores are as follows:
-          </p>
-
-          {/* Content */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Map Image */}
-            <div className="relative w-full h-[260px] md:h-[360px]">
-              <Image
-                src="/image/world-map-flags.png"
-                alt="Countries accepting GRE"
-                fill
-                className="object-contain"
-              />
-            </div>
-
-            {/* Right: Country Pills */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:w-[45%]">
-              <div className="country-pill border-2 border-gray-500 lg:px-10 lg:py-5 w-fit text-2xl font-semibold rounded-2xl">
-                <div></div>
-                USA
-              </div>
-
-              <div className="country-pill border-2 border-gray-500 lg:px-10 lg:py-5 w-fit text-2xl font-semibold rounded-2xl lg:w-[220px] text-center">
-                Canada
-              </div>
-
-              <div className="country-pill sm:col-span-2 border-2 border-gray-500 lg:px-10 lg:py-5 w-fit text-2xl font-semibold rounded-2xl lg:w-[370px] text-center">
-                United Kingdom
-              </div>
-
-              <div className="country-pill border-2 border-gray-500 lg:px-8 lg:py-5 w-fit text-2xl font-semibold rounded-2xl text-center">
-                Australia
-              </div>
-
-              <div className="country-pill border-2 border-gray-500 lg:px-8 lg:py-5 w-fit text-2xl font-semibold rounded-2xl  text-center ml-10">
-                Germany
-              </div>
-
-              <div className="country-pill sm:col-span-2 border-2 border-gray-500 lg:px-10 lg:py-5 w-fit text-2xl font-semibold rounded-2xl lg:w-[370px] text-center">
-                New Zealand
-              </div>
-            </div>
-          </div>
+        </div>
+        <div className="flex mt-8 gap-8 border-2 justify-evenly rounded-[2rem] px-10 py-8">
+          <ul>
+            <li className="flex gap-2 p-2 mb-4 bg-gray-200 rounded">
+              <CircleCheckBig className="text-orange-600" />
+              The only course with official GRE questions
+            </li>
+            <li className="flex gap-2 p-2 mb-4 bg-gray-200 rounded">
+              <CircleCheckBig className="text-orange-600" />
+              Get a Magoosh-trained Al tutor that works with ou until you get it
+            </li>
+            <li className="flex gap-2 p-2 mb-4 bg-gray-200 rounded">
+              <CircleCheckBig className="text-orange-600" />
+              Video and text-based lessons to support multiple learning styles
+            </li>
+            <li className="flex gap-2 p-2 mb-4 bg-gray-200 rounded">
+              <CircleCheckBig className="text-orange-600" />
+              Download our mobile apps to practice on the go{" "}
+            </li>
+            <li className="flex gap-2 p-2 mb-4 bg-gray-200 rounded">
+              <CircleCheckBig className="text-orange-600" />
+              Starts at affordable $99
+            </li>
+          </ul>
+          <ul>
+            <li className="font-bold text-orange-500 mb-6 text-xl">
+              other "Premium" Courses
+            </li>
+            <li className="flex gap-2 mt-4">
+              <CircleX className="text-gray-600" />
+              No access to real GRE questions
+            </li>
+            <li className="flex gap-2 mt-4">
+              <CircleX className="text-gray-600" />
+              No Al support to guide you studying
+            </li>
+            <li className="flex gap-2 mt-4">
+              <CircleX className="text-gray-600" />
+              No access to real GRE questions
+            </li>
+            <li className="flex gap-2 mt-4">
+              <CircleX className="text-gray-600" />
+              Not optimized for mobile{" "}
+            </li>
+            <li className="flex gap-2 mt-4">
+              <CircleX className="text-gray-600" />
+              Costs upwards of $500
+            </li>
+          </ul>
         </div>
       </section>
 
-      <section className="bg-white px-4 py-16 md:py-24 md:mb-30">
-        <div className="max-w-7xl mx-auto ">
-          <div className="text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-12 pb-4 border-b-2 border-orange-500 inline-block text-balance">
-              <span className="text-orange-500">Why Choose Gateway Abroad</span>{" "}
-              <span className="text-gray-700">for GRE Test Prep?</span>
-            </h2>
-          </div>
+      <section
+        className="lg:min-h-150 relative overflow-hidden bg-[url('/image/about-hero-bg.jpg')]  bg-cover bg-center
+       bg-no-repeat h-60 "
+      >
+        <div className="flex p-10 lg:flex flex-row-reverse items-center max-w-7xl mx-auto h-[60vh] bg-gray-200">
+          <div className="w-1/2 relative text-white px-auto">
+            <span className="text-5xl font-bold ">
+              Official GRE Questions
+              <br /> - only with Ooshash
+            </span>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 ">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-gray-600 rounded-4xl p-6 md:px-8 md:py:6 flex gap-4 relative"
-              >
-                <div className="flex-shrink-0  ">
-                  <div className="flex items-center  justify-center h-12 w-12 md:h-24 md:w-24 rounded-[30px] bg-orange-500 text-white text-2xl absolute -top-5 left-2 ">
-                    {feature.icon}
-                  </div>
-                </div>
-                <div className="ml-20">
-                  <h3 className="text-white font-bold text-base md:text-lg mb-2">
-                    {feature.title}
-                  </h3>
-                  <p className="text-gray-200 text-sm md:text-base">
-                    {feature.description}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-gray-100 px-4 py-16 md:py-24 relative">
-        <div className="max-w-7xl mx-auto">
-          {/* CTA Box */}
-          <div className="mt-12 bg-orange-500 rounded-3xl p-8 md:pt-10 md:pb-20 text-white max-w-md ml-auto absolute right-10 -top-40">
-            <h3 className="text-2xl md:text-3xl font-bold mb-3">
-              Ready, set, knowledge! br Download our brochure and get started.
-            </h3>
-
-            <button className="bg-gray-700 hover:bg-gray-800 text-white font-semibold py-2 px-6 rounded-full transition-colors absolute right-10">
-              Download
-            </button>
-          </div>
-          {/* Header */}
-          <div className="mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold mb-2">
-              <span className="text-gray-600 text-4xl">What Our</span>
-              <br />
-              <span className="text-orange-500 text-[100px]">GRE Prep</span>
-            </h2>
-            <h3 className="text-2xl md:text-4xl font-bold text-gray-600 border-b-2 border-gray-600  inline-block pb-2">
-              Achievers Say
-            </h3>
-          </div>
-
-          {/* Testimonial Cards */}
-          <section className="py-16 px-4  ">
-            <div className=" mx-auto">
-              <div
-                ref={sliderRef}
-                className="keen-slider"
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
-              >
-                {testimonials.map((testimonial, index) => (
-                  <div key={testimonial.id} className="keen-slider__slide">
-                    <TestimonialCard
-                      name={testimonial.name}
-                      score={testimonial.score}
-                      rating={testimonial.rating}
-                      testimonial={testimonial.testimonial}
-                      isActive={currentSlide === index}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      {/* Pricing Section */}
-      <section className="relative -left-5   py-12 md:py-20 lg:w-[90%]">
-        <div className=" mx-auto ">
-          <div className="mb-12 ml-30">
-            <h2 className="text-2xl md:text-4xl font-bold text-brand-orange mb-2">
-              Plans & Pricing
-            </h2>
-            <p className="text-zinc-500 text-lg font-medium">
-              We are accepting PayPal, Paytm, PhonePe and Debit & Credit Card
+            <p className=" my-6">
+              We're the only GRE prep course licensed to use official ETS
+              practice questions, so you know you're studying exactly what
+              you'll see on test day.
             </p>
           </div>
 
-          <div className="backdrop-blur-lg bg-[#636363] shadow-2xl rounded-3xl  px-4 md:px-6 md:pt-15">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Classroom Training */}
-              <div className="px-4 md:px-6 ">
-                <h5 className="text-2xl md:text-[28px] font-medium text-white mb-6 ml-10 ">
-                  Classroom training
-                </h5>
-                <div className="mb-8">
-                  <ul className="space-y-4 min-h-[200px] md:min-h-[242px] lg:w-80">
-                    <li className="relative text-white font-medium text-justify pl-8  before:absolute before:left-0 before:top-0 before:w-5 before:h-5 before:bg-[url('https://www.gatewayabroadeducations.com/_next/static/media/check-circle.532cdb95.svg')] before:bg-cover">
-                      Gateway Abroad Jaipur empowers you to achieve your goals
-                      with top-notch instructors. They provide in-person
-                      guidance through a comprehensive offline preparation
-                      program.
-                    </li>
-                    <li className="relative text-white font-medium text-justify pl-8 pb-15 before:absolute before:left-0 before:top-0 before:w-5 before:h-5 before:bg-[url('https://www.gatewayabroadeducations.com/_next/static/media/check-circle.532cdb95.svg')] before:bg-cover">
-                      Don't let academic hurdles hold you back from achieving
-                      success. Conquer the exam entirely offline and unlock the
-                      door to a thriving academic journey.
-                    </li>
-                  </ul>
-                </div>
-                <div className="text-center absolute -bottom-5 left-35">
-                  <button className="text-white text-base md:text-lg font-bold bg-brand-orange shadow-lg px-12 py-3 rounded-full transition-colors duration-300">
-                    Choose Plan
-                  </button>
-                </div>
-              </div>
-
-              <div className="w-[2px] h-90 bg-white mx-auto lg:absolute left-110"></div>
-
-              {/* Live Online Training */}
-              <div className="px-4 md:px-6">
-                <h5 className="text-2xl md:text-[28px] font-medium text-white mb-6">
-                  Live online training
-                </h5>
-                <div className="mb-8">
-                  <ul className="space-y-4 min-h-[200px] md:min-h-[242px]">
-                    <li className="relative text-white font-medium text-justify  before:absolute before:left-0 before:top-0 before:w-5 before:h-5 before:bg-[url('https://www.gatewayabroadeducations.com/_next/static/media/check-circle.532cdb95.svg')] before:bg-cover lg:w-80">
-                      Level Up Your Scores: Anytime, Anywhere. Conquer
-                      standardized tests from the comfort of your home with our
-                      interactive online prep courses.
-                    </li>
-                    <li className="relative text-white font-medium text-justify before:absolute before:left-0 before:top-0 before:w-5 before:h-5 before:bg-[url('https://www.gatewayabroadeducations.com/_next/static/media/check-circle.532cdb95.svg')] before:bg-cover lg:w-80">
-                      Our flexible online classes and dedicated support ensure
-                      you can progress at your own pace, tailoring your learning
-                      journey to your busy schedule.
-                    </li>
-                  </ul>
-                </div>
-                <div className="text-center absolute -bottom-5 left-150 ">
-                  <button className="text-white text-base md:text-lg font-bold bg-brand-orange shadow-lg px-12 py-3 rounded-full transition-colors duration-300">
-                    Choose Plan
-                  </button>
-                </div>
-              </div>
-
-              {/* Hybrid - Most Popular */}
-              <div className="px-4 md:px-6 bg-brand-orange shadow-2xl rounded-4xl p-6 md:p-8 md:-mt-30 md:mr-8 mb-5 relative">
-                <div
-                  className="bg-gradient-to-b from-white to-orange-100 
- absolute inset-0 rounded-4xl -z-1 p-49 -left-[3px]"
-                />
-                <div className="text-right ">
-                  <span className="text-white text-[16px] font-extrabold bg-[#636363] tracking-wider px-6 py-2 absolute right-11 rounded-full">
-                    Most Popular
-                  </span>
-                </div>
-                <h5 className="text-2xl pl-8 md:text-[28px] font-medium text-white mb-6">
-                  Hybrid
-                </h5>
-                <div className="mb-8">
-                  <ul className="space-y-4 min-h-[200px] md:min-h-[242px]">
-                    <li className="relative text-white font-medium text-justify pl-8 before:absolute before:left-0 before:top-0 before:w-5 before:h-5 before:bg-[url('https://www.gatewayabroadeducations.com/_next/static/media/check-circle-2.3eccd6cf.svg')] before:bg-cover">
-                      Get the best of both worlds with our hybrid courses - the
-                      flexibility of online learning combined with the
-                      personalized support of in-person instruction!
-                    </li>
-                    <li className="relative text-white font-medium text-justify pl-8 before:absolute before:left-0 before:top-0 before:w-5 before:h-5 before:bg-[url('https://www.gatewayabroadeducations.com/_next/static/media/check-circle-2.3eccd6cf.svg')] before:bg-cover">
-                      Why choose between online convenience and offline
-                      expertise when you can have both? Experience the ultimate
-                      exam prep fusion with our hybrid courses!
-                    </li>
-                  </ul>
-                </div>
-                <div className="text-center absolute bottom-2 right-22">
-                  <button className="text-white text-base md:text-lg font-bold bg-[#636363] shadow-lg px-12 py-3 rounded-full hover:bg-gray-800 transition-colors duration-300">
-                    Choose Plan
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div className="w-1/2 bg-black z-10  rounded-full"></div>
         </div>
       </section>
 
-      <section className=" py-20">
-        <div className="max-w-7xl mx-auto px-4">
+      <section className=" py-16 px-4">
+        <div className="max-w-7xl mx-auto flex items-center flex-col">
           {/* Heading */}
-          <h2 className="text-4xl font-bold text-center mb-16">
-            <span className="text-[#FF6A3D]">Free GRE Prep</span>{" "}
-            <span className="text-gray-600">Resources</span>
+          <h2 className="text-3xl md:text-5xl font-extrabold mb-4">
+            <span className="text-gray-700">Study smarter with </span>{" "}
+            <span className="text-orange-500">Al</span>{" "}
           </h2>
 
-          {/* Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 ">
-            {/* CARD 1 */}
-            {/* CARD */}
-            <div className="relative rounded-[36px]">
-              {/* BACKSIDE GRADIENT BORDER */}
-              <div
-                className="absolute inset-0 rounded-[36px] 
-    bg-gradient-to-b from-gray-300 via-gray-200 to-orange-500 
-    translate-x-[2px] translate-y-[2px] -left-1"
-              ></div>
-
-              {/* MAIN CARD */}
-              <div className="relative rounded-[36px] bg-white overflow-hidden ">
-                {/* IMAGE */}
-                <div className="h-[210px] bg-gray-100">
-                  <img
-                    src="/image/blog-img.jpg"
-                    alt="Practice Material"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                {/* CONTENT */}
-                <div className="px-6 pt-8 pb-14 text-center">
-                  <h3 className="text-3xl font-bold text-[#FF6A3D] mb-3">
-                    Practice Material
-                  </h3>
-
-                  <p className="text-gray-600 text-sm font-bold mb-8">
-                    Take the GRE practice material and begin your GRE
-                    preparation now
-                  </p>
-                </div>
-              </div>
-              {/* BUTTON */}
-              <button className="bg-[#4A4A4A] w-70 text-white px-3 py-3 rounded-full font-semibold shadow-md absolute left-1/2 -translate-x-1/2 -bottom-5 ">
-                Take GRE Practice Material
-              </button>
-            </div>
-
-            {/* CARD 2 */}
-            <div className="relative rounded-[36px]">
-              {/* BACKSIDE GRADIENT BORDER */}
-              <div
-                className="absolute inset-0 rounded-[36px] 
-    bg-gradient-to-b from-gray-300 via-gray-200 to-orange-500 
-    translate-x-[2px] translate-y-[2px] -left-1"
-              ></div>
-
-              {/* MAIN CARD */}
-              <div className="relative rounded-[36px] bg-white overflow-hidden ">
-                {/* IMAGE */}
-                <div className="h-[210px] bg-gray-100">
-                  <img
-                    src="/image/blog-img.jpg"
-                    alt="Practice Material"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                {/* CONTENT */}
-                <div className="px-6 pt-8 pb-14 text-center">
-                  <h3 className="text-3xl font-bold text-[#FF6A3D] mb-3">
-                    Practice Material
-                  </h3>
-
-                  <p className="text-gray-600 text-sm font-bold mb-8">
-                    Take the GRE practice material and begin your GRE
-                    preparation now
-                  </p>
-                </div>
-              </div>
-              {/* BUTTON */}
-              <button className="bg-[#4A4A4A] w-70 text-white px-3 py-3 rounded-full font-semibold shadow-md absolute left-1/2 -translate-x-1/2 -bottom-5 ">
-                Take GRE Practice Material
-              </button>
-            </div>
-
-            {/* CARD 3 */}
-            <div className="relative rounded-[36px]">
-              {/* BACKSIDE GRADIENT BORDER */}
-              <div
-                className="absolute inset-0 rounded-[36px] 
-    bg-gradient-to-b from-gray-300 via-gray-300 to-orange-500 
-    translate-x-[2px] translate-y-[2px] -left-1"
-              ></div>
-
-              {/* MAIN CARD */}
-              <div className="relative rounded-[36px] bg-white overflow-hidden ">
-                {/* IMAGE */}
-                <div className="h-[210px] bg-gray-100">
-                  <img
-                    src="/image/blog-img.jpg"
-                    alt="Practice Material"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-
-                {/* CONTENT */}
-                <div className="px-6 pt-8 pb-14 text-center">
-                  <h3 className="text-3xl font-bold text-[#FF6A3D] mb-3">
-                    Practice Material
-                  </h3>
-
-                  <p className="text-gray-600 text-sm font-bold mb-8">
-                    Take the GRE practice material and begin your GRE
-                    preparation now
-                  </p>
-                </div>
-              </div>
-              {/* BUTTON */}
-              <button className="bg-[#4A4A4A] w-70 text-white px-3 py-3 rounded-full font-semibold shadow-md absolute left-1/2 -translate-x-1/2 -bottom-5 ">
-                Take GRE Practice Material
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-gray-50 px-4 py-16 md:py-24">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-2 text-center text-orange-500">
-            Frequently asked questions
-          </h2>
-          <p className="text-center text-gray-600 mb-12 text-base md:text-lg">
-            Can't find the answer you are looking for?
+          <p className="text-gray-600 mb-12 text-lg">
+            Get instant, GRE-style essay scoring and targete eedback , chate
+            with and expert Al tutor, and practice with Ooshash.
           </p>
 
-          <div className="space-y-4">
-            {faqs.map((faq, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg border border-gray-200 overflow-hidden"
+          <div className="h-[50vh]"></div>
+        </div>
+      </section>
+
+      <section className="max-w-5xl  mx-auto my-20">
+        <div className="rounded-lg border-2">
+          <button
+            type="button"
+            onClick={() => setshow(!show)}
+            className="flex items-center gap-2 text-white font-bold text-xl  rounded-lg bg-gray-600 w-full justify-between "
+          >
+            <p className="pl-20">
+              {" "}
+              Choose the best schedule for your test date!{" "}
+            </p>
+            <p className="rounded-lg px-6 py-4 bg-orange-500">
+              {show && "Hide"} GRE Test Dates
+            </p>
+          </button>
+
+          {show && (
+            <table className="w-[90%] mx-auto my-6">
+              {data.map((ele, idx) => (
+                <tr key={idx}>
+                  <td className="">{ele.start_date}</td>
+                  <td className="text-center">{ele.end_date}</td>
+                </tr>
+              ))}
+            </table>
+          )}
+        </div>
+      </section>
+
+      <section
+        className=" relative overflow-hidden bg-[url('/image/about-hero-bg.jpg')]  bg-cover bg-center
+       bg-no-repeat h-auto "
+      >
+        <div className="flex justify-center items-center flex-col w-full mt-20">
+          <span className="text-5xl font-bold ">
+            <p className=" my-2 flex items-center">
+              Improve Your GRE
+              <p
+                className="mx-1 border-2 border-orange-600 rounded-full text-xl 
+                     flex items-center justify-center h-8 w-8"
               >
-                <button
-                  onClick={() =>
-                    setOpenIndex(openIndex === index ? null : index)
-                  }
-                  className="w-full flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition-colors"
-                >
-                  <span className="text-gray-700 font-semibold text-base md:text-lg text-left">
-                    {faq.question}
-                  </span>
-                  <ChevronDown
-                    className={`flex-shrink-0 w-5 h-5 text-gray-500 transition-transform ${
-                      openIndex === index ? "transform rotate-180" : ""
-                    }`}
-                  />
-                </button>
-                {openIndex === index && (
-                  <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                    <p className="text-gray-600 text-sm md:text-base">
-                      Answer content would go here. Currently showing as a
-                      placeholder.
-                    </p>
-                  </div>
-                )}
+                R
+              </p>
+              Score,
+            </p>
+            <p className="text-orange-500 text-center">Guaranted!</p>
+          </span>
+
+          <p className=" my-6">
+            Prep smart at an affordable price. fully optimized for the shorter
+            GRE.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 w-[80%] gap-6 mx-auto mt-10">
+          {gerdata.map((ele, idx) => (
+            <div
+              key={idx}
+              className="  text-black/80 flex flex-col relative isolate shadow-sm"
+            >
+              <span className="absolute top-0 -left-2 h-18 w-12 bg-orange-600 rounded-2xl z-[-1]" />
+              <div className="p-8 bg-white border rounded-xl">
+                <h3 className="font-bold text-xl mb-2">{ele.title}</h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {ele.description}
+                </p>
               </div>
-            ))}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <PricingSection plans={priceplan.pricing_plans} />
+
+      <section className="max-w-6xl mx-auto px-6 py-20 font-sans text-center">
+        <div className="mb-16">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4 leading-tight">
+            Turn any free minute into{" "}
+            <span className="text-[#ff5733]">study time</span>
+          </h1>
+          <p className="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed">
+            Review key vocab with our Flashcard App or dive into lessons and
+            practice using the Prep-on-the-Go App.
+          </p>
+
+          <div className="flex justify-center gap-4 mt-6">
+            <div className="w-6 h-6 opacity-60">
+              <img src="/image/app-store.png" alt="Apple" />
+            </div>
+            <div className="w-6 h-6 opacity-60">
+              <img src="/image/play-store.png" alt="Android" />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-12 mb-24">
+          <div className="group">
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              Flashcard App
+            </h3>
+            <p className="text-gray-500 mb-8">
+              Study the words you'll face on test day — no fluff or
+            </p>
+            <div className="relative h-64 bg-gray-50 rounded-[32px] overflow-hidden flex items-center justify-center"></div>
+          </div>
+
+          <div className="group">
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">
+              Prep-on-the-Go App
+            </h3>
+            <p className="text-gray-500 mb-8">
+              Access our video lessons & practice questions
+            </p>
+            <div className="relative h-64 bg-gray-50 rounded-[32px] overflow-hidden flex items-center justify-center"></div>
+          </div>
+        </div>
+
+        <p className="text-[#ff5733] font-semibold text-sm uppercase tracking-wide mb-8">
+          Video based learning
+        </p>
+
+        <div className="bg-gray-50 rounded-[48px] p-8 md:p-16 flex flex-col md:flex-row items-center gap-12 text-left max-w-4xl relative">
+          <div className="flex-1 text-center max-w-1/2">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 leading-tight">
+              Video explanations for
+              <p className="text-orange-500">every question</p>
+            </h2>
+            <p className="text-gray-600 text-lg leading-relaxed">
+              Want to go further? We also include 290+ curated lessons shaped by
+              student feedback to deliver material in the way you learn best.
+            </p>
+          </div>
+
+          <div className="flex-1 w-full max-w-sm bg-white rounded-3xl p-8 shadow-xl shadow-gray-200/50 absolute -right-34 top-20 h-44 border border-gray-50"></div>
+        </div>
+      </section>
+
+      <section className="max-w-6xl mx-auto px-6 py-20 font-sans">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4 leading-tight">
+            More students choose <br />
+            <span className="text-[#ff5733]">Ooshash prep</span> than anyone{" "}
+            <br />
+            else.
+          </h1>
+          <p className="text-gray-500 max-w-2xl mx-auto text-lg">
+            Check out what others say about us.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+          <div className="md:col-span-2 flex flex-col md:flex-row items-center bg-white p-8 relative ">
+            <div className="z-10 relative w-full md:w-1/3 md:ml-40 aspect-square bg-gray-200 rounded-2xl flex items-center justify-center overflow-hidden border-4 border-gray-300">
+              <div className="w-12 h-12 bg-white/90 rounded-full flex items-center justify-center shadow-lg">
+                <div
+                  className="w-0 h-0 border-t-[8px] border-t-transparent border-l-[12px] border-l-gray-800 
+              border-b-[8px] border-b-transparent ml-1"
+                />
+              </div>
+
+              {/* <div className="absolute inset-0 bg-gradient-to-t from-red/20 to-transparent" /> */}
+            </div>
+
+            <div
+              className="border-2 border-gray-500 rounded-3xl md:w-1/2  mt-6 md:mt-0 text-left md:absolute
+            top-[7rem] pl-[10rem] pr-10 pt-10 right-[10rem] h-[75%] "
+            >
+              <div className="hidden md:block w-1/2 absolute -top-3 left-0 rounded-[0_1rem] h-3 bg-orange-500" />
+
+              <p className="text-gray-700 text-xl leading-relaxed mb-4 ">
+                "The best thing for me about Ooshash prep was the flexibility...
+                Ooshash being within my price range was the difference between
+                me potentially getting into grad school and not getting in
+                anywhere."
+              </p>
+              <div className="flex justify-between items-center ">
+                <span>
+                  <p className="font-bold text-gray-900">Eleanore P.</p>
+                  <p className="text-sm text-gray-500">
+                    Ooshash Student - 2021
+                  </p>
+                </span>
+                <p>"</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm text-left">
+            <p className="text-gray-600 mb-6 text-xl">
+              "Vast question bank provided for various levels of questions with
+              helpful explanations. Also, the AI tutor helped clear any further
+              doubts."
+            </p>
+            <p className="font-bold text-gray-900">Atharv V.</p>
+            <p className="text-sm text-gray-500">Magoosh Student - 2025</p>
+          </div>
+
+          <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm text-left">
+            <p className="text-gray-600 mb-6 text-xl">
+              "There were plenty of practice questions and tests available, and
+              everything was super easy to use! A bonus is that Magoosh has
+              official ETS practice sections..."
+            </p>
+            <p className="font-bold text-gray-900">Atharv V.</p>
+            <p className="text-sm text-gray-500">Magoosh Student - 2025</p>
           </div>
         </div>
       </section>
 
-      <section className="w-full bg-gray-50 py-12 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="relative flex flex-col lg:flex-row items-center gap-8 md:gap-10">
-            {/* LEFT ILLUSTRATION */}
-            <div className="w-full lg:w-[40%] flex justify-center lg:justify-start order-2 lg:order-1">
-              <Image
-                src="/image/counselling-img.png"
-                alt="Counselling Illustration"
-                width={900}
-                height={900}
-                className="
-                      w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px]
-                      h-auto
-                      lg:max-w-none lg:scale-125 xl:scale-140
-                      lg:-translate-x-10
-                    "
-              />
-            </div>
-
-            {/* RIGHT CONTENT */}
-            <div className="relative w-full lg:w-[60%] order-1 lg:order-2 lg:left-25 lg:translate-x-16">
-              {/* PANEL */}
-              <div
-                className="
-                    bg-[#666666]
-                    text-white
-                    rounded-3xl md:rounded-[40px] md:rounded-bl-[80px] lg:rounded-bl-[120px]
-                    px-6 sm:px-10 md:px-16 lg:px-20
-                    pb-16 md:pb-20 lg:pb-24
-                    pt-8 md:pt-10
-                    text-center lg:text-left
-                  "
-              >
-                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold leading-tight">
-                  Avail A Complementary <br className="hidden sm:block" />
-                  Counselling Session
-                </h2>
-              </div>
-
-              {/* CTA BUTTON */}
-              <div className="absolute left-1/2 lg:left-1/2 -bottom-6 -translate-x-1/2">
-                <button
-                  className="
-                      bg-[#F36F45]
-                      text-white
-                      px-8 py-3 sm:px-10 sm:py-3
-                      rounded-3xl md:rounded-[40px] md:rounded-bl-[80px] lg:rounded-bl-[120px]
-                      text-base sm:text-lg
-                      font-semibold
-                      shadow-lg
-                      hover:bg-[#e0623b]
-                      transition
-                    "
-                >
-                  Contact us
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <DestinationsAndConsultants />
     </>
   );
 }
@@ -812,6 +706,8 @@ export default function Gre() {
 import { Star } from "lucide-react";
 import { Aboutresult } from "../about_result";
 import { TextTestimonials } from "../testimonial_gre";
+import PricingSection from "../plan";
+import { DestinationsAndConsultants } from "../destinations-consultants";
 
 function TestimonialCard({ name, score, rating, testimonial, isActive }) {
   return (

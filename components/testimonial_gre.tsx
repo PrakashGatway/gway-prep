@@ -18,13 +18,13 @@ export function TextTestimonials() {
   const x2 = useTransform(scrollYProgress, [0.3, 0.6], ["10%", "110%"]); // Moves right
   const x3 = useTransform(scrollYProgress, [0.3, 0.6], ["20%", "220%"]); // Moves further right
   const x4 = useTransform(scrollYProgress, [0.3, 0.6], ["50%", "330%"]); // Moves further right
-  const x5 = useTransform(scrollYProgress, [0.3, 0.6], ["140%", "410%"]); // Moves further right
+  const x5 = useTransform(scrollYProgress, [0.3, 0.6], ["20%", "140%"]); // Moves further right
 
   const testimonials = [
-    { name: "Khushal", score: 80, text: "My journey with Gateway Abroad Jaipur went beyond my expectations. The mock tests provided by my trainers gave an accurate simulation of the real exam...", rating: 5 },
-    { name: "Mayank", score: 80, text: "Gateway Abroad Jaipur made studying PTE seamless. I still can't believe that I scored 80. This is all because of the efforts of my trainers...", rating: 5 },
-    { name: "Sandeep", score: 85, text: "The personalized attention and the quality of study material are unmatched. Highly recommend for anyone looking to clear PTE on the first go.", rating: 5 },
-    { name: "Sandeep", score: 85, text: "The personalized attention and the quality of study material are unmatched. Highly recommend for anyone looking to clear PTE on the first go.", rating: 5 },
+    { name: "Khushal", score: 80, verbal:169, text: "My journey with Gateway Abroad Jaipur went beyond my expectations. The mock tests provided by my trainers gave an accurate simulation of the real exam...", rating: 5 },
+    { name: "Mayank", score: 80, verbal:169, text: "Gateway Abroad Jaipur made studying PTE seamless. I still can't believe that I scored 80. This is all because of the efforts of my trainers...", rating: 5 },
+    { name: "Sandeep", score: 85, verbal:169, text: "The personalized attention and the quality of study material are unmatched. Highly recommend for anyone looking to clear PTE on the first go.", rating: 5 },
+    { name: "Sandeep", score: 85, verbal:169, text: "The personalized attention and the quality of study material are unmatched. Highly recommend for anyone looking to clear PTE on the first go.", rating: 5 },
   ];
 
   return (
@@ -87,9 +87,9 @@ export function TextTestimonials() {
                 x: typeof window !== 'undefined' && window.innerWidth > 688 ? x5 : 0,
                 rotate: 0
               }}
-              className="md:absolute top-0 -left-12 w-full md:w-[20%] h-74   p-6 z-30 mb-6"
+              className="md:absolute top-0 -left-12 w-full md:w-[40rem] h-[20rem]   p-6 z-30 mb-6"
             >
-              <img src={'/image/grt.png'} className="h-full w-[30wv]" />
+              <img src={'/image/grt.png'} className="h-full w-full" />
             </motion.div>
 
           </div>
@@ -103,13 +103,17 @@ export function TextTestimonials() {
 function CardContent({ data }: { data: any }) {
   return (
     <>
-      <div className="flex justify-between items-start mb-4">
-        <h3 className="text-xl font-bold text-[#FF6B35]">{data.name}: {data.score}</h3>
-        <div className="flex gap-1">
+      <div className="flex justify-between items-start flex-col mb-4">
+        <h3 className="text-xl font-bold text-[#555]">{data.name}</h3>
+        <span className="flex justify-between w-full">
+          <p className="flex">Math <p className="w-10 ml-1 bg-orange-600 font-bold rounded text-center text-white">{data.score}</p></p>
+          <p className="flex">Verbal <p className="w-10 ml-1 bg-gray-600 font-bold rounded text-center text-white">{data.verbal}</p></p>
+        </span>
+        {/* <div className="flex gap-1">
           {[...Array(5)].map((_, i) => (
             <Star key={i} size={18} className="fill-yellow-400 text-yellow-400" />
           ))}
-        </div>
+        </div> */}
       </div>
       <p className="text-gray-700 text-sm leading-relaxed">{data.text}</p>
     </>

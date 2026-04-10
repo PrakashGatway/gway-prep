@@ -88,8 +88,8 @@ export function Navbar() {
               src="/image/logo.png"
               alt="Gaway Prep"
               width={scrolled ? 160 : 160}
-              height={scrolled ? 45 : 50}
-              className="h-auto object-contain transition-all duration-300"
+              height={scrolled ? 40 : 50}
+              className="h-auto object-contain transition-all duration-300 p-4"
               priority
             />
           </Link>
