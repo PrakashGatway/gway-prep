@@ -1,6 +1,6 @@
 import React from "react";
 
-const PricingCard = ({ plan }) => (
+const PricingCard = ({ plan } : {plan : any}) => (
   <div
     className={`relative flex flex-col p-8 rounded-[40px] border-2 transition-all duration-300  min-h-[600px] ${
       plan.is_highlighted
@@ -25,7 +25,7 @@ const PricingCard = ({ plan }) => (
           Content
         </span>
         <ul className="mt-2 space-y-3">
-          {plan.content_features.map((feature, i) => (
+          {plan.content_features.map((feature:any, i:number) => (
             <li key={i} className="flex text-sm text-gray-600 leading-tight">
               <span className="mr-2 text-gray-400">•</span> {feature}
             </li>
@@ -38,7 +38,7 @@ const PricingCard = ({ plan }) => (
           Features
         </span>
         <ul className="mt-3 space-y-3">
-          {plan.access_features.map((feature, i) => (
+          {plan.access_features.map((feature: any, i:number) => (
             <li key={i} className="flex text-sm text-gray-600 leading-tight">
               <span className="mr-2 text-gray-400">•</span> {feature}
             </li>
@@ -90,7 +90,7 @@ const PricingSection = ({ plans }:{plans: any}) => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center max-w-7xl mx-auto mt-30">
-          {plans.map((item, index) => (
+          {plans.map((item: any, index: number) => (
             <PricingCard key={index} plan={item} />
           ))}
         </div>
