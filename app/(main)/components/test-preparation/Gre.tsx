@@ -602,7 +602,7 @@ export default function Gre() {
             >
               <div className="hidden md:block w-1/2 absolute -top-3 left-0 rounded-[0_1rem] h-3 bg-[#F36C45]" />
 
-              <p className="text-gray-700 text-xl leading-relaxed mb-4 ">
+              <p className="text-gray-700 text-lg leading-relaxed mb-4 ">
                 "The best thing for me about Ooshash prep was the flexibility...
                 Ooshash being within my price range was the difference between
                 me potentially getting into grad school and not getting in
@@ -621,7 +621,7 @@ export default function Gre() {
           </div>
 
           <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm text-left">
-            <p className="text-gray-600 mb-6 text-xl">
+            <p className="text-gray-600 mb-6 text-lg">
               "Vast question bank provided for various levels of questions with
               helpful explanations. Also, the AI tutor helped clear any further
               doubts."
@@ -639,7 +639,7 @@ export default function Gre() {
           </div>
 
           <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm text-left">
-            <p className="text-gray-600 mb-6 text-xl">
+            <p className="text-gray-600 mb-6 text-lg">
               "There were plenty of practice questions and tests available, and
               everything was super easy to use! A bonus is that Magoosh has
               official ETS practice sections..."
