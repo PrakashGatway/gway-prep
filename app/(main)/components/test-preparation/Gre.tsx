@@ -319,7 +319,7 @@ export default function Gre() {
             </li>
             <li className="flex gap-2 p-2 mb-4 bg-gray-200 rounded">
               <CircleCheckBig className="text-orange-600" />
-              Get a Magoosh-trained Al tutor that works with ou until you get it
+              Get a Ooshas-trained Al tutor that works with ou until you get it
             </li>
             <li className="flex gap-2 p-2 mb-4 bg-gray-200 rounded">
               <CircleCheckBig className="text-orange-600" />
@@ -409,16 +409,16 @@ export default function Gre() {
               "img":"/Gre/que.png"
             },
               {
-              "heading" : "",
+              "heading" : "AL Tutor",
               "content" : "Chat with an Al expert trained on lessons and content and ready to explain whatever you don't grasp.",
               "img":"/Gre/que.png"
 
             }
           ].map((ele,idx) => (
-            <div className={`border-2 rounded-xl w-full flex items-center gap-4  ${idx === 1 && 'flex-row-reverse'}`}>
+            <div className={`border-2 rounded-xl bg-gray-100 w-full flex items-center gap-4  ${idx === 1 && 'flex-row-reverse'}`}>
                 <img src={ele.img} alt="img" className="h-1/4" />
                 <span className="p-4">
-                  <h2>
+                  <h2 className="font-bold text-xl mb-4">
                     {ele.heading}
                   </h2>
                   <p>{ele.content}</p>
@@ -504,7 +504,7 @@ export default function Gre() {
 
       <PricingSection plans={priceplan.pricing_plans} />
 
-      <section className="max-w-6xl mx-auto px-6 py-20 font-sans text-center">
+      <section className="max-w-6xl mx-auto px-6 py-20  text-center">
         <div className="mb-16">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4 leading-tight">
             Turn any free minute into{" "}
@@ -551,7 +551,7 @@ export default function Gre() {
           Video based learning
         </p>
 
-        <div className="bg-gray-50 rounded-[48px] p-8 md:p-16 flex flex-col md:flex-row items-center gap-12 text-left max-w-4xl relative">
+        <div className="bg-gray-100 border-4  rounded-[48px] p-8 md:p-16 flex flex-col md:flex-row items-center gap-12 text-left max-w-4xl relative">
           <div className="flex-1 text-center max-w-1/2">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 leading-tight">
               Video explanations for
@@ -570,7 +570,7 @@ export default function Gre() {
         </div>
       </section>
 
-      <section className="max-w-6xl mx-auto px-6 py-20 font-sans">
+      <section className="max-w-6xl mx-auto px-6 py-20 ">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4 leading-tight">
             More students choose <br />
