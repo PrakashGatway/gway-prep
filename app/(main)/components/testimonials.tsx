@@ -213,7 +213,78 @@ export function TextTestimonials() {
       text: "Gateway Abroad Jaipur made studying PTE seamless. I still can't believe that I scored 80. This is all because of the efforts of my trainers. They provided everything, from personal attention to practice tests to doubt sessions. So, in my opinion, thi....",
       rating: 5,
     },
+  
+    {
+      name: "Khushal",
+      score: 80,
+      text: "My journey with Gateway Abroad Jaipur went beyond my expectations. The mock tests provided by my trainers gave an accurate simulation of the real exam, regular feedback on my performance...",
+      rating: 5,
+    },
+    {
+      name: "Mayank",
+      score: 80,
+      text: "Gateway Abroad Jaipur made studying PTE seamless. I still can't believe that I scored 80. This is all because of the efforts of my trainers. They provided everything from personal attention to practice tests to doubt sessions. So, in my opinion, thi....",
+      rating: 5,
+    },
+    {
+      name: "Mayank",
+      score: 80,
+      text: "Gateway Abroad Jaipur made studying PTE seamless. I still can't believe that I scored 80. This is all because of the efforts of my trainers. They provided everything, from personal attention to practice tests to doubt sessions. So, in my opinion, thi....",
+      rating: 5,
+    }
   ];
+
+  
+  const [sliderRef, slider] = useKeenSlider(
+    {
+      loop: true,
+      slides: {
+        perView: 1,
+        spacing: 16,
+      },
+      breakpoints: {
+        "(min-width: 640px)": {
+          slides: {
+            perView: 3,
+            spacing: 20,
+          },
+        },
+      },
+    },
+    [
+      (slider) => {
+        let timeout: any;
+        let mouseOver = false;
+
+        function clearNextTimeout() {
+          if (timeout) clearTimeout(timeout);
+        }
+
+        function nextTimeout() {
+          if (mouseOver) return;
+          timeout = setTimeout(() => {
+            slider.next();
+          }, 4000);
+        }
+
+        slider.on("created", () => {
+          slider.container.addEventListener("mouseover", () => {
+            mouseOver = true;
+            clearNextTimeout();
+          });
+          slider.container.addEventListener("mouseout", () => {
+            mouseOver = false;
+            nextTimeout();
+          });
+          nextTimeout();
+        });
+
+        slider.on("dragStarted", clearNextTimeout);
+        slider.on("animationEnded", nextTimeout);
+        slider.on("updated", nextTimeout);
+      },
+    ],
+  );
 
   return (
     <div className=" bg-gray-100 mt-10 px-4 sm:px-6 md:px-8 lg:px-8 py-8 md:py-16">
@@ -229,8 +300,8 @@ export function TextTestimonials() {
           </div>
 
           {/* Right Section - Testimonial Cards */}
-          <div className=" flex items-center flex-wrap lg:flex-nowrap gap-10 h-auto ">
-            {/* Card 1 - Stacked on mobile, positioned on desktop */}
+          <div ref={sliderRef} className="keen-slider flex items-center  max-w-8xl" style={{overflow : "visible"}}>
+{/*             
             <div className="h-64 w-full shadow-lg bg-white 
              rounded-3xl p-6 mb-4 lg:mb-0 transform lg:translate-x-0 ">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-2">
@@ -251,8 +322,7 @@ export function TextTestimonials() {
                 {testimonials[0].text}
               </p>
             </div>
-
-            {/* Card 2 */}
+            
             <div className="h-64 rotate-4 shadow-lg w-full bg-white  rounded-3xl p-6 mb-4 lg:mb-0 transform lg:translate-x-0 z-10">
               <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-2">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#FF6B35]">
@@ -271,13 +341,17 @@ export function TextTestimonials() {
               <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
                 {testimonials[1].text}
               </p>
-            </div>
+            </div> */}
 
-            {/* Card 3 */}
-            <div className="h-64 -rotate-2 shadow-lg w-full bg-white  rounded-3xl p-6 transform lg:translate-x-0 z-10">
+
+          {testimonials.map((item,idx) => {
+            const num = idx % 2 === 0 ? 'rotate-1': '-rotate-1';
+            return (
+              
+            <div key={idx} className={`${num} keen-slider__slide h-64  shadow-lg w-full bg-white  rounded-3xl p-6 transform lg:translate-x-0 z-10`}>
               <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-2">
                 <h3 className="text-xl sm:text-2xl font-bold text-[#FF6B35]">
-                  {testimonials[2].name}: {testimonials[2].score}
+                  {item.name}: {item.score}
                 </h3>
                 <div className="flex gap-1">
                   {[...Array(5)].map((_, i) => (
@@ -290,9 +364,12 @@ export function TextTestimonials() {
                 </div>
               </div>
               <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
-                {testimonials[2].text}
+                {item.text}
               </p>
             </div>
+            );
+          })}
+
           </div>
         </div>
       </div>
