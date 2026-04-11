@@ -28,9 +28,9 @@ export function TextTestimonials() {
   ];
 
   return (
-    <div ref={containerRef} className="min-h-[80vh] bg-gray-100 py-16 px-4 overflow-hidden">
+    <div ref={containerRef} className="min-h-[80vh] bg-gray-100 py-14 px-4 overflow-hidden">
       <div className="max-w-7xl m-auto">
-        <div className="text-center mt-16">
+        <div className="text-center mt-10">
           <h1 className="text-xl md:text-2xl text-left text-gray-600">
             Purchased by 500,000+ GRE students
           </h1>
@@ -38,7 +38,7 @@ export function TextTestimonials() {
 
         {/* Desktop: Animated Stack | Mobile: Vertical List */}
         <div className="relative h-[500px] md:h-[350px]">
-          <div className="flex flex-col md:relative md:block mt-40">
+          <div className="flex flex-col md:relative md:block mt-20">
             
             {/* Card 1 (Bottom/Left) */}
             <motion.div 
@@ -103,7 +103,7 @@ export function TextTestimonials() {
 function CardContent({ data }: { data: any }) {
   return (
     <>
-      <div className="flex justify-between items-start flex-col mb-4">
+      <div className="flex justify-between items-start flex-col ">
         <h3 className="text-xl font-bold text-[#555]">{data.name}</h3>
         <span className="flex justify-between w-full">
           <p className="flex">Math <p className="w-10 ml-1 bg-orange-600 font-bold rounded text-center text-white">{data.score}</p></p>

@@ -1,4 +1,4 @@
-import About from "@/components/About"
+import About from "@/app/(main)/components/About"
 import { div } from "framer-motion/client"
 
 

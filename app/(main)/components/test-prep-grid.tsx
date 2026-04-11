@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/app/lib/utils"
 import {motion} from "framer-motion"
 
 // rounded-[0_1rem_0_0]

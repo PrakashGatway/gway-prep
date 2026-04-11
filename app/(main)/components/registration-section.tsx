@@ -65,13 +65,10 @@ export function RegistrationSection() {
     <section className="py-8 sm:py-10 lg:py-12 bg-white overflow-hidden px-4 sm:px-6 lg:px-8">
   <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 items-center gap-8 sm:gap-12 lg:gap-16">
     
-    {/* ================= LEFT CONTENT ================= */}
-  
     <div>
         <img src="/home/1.png" alt="img"  />
     </div>
 
-    {/* ================= RIGHT FORM ================= */}
     <div className=" w-full">
       <div className=" rounded-2xl sm:rounded-3xl text-black lg:rounded-[32px] p-6 sm:p-7 lg:p-8  
       ">

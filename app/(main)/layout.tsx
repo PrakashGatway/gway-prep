@@ -2,10 +2,10 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
-import { Topbar } from "@/components/topbar";
-import { Navbar } from "@/components/navbar";
+import { Topbar } from "@/app/(main)/components/topbar";
+import { Navbar } from "@/app/(main)/components/navbar";
 import { Noto_Sans } from "next/font/google";
-import { Footer } from "@/components/footer";
+import { Footer } from "@/app/(main)/components/footer";
 import Script from "next/script";
 
 
@@ -45,7 +45,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${notoSans.className} bg-white text-gray-900`}
+        className={`${notoSans.className} bg-white text-gray-900 max-w-[1640px] mx-auto`}
         suppressHydrationWarning
       >
         <noscript>

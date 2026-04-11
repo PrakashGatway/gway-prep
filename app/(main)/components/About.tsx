@@ -1,6 +1,6 @@
 "use client"
-import ThreeDButton from "@/components/3dbutton";
-import { Button } from "@/components/ui/button";
+import ThreeDButton from "@/app/(main)/components/3dbutton";
+import { Button } from "@/app/(main)/components/ui/button";
 import { motion } from "framer-motion"
 import Image from "next/image"
 

@@ -1,4 +1,4 @@
-import Career from "@/components/Career";
+import Career from "@/app/(main)/components/Career";
 
 
 

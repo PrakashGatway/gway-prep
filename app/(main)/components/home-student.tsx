@@ -9,7 +9,7 @@ const data = [
         "exam": "GMAT",
         "score": 760
       },
-      logo : "/image/logo45.png"
+      logo : "/university.jpg"
     },
     "partnership_details": {
       "service_provider": "Ooshash",
@@ -51,7 +51,7 @@ export function HomeStudent() {
             
             <div className="w-38 h-38 md:w-64 md:h-64 rounded-2xl overflow-hidden border-4 border-white shadow-sm">
               <img
-                src="/apple-icon.png" 
+                src="/students/01.jpg" 
                 alt={student.name}
                 className="w-full h-full object-cover"
               />
@@ -68,7 +68,7 @@ export function HomeStudent() {
 
           {/* Affiliation Logo */}
           
-            <img src={student.education.logo} alt="logo" className="h-6 w-full mt-8 mx-auto" />
+            <img src={student.education.logo} alt="logo" className="h-20 w-full mt-8 mx-auto" />
             
         </div>
 

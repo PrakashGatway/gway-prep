@@ -1,5 +1,5 @@
   "use client";
-import { ChevronDown, CircleCheckBig, CircleX } from "lucide-react";
+import { ChevronDown, CircleCheckBig, CircleX, PlayCircle } from "lucide-react";
 
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
@@ -87,6 +87,7 @@ const priceplan = {
   pricing_plans: [
     {
       plan_name: "Premium · 1 month",
+      bg:'gray-100',
       subtitle: "Great option for limited study time",
       content_features: [
         "8 full sections of official GRE® questions",
@@ -106,6 +107,7 @@ const priceplan = {
     {
       plan_name: "Premium · 1 month",
       is_highlighted: true,
+      bg:'orange-100',
       subtitle: "Great option for limited study time",
       content_features: [
         "8 full sections of official GRE® questions",
@@ -124,6 +126,7 @@ const priceplan = {
     },
     {
       plan_name: "Premium · 1 month",
+      bg:'[#00b7ff0f]',
       subtitle: "Great option for limited study time",
       bundle_offer: "Bundle and save $854 ($1073 value)",
       content_features: [
@@ -259,8 +262,8 @@ export default function Gre() {
   return (
     <>
       <section
-        className="lg:min-h-150 relative overflow-hidden bg-[url('/Gre/bg.jpg')]  bg-cover bg-center
-       bg-no-repeat h-60 "
+        className="min-h-150 relative overflow-hidden bg-[url('/Gre/bg.jpg')]  bg-cover bg-center
+       bg-no-repeat  "
       >
         <div className="max-w-[90%] ml-auto">
           <div className="flex p-10 lg:flex pt-30 items-center rounded-[0_0_0_10rem] h-[60vh] bg-gray-200">
@@ -530,7 +533,7 @@ export default function Gre() {
             <p className="text-gray-500 mb-8">
               Study the words you'll face on test day — no fluff or
             </p>
-            <div className="relative h-64 bg-gray-50 rounded-[32px] overflow-hidden flex items-center justify-center"></div>
+            <div className="relative h-64 bg-gray-200 rounded-[32px] overflow-hidden flex items-center justify-center"></div>
           </div>
 
           <div className="group">
@@ -540,7 +543,7 @@ export default function Gre() {
             <p className="text-gray-500 mb-8">
               Access our video lessons & practice questions
             </p>
-            <div className="relative h-64 bg-gray-50 rounded-[32px] overflow-hidden flex items-center justify-center"></div>
+            <div className="relative h-64 bg-gray-200 rounded-[32px] overflow-hidden flex items-center justify-center"></div>
           </div>
         </div>
 
@@ -560,7 +563,10 @@ export default function Gre() {
             </p>
           </div>
 
-          <div className="flex-1 w-full max-w-sm bg-white rounded-3xl p-8 shadow-xl shadow-gray-200/50 absolute -right-34 top-20 h-44 border border-gray-50"></div>
+          <div className="flex-1 w-full flex items-center justify-center max-w-sm bg-red-100 rounded-3xl p-8 shadow-xl shadow-gray-200/50
+           absolute -right-34 top-20 h-44 border border-gray-50">
+              <PlayCircle />
+           </div>
         </div>
       </section>
 
@@ -662,6 +668,7 @@ import { Aboutresult } from "../about_result";
 import { TextTestimonials } from "../testimonial_gre";
 import PricingSection from "../plan";
 import { DestinationsAndConsultants } from "../destinations-consultants";
+import { bg } from "date-fns/locale";
 
 function TestimonialCard({ 
   name = "", 

@@ -55,7 +55,7 @@ export function Footer() {
                 <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0">
                   
                   {/* Right divider - only on lg screens */}
-                  <div className="hidden lg:block absolute left-0 top-0 w-[4px] h-full bg-white rounded-full"></div>
+                  <div className="hidden lg:block absolute left-0 top-0 w-[3px] h-full bg-white rounded-full"></div>
 
                   <div className="h-full flex flex-col">
                     <h4 className=" font-bold text-lg mb-4">
@@ -75,7 +75,7 @@ export function Footer() {
                 <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0">
                   
                   {/* Right divider - only on lg screens */}
-                  <div className="hidden lg:block absolute left-0 top-0 w-[4px] h-full bg-white rounded-full"></div>
+                  <div className="hidden lg:block absolute left-0 top-0 w-[3px] h-full bg-white rounded-full"></div>
                   <div className="h-full flex flex-col">
                     <h4 className=" font-bold text-lg mb-4">
                       Our Services
@@ -95,7 +95,7 @@ export function Footer() {
                 <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0">
                   
                   {/* Right divider - only on lg screens */}
-                  <div className="hidden lg:block absolute left-0 top-0 w-[4px] h-full bg-white rounded-full"></div>
+                  <div className="hidden lg:block absolute left-0 top-0 w-[3px] h-full bg-white rounded-full"></div>
 
                   <div className="h-full flex flex-col">
                     <h4 className=" font-bold text-lg mb-4">
@@ -116,7 +116,7 @@ export function Footer() {
                 <div className="relative flex-1 px-0 sm:px-4 lg:px-6">
                   
                   {/* Right divider - only on lg screens */}
-                  <div className="hidden lg:block absolute left-0 top-0 w-[4px] h-full bg-white rounded-full"></div>
+                  <div className="hidden lg:block absolute left-0 top-0 w-[3px] h-full bg-white rounded-full"></div>
 
                   <div className="h-full flex flex-col">
                     <h4 className=" font-bold text-lg mb-4">

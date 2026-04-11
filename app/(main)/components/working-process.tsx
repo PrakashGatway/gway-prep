@@ -1,6 +1,6 @@
 "use client"
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/app/lib/utils"
 import { MessageSquare, BookOpen, Brain, PenTool, CheckCircle } from "lucide-react"
 import Image from "next/image"
 

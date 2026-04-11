@@ -1,5 +1,5 @@
 
-import ContactUs from "@/components/contactUs"
+import ContactUs from "@/app/(main)/components/contactUs"
 
 export const metadata = {
   title: "Contact Us | Gateway Abroad",

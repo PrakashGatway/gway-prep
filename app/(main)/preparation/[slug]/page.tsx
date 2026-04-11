@@ -1,7 +1,7 @@
-import Gmat from "@/components/test-preparation/Gmat";
-import Gre from "@/components/test-preparation/Gre";
-import Ielts from "@/components/test-preparation/Ielts";
-import Pte from "@/components/test-preparation/Pte";
+import Gmat from "@/app/(main)/components/test-preparation/Gmat";
+import Gre from "@/app/(main)/components/test-preparation/Gre";
+import Ielts from "@/app/(main)/components/test-preparation/Ielts";
+import Pte from "@/app/(main)/components/test-preparation/Pte";
 
 
 export default async function PreparationPage({ params }) {

@@ -15,7 +15,7 @@ export function ServicesGrid() {
   ];
 
   return (
-    <section className="py-24 bg-white">
+    <section className="max-w-7xl mx-auto py-24 bg-white">
       <div className="sm:mx-6 lg:px-8 mx-auto">
         {/* Heading */}
         <h2 className="text-4xl text-[#626363] font-semibold text-center mb-20">
@@ -32,7 +32,7 @@ export function ServicesGrid() {
             return (
               <div
                 key={index}
-                className={`relative flex flex-col items-center text-center px-4 py-8 
+                className={` relative flex flex-col items-center text-center px-4 py-8 
                   ${!isLastInRow ? "lg:border-r-3 " : ""} 
                   ${isFirstRow ? "lg:border-b-3 " : ""} 
                   border-brand-orange`} >

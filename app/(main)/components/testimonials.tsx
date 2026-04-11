@@ -104,7 +104,7 @@ export function VideoTestimonialCard() {
   );
 
   return (
-    <>
+    <div className="max-w-7xl mx-auto">
       {/* Heading */}
       <div className="text-center my-10">
         <h1 className="text-4xl font-bold">
@@ -187,7 +187,7 @@ export function VideoTestimonialCard() {
           />
         ))}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -216,7 +216,7 @@ export function TextTestimonials() {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-100 mt-10 px-4 sm:px-6 md:px-8 lg:px-8 py-8 md:py-16">
+    <div className=" bg-gray-100 mt-10 px-4 sm:px-6 md:px-8 lg:px-8 py-8 md:py-16">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col  gap-8 md:gap-12">
           {/* Left Section */}

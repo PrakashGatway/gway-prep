@@ -2,17 +2,18 @@ import React from "react";
 
 const PricingCard = ({ plan } : {plan : any}) => (
   <div
-    className={`relative flex flex-col p-8 rounded-[40px] border-2 transition-all duration-300  min-h-[600px] ${
+    className={`max-w-7xl relative bg-${plan.bg} flex flex-col p-8 rounded-[40px] border-2
+     transition-all duration-300  min-h-[600px] ${
       plan.is_highlighted
-        ? "border-orange-400 mb-40 shadow-2xl z-10 bg-red-200"
-        : "border-gray-400 opacity-90 bg-blue-100 border-2"
+        ? "mb-40 shadow-xl z-10 border-orange-400"
+        : "opacity-90  border-2 border-gray-400"
     }`}
   >
     
     <div className={`mb-1 p-4 border-2 rounded-xl bg-white ${
         plan.is_highlighted
-        ? "border-orange-400 "
-        : "border-gray-400 "
+        ? "border-orange-400"
+        : "border-gray-400"
     }`}>
       <h4 className="text-2xl font-bold text-gray-800">{plan.plan_name}</h4>
       <p className="text-gray-500 text-sm mt-1">{plan.subtitle}</p>
@@ -80,7 +81,7 @@ const PricingSection = ({ plans }:{plans: any}) => {
   return (
     <section className=" px-6 py-12 relative overflow-visible mt-10 ">
         
-        <div className="text-xl font-bold mb-10 text-center leading-relaxed">
+        <div className="text-xl font-bold mb-2 text-center leading-relaxed">
           <span className="text-[#F36C45]">"Ooshash prep </span>
           <span>
             gets rave reviews from students, many of whom <br /> have improved
@@ -89,7 +90,7 @@ const PricingSection = ({ plans }:{plans: any}) => {
           <span className="text-[#F36C45]">affordable plan."</span>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center max-w-7xl mx-auto mt-30">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 items-center max-w-7xl mx-auto mt-20">
           {plans.map((item: any, index: number) => (
             <PricingCard key={index} plan={item} />
           ))}

@@ -4,61 +4,61 @@ import { motion } from "framer-motion";
 
 const data = [
   {
-    url: "/placeholder-user.jpg",
+    url: "/students/01.jpg",
     name: "Mohak Gupta",
     course: "Gmat score",
     score: "999",
   },
   {
-    url: "/placeholder-user.jpg",
+    url: "/students/02.jpg",
     name: "Mohak Gupta",
     course: "Gmat score",
     score: "999",
   },
   {
-    url: "/placeholder-user.jpg",
+    url: "/students/03.jpg",
     name: "Mohak Gupta",
     course: "Gmat score",
     score: "999",
   },
   {
-    url: "/placeholder-user.jpg",
+    url: "/students/04.jpg",
     name: "Mohak Gupta",
     course: "Gmat score",
     score: "999",
   },
   {
-    url: "/placeholder-user.jpg",
+    url: "/students/05.jpg",
     name: "Mohak Gupta",
     course: "Gmat score",
     score: "999",
   },
   {
-    url: "/placeholder-user.jpg",
+    url: "/students/06.jpg",
     name: "Mohak Gupta",
     course: "Gmat score",
     score: "999",
   },
   {
-    url: "/placeholder-user.jpg",
+    url: "/students/07.jpg",
     name: "Mohak Gupta",
     course: "Gmat score",
     score: "999",
   },
   {
-    url: "/placeholder-user.jpg",
+    url: "/students/08.jpg",
     name: "Mohak Gupta",
     course: "Gmat score",
     score: "999",
   },
   {
-    url: "/placeholder-user.jpg",
+    url: "/students/09.jpg",
     name: "Mohak Gupta",
     course: "Gmat score",
     score: "999",
   },
   {
-    url: "/placeholder-user.jpg",
+    url: "/students/10.jpg",
     name: "Mohak Gupta",
     course: "Gmat score",
     score: "999",
@@ -67,7 +67,7 @@ const data = [
 
 export function Aboutresult() {
   return (
-    <section className="py-12 md:py-16 lg:py-20 bg-gray-100" id="about">
+    <section className="py-12 md:py-16 lg:py-20 bg-[#EAEAEA]" id="about">
       <div className="max-w-7xl mx-auto flex flex-wrap justify-center gap-8">
         {data.map((ele, idx) => (
           <motion.div
@@ -80,8 +80,8 @@ export function Aboutresult() {
               delay: idx * 0.1, // 0.1s gap between each item
             }}
           >
-            <div key={idx} className="shadow-lg p-4 bg-white">
-              <img src={ele?.url} className="h-38 w-38  mx-auto" />
+            <div key={idx} className="shadow-lg py-4 px-2 bg-white">
+              <img src={ele?.url} className="h-48 w-44  mx-auto" />
               <span className=" text-center flex items-center  capitalize">
                 <h2 className="font-bold">{ele?.name}</h2>
                 <ul>

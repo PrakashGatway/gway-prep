@@ -160,7 +160,7 @@ export function Hero() {
 
   return (
     <section
-      className="relative overflow-hidden bg-gray-50 
+      className=" relative overflow-hidden bg-gray-50 
       bg-[url('/image/bg.jpeg')]
       bg-cover
       bg-center

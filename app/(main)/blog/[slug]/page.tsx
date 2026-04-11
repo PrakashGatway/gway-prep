@@ -1,4 +1,4 @@
-import BlogDetails from "@/components/Blogdetail";
+import BlogDetails from "@/app/(main)/components/Blogdetail";
 
 
 interface PageProps {
