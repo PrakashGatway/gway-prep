@@ -200,10 +200,10 @@ export function Hero() {
         {/* ================= LEFT CONTENT ================= */}
         <div className="lg:w-1/2 w-full flex flex-col gap-4">
           {/* IMAGE SLIDER */}
-          <div className="relative w-[22rem] h-[22rem] lg:w-[25rem] lg:h-[25rem] mx-auto">
-            {/* Slider */}
-            <div className="lg:relative lg:w-[100%] lg:h-[100%] mb-10">
-              {/* MASKED IMAGE */}
+           <div className="relative w-[22rem] h-[22rem] lg:w-[25rem] lg:h-[25rem] mx-auto">
+            
+            {/* <div className="lg:relative lg:w-[100%] lg:h-[100%] mb-10">
+            
               <div
                 className="lg:absolute inset-0 z-10 top-[60px] lg:left-[60px]"
                 style={{
@@ -220,15 +220,38 @@ export function Hero() {
                 }}
               />
 
-              {/* FRAME BORDER IMAGE */}
+              
               <img
                 src="/home/round.png"
                 alt="frame"
-                className="hidden lg:block absolute -rotate-6   inset-0 w-full h-full z-20 pointer-events-none"
+                className="hidden lg:block absolute    inset-0 w-full h-full z-20 pointer-events-none"
               />
-            </div>
+            </div> */}
 
-            {/* NAME + SCORE */}
+
+              <div className="w-full hidden lg:block">
+                <div className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] lg:w-[450px] lg:h-[450px]">
+                  <div className="lg:relative lg:w-[92%] lg:h-[91%]">
+                    <div
+                      className="lg:absolute inset-0 z-10 lg:top-[41px] lg:left-[38px]"
+                      style={{
+                        backgroundImage: `url(${images?.[index]?.url})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        width: "335px",
+                        height: "335px",
+                        borderRadius: "100px",
+                      }}
+                    />
+                    <img
+                      src="/home/round.png"
+                      alt="frame"
+                      className="absolute inset-0 w-full h-full z-20 pointer-events-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
 
             <div
               style={{
@@ -251,7 +274,10 @@ export function Hero() {
                 </li>
               </ul>
             </div>
-          </div>
+          </div> 
+
+
+          
         </div>
       </div>
 
