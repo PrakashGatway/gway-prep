@@ -7,17 +7,25 @@ import { Navbar } from "@/app/(main)/components/navbar";
 import { Noto_Sans } from "next/font/google";
 import { Footer } from "@/app/(main)/components/footer";
 import Script from "next/script";
+import { Montserrat } from "next/font/google";
 
 
 
 
-
-const notoSans = Noto_Sans({
+const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-noto-sans",
+  variable: "--font-montserrat",
   display: "swap",
 });
+
+// const notoSans = Noto_Sans({
+//   subsets: ["latin"],
+//   weight: ["400", "500", "600", "700"],
+//   variable: "--font-noto-sans",
+//   display: "swap",
+// });
+
 
 export default function RootLayout({
   children,
@@ -45,7 +53,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${notoSans.className} bg-white text-gray-900 max-w-[1640px] mx-auto`}
+        className={`${montserrat.className} bg-white text-gray-900 max-w-[1640px] mx-auto`}
         suppressHydrationWarning
       >
         <noscript>
