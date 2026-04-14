@@ -58,7 +58,7 @@ export function WorkingProcess() {
             })}
           </div>
 
-          <div className="lg:w-1/2 relative">
+          <div className="lg:block hidden lg:w-1/2 relative">
             <Image
               src="/image/steps.png"
               alt="Working Process"

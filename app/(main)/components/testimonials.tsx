@@ -232,7 +232,7 @@ export function TextTestimonials() {
       text: "Gateway Abroad Jaipur made studying PTE seamless. I still can't believe that I scored 80. This is all because of the efforts of my trainers. They provided everything, from personal attention to practice tests to doubt sessions. So, in my opinion, thi....",
       rating: 5,
     }
-  ];
+  ]; 
 
   
   const [sliderRef, slider] = useKeenSlider(
@@ -288,9 +288,9 @@ export function TextTestimonials() {
 
   return (
     <div className=" bg-gray-100 mt-10 px-4 sm:px-6 md:px-8 lg:px-8 py-8 md:py-16">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto p-10 overflow-hidden">
         <div className="flex flex-col  gap-8 md:gap-12">
-          {/* Left Section */}
+          
           <div className="w-full flex flex-col text-center">
             <h1 className="text-2xl sm:text-3xl md:text4xl font-semibold text-gray-600 leading-tight">
               What Our Test Preparation {" "}
@@ -299,76 +299,34 @@ export function TextTestimonials() {
             </h1>
           </div>
 
-          {/* Right Section - Testimonial Cards */}
-          <div ref={sliderRef} className="keen-slider flex items-center  max-w-8xl" style={{overflow : "visible"}}>
-{/*             
-            <div className="h-64 w-full shadow-lg bg-white 
-             rounded-3xl p-6 mb-4 lg:mb-0 transform lg:translate-x-0 ">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-2">
-                <h3 className="text-xl sm:text-2xl font-bold text-[#FF6B35]">
-                  {testimonials[0].name}: {testimonials[0].score}
-                </h3>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => ( 
-                    <Star
-                      key={i}
-                      size={20}
-                      className="fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
-                </div>
-              </div>
-              <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
-                {testimonials[0].text}
-              </p>
-            </div>
-            
-            <div className="h-64 rotate-4 shadow-lg w-full bg-white  rounded-3xl p-6 mb-4 lg:mb-0 transform lg:translate-x-0 z-10">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-2">
-                <h3 className="text-xl sm:text-2xl font-bold text-[#FF6B35]">
-                  {testimonials[1].name}: {testimonials[1].score}
-                </h3>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      size={20}
-                      className="fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
-                </div>
-              </div>
-              <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
-                {testimonials[1].text}
-              </p>
-            </div> */}
 
+          <div ref={sliderRef} className="keen-slider flex items-center  max-w-7xl p-xl" style={{overflow : "visible"}}>
 
-          {testimonials.map((item,idx) => {
-            const num = idx % 2 === 0 ? 'rotate-1': '-rotate-1';
-            return (
-              
-            <div key={idx} className={`${num} keen-slider__slide h-64  shadow-lg w-full bg-white  rounded-3xl p-6 transform lg:translate-x-0 z-10`}>
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-2">
-                <h3 className="text-xl sm:text-2xl font-bold text-[#FF6B35]">
-                  {item.name}: {item.score}
-                </h3>
-                <div className="flex gap-1">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      size={20}
-                      className="fill-yellow-400 text-yellow-400"
-                    />
-                  ))}
+            {testimonials.map((item,idx) => {
+              const num = idx % 2 === 0 ? 'rotate-1': '-rotate-1';
+              return (
+                
+              <div key={idx} className={`${num} keen-slider__slide h-64  shadow-lg w-full bg-white  rounded-3xl p-6 transform lg:translate-x-0 z-10`}>
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-2">
+                  <h3 className="text-xl sm:text-2xl font-bold text-[#FF6B35]">
+                    {item.name}: {item.score}
+                  </h3>
+                  <div className="flex gap-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        size={20}
+                        className="fill-yellow-400 text-yellow-400"
+                      />
+                    ))}
+                  </div>
                 </div>
+                <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
+                  {item.text}
+                </p>
               </div>
-              <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
-                {item.text}
-              </p>
-            </div>
-            );
-          })}
+              );
+            })}
 
           </div>
         </div>

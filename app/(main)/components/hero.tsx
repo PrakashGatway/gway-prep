@@ -202,51 +202,26 @@ export function Hero() {
           {/* IMAGE SLIDER */}
            <div className="relative w-[22rem] h-[22rem] lg:w-[25rem] lg:h-[25rem] mx-auto">
             
-            {/* <div className="lg:relative lg:w-[100%] lg:h-[100%] mb-10">
-            
-              <div
-                className="lg:absolute inset-0 z-10 top-[60px] lg:left-[60px]"
-                style={{
-                  backgroundImage: `url(${images[index].url})`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  WebkitMaskRepeat: "no-repeat",
-                  WebkitMaskSize: "100% 100%",
-                  maskRepeat: "no-repeat",
-                  maskSize: "100% 100%",
-                  width: "18rem",
-                  height: "18rem",
-                  borderRadius: "4rem",
-                }}
-              />
-
-              
-              <img
-                src="/home/round.png"
-                alt="frame"
-                className="hidden lg:block absolute    inset-0 w-full h-full z-20 pointer-events-none"
-              />
-            </div> */}
 
 
-              <div className="w-full hidden lg:block">
-                <div className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] lg:w-[450px] lg:h-[450px]">
+              <div className="w-full  ">
+                <div className="mx-auto relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] lg:w-[450px] lg:h-[450px]">
                   <div className="lg:relative lg:w-[92%] lg:h-[91%]">
                     <div
-                      className="lg:absolute inset-0 z-10 lg:top-[41px] lg:left-[38px]"
+                      className="absolute inset-0 z-10 lg:w-[335px] lg:h-[335px] lg:top-[41px] lg:left-[38px]"
                       style={{
                         backgroundImage: `url(${images?.[index]?.url})`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
-                        width: "335px",
-                        height: "335px",
+                        // width: "335px",
+                        // height: "335px",
                         borderRadius: "100px",
                       }}
                     />
                     <img
                       src="/home/round.png"
                       alt="frame"
-                      className="absolute inset-0 w-full h-full z-20 pointer-events-none"
+                      className="hidden lg:block absolute inset-0 w-full h-full z-20 pointer-events-none"
                     />
                   </div>
                 </div>
@@ -258,11 +233,11 @@ export function Hero() {
                 backgroundImage: `url('/hero-r-removebg-preview.png')`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                width: "24rem",
+                // width: "24rem",
                 height: "8rem",
-                borderRadius: "93px",
+                // borderRadius: "93px",
               }}
-              className="flex gap-4 items-center justify-around capitalize mb-10"
+              className="flex gap-4 lg:w-[24rem] w-full items-center justify-around capitalize mb-10"
             >
               <h2 className="text-2xl font-bold text-white">
                 {images[index].name}
@@ -275,8 +250,6 @@ export function Hero() {
               </ul>
             </div>
           </div> 
-
-
           
         </div>
       </div>

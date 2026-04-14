@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <main className="min-w-7xl">
+    <main className="lg:min-w-7xl">
       <Hero />
       <RegistrationSection />
       {/* <AboutSection /> */}
