@@ -1,5 +1,9 @@
-import Image from "next/image";
+// import Image from "next/image";
+import { details, li } from "framer-motion/client";
+import { Search } from "lucide-react";
 import Link from "next/link";
+import { BlogSlider } from "./blog-slider";
+import { DestinationsAndConsultants } from "./destinations-consultants";
 
 const categories = [
   "ALL",
@@ -19,156 +23,164 @@ const blogs = [
     id: 1,
     title: "Day 1 CPT Programs in the USA: Work & Study from Day One",
     slug: "day-1-cpt-programs-usa",
+    details : "japan dubles its citizenship residency requirement to 10 yours in 2026. Discover what is means for immigrants, students and skilled professionals.",
     date: "22 Apr 2025",
     image: "/image/blog-img.jpg",
   },
   {
     id: 2,
-    title: "Essential Barcode & Appointment Matching Guide for F1 U.S. Visa Applicants",
+    title:
+      "Essential Barcode & Appointment Matching Guide for F1 U.S. Visa Applicants",
     slug: "day-1-cpt-programs-usa",
+    details : "japan dubles its citizenship residency requirement to 10 yours in 2026. Discover what is means for immigrants, students and skilled professionals.",
     date: "22 Apr 2025",
     image: "/image/blog-img.jpg",
   },
   {
     id: 3,
-    title: "Expediting Your F-1 Student Visa: The Guide to Emergency Appointment",
+    title:
+      "Expediting Your F-1 Student Visa: The Guide to Emergency Appointment",
     slug: "day-1-cpt-programs-usa",
+    details : "japan dubles its citizenship residency requirement to 10 yours in 2026. Discover what is means for immigrants, students and skilled professionals.",
     date: "22 Apr 2025",
     image: "/image/blog-img.jpg",
   },
   {
     id: 4,
     title: "Day 1 CPT Programs in the USA: Work & Study from Day One",
+    details : "japan dubles its citizenship residency requirement to 10 yours in 2026. Discover what is means for immigrants, students and skilled professionals.",
     slug: "day-1-cpt-programs-usa",
     date: "22 Apr 2025",
     image: "/image/blog-img.jpg",
   },
   {
     id: 5,
-    title: "Essential Barcode & Appointment Matching Guide for F1 U.S. Visa Applicants",
+    title:
+      "Essential Barcode & Appointment Matching Guide for F1 U.S. Visa Applicants",
+    details : "japan dubles its citizenship residency requirement to 10 yours in 2026. Discover what is means for immigrants, students and skilled professionals.",
     slug: "day-1-cpt-programs-usa",
     date: "22 Apr 2025",
     image: "/image/blog-img.jpg",
   },
   {
     id: 6,
-    title: "Expediting Your F-1 Student Visa: The Guide to Emergency Appointment",
-    slug: "day-1-cpt-programs-usa",
+    title:
+      "Expediting Your F-1 Student Visa: The Guide to Emergency Appointment",
+   details : "japan dubles its citizenship residency requirement to 10 yours in 2026. Discover what is means for immigrants, students and skilled professionals.",
+     slug: "day-1-cpt-programs-usa",
     date: "22 Apr 2025",
     image: "/image/blog-img.jpg",
   },
 ];
 
 export default function Blog() {
+  
+  
   return (
-    <>
-        <div className="bg-[url('/image/about-hero-bg.jpg')] absolute bg-cover bg-center bg-no-repeat h-80 w-full"/>
-
-      <section className="relative overflow-hidden  py-12 md:py-16 lg:py-20 px-4 sm:px-6 lg:px-8">
-        {/* Decorative blobs */}
-        <div className="absolute lg:-left-210 lg:-top-15 lg:w-[150%] lg:h-[150%] bg-[url('/image/shape-1.png')] bg-cover bg-center bg-no-repeat" />
-
-        
-        
-        
-        <div className="lg:absolute lg:-right-316 lg:-top-130 lg:w-[90%] lg:h-[75%] bg-[url('/image/shape-2.png')] bg-cover bg-center bg-no-repeat" />
-
-        <div className="relative z-10 max-w-7xl mx-auto ">
-          {/* HEADING */}
-          <div className="text-center mb-8 md:mb-10">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[150px] font-extrabold text-brand-orange">
-              BLOGS
-            </h1>
-            <p className="text-gray-600 text-base sm:text-lg md:text-xl font-medium mt-2 md:mt-3">
-              Abroad Insights: News and Tips for Students
-            </p>
-          </div>
-
-          {/* SEARCH BAR */}
-          <div className="max-w-6xl mx-auto mb-8 md:mb-10">
-            <div className="flex items-center bg-white rounded-full border border-gray-400 px-4 sm:px-5 py-2 sm:py-3">
-              <span className="text-lg sm:text-xl mr-2 sm:mr-3">🔍</span>
-              <input
-                type="text"
-                placeholder="What are you looking for ?"
-                className="flex-1 outline-none text-sm sm:text-base md:text-lg text-gray-600"
-              />
-              <button className="text-gray-500 font-medium text-lg sm:text-xl md:text-2xl">Search</button>
-            </div>
-          </div>
-
-          {/* CATEGORIES */}
-          <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-3 sm:pb-4 mb-8 md:mb-12 justify-start md:justify-center">
-            {categories.map((cat, i) => (
-              <button
-                key={i}
-                className={`px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full border text-xs sm:text-sm whitespace-nowrap
-                ${cat === "ALL"
-                    ? "bg-brand-orange text-white border-brand-orange"
-                    : "border-brand-orange text-gray-700 hover:bg-brand-orange hover:text-white"
-                  }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
-          {/* BLOG CARDS */}
-          <div className="relative px-2 sm:px-4 md:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              {blogs.map((blog, i) => (
-                <div
-                  key={i}
-                  className="relative h-[200px] sm:h-[240px] md:h-[280px] lg:h-[300px] bg-no-repeat bg-contain bg-center lg:ml-[60px]"
-                  style={{
-                    backgroundImage: "url('/image/blog-card-shape-1.png')",
-                  }}
-                >
-                  {/* INNER CONTENT */}
-                  <div className="absolute inset-0 flex items-center px-4 sm:px-5 md:px-6 lg:px-8">
-                    {/* IMAGE */}
-                    <div className="w-[45%] sm:w-[50%] md:w-[55%] lg:absolute lg:-left-[60px] shrink-0">
-                      <div
-                        className="h-18 sm:h-32 md:h-25 lg:h-30 xl:h-49 bg-center bg-cover"
-                        style={{
-                          backgroundImage: `url(${blog.image || "/placeholder.svg"})`,
-                          WebkitMaskImage: "url('/card-02.png')",
-                          WebkitMaskRepeat: "no-repeat",
-                          WebkitMaskSize: "100% 100%",
-                          maskImage: "url('/image/blog-card-shape-2.png')",
-                          maskRepeat: "no-repeat",
-                          maskSize: "100% 100%",
-                        }}
-                      />
-                    </div>
-
-                    {/* CONTENT */}
-                    <div className="ml-4 sm:ml-5 md:ml-6 lg:mt-20 lg:ml-60 flex flex-col h-[47%] md:h-[42%] lg:h-full lg:py-10">
-                      <h3 className="text-xs sm:text-sm md:text-sm lg:text-lg font-medium leading-snug mb-1 sm:mb-2 line-clamp-2">
-                        {blog.title}
-                      </h3>
-
-                      <span className="text-xs sm:text-sm md:text-sm font-medium text-brand-orange mb-2 sm:mb-3 md:mb-4">
-                        {blog.date}
-                      </span>
-
-                      <Link
-                        href={`/blog/${blog.slug}`}
-                        className="inline text-white bg-brand-orange rounded-full lg:p-3 text-center font-medium text-xs sm:text-sm md:text-sm lg:text-base md:p-4 p-3 cursor-pointer"
-                      >
-                        Read more
-                      </Link>
-
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+    <section>
+      <div className="lg:relative h-[80vh] bg-gray-200">
+        <div className="h-[40vh] bg-[url('/image/03.jpeg')] bg-cover bg-center bg-no-repeat md:rounded-[0_0_8rem_8rem]">
+          <div className="flex lg:pl-40 justify-center lg:justify-start items-center h-full w-full  bg-black/60 text-white md:rounded-[0_0_8rem_8rem] ">
+            <span >
+               <h2 className="font-semibold text-xl md:text-2xl lg:text-3xl text-center">Ooshas prep</h2>
+              <h1 className="font-extrabold text-5xl md:text-6xl lg:text-8xl">BLOGS</h1>
+            </span>
           </div>
         </div>
 
-      </section>
+        <div className="flex items-center flex-wrap lg:pl-40">
+          
+        <div className="lg:max-w-[40rem] my-4 flex items-center jutify-center border-1 
+        border-black gap-2 bg-white lg:rounded-full w-full h-10 lg:h-20 px-10 text-gray-800 lg:text-xl">
+          <Search />
+          <input type="text" placeholder="What are you looking for ?" className="w-full"/>
+          <button type="button" className="font-samibold text-black">Search</button>
+        </div>
 
-    </>
+        <img src="/image/01.png" alt="logo" className="lg:h-[30rem] lg:absolute top-10 right-14"/>
+        </div>
+
+      </div>
+
+      <div className="flex items-start flex-wrap md:flex-nowrap mt-14 gap-4 md:max-w-7xl mx-auto">
+        <div className="flex flex-col flex-nowrap gap-4 p-2 ">
+           {blogs.map((ele,idx) => (
+            <div key={idx} className="flex items-center justify-between flex-wrap lg:flex-nowrap gap-4 p-4 rounded-xl bg-gray-100  ">
+              <img src={ele.image} alt="logo" className="rounded-xl h-48 w-94" />
+              <ul className="space-y-2">
+                <li>{ele.date}</li>
+                <li>{ele.title}</li>
+                <li>{ele?.details}</li>
+                <li className="bg-orange-500 rounded-full px-4 py-2 text-white font-semibold md:w-1/4">read more</li>
+              </ul>
+            </div>
+           ))}
+        </div>
+        
+        <form action="" className="md:w-1/3 bg-gray-100 rounded-xl m-2 p-4 space-y-4">
+          <h1 className="font-bold my-4 text-lg">SEND AN ENQUIRY</h1>
+           {[
+            {"type":"text","label": "Name" },
+            {"type":"text","label": "Location" },
+            {"type":"tel","label": "Phone Number" },
+            {"type":"email","label": "Email" },
+            {"type":"text","label": "Course looking for" },
+            {"type":"text","label": "Country looking for" },
+            {"type":"text","label": "Enquiry Regarding" },
+            {"type":"textarea","label":"Your Message"}
+           ].map((ele,idx) => (
+              <input key={idx} type={ele.type} placeholder={ele.label}  className="w-full border-2 bg-white border-gray-200 px-4 py-2"/>
+           ))}
+            
+            <label htmlFor="check" className="text-md text-gray-600">
+              <input type="checkbox" name="check" id="check" />{" "}
+              I agree and authorise the team to contact me over phone, email, SMS & WhatsApp.
+            </label>
+            <button type="submit" className="w-full bg-orange-500 py-2 my-2 text-white rounded-xl text-center ">SEND</button>
+        </form>
+      </div>
+
+      <div className="max-w-7xl mx-auto">
+         <BlogSlider />
+      </div>
+
+      <div className="bg-black/80 text-white lg:relative ">
+         <div className="flex justify-between items-center flex-wrap gap-4 md:max-w-7xl mx-auto ">
+           
+           <div className="space-y-4 my-18 text-center md:text-left">
+             <h2 className="font-semibold">All the Resources you need for the Complete Exam Prep</h2>
+             <p className="text-xs">Achieve excellence with a platform designed for comprehensive preparation.</p>
+
+             <ul className="space-y-4">
+              {[
+              {"heading":"27M+ App Downloads","content":"Join millions of learners worldwide"},
+              {"heading":"4.8+ App Rating","content":"Rated highly by our users."}
+              ].map((ele,idx) => (
+              <li key={idx} className="flex justify-center md: jsutify-center md:items-start gap-3">
+               <span className="text-orange-500 text-2xl">•</span>
+               <div>
+                 <h3 className="font-semibold">{ele.heading}</h3>
+                 <p className="text-xs text-gray-300">{ele.content}</p>
+               </div>
+              </li>
+              ))}
+             </ul>
+
+             <div className="space-x-4 space-y-4">
+              <input type="text" placeholder="Your Mobile Number" className="bg-white text-black rounded-lg px-4 py-2" />
+              <button type="button"  className="bg-orange-500 text-white font-medium rounded-lg px-4 py-2">Get App Link</button>
+             </div>
+           </div>
+
+           <img src="/image/02.png" alt="img" className="lg:absolute -top-30 right-30 md:h-[30rem]" />
+         </div>
+      </div>
+      
+            <div className="my-20 max-w-7xl mx-auto ">
+              <img src={"/image/about.jpeg"} alt="img" />
+            </div>
+      
+      <DestinationsAndConsultants />
+    </section>
   );
 }

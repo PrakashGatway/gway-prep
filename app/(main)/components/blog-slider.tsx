@@ -21,15 +21,13 @@ const blogs = [
 
 export function BlogSlider() {
   return (
-    <section className="py-12 md:py-20 lg:py-25 bg-gray-100">
+    <section className="py-12 md:py-20 lg:py-25 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end mb-8 md:mb-12 gap-4">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-brand-orange underline decoration-brand-orange decoration-2 md:decoration-4 underline-offset-8 md:underline-offset-14">
-            Important Facts & Information
-          </h2>
-          <button className="bg-brand-dark text-white px-6 py-2 sm:px-8 rounded-xl md:rounded-2xl font-bold text-sm sm:text-base w-full sm:w-auto">
-            View All Blogs
-          </button>
+        <div className="flex flex-col sm:flex-row justify-center items-start sm:items-end mb-8 md:mb-12 gap-4">
+          <span className="flex items-center text-center font-semibold my-10 text-3xl">
+                    Recent <p className="text-orange-500">{"  "} Blogs Post</p>
+                  </span>
+         
         </div>
 
         <div className="relative px-8 sm:px-0">
@@ -38,7 +36,8 @@ export function BlogSlider() {
               <div
                 key={i}
                 className={`rounded-2xl md:rounded-[28px] overflow-hidden shadow-lg md:shadow-xl
-                  ${i === 1 ? "bg-brand-orange" : "bg-[#666666]"}`}
+                  text-black
+                  `}
               >
                 {/* IMAGE */}
                 <div className="relative mb-4 h-40 sm:h-44 md:h-48 w-[92%] md:w-[93%] top-3 md:top-[15px] left-1/2 -translate-x-1/2 md:left-[14px] md:translate-x-0 overflow-hidden rounded-lg md:rounded-xl bg-gray-200">
@@ -47,17 +46,19 @@ export function BlogSlider() {
                     className="h-full w-full object-top " 
                     alt={blog.title}
                   />
+                  <span className="absolute bottom-2 right-2 border-2 text-white bg-purple-900 p-2 text-sm rounded-lg">{"19 Arile 2026"}</span>
                 </div>
 
                 {/* CONTENT */}
-                <div className="p-4 md:p-6 text-white flex flex-col h-36 sm:h-[138px] lg:p-5">
-                  <h3 className="text-base sm:text-lg font-bold leading-snug mb-2 line-clamp-2">
+                <div className="p-4 md:p-6 flex flex-col   lg:p-5">
+                  {/* <h3 className="text-base sm:text-lg font-bold leading-snug mb-2 line-clamp-2">
                     {blog.title}
-                  </h3>
+                  </h3> */}
 
-                  <p className="text-xs sm:text-sm text-white/80 line-clamp-3">
-                    {blog.desc}
+                  <p className="text-xs sm:text-sm text-black/80 line-clamp-3 border-b-2 mb-2 border-black">
+                    {blog.title}
                   </p>
+                  <button type="button" className="text-orange-500 text-left my-2 flex">Know More <ChevronRight/> </button>
                 </div>
               </div>
             ))}

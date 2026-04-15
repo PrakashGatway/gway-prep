@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { loginFormData, loginResponse } from "@/app/type/auth";
 import { useRouter } from "next/navigation";
 import { ShieldIcon } from "lucide-react";
@@ -69,7 +69,6 @@ const AdminLoginPage = () => {
     setIsLoading(true);
 
     try {
-
       const res = await fetch("/api/admin/auth/login", {
         method: "post",
         headers: { "Content-type": "application/json" },
@@ -78,8 +77,11 @@ const AdminLoginPage = () => {
 
       const data: loginResponse = await res.json();
 
-      if (!res.ok || !data.success) {
+
+      console.log("sumbit form",res  );
+      if (!res.ok ) {
         setServerErrror(data.error ?? "login failed. please try again.");
+        return;
       }
 
       if (data.token) {
@@ -90,7 +92,7 @@ const AdminLoginPage = () => {
         document.cookie = `role=${data.user.role}; path=/`;
       }
 
-      router.push("/admin/home");
+      router.push("/admin/pages/home");
       
     } catch (error) {
       setServerErrror("Someting went wrong. please try again.");
@@ -100,6 +102,25 @@ const AdminLoginPage = () => {
     }
 
   }
+
+ async function Logout() {
+    try {
+      
+      const res = await fetch("/api/admin/auth/logout", {
+        method: "post"
+      });
+
+      const data = await res.json();
+      console.log("data",data);
+
+    } catch (error) {
+      console.error("server error",error);
+    }
+  }
+
+  useEffect(() => {
+    Logout();
+  },[])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
