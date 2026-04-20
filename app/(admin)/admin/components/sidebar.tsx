@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react";
-import { ShieldIcon, Home, Users, Settings, LogOut, FileEditIcon } from "lucide-react";
+import { ShieldIcon, Home, Users, Settings, LogOut, FileEditIcon, File } from "lucide-react";
 
 interface NavItem {
   icon: React.ReactNode;
@@ -13,10 +13,10 @@ interface NavItem {
 const Sidebar = () => {
 
   const navItems: NavItem[] = [
-    { icon: <Home size={18} />, label: "Dashboard", href: "/admin", active: true },
-    { icon: <Users size={18} />, label: "Users", href: "/admin/pages/users" },
+    { icon: <Home size={18} />, label: "Dashboard", href: "/admin/pages/home", active: true },
+    { icon: <Users size={18} />, label: "Students", href: "/admin/pages/student" },
     { icon: <FileEditIcon size={18} />, label: "Editer", href: "/admin/pages/editor" },
-    { icon: <Settings size={18} />, label: "Settings", href: "/admin/pages/settings" },
+    { icon: <File size={18} />, label: "Blog", href: "/admin/pages/Blogs" },
     { icon: <LogOut size={18} />, label: "Logout", href: "/admin/" },
   ];
 

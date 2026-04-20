@@ -9,11 +9,14 @@
     "start": "next start"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-react": "^11.1.2",
     "@radix-ui/react-slot": "^1.2.4",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.37.0",
     "bcryptjs": "^3.0.3",
+    "ckeditor5": "^48.0.0",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.9.0",
     "clsx": "^2.1.1",
     "date-fns": "4.1.0",
     "framer-motion": "12.23.26",

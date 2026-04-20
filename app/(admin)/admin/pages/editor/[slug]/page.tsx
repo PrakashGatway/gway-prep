@@ -1,5 +1,3 @@
-import BlogDetails from "@/app/(main)/components/Blogdetail";
-
 
 interface PageProps {
   params: {
@@ -7,7 +5,9 @@ interface PageProps {
   };
  }
 
+import EditorForm from "../../../components/editorForm";    
+
 export default async function BlogDetailsPage({ params }: PageProps) {
     const { slug } = await params;
-  return <BlogDetails slug={slug} />;
+  return (<EditorForm slug={slug}/>);
 }

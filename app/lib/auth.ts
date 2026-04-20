@@ -1,6 +1,7 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { cookies } from "next/headers";
 import type { JWTPayload } from "../type";
+import { NextResponse } from "next/server";
 
 const secret = process.env.JWT_SECRET!;
 const expires_in = process.env.JWT_EXPIRES_IN ?? "5d";
@@ -21,5 +22,15 @@ export async function getSession(): Promise<JwtPayload | null> {
     return verifyToken(token);
   } catch {
     return null;
+  }
+}
+
+
+
+export function Tokenchecker(token: string) {
+  try {
+    return jwt.verify(token, secret);
+  } catch (error) {
+    return NextResponse.json({ error: "Invalid token" }, { status: 401 });
   }
 }

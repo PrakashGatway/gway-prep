@@ -16,7 +16,7 @@ const data = [
       logo : "/university.jpg"
     },
     "partnership_details": {
-      "service_provider": "Ooshash",
+      "service_provider": "Ooshas",
       "support_offered": [
         "Offered him early morning classes to accommodate his work schedule",
         "Provided personalised sessions post-classes to increase his accuracy and speed",
@@ -45,7 +45,7 @@ const data = [
       logo : "/university.jpg"
     },
     "partnership_details": {
-      "service_provider": "Ooshash",
+      "service_provider": "Ooshas",
       "support_offered": [
         "Offered him early morning classes to accommodate his work schedule",
         "Provided personalised sessions post-classes to increase his accuracy and speed",
@@ -74,7 +74,7 @@ const data = [
       logo : "/university.jpg"
     },
     "partnership_details": {
-      "service_provider": "Ooshash",
+      "service_provider": "Ooshas",
       "support_offered": [
         "Offered him early morning classes to accommodate his work schedule",
         "Provided personalised sessions post-classes to increase his accuracy and speed",

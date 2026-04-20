@@ -39,7 +39,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       { status: 201 },
     );
 
-    response.cookies.set("token", token, {
+    response.cookies.set("adminToken", token, {
       httpOnly: true, // JS cannot read this cookie
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax", // CSRF protection

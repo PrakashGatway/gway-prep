@@ -44,7 +44,7 @@ export async function POST(req: NextRequest): Promise<NextResponse>{
             {status : 200}
         );
 
-        response.cookies.set("token", token, {
+        response.cookies.set("adminToken", token, {
             httpOnly : true,
             secure : process.env.NODE_ENV === "development",
             sameSite : "lax",

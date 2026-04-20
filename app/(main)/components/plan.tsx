@@ -82,7 +82,7 @@ const PricingSection = ({ plans }:{plans: any}) => {
     <section className=" px-6 py-12 relative overflow-visible mt-10 ">
         
         <div className="text-xl font-bold mb-2 text-center leading-relaxed">
-          <span className="text-[#F36C45]">"Ooshash prep </span>
+          <span className="text-[#F36C45]">"Ooshas prep </span>
           <span>
             gets rave reviews from students, many of whom <br /> have improved
             their GRE score with this flexible and{" "}
@@ -97,7 +97,7 @@ const PricingSection = ({ plans }:{plans: any}) => {
         </div>
 
         <div className="text-center text-sm space-y-3">
-            <p className="font-semibold">Try Ooshash prp GRE for 7</p>
+            <p className="font-semibold">Try Ooshas prp GRE for 7</p>
             <p>Start a Free trial with 20+ questions and lessons</p>
             <p className="">Start a Free trial</p>
         </div>

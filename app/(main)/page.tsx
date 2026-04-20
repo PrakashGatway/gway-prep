@@ -31,10 +31,9 @@ export default function Home() {
       <Aboutresult />
       <ServicesGrid />
       <TestPrepGrid />
-      {/* <Baners img="/image/about.jpeg" heading={'Everything you need to <p class="text-brand-orange">prep any time</p>'}/> */}
+      {/* <Baners img="/image/about.jpeg" 
+      heading={'Everything you need to <p class="text-brand-orange">prep any time</p>'}/> */}
       <Baners img="/home/000002.png" />
-      
-
       <WorkingProcess />
       <HomeStudent />
       <Banerhome img="/home/000002.png" />

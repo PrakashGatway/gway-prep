@@ -4,8 +4,12 @@ import { Facebook, Instagram, Linkedin, Youtube } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import ThreeDButton from "./3dbutton"
+import { useRouter } from "next/navigation"
 
 export function Footer() {
+
+  const route = useRouter();
+
   return (
     <>
       {/* Footer */}
@@ -32,11 +36,12 @@ export function Footer() {
               {/* BRAND */}
               <div className="w-full lg:w-1/4 pr-0 lg:pr-8 mb-10 lg:mb-0 flex items-center justify-center flex-col text-center">
                 <Image
-                  src="home/logo.png"
+                  src="/home/logo.png"
                   alt="GAway Global"
                   width={150}
                   height={50}
                   className="mb-4"
+                  onClick={() => route.push('/')}
                 />
                 <h3 className="text-xl font-bold  mb-3">GA Way Global</h3>
                 <p className=" text-sm leading-relaxed mb-6">
@@ -52,27 +57,26 @@ export function Footer() {
               <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 lg:flex lg:flex-row items-center">
                 
                 {/* STUDY DESTINATIONS */}
-                <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0">
+                <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0 h-[12rem]">
                   
-                  {/* Right divider - only on lg screens */}
                   <div className="hidden lg:block absolute left-0 top-0 w-[3px] h-full bg-white rounded-full"></div>
 
                   <div className="h-full flex flex-col">
                     <h4 className=" font-bold text-lg mb-4">
-                      Study Destinations
+                      Quick Links
                     </h4>
                     <ul className="space-y-2  text-sm flex-1">
-                      <li>USA Universities</li>
-                      <li>UK Universities</li>
-                      <li>Germany Public Universities</li>
-                      <li>Italy & France</li>
-                      <li>Canada & Australia</li>
+                      <li className=" cursor-pointer" onClick={() => route.push('/')}>Home</li>
+                      <li className=" cursor-pointer" onClick={() => route.push('/about')}>About Us</li>
+                      <li className=" cursor-pointer" onClick={() => route.push('/services')}>Services</li>
+                      <li className=" cursor-pointer" onClick={() => route.push('/career')}>Career</li>
+                      <li className=" cursor-pointer" onClick={() => route.push('/contact')}>Contect Us</li>
                     </ul>
                   </div>
                 </div>
 
                 {/* SERVICES */}
-                <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0">
+                <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0 h-[12rem]">
                   
                   {/* Right divider - only on lg screens */}
                   <div className="hidden lg:block absolute left-0 top-0 w-[3px] h-full bg-white rounded-full"></div>
@@ -81,18 +85,17 @@ export function Footer() {
                       Our Services
                     </h4>
                     <ul className="space-y-2  text-sm flex-1">
-                      <li>Profile Evaluation</li>
-                      <li>University Shortlisting</li>
-                      <li>SOP & LOR Guidance</li>
-                      <li>Visa Assistance</li>
-                      <li>Scholarship Support</li>
+                      <li className=" cursor-pointer" onClick={() => route.push('/ielts')}>IELTS Preparation</li>
+                      <li className=" cursor-pointer" onClick={() => route.push('/gmat')}>GMAT Preparation</li>
+                      <li className=" cursor-pointer" onClick={() => route.push('/pte')}>PTE Preparation</li>
+                      <li className=" cursor-pointer" onClick={() => route.push('/gre')}>GRE Preparation</li>
                     </ul>
                   </div>
                   
                 </div>
 
                 {/* RESOURCES */}
-                <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0">
+                <div className="flex-1 px-0 sm:px-4 lg:px-6 relative mb-8 sm:mb-0 h-[12rem]">
                   
                   {/* Right divider - only on lg screens */}
                   <div className="hidden lg:block absolute left-0 top-0 w-[3px] h-full bg-white rounded-full"></div>
@@ -102,18 +105,18 @@ export function Footer() {
                       Resources
                     </h4>
                     <ul className="space-y-2  text-sm flex-1">
-                      <li>Blogs</li>
-                      <li>Case Studies</li>
-                      <li>Student Testimonials</li>
-                      <li>FAQs</li>
-                      <li>Events & Webinars</li>
+                      <li className=" cursor-pointer" onClick={() => route.push('/blog')}>Blogs</li>
+                      <li className=" cursor-pointer" onClick={() => route.push('/blog')}>Case Studies</li>
+                      <li className=" cursor-pointer" onClick={() => route.push('/blog')}>Student Testimonials</li>
+                      <li className=" cursor-pointer" onClick={() => route.push('/blog')}>FAQs</li>
+                      <li className=" cursor-pointer" onClick={() => route.push('/blog')}>Events & Webinars</li>
                     </ul>
                   </div>
                   
                 </div>
 
                 {/* CONNECT */}
-                <div className="relative flex-1 px-0 sm:px-4 lg:px-6">
+                <div className="relative flex-1 px-0 sm:px-4 lg:px-6 h-[12rem]">
                   
                   {/* Right divider - only on lg screens */}
                   <div className="hidden lg:block absolute left-0 top-0 w-[3px] h-full bg-white rounded-full"></div>
@@ -123,11 +126,10 @@ export function Footer() {
                       Connect
                     </h4>
                     <ul className="space-y-2  text-sm flex-1">
-                      <li>Instagram</li>
-                      <li>Facebook</li>
-                      <li>LinkedIn</li>
-                      <li>YouTube</li>
-                      <li>Contact Us</li>
+                      <li className="flex gap-2 cursor-pointer" onClick={() => route.push('https://www.instagram.com/ooshasprep?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==')}><Instagram />Instagram</li>
+                      <li className="flex gap-2 cursor-pointer" onClick={() => route.push('https://www.facebook.com/share/18aH5VifRr/?mibextid=wwXIfr')}><Facebook />Facebook</li>
+                      <li className="flex gap-2 cursor-pointer" onClick={() => route.push('#')}><Linkedin />LinkedIn</li>
+                      <li className="flex gap-2 cursor-pointer" onClick={() => route.push('https://youtube.com/@ooshasprep?si=VB6cGU0WyuEGKlPi')}><Youtube />YouTube</li>
                     </ul>
                   </div>
                 </div>

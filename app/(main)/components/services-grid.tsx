@@ -20,7 +20,7 @@ export function ServicesGrid() {
         {/* Heading */}
         <h2 className="text-4xl text-[#626363] font-semibold text-center mb-20">
           Why Families Choose{" "}
-          <span className="text-brand-orange">Ooshash prep</span> For Success
+          <span className="text-brand-orange">Ooshas prep</span> For Success
         </h2>
 
         {/* Grid */}

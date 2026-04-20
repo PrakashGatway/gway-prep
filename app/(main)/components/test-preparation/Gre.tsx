@@ -83,7 +83,7 @@ const gerdata = [
 
 const priceplan = {
   testimonial:
-    "Ooshash prep gets rave reviews from students, many of whom have improved their GRE score with this flexible and affordable plan.",
+    "Ooshas prep gets rave reviews from students, many of whom have improved their GRE score with this flexible and affordable plan.",
   pricing_plans: [
     {
       plan_name: "Premium · 1 month",
@@ -146,6 +146,7 @@ const priceplan = {
     },
   ],
 };
+
   const testimonials = [
     {
       id: 1,
@@ -265,8 +266,8 @@ export default function Gre() {
         className="min-h-150 relative overflow-hidden bg-[url('/Gre/bg.jpg')]  bg-cover bg-center
        bg-no-repeat  "
       >
-        <div className="max-w-[90%] ml-auto">
-          <div className="flex p-10 lg:flex pt-30 items-center rounded-[0_0_0_10rem] h-[60vh] bg-gray-200">
+        <div className="lg:max-w-[90%] ml-auto">
+          <div className="flex p-10 lg:flex pt-30 items-center lg:rounded-[0_0_0_10rem] h-auto lg:h-[60vh] lg:bg-gray-200">
             <div className="w-1/2 relative">
               <h1 className="text-5xl font-bold ">
                 The smartest way to{" "}
@@ -303,7 +304,7 @@ export default function Gre() {
       <section className="max-w-5xl mx-auto flex flex-col my-20  gap-8">
         <div className="flex items-center flex-col gap-4">
           <h4 className="text-lg">We offer more</h4>
-          <h2 className="flex gap-2 text-2xl md:text-4xl lg:text-5xl font-bold">
+          <h2 className="flex flex-wrap  gap-2 text-2xl md:text-4xl lg:text-5xl font-bold">
             Better scores. Better{" "}
             <p className="text-[#F36C45]">Price. Guaranteed.</p>
           </h2>
@@ -311,7 +312,7 @@ export default function Gre() {
             Improve your score by 5 points or your money back.
           </p>
         </div>
-        <div className="flex mt-8 gap-8 border-2 justify-evenly rounded-[2rem] px-10 py-8">
+        <div className="flex flex-wrap mt-8 gap-8 border-2 justify-evenly rounded-[2rem] px-10 py-8">
           <ul>
             <li className="flex gap-2 p-2 mb-4 bg-gray-200 rounded">
               <CircleCheckBig className="text-orange-600" />
@@ -362,15 +363,14 @@ export default function Gre() {
         </div>
       </section>
 
-      <section
-        className="lg:min-h-150 relative overflow-hidden  h-60 "
-      >
-        <div className="flex p-10 pl-20 lg:flex flex-row-reverse items-center mx-auto h-[60vh] bg-[url('/Gre/bg2.jpg')] pt-20 bg-cover bg-center
-       bg-no-repeat">
-          <div className="w-1/2 relative text-white px-auto">
+      <section className="lg:min-h-150 relative lg:overflow-hidden  h-60 ">
+
+        <div className="flex p-10 pl-20  flex-row-reverse items-center mx-auto lg:h-[60vh] 
+        bg-[url('/Gre/bg2.jpg')] pt-20 bg-cover bg-center bg-no-repeat">
+          <div className="lg:w-1/2 relative text-white px-auto">
             <span className="text-5xl font-bold ">
               Official GRE Questions
-              <br /> - only with Ooshash
+              <br /> - only with Ooshas
             </span>
 
             <p className=" my-6">
@@ -380,7 +380,7 @@ export default function Gre() {
             </p>
           </div>
 
-          <div className="w-1/2  z-10  rounded-full">
+          <div className="lg:w-1/2  z-10  rounded-full">
             <img src="/Gre/laptop.png" alt="img" />
           </div>
         </div>
@@ -396,7 +396,7 @@ export default function Gre() {
 
           <p className="text-gray-600 mb-12 text-lg">
             Get instant, GRE-style essay scoring and targete eedback , chate
-            with and expert Al tutor, and practice with Ooshash.
+            with and expert Al tutor, and practice with Ooshas.
           </p>
 
           <div className=" flex flex-col gap-6">
@@ -461,12 +461,12 @@ export default function Gre() {
       </section>
 
       <section
-        className=" relative overflow-hidden bg-[url('/Gre/orangebg.jpg')]  bg-cover bg-start
-       bg-no-repeat h-[100vh] "
+        className=" relative lg:overflow-hidden bg-[url('/Gre/orangebg.jpg')]  bg-cover bg-start
+       bg-no-repeat lg:h-[100vh] "
       >
         <div className="flex justify-center items-center flex-col w-full mt-20">
           <span className="text-5xl font-bold ">
-            <p className=" my-2 flex items-center">
+            <p className=" my-2 flex items-center flex-wrap">
               Improve Your GRE
               <p
                 className="mx-1 border-2 border-orange-600 rounded-full text-xl 
@@ -476,7 +476,7 @@ export default function Gre() {
               </p>
               Score,
             </p>
-            <p className="text-[#F36C45] text-center">Guaranted!</p>
+            <p className="text-[#F36C45] lg:text-center">Guaranted!</p>
           </span>
 
           <p className=" my-6">
@@ -551,8 +551,9 @@ export default function Gre() {
           Video based learning
         </p>
 
-        <div className="bg-gray-100 border-4  rounded-[48px] p-8 md:p-16 flex flex-col md:flex-row items-center gap-12 text-left max-w-4xl relative">
-          <div className="flex-1 text-center max-w-1/2">
+        <div className="bg-gray-100 border-4  rounded-[48px] p-8 md:p-16 flex flex-col
+         md:flex-row items-center gap-12 text-left max-w-4xl relative">
+          <div className="flex-1 lg:text-center lg:max-w-1/2">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 leading-tight">
               Video explanations for
               <p className="text-[#F36C45]">every question</p>
@@ -564,7 +565,7 @@ export default function Gre() {
           </div>
 
           <div className="flex-1 w-full flex items-center justify-center max-w-sm bg-red-100 rounded-3xl p-8 shadow-xl shadow-gray-200/50
-           absolute -right-34 top-20 h-44 border border-gray-50">
+           lg:absolute -right-34 top-20 h-44 border border-gray-50">
               <PlayCircle />
            </div>
         </div>
@@ -574,7 +575,7 @@ export default function Gre() {
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4 leading-tight">
             More students choose <br />
-            <span className="text-[#ff5733]">Ooshash prep</span> than anyone{" "}
+            <span className="text-[#ff5733]">Ooshas prep</span> than anyone{" "}
             <br />
             else.
           </h1>
@@ -598,13 +599,13 @@ export default function Gre() {
 
             <div
               className="border-2 border-gray-500 rounded-3xl md:w-1/2  mt-6 md:mt-0 text-left md:absolute
-            top-[7rem] pl-[10rem] pr-10 pt-10 right-[10rem] h-[75%] "
+            top-[7rem] p-2 md:pl-[10rem] md:pr-10 pt-10 right-[10rem] h-[75%] "
             >
-              <div className="hidden md:block w-1/2 absolute -top-3 left-0 rounded-[0_1rem] h-3 bg-[#F36C45]" />
+              <div className="hidden md:block lg:w-1/2 absolute -top-3 left-0 rounded-[0_1rem] h-3 bg-[#F36C45]" />
 
               <p className="text-gray-700 text-lg leading-relaxed mb-4 ">
-                "The best thing for me about Ooshash prep was the flexibility...
-                Ooshash being within my price range was the difference between
+                "The best thing for me about Ooshas prep was the flexibility...
+                Ooshas being within my price range was the difference between
                 me potentially getting into grad school and not getting in
                 anywhere."
               </p>
@@ -612,7 +613,7 @@ export default function Gre() {
                 <span>
                   <p className="font-bold text-gray-900">Eleanore P.</p>
                   <p className="text-sm text-gray-500">
-                    Ooshash Student - 2021
+                    Ooshas Student - 2021
                   </p>
                 </span>
                 <img src="/Gre/002.png" alt="img" />
@@ -631,7 +632,7 @@ export default function Gre() {
                 <span>
                   <p className="font-bold text-gray-900">Eleanore P.</p>
                   <p className="text-sm text-gray-500">
-                    Ooshash Student - 2021
+                    Ooshas Student - 2021
                   </p>
                 </span>
                 <img src="/Gre/002.png" alt="img" />
@@ -649,7 +650,7 @@ export default function Gre() {
                 <span>
                   <p className="font-bold text-gray-900">Eleanore P.</p>
                   <p className="text-sm text-gray-500">
-                    Ooshash Student - 2021
+                    Ooshas Student - 2021
                   </p>
                 </span>
                 <img src="/Gre/002.png" alt="img" />
