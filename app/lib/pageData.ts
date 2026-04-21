@@ -40,7 +40,7 @@ export const pageData: any = {
         name: "Home-Services",
         label: "Services",
         fields: [
-          { name: "title", label: "Service title", type: "text", required: false, placeholder: "" },
+          { name: "title", label: "Service title", type: "editor", required: false, placeholder: "" },
           {
             name: "items",
             label: "Items",
@@ -72,7 +72,7 @@ export const pageData: any = {
         name: "Home-Working-Process",
         label: "Working Process",
         fields: [
-          { name: "title", label: "Working Process title", type: "text", required: true },
+          { name: "title", label: "Working Process title", type: "editor", required: true },
           { name: "subtitle", label: "Working Process Subtitle", type: "text", required: false, placeholder: "Your journey to success starts here" },
           {
             name: "items",
@@ -90,7 +90,7 @@ export const pageData: any = {
         name: "Home-Tech-platform",
         label: "Tech Platform",
         fields: [
-          { name: "title", label: "Tech Platform Title", type: "text", required: true },
+          { name: "title", label: "Tech Platform Title", type: "editor", required: true },
           { name: "image", label: "Tech Platform Image", type: "file", required: false },
           {
             name: "items",
@@ -108,7 +108,7 @@ export const pageData: any = {
         name: "Home-page-mission",
         label: "Home Page Mission",
         fields: [
-          { name: "mission title", label: "Mission Title", type: "text", required: true },
+          { name: "mission title", label: "Mission Title", type: "editor", required: true },
           {
             name: "items",
             label: "Items",
@@ -125,41 +125,41 @@ export const pageData: any = {
         name: "Home-Video-Testimonial",
         label: "Video Testimonial",
         fields: [
-          { name: "video-testimonial-title", label: "Video Testimoinal Title", type: "text", required: true },
-          {
-            name: "items",
-            label: "Items",
-            type: "repeater",
-            fields: [
-              { name: "title", label: "Title", type: "text" },
-              { name: "youtubeurl", label: "Youtube Url", type: "text" }
-            ]
-          }
+          { name: "video-testimonial-title", label: "Video Testimoinal Title", type: "editor", required: true },
+          // {
+          //   name: "items",
+          //   label: "Items",
+          //   type: "repeater",
+          //   fields: [
+          //     { name: "title", label: "Title", type: "text" },
+          //     { name: "youtubeurl", label: "Youtube Url", type: "text" }
+          //   ]
+          // }
         ]
       },
       {
         name: "Home-Text-Testimonial",
         label: "Text Testimonial",
         fields: [
-          { name: "title", label: "Text Testimonial Title", type: "text", required: true },
-          {
-            name: "items",
-            label: "Items",
-            type: "repeater",
-            fields: [
-              { name: "Name", label: "Name", type: "text" },
-              { name: "Points", label: "Points", type: "text" },
-              { name: "Stars", label: "Stars", type: "number" },
-              { name: "content", label: "Content", type: "textarea" }
-            ]
-          }
+          { name: "title", label: "Text Testimonial Title", type: "editor", required: true },
+          // {
+          //   name: "items",
+          //   label: "Items",
+          //   type: "repeater",
+          //   fields: [
+          //     { name: "Name", label: "Name", type: "text" },
+          //     { name: "Points", label: "Points", type: "text" },
+          //     { name: "Stars", label: "Stars", type: "number" },
+          //     { name: "content", label: "Content", type: "textarea" }
+          //   ]
+          // }
         ]
       },
       {
         name: "Home-f&q",
         label: "Home page F&Q",
         fields: [
-          { name: "homef&q-title", label: "Home Page F&Q Title", type: "text", required: true },
+          { name: "homef&q-title", label: "Home Page F&Q Title", type: "editor", required: true },
           {
             name: "items",
             label: "Items",

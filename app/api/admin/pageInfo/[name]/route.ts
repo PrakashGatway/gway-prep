@@ -19,17 +19,19 @@ export async function GET(
   { params }: Params
 ): Promise<NextResponse> {
   try {
+    const {name} = await params;
     await connectDB();
 
+
     const page = await PageData.findOne({
-      name: params.name.toLowerCase(),
+      name: name.toLowerCase(),
     })
       .select("-__v")
       .lean();
 
     if (!page) {
       return NextResponse.json(
-        { error: `Page "${params.name}" not found.` },
+        { error: `Page "${name}" not found.` },
         { status: 404 }
       );
     }

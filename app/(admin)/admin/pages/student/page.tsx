@@ -66,7 +66,7 @@ const Blog = () => {
             {students.map((student) => (
               <div
                 key={student._id}
-                className="bg-gray-50 rounded-xl p-4 shadow-sm hover:shadow-md transition"
+                className="bg-orange-200 rounded-xl p-4 shadow-sm hover:shadow-md transition"
               >
                 {/* IMAGE + NAME */}
                 <div className="flex items-center gap-4">

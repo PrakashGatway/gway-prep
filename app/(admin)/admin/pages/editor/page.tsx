@@ -1,72 +1,116 @@
-  "use client";
+"use client";
 
-  import { Edit } from "lucide-react";
-  import { useRouter } from "next/navigation";
-  import React, { useState } from "react";
-  import { pageData } from "@/app/lib/pageData";
-  import EditorForm from "../../components/editorForm";
+import React, { useState } from "react";
+import { Edit, Pencil, Trash, ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
+import EditorForm from "../../components/editorForm";
+import { pageData } from "@/app/lib/pageData";
 
-  const page = () => {
-    const [show, setshow] = useState(true);
-    const [heading, setHeading] = useState<Record<string, any>>({});
-    const [activeSection, setActiveSection] = useState<string | null>(null);
-    const router = useRouter();
-    console.log(heading,"hlj")
+const Page = () => {
+  const [show, setShow] = useState(true);
+  const [heading, setHeading] = useState<Record<string, any>>({});
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
-    return (
-      <div className="p-4 flex flex-col gap-4 overflow-y-auto h-[90vh]">
-         
-            <div className="flex justify-between my-2 px-4">
-              <h1 className="text-2xl font-bold">{heading?.name ?  heading?.name + " page": "All pages"}</h1>
+  const router = useRouter();
 
-             {heading?.name &&  <button
-                onClick={() => {setshow(!show); setHeading({})}}
-                className="bg-red-600 text-white px-4 py-2 rounded"
-              >
-                Back
-              </button>}
-            </div>
+  // Dummy states (replace with your API data)
+  const loading = false;
+  const students: any[] = [];
 
-        {show &&
-          Object.keys(pageData).map((data: any, idx: number) => {
-            const ele = pageData[data]; // This gets the 'home' or 'blog' object
+  const handleDelete = (id: string) => {
+    console.log("Delete:", id);
+  };
+
+  return (
+    <div className="max-h-screen overflow-auto bg-gray-50 p-6">
+      {/* HEADER */}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-800">
+            {heading?.name ? `${heading.name} Page` : "All Pages"}
+          </h1>
+          <p className="text-sm text-gray-500 mt-1">Manage your pages data</p>
+        </div>
+
+        {heading?.name && (
+          <button
+            onClick={() => {
+              setShow(true);
+              setHeading({});
+              setActiveSection(null);
+            }}
+            className="flex items-center gap-2 bg-white border px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition"
+          >
+            <ArrowLeft size={18} />
+            Back
+          </button>
+        )}
+      </div>
+
+      {/* PAGE LIST */}
+      {show && (
+        <div className="grid md:grid-cols-2 gap-5 mt-6">
+          {Object.keys(pageData).map((data: any, idx: number) => {
+            const ele = pageData[data];
 
             return (
               <div
                 key={idx}
                 onClick={() => {
-                  setshow(false);
-                  setHeading(ele); // Sets the full object (name, description, sections)
+                  setShow(false);
+                  setHeading(ele);
                 }}
-                className={`${ele.require ? "block" : "hidden"} rounded-lg px-4 py-6 flex items-center justify-between bg-gray-200 cursor-pointer`}
+                className={`${
+                  ele.require ? "block" : "hidden"
+                } bg-white rounded-2xl p-5 border shadow-sm hover:shadow-md cursor-pointer transition`}
               >
-                {/* This prints "Home" or "Blog" */}
-                <span className="font-bold">{ele.name} Page</span>
-                <Edit />
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="font-bold text-lg text-gray-800">
+                      {ele.name} Page
+                    </h2>
+                    <p className="text-sm text-gray-500">
+                      Click to edit sections
+                    </p>
+                  </div>
+                  <Edit className="text-gray-500" />
+                </div>
               </div>
             );
           })}
+        </div>
+      )}
 
-        {!show && (
-          <>
-            {heading?.sections?.map((ele: any, idx: number) => (
-              <div key={idx} className="mb-4">
-                <div
-                  onClick={() =>
-                    setActiveSection(activeSection !== "" ? "" : ele?.name)
-                  }
-                  className="rounded-lg px-4 py-6 flex items-center justify-between bg-gray-200 cursor-pointer"
-                >
+      {/* SECTIONS */}
+      {!show && (
+        <div className="mt-6 space-y-4">
+          {heading?.sections?.map((ele: any, idx: number) => (
+            <div key={idx} className="bg-white rounded-2xl shadow-sm border">
+              <div
+                onClick={() =>
+                  setActiveSection(
+                    activeSection === ele?.name ? null : ele?.name,
+                  )
+                }
+                className="flex justify-between items-center p-5 cursor-pointer hover:bg-gray-50 rounded-2xl transition"
+              >
+                <span className="font-semibold text-gray-800">
                   {ele?.label}
-                  <Edit />
-                </div>
-                {activeSection === ele?.name && <EditorForm page={ele} slug={heading?.name}/>}
+                </span>
+                <Edit size={18} />
               </div>
-            ))}
-          </>
-        )}
-      </div>
-    );
-  };
 
-  export default page;
+              {activeSection === ele?.name && (
+                <div className="border-t p-5">
+                  <EditorForm page={ele} slug={heading?.name} />
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Page;
