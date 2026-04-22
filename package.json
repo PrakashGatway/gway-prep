@@ -13,6 +13,7 @@
     "@radix-ui/react-slot": "^1.2.4",
     "@upstash/ratelimit": "^2.0.8",
     "@upstash/redis": "^1.37.0",
+    "axios": "^1.15.2",
     "bcryptjs": "^3.0.3",
     "ckeditor5": "^48.0.0",
     "class-variance-authority": "^0.7.1",
