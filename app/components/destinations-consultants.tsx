@@ -31,7 +31,7 @@ const faqItems = [
   },
 ]
 
-export  function DestinationsAndConsultants() {
+export  function Consultants({data}:any) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   const toggle = (index: number) => {
@@ -40,12 +40,13 @@ export  function DestinationsAndConsultants() {
 
   return (
     <div className="bg-white max-w-7xl mx-auto rounded-xl  p-6 my-12">
-      <h2 className="text-4xl font-semibold text-gray-900 mb-6">
+      {/* <h2 className="text-4xl font-semibold text-gray-900 mb-6">
         Frequently <span className="text-[#F36C45]">Asked Questions</span>
-      </h2>
+      </h2> */}
+      <div dangerouslySetInnerHTML={{__html: data.fields.title}} />
 
       <div className="space-y-2">
-        {faqItems.map((item, index) => (
+        {data.fields.items.map((item, index) => (
           <div
             key={index}
             className="border-b border-gray-100 last:border-b-0"

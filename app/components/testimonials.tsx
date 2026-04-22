@@ -12,9 +12,9 @@ import { useEffect, useState } from "react";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 
-export function VideoTestimonialCard() {
+export function VideoTestimonialCard({heading,data}:any) {
   const [index, setIndex] = useState(0);
-
+ console.log(data)
   const videoData = [
     {
       _id: "1",
@@ -107,38 +107,39 @@ export function VideoTestimonialCard() {
     <div className="max-w-7xl mx-auto">
       {/* Heading */}
       <div className="text-center my-10">
-        <h1 className="text-4xl font-bold">
+        {/* <h1 className="text-4xl font-bold">
           <span className="text-[#FF6B35]">What Our</span>{" "}
           <span className="text-[#626363]">Students Say</span>
-        </h1>
+        </h1> */}
+      <div dangerouslySetInnerHTML={{__html: heading?.fields['video-testimonial-title']}} />
+
       </div>
 
       {/* Slider */}
       <div className="relative sm:px-6 lg:px-8 mx-auto overflow-hidden">
         <div ref={sliderRef} className="keen-slider">
-          {videoData.map((item) => {
-            const videoId = getYoutubeId(item.youtubeUrl);
-
+          {data.data.map((item:any) => {
+            const videoId = getYoutubeId(item.video);
+              if(!videoId) return ;
             return (
               <div
                 key={item._id}
                 className="keen-slider__slide flex justify-center"
               >
-                {/* PNG FRAME */}
+                
                 <div
                   className="relative w-[420px] h-[270px] bg-no-repeat bg-contain bg-center bg-[#F46C44]"
                   // style={{ backgroundImage: "url(/image/video-border.png)" }}
                 >
                   <div className="absolute inset-[14px] flex flex-col">
-                    {/* HEADER */}
+                  
                     <div className="text-white text-sm mb-2 truncate mt-[10px] ml-[27px]">
                       <span className="font-semibold">
-                        Congratulations, {item.studentName}!
+                        Congratulations, {item.name}!
                       </span>{" "}
-                      | {item.exam} {item.score}
+                      | {item.couse} {item.score}
                     </div>
 
-                    {/* VIDEO */}
                     <div className="flex items-center justify-center mt-4 h-[175px]  rounded-[20px] overflow-hidden bg-black">
                       {videoId && (
                         <iframe
@@ -193,7 +194,7 @@ export function VideoTestimonialCard() {
 
 
 
-export function TextTestimonials() {
+export function TextTestimonials({heading,data}:any) {
   const testimonials = [
     {
       name: "Khushal",
@@ -292,17 +293,17 @@ export function TextTestimonials() {
         <div className="flex flex-col  gap-8 md:gap-12">
           
           <div className="w-full flex flex-col text-center">
-            <h1 className="text-2xl sm:text-3xl md:text4xl font-semibold text-gray-600 leading-tight">
+            {/* <h1 className="text-2xl sm:text-3xl md:text4xl font-semibold text-gray-600 leading-tight">
               What Our Test Preparation {" "}
               <span className="text-[#FF6B35]">Achievers Say</span>
-              
-            </h1>
-          </div>
+            </h1> */}
+          <div dangerouslySetInnerHTML={{__html: heading.fields['title']}} />
 
+          </div>
 
           <div ref={sliderRef} className="keen-slider flex items-center  max-w-7xl p-xl" style={{overflow : "visible"}}>
 
-            {testimonials.map((item,idx) => {
+            {data.data.filter(ele => ele.type === "image").map((item:any,idx:number) => {
               const num = idx % 2 === 0 ? 'rotate-1': '-rotate-1';
               return (
                 
@@ -312,7 +313,7 @@ export function TextTestimonials() {
                     {item.name}: {item.score}
                   </h3>
                   <div className="flex gap-1">
-                    {[...Array(5)].map((_, i) => (
+                    {[...Array(item.rating)].map((_, i) => (
                       <Star
                         key={i}
                         size={20}
@@ -322,7 +323,7 @@ export function TextTestimonials() {
                   </div>
                 </div>
                 <p className="text-gray-700 leading-relaxed text-sm sm:text-base">
-                  {item.text}
+                  {item.message}
                 </p>
               </div>
               );

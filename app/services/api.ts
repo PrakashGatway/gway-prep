@@ -35,3 +35,11 @@ export const deleteBlogcategory = async(id: string) => {
 }
 
 
+// ---------------------------------getpageinfo---------------------
+export const getPageInfo = async (id: string) => {
+    const res = await axiosInstance.get(`/admin/pageInfo/${id}`);
+    return res.data.data;
+}
+
+
+

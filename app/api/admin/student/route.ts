@@ -85,6 +85,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       ? {
           $or: [
             { name: { $regex: query, $options: "i" } },
+            { type: { $regex: query, $options: "i" } },
             { university: { $regex: query, $options: "i" } },
           ],
         }

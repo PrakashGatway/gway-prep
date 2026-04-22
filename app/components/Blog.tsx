@@ -3,7 +3,7 @@ import { details, li } from "framer-motion/client";
 import { Search } from "lucide-react";
 import Link from "next/link";
 import { BlogSlider } from "./blog-slider";
-import { DestinationsAndConsultants } from "./destinations-consultants";
+import { Consultants } from "./destinations-consultants";
 
 const categories = [
   "ALL",
@@ -180,7 +180,7 @@ export default function Blog() {
               <img src={"/image/about.jpeg"} alt="img" />
             </div>
       
-      <DestinationsAndConsultants />
+      <Consultants />
     </section>
   );
 }

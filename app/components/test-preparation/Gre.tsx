@@ -659,7 +659,7 @@ export default function Gre() {
         </div>
       </section>
 
-      <DestinationsAndConsultants />
+      <Consultants />
     </>
   );
 }
@@ -668,7 +668,7 @@ import { Star } from "lucide-react";
 import { Aboutresult } from "../about_result";
 import { TextTestimonials } from "../testimonial_gre";
 import PricingSection from "../plan";
-import { DestinationsAndConsultants } from "../destinations-consultants";
+import { Consultants } from "../destinations-consultants";
 import { bg } from "date-fns/locale";
 
 function TestimonialCard({ 

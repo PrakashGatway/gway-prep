@@ -28,15 +28,19 @@ const exams = [
     color: "bg-[#555] hover:bg-orange-600 cursor-pointer" },
 ]
 
-export function TestPrepGrid() {
+export function TestPrepGrid({data} : {data: any}) {
+  
   return (
     <section className="py-20 bg-white sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-4xl font-semibold text-center mb-10  pb-[10px] ">
+        {/* <h2 className="text-4xl font-semibold text-center mb-10  pb-[10px] ">
           <span className="text-brand-orange">Courses </span> <span className="text-[#626363]">We Offer</span> 
-        </h2>
+        </h2> */}
+
+          <div dangerouslySetInnerHTML={{__html: data.fields.title}} />
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {exams.map((exam, i) => (
+          {data.fields.items.map((exam:any, i:number) => (
             <motion.div
             key={i}
             initial={{ opacity: 0, y: 20 }}
@@ -49,12 +53,12 @@ export function TestPrepGrid() {
           
               className={cn(
                 "rounded-3xl p-8 text-white flex flex-col items-center text-center justify-center transition-transform hover:scale-105 shadow-lg",
-                exam.color,
+                "bg-[#555] hover:bg-orange-600 cursor-pointer",
                 exam.name === "DUOLINGO" && "lg:col-start-2",
               )}
             >
-              <h3 className="text-3xl font-black mb-2">{exam.name}</h3>
-              <p className="text-sm text-white/90 leading-relaxed max-w-[400px]">{exam.desc}</p>
+              <h3 className="text-3xl font-black mb-2 uppercase">{exam.title}</h3>
+              <p className="text-sm text-white/90 leading-relaxed max-w-[400px]">{exam.subtitle}</p>
             </motion.div>
           ))}
         </div>

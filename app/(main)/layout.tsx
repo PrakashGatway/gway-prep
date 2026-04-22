@@ -2,10 +2,10 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "../globals.css";
-import { Topbar } from "@/app/(main)/components/topbar";
-import { Navbar } from "@/app/(main)/components/navbar";
+import { Topbar } from "@/app/components/topbar";
+import { Navbar } from "@/app/components/navbar";
 import { Noto_Sans } from "next/font/google";
-import { Footer } from "@/app/(main)/components/footer";
+import { Footer } from "@/app/components/footer";
 import Script from "next/script";
 import { Montserrat } from "next/font/google";
 

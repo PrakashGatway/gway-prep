@@ -12,7 +12,24 @@ export const pageData: any = {
         fields: [
           { name: "title", label: "Hero Title", type: "text", required: false, placeholder: "Welcome to Our Platform" },
           { name: "subtitle", label: "Hero Subtitle", type: "text", required: false, placeholder: "Your journey to success starts here" },
-          { name: "paragraph", label: "Hero paragraph", type: "textarea", required: false, placeholder: "" }
+          { name: "paragraph", label: "Hero paragraph", type: "textarea", required: false, placeholder: "" },
+          {
+            name: "students",
+            label: "students",
+            type: "repeater",
+            fields: [
+              { name: "student", label: "Student", type: "text", placeholder : "Enter the name" },
+              { name: "course", label: "Course", type: "text", placeholder : "Enter the Course name" },
+              { name: "score", label: "Score", type: "text", placeholder : "Enter the name" },
+              { name: "studentImg", label: "Student Image", type: "file", placeholder : "Enter the name" },
+              { name: "experience", label: "Experience", type: "text", placeholder : "Enter the lable name || value" },
+              { name: "Happystudent", label: "Happy student", type: "text", placeholder : "Enter the lable name || value" },
+              { name: "Rating", label: "Rating", type: "text", placeholder : "Enter the lable name || value" },
+              { name: "Lectured", label: "Lectured", type: "text", placeholder : "Enter the lable name || value" }
+
+            ]
+          }
+          
         ]
       },
       {
@@ -22,20 +39,20 @@ export const pageData: any = {
           { name: "Formsection", label: "form Image", type: "file", accept: "image/*" }
         ]
       },
-      {
-        name: "Home-Student",
-        label: "Student",
-        fields: [
-          {
-            name: "students",
-            label: "students",
-            type: "repeater",
-            fields: [
-              { name: "student", label: "student", type: "select", option: [] }
-            ]
-          },
-        ]
-      },
+      // {
+      //   name: "Home-Student",
+      //   label: "Student",
+      //   fields: [
+      //     {
+      //       name: "students",
+      //       label: "students",
+      //       type: "repeater",
+      //       fields: [
+      //         { name: "student", label: "student", type: "select", option: [] }
+      //       ]
+      //     },
+      //   ]
+      // },
       {
         name: "Home-Services",
         label: "Services",
@@ -56,7 +73,7 @@ export const pageData: any = {
         name: "Home-Courses",
         label: "Courses",
         fields: [
-          { name: "title", label: "Courses title", type: "text", required: true },
+          { name: "title", label: "Courses title", type: "editor", required: true },
           {
             name: "items",
             label: "Items",
@@ -121,45 +138,45 @@ export const pageData: any = {
           }
         ]
       },
-      {
-        name: "Home-Video-Testimonial",
-        label: "Video Testimonial",
-        fields: [
-          { name: "video-testimonial-title", label: "Video Testimoinal Title", type: "editor", required: true },
-          // {
-          //   name: "items",
-          //   label: "Items",
-          //   type: "repeater",
-          //   fields: [
-          //     { name: "title", label: "Title", type: "text" },
-          //     { name: "youtubeurl", label: "Youtube Url", type: "text" }
-          //   ]
-          // }
-        ]
-      },
-      {
-        name: "Home-Text-Testimonial",
-        label: "Text Testimonial",
-        fields: [
-          { name: "title", label: "Text Testimonial Title", type: "editor", required: true },
-          // {
-          //   name: "items",
-          //   label: "Items",
-          //   type: "repeater",
-          //   fields: [
-          //     { name: "Name", label: "Name", type: "text" },
-          //     { name: "Points", label: "Points", type: "text" },
-          //     { name: "Stars", label: "Stars", type: "number" },
-          //     { name: "content", label: "Content", type: "textarea" }
-          //   ]
-          // }
-        ]
-      },
+      // {
+      //   name: "Home-Video-Testimonial",
+      //   label: "Video Testimonial",
+      //   fields: [
+      //     { name: "video-testimonial-title", label: "Video Testimoinal Title", type: "editor", required: true },
+      //     // {
+      //     //   name: "items",
+      //     //   label: "Items",
+      //     //   type: "repeater",
+      //     //   fields: [
+      //     //     { name: "title", label: "Title", type: "text" },
+      //     //     { name: "youtubeurl", label: "Youtube Url", type: "text" }
+      //     //   ]
+      //     // }
+      //   ]
+      // },
+      // {
+      //   name: "Home-Text-Testimonial",
+      //   label: "Text Testimonial",
+      //   fields: [
+      //     { name: "title", label: "Text Testimonial Title", type: "editor", required: true },
+      //     // {
+      //     //   name: "items",
+      //     //   label: "Items",
+      //     //   type: "repeater",
+      //     //   fields: [
+      //     //     { name: "Name", label: "Name", type: "text" },
+      //     //     { name: "Points", label: "Points", type: "text" },
+      //     //     { name: "Stars", label: "Stars", type: "number" },
+      //     //     { name: "content", label: "Content", type: "textarea" }
+      //     //   ]
+      //     // }
+      //   ]
+      // },
       {
         name: "Home-f&q",
         label: "Home page F&Q",
         fields: [
-          { name: "homef&q-title", label: "Home Page F&Q Title", type: "editor", required: true },
+          { name: "title", label: "Home Page F&Q Title", type: "editor", required: true },
           {
             name: "items",
             label: "Items",

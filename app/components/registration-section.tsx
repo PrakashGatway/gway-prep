@@ -47,7 +47,7 @@ const formdata = [
   }
 ]
 
-export function RegistrationSection() {
+export function RegistrationSection({data}:{data : any}) {
 
   const [index, setIndex] = useState(0)
 
@@ -66,7 +66,7 @@ export function RegistrationSection() {
   <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 items-center gap-8 sm:gap-12 lg:gap-16">
     
     <div>
-        <img src="/home/1.png" alt="img"  />
+        <img src={data.fields.img ?? "/home/1.png"} alt="img"  />
     </div>
 
     <div className=" w-full">

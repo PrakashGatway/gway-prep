@@ -6,121 +6,92 @@ import { motion } from "framer-motion";
 
 import CountUp from "react-countup";
 
-const images = [
-  {
-    url: "https://t3.ftcdn.net/jpg/06/23/84/22/360_F_623842281_ECGgEpMEkQdH83gbmexIn5l3ACl7V3M0.jpg",
-    score: 8,
-    name: "swati gupta",
-    score_type: "Gmat Score",
-    data: [
-      {
-        number: "20",
-        text: "Years of Experience",
-        past: "+",
-      },
-      {
-        number: "3000",
-        text: "Happy Students",
-        past: "+",
-      },
-      {
-        number: "4",
-        text: "Overall  Rating",
-        past: ".8/5",
-      },
-      {
-        number: "20000",
-        text: "Total Hours Lectured",
-        past: "+",
-      },
-    ],
-  },
-  {
-    url: "https://img.freepik.com/premium-photo/young-handsome-man-pointing-camera-choosing-you-university-student-concept_1194-262936.jpg",
-    score: 9,
-    name: "john doe",
-    score_type: "ACT Score",
-    data: [
-      {
-        number: "20",
-        text: "Years of Experience",
-        past: "+",
-      },
-      {
-        number: "3000",
-        text: "Happy Students",
-        past: "+",
-      },
-      {
-        number: "4",
-        text: "Overall  Rating",
-        past: ".8/5",
-      },
-      {
-        number: "20000",
-        text: "Total Hours Lectured",
-        past: "+",
-      },
-    ],
-  },
-  {
-    url: "https://as2.ftcdn.net/jpg/05/29/12/57/1000_F_529125762_omW1yTehDLLFJKwLJjRET0G3sXiQnK5g.jpg",
-    score: 7,
-    name: "jane smith",
-    score_type: "PSAT Score",
-    data: [
-      {
-        number: "20",
-        text: "Years of Experience",
-        past: "+",
-      },
-      {
-        number: "3000",
-        text: "Happy Students",
-        past: "+",
-      },
-      {
-        number: "4",
-        text: "Overall  Rating",
-        past: ".8/5",
-      },
-      {
-        number: "20000",
-        text: "Total Hours Lectured",
-        past: "+",
-      },
-    ],
-  },
-];
 
-const data = [
-  {
-    number: "20",
-    text: "Years of Experience",
-    past: "+",
-  },
-  {
-    number: "3000",
-    text: "Happy Students",
-    past: "+",
-  },
-  {
-    number: "4.8",
-    text: "Overall  Rating",
-    past: "/5",
-  },
-  {
-    number: "20000",
-    text: "Total Hours Lectured",
-    past: "+",
-  },
-];
 
-export function Hero() {
+type HeroProps = {
+  data: {
+    fields: {
+      title: string;
+      subtitle: string;
+      paragraph: string;
+      students : any;
+    };
+  };
+};
+
+
+export function Hero({data}:HeroProps) {
   const bookCallRef = useRef<HTMLButtonElement>(null);
   const callUsRef = useRef<HTMLButtonElement>(null);
   const [isDesktop, setIsDesktop] = useState(false);
-
+const [images,setimages] = useState<any[]>([
+  {
+              "student": "Ankit ",
+              "course": "Act",
+              "score": "0",
+              "studentImg": "https://res.cloudinary.com/drsainihk/image/upload/v1776831639/cway-admin/xhzumiirdnxawaccrwr8.jpg",
+              "experience": "Years of Experience || 20",
+              "Happystudent": "Happy Students || 3000",
+              "Rating": "Overall Rating || 4",
+              "Lectured": "Total Hours Lectured || 20000"
+  },
+  // {
+  //   url: "https://img.freepik.com/premium-photo/young-handsome-man-pointing-camera-choosing-you-university-student-concept_1194-262936.jpg",
+  //   score: 9,
+  //   name: "john doe",
+  //   score_type: "ACT Score",
+  //   data: [
+  //     {
+  //       number: "20",
+  //       text: "Years of Experience",
+  //       past: "+",
+  //     },
+  //     {
+  //       number: "3000",
+  //       text: "Happy Students",
+  //       past: "+",
+  //     },
+  //     {
+  //       number: "4",
+  //       text: "Overall  Rating",
+  //       past: ".8/5",
+  //     },
+  //     {
+  //       number: "20000",
+  //       text: "Total Hours Lectured",
+  //       past: "+",
+  //     },
+  //   ],
+  // },
+  // {
+  //   url: "https://as2.ftcdn.net/jpg/05/29/12/57/1000_F_529125762_omW1yTehDLLFJKwLJjRET0G3sXiQnK5g.jpg",
+  //   score: 7,
+  //   name: "jane smith",
+  //   score_type: "PSAT Score",
+  //   data: [
+  //     {
+  //       number: "20",
+  //       text: "Years of Experience",
+  //       past: "+",
+  //     },
+  //     {
+  //       number: "3000",
+  //       text: "Happy Students",
+  //       past: "+",
+  //     },
+  //     {
+  //       number: "4",
+  //       text: "Overall  Rating",
+  //       past: ".8/5",
+  //     },
+  //     {
+  //       number: "20000",
+  //       text: "Total Hours Lectured",
+  //       past: "+",
+  //     },
+  //   ],
+  // },
+]);
   const [index, setIndex] = useState(0);
 
   // AUTO SLIDE
@@ -167,23 +138,22 @@ export function Hero() {
       bg-no-repeat 
       flex gap-12 items-center justify-center flex-wrap h-auto "
     >
-      <div className=" mx-auto p-4 sm:px-6  flex flex-col lg:flex-row  items-center gap-6 md:gap-10">
+      <div className=" mx-auto p-4 sm:px-6  flex flex-col lg:flex-row  items-center gap-6 md:gap-10 max-w-7xl">
         {/* Left Content Section */}
         <div className="lg:w-[70%] w-full pt-20">
           <div className="">
             <h1 className="text-2xl  md:text-3xl lg:text-5xl font-bold leading-tight text-white">
-              World's Leading Test <p> Prep, Tutoring & Collage </p> Admissions
-              Centre
+              {data.fields.title || `World's Leading Test <p> Prep, Tutoring & Collage </p> Admissions
+              Centre`}
             </h1>
 
             <h1 className="text-xl  md:text-2xl lg:text-4xl font-semibold leading-tight text-white mt-4">
-              Coaching for SAT, AP, IB,IGCSE, A<br /> -Levels & Competitive
-              Entrance Exams
+              {data.fields.subtitle ||"Coaching for SAT, AP, IB,IGCSE, A -Levels & CompetitiveEntrance Exams"}
             </h1>
 
             <p className=" mt-2 md:mt-4 leading-relaxed text-lg text-white font-medium">
-              Live online exam preparation, score optimisation, and personalised
-              admissions mentorship.
+             {data.fields.paragraph || ` Live online exam preparation, score optimisation, and personalised
+              admissions mentorship.`}
             </p>
           </div>
 
@@ -195,7 +165,6 @@ export function Hero() {
           </button>
         </div>
 
-        {/* Right Image Section */}
 
         {/* ================= LEFT CONTENT ================= */}
         <div className="lg:w-1/2 w-full flex flex-col gap-4">
@@ -210,7 +179,7 @@ export function Hero() {
                     <div
                       className="absolute inset-0 z-10 lg:w-[335px] lg:h-[335px] lg:top-[41px] lg:left-[38px]"
                       style={{
-                        backgroundImage: `url(${images?.[index]?.url})`,
+                        backgroundImage: `url(${images?.[index]?.studentImg})`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         // width: "335px",
@@ -240,12 +209,12 @@ export function Hero() {
               className="flex gap-4 lg:w-[24rem] w-full items-center justify-around capitalize mb-10"
             >
               <h2 className="text-2xl font-bold text-white">
-                {images[index].name}
+                {images[index].student}
               </h2>
               <ul className="text-lg text-white">
-                <li>{images[index].score_type}</li>
+                <li>{images[index].course}</li>
                 <li className="text-3xl font-extrabold text-center">
-                  {images[index].score}
+                  {images[index]?.score}
                 </li>
               </ul>
             </div>
@@ -263,15 +232,15 @@ export function Hero() {
           transition={{ duration: 0.6, delay: 0.2 }}
          
         >
-          {images[index].data.map((ele, index) => (
-            <div key={index} className="relative min-w-[18rem]">
+          {['experience','Happystudent','Rating','Lectured'].map((ele, idx) => (
+            <div key={idx} className="relative min-w-[18rem]">
               <div className="absolute  w-full h-full border-2 border-[#F36C45] rounded-[26px] -rotate-5 " />
               <div className="bg-white p-4 rounded-[26px] text-center shadow-sm relative">
                 <h2 className="text-4xl font-bold text-[#F36C45] mb-2">
-                  <CountUp end={parseInt(ele.number)} duration={1} />
-                  {ele?.past}
+                  <CountUp end={parseInt(images[index]?.[ele]?.split("||")[1])} duration={1} />
+                  {ele === "Rating" ? '.8/5': "+"}
                 </h2>
-                <p className="text-gray-600 text-xl">{ele.text}</p>
+                <p className="text-gray-600 text-xl">{images[index]?.[ele]?.split("||")[0]}</p>
               </div>
             </div>
           ))}
