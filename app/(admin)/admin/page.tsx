@@ -69,7 +69,7 @@ const AdminLoginPage = () => {
     setIsLoading(true);
 
     try {
-      const res = await fetch("/api/admin/auth/login", {
+      const res = await fetch("https://www.ooshasprep.com/api/admin/auth/login", {
         method: "post",
         headers: { "Content-type": "application/json" },
         body: JSON.stringify(form),
@@ -106,7 +106,7 @@ const AdminLoginPage = () => {
  async function Logout() {
     try {
       
-      const res = await fetch("/api/admin/auth/logout", {
+      const res = await fetch("https://www.ooshasprep.com//api/admin/auth/logout", {
         method: "post"
       });
 

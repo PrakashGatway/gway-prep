@@ -4,7 +4,7 @@ const getBaseURL = () => {
   if (process.env.NODE_ENV === "development") {
     return "http://localhost:3000/api";
   }
-  return `${process.env.NEXT_PUBLIC_BACKEND_API}/api`;
+  return `${process.env.NEXT_PUBLIC_API_URL}/api`;
 };
 
 const axiosInstance = axios.create({

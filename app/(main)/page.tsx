@@ -84,6 +84,8 @@ import { Mission } from "@/app/components/mission";
 import { Aboutresult } from "@/app/components/about_result";
 import { Banerhome } from "@/app/components/banerhome";
 import { getPageInfo, getStudent } from "../services/api";
+export const dynamic = "force-dynamic";
+
 
 export const metadata: Metadata = {
   title: "Gateway Abroad Education - Best Study Abroad Consultants in Jaipur",

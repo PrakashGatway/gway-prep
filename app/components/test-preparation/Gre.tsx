@@ -1,4 +1,7 @@
-  "use client";
+
+
+
+"use client";
 import { ChevronDown, CircleCheckBig, CircleX, PlayCircle } from "lucide-react";
 
 import { useKeenSlider } from "keen-slider/react";
@@ -87,7 +90,7 @@ const priceplan = {
   pricing_plans: [
     {
       plan_name: "Premium · 1 month",
-      bg:'gray-100',
+      bg: "gray-100",
       subtitle: "Great option for limited study time",
       content_features: [
         "8 full sections of official GRE® questions",
@@ -107,7 +110,7 @@ const priceplan = {
     {
       plan_name: "Premium · 1 month",
       is_highlighted: true,
-      bg:'orange-100',
+      bg: "orange-100",
       subtitle: "Great option for limited study time",
       content_features: [
         "8 full sections of official GRE® questions",
@@ -126,7 +129,7 @@ const priceplan = {
     },
     {
       plan_name: "Premium · 1 month",
-      bg:'[#00b7ff0f]',
+      bg: "[#00b7ff0f]",
       subtitle: "Great option for limited study time",
       bundle_offer: "Bundle and save $854 ($1073 value)",
       content_features: [
@@ -147,53 +150,50 @@ const priceplan = {
   ],
 };
 
-  const testimonials = [
-    {
-      id: 1,
-      name: "Sarah Mitchell",
-      score: 10,
-      rating: 5,
-      testimonial:
-        "Absolutely transformed our workflow! The intuitive design and seamless integration saved us countless hours. Best decision we made this year.",
-    },
-    {
-      id: 2,
-      name: "James Chen",
-      score: 9,
-      rating: 5,
-      testimonial:
-        "Outstanding service and support. The team went above and beyond to ensure everything was perfect. Highly recommend to anyone looking for quality.",
-    },
-    {
-      id: 3,
-      name: "Emily Rodriguez",
-      score: 10,
-      rating: 5,
-      testimonial:
-        "Game-changer for our business. The results exceeded our expectations and the ROI was visible within the first month. Couldn't be happier!",
-    },
-    {
-      id: 4,
-      name: "Michael Thompson",
-      score: 9,
-      rating: 4,
-      testimonial:
-        "Professional, reliable, and incredibly efficient. They delivered exactly what was promised and more. A pleasure to work with from start to finish.",
-    },
-    {
-      id: 5,
-      name: "Lisa Anderson",
-      score: 10,
-      rating: 5,
-      testimonial:
-        "From the first consultation to final delivery, the experience was flawless. Their attention to detail and commitment to excellence is unmatched.",
-    },
-  ];
-
+const testimonials = [
+  {
+    id: 1,
+    name: "Sarah Mitchell",
+    score: 10,
+    rating: 5,
+    testimonial:
+      "Absolutely transformed our workflow! The intuitive design and seamless integration saved us countless hours. Best decision we made this year.",
+  },
+  {
+    id: 2,
+    name: "James Chen",
+    score: 9,
+    rating: 5,
+    testimonial:
+      "Outstanding service and support. The team went above and beyond to ensure everything was perfect. Highly recommend to anyone looking for quality.",
+  },
+  {
+    id: 3,
+    name: "Emily Rodriguez",
+    score: 10,
+    rating: 5,
+    testimonial:
+      "Game-changer for our business. The results exceeded our expectations and the ROI was visible within the first month. Couldn't be happier!",
+  },
+  {
+    id: 4,
+    name: "Michael Thompson",
+    score: 9,
+    rating: 4,
+    testimonial:
+      "Professional, reliable, and incredibly efficient. They delivered exactly what was promised and more. A pleasure to work with from start to finish.",
+  },
+  {
+    id: 5,
+    name: "Lisa Anderson",
+    score: 10,
+    rating: 5,
+    testimonial:
+      "From the first consultation to final delivery, the experience was flawless. Their attention to detail and commitment to excellence is unmatched.",
+  },
+];
 
 export default function Gre() {
-
-
   const [currentSlide, setCurrentSlide] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -291,13 +291,13 @@ export default function Gre() {
             </div>
 
             <div className="w-1/2 pt-10">
-                <img src="/Gre/main.png" alt="img" />
+              <img src="/Gre/main.png" alt="img" />
             </div>
           </div>
         </div>
       </section>
 
-      <Aboutresult />
+      <Aboutresult data={[]} />
 
       <TextTestimonials />
 
@@ -364,9 +364,10 @@ export default function Gre() {
       </section>
 
       <section className="lg:min-h-150 relative lg:overflow-hidden  h-60 ">
-
-        <div className="flex p-10 pl-20  flex-row-reverse items-center mx-auto lg:h-[60vh] 
-        bg-[url('/Gre/bg2.jpg')] pt-20 bg-cover bg-center bg-no-repeat">
+        <div
+          className="flex p-10 pl-20  flex-row-reverse items-center mx-auto lg:h-[60vh] 
+        bg-[url('/Gre/bg2.jpg')] pt-20 bg-cover bg-center bg-no-repeat"
+        >
           <div className="lg:w-1/2 relative text-white px-auto">
             <span className="text-5xl font-bold ">
               Official GRE Questions
@@ -400,33 +401,30 @@ export default function Gre() {
           </p>
 
           <div className=" flex flex-col gap-6">
-
-          {
-            [
+            {[
               {
-              "heading" : "5,000+ Similar Practice Questions",
-              "content" : "Missed a question? Get similar, high-quality Al-genrated problems to practice again",
-              "img":"/Gre/que.png"
-            },
+                heading: "5,000+ Similar Practice Questions",
+                content:
+                  "Missed a question? Get similar, high-quality Al-genrated problems to practice again",
+                img: "/Gre/que.png",
+              },
               {
-              "heading" : "AL Tutor",
-              "content" : "Chat with an Al expert trained on lessons and content and ready to explain whatever you don't grasp.",
-              "img":"/Gre/que.png"
-
-            }
-          ].map((ele,idx) => (
-            <div className={`border-2 rounded-xl bg-gray-100 w-full flex items-center gap-4  ${idx === 1 && 'flex-row-reverse'}`}>
+                heading: "AL Tutor",
+                content:
+                  "Chat with an Al expert trained on lessons and content and ready to explain whatever you don't grasp.",
+                img: "/Gre/que.png",
+              },
+            ].map((ele, idx) => (
+              <div
+                className={`border-2 rounded-xl bg-gray-100 w-full flex items-center gap-4  ${idx === 1 && "flex-row-reverse"}`}
+              >
                 <img src={ele.img} alt="img" className="h-1/4" />
                 <span className="p-4">
-                  <h2 className="font-bold text-xl mb-4">
-                    {ele.heading}
-                  </h2>
+                  <h2 className="font-bold text-xl mb-4">{ele.heading}</h2>
                   <p>{ele.content}</p>
                 </span>
-            </div>
-          ))
-          }
-
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -466,7 +464,7 @@ export default function Gre() {
       >
         <div className="flex justify-center items-center flex-col w-full mt-20">
           <span className="text-5xl font-bold ">
-            <p className=" my-2 flex items-center flex-wrap">
+            <span className=" my-2 flex items-center flex-wrap">
               Improve Your GRE
               <p
                 className="mx-1 border-2 border-orange-600 rounded-full text-xl 
@@ -475,7 +473,7 @@ export default function Gre() {
                 R
               </p>
               Score,
-            </p>
+            </span>
             <p className="text-[#F36C45] lg:text-center">Guaranted!</p>
           </span>
 
@@ -551,8 +549,10 @@ export default function Gre() {
           Video based learning
         </p>
 
-        <div className="bg-gray-100 border-4  rounded-[48px] p-8 md:p-16 flex flex-col
-         md:flex-row items-center gap-12 text-left max-w-4xl relative">
+        <div
+          className="bg-gray-100 border-4  rounded-[48px] p-8 md:p-16 flex flex-col
+         md:flex-row items-center gap-12 text-left max-w-4xl relative"
+        >
           <div className="flex-1 lg:text-center lg:max-w-1/2">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 leading-tight">
               Video explanations for
@@ -564,10 +564,12 @@ export default function Gre() {
             </p>
           </div>
 
-          <div className="flex-1 w-full flex items-center justify-center max-w-sm bg-red-100 rounded-3xl p-8 shadow-xl shadow-gray-200/50
-           lg:absolute -right-34 top-20 h-44 border border-gray-50">
-              <PlayCircle />
-           </div>
+          <div
+            className="flex-1 w-full flex items-center justify-center max-w-sm bg-red-100 rounded-3xl p-8 shadow-xl shadow-gray-200/50
+           lg:absolute -right-34 top-20 h-44 border border-gray-50"
+          >
+            <PlayCircle />
+          </div>
         </div>
       </section>
 
@@ -605,16 +607,14 @@ export default function Gre() {
 
               <p className="text-gray-700 text-lg leading-relaxed mb-4 ">
                 "The best thing for me about Ooshas prep was the flexibility...
-                Ooshas being within my price range was the difference between
-                me potentially getting into grad school and not getting in
+                Ooshas being within my price range was the difference between me
+                potentially getting into grad school and not getting in
                 anywhere."
               </p>
               <div className="flex justify-between items-center ">
                 <span>
                   <p className="font-bold text-gray-900">Eleanore P.</p>
-                  <p className="text-sm text-gray-500">
-                    Ooshas Student - 2021
-                  </p>
+                  <p className="text-sm text-gray-500">Ooshas Student - 2021</p>
                 </span>
                 <img src="/Gre/002.png" alt="img" />
               </div>
@@ -627,16 +627,14 @@ export default function Gre() {
               helpful explanations. Also, the AI tutor helped clear any further
               doubts."
             </p>
-            
-              <div className="flex justify-between items-center ">
-                <span>
-                  <p className="font-bold text-gray-900">Eleanore P.</p>
-                  <p className="text-sm text-gray-500">
-                    Ooshas Student - 2021
-                  </p>
-                </span>
-                <img src="/Gre/002.png" alt="img" />
-              </div>
+
+            <div className="flex justify-between items-center ">
+              <span>
+                <p className="font-bold text-gray-900">Eleanore P.</p>
+                <p className="text-sm text-gray-500">Ooshas Student - 2021</p>
+              </span>
+              <img src="/Gre/002.png" alt="img" />
+            </div>
           </div>
 
           <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm text-left">
@@ -645,16 +643,14 @@ export default function Gre() {
               everything was super easy to use! A bonus is that Magoosh has
               official ETS practice sections..."
             </p>
-            
-              <div className="flex justify-between items-center ">
-                <span>
-                  <p className="font-bold text-gray-900">Eleanore P.</p>
-                  <p className="text-sm text-gray-500">
-                    Ooshas Student - 2021
-                  </p>
-                </span>
-                <img src="/Gre/002.png" alt="img" />
-              </div>
+
+            <div className="flex justify-between items-center ">
+              <span>
+                <p className="font-bold text-gray-900">Eleanore P.</p>
+                <p className="text-sm text-gray-500">Ooshas Student - 2021</p>
+              </span>
+              <img src="/Gre/002.png" alt="img" />
+            </div>
           </div>
         </div>
       </section>
@@ -671,12 +667,12 @@ import PricingSection from "../plan";
 import { Consultants } from "../destinations-consultants";
 import { bg } from "date-fns/locale";
 
-function TestimonialCard({ 
-  name = "", 
-  score = 0, 
-  rating = 0, 
-  testimonial = "", 
-  isActive = false 
+function TestimonialCard({
+  name = "",
+  score = 0,
+  rating = 0,
+  testimonial = "",
+  isActive = false,
 }: {
   name?: string;
   score?: number;

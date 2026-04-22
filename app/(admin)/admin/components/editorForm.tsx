@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { Plus, Trash2, Save } from "lucide-react";
 import { pageData } from "@/app/lib/pageData";
-import { getStudent } from "@/app/services/api";
+import { getPageInfo, getStudent } from "@/app/services/api";
 import axios from "axios";
 
 const CKEditorComponent = dynamic(() => import("./ckEditor"), {
@@ -132,7 +132,7 @@ const EditorForm = ({ page, slug }: PageProps) => {
     data.append("file", file);
 
     try {
-      const response = await fetch("/api/admin/uploadimg", {
+      const response = await fetch("https://www.ooshasprep.com/api/admin/uploadimg", {
         method: "POST",
         body: data,
         credentials: "include",
@@ -371,8 +371,10 @@ const EditorForm = ({ page, slug }: PageProps) => {
 
   async function getData() {
     try {
-      const res = await axios.get(`/api/admin/pageInfo/${slug.toLowerCase()}`)
-      const data = await res.data.data;
+      // const res = await axios.get(`/api/admin/pageInfo/${slug.toLowerCase()}`)
+      const res = await getPageInfo(slug.toLowerCase());
+      const data = await res;
+      console.log(res)
       console.log(data.sections[formData.name].fields,"formData");
       setValues(data.sections[formData.name].fields)
     } catch (error) {

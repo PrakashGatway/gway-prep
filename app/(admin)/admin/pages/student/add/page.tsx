@@ -75,7 +75,7 @@ const EditorForm = () => {
     };
 
     try {
-      const response = await fetch("/api/admin/uploadimg", requestOptions);
+      const response = await fetch("https://www.ooshasprep.com/api/admin/uploadimg", requestOptions);
       const res = await response.json();
       console.log(res.url, "res");
       setloading(false);
