@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import {
   createBlogCategory,
   getBlogCategory,
-  deleteBlogcategory,
+  deleteBlogCategory,
 } from "@/app/services/api";
 import { Trash } from "lucide-react";
 
@@ -50,7 +50,7 @@ const BlogcategoryPage = () => {
   // ✅ DELETE
   const handleDelete = async (id: string) => {
     try {
-      await deleteBlogcategory(id); // 🔥 YOUR API
+      await deleteBlogCategory(id); // 🔥 YOUR API
       fetchCategories();
     } catch (err) {
       console.error(err);
