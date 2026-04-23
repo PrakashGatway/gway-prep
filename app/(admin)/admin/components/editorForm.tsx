@@ -6,6 +6,7 @@ import { Plus, Trash2, Save, Settings, Layout, Edit, ChevronDown, ChevronUp } fr
 import { pageData } from "@/app/lib/pageData";
 import { getPageInfo, getStudent } from "@/app/services/api";
 import { set } from "mongoose";
+import { slugify } from "@/app/lib/slug";
 
 const CKEditorComponent = dynamic(() => import("./ckEditor"), {
   ssr: false,
@@ -428,7 +429,7 @@ const EditorForm = ({ slug }: PageProps) => {
 
     try {
       const payload: any = {
-        "name":  generalInfo.title,
+        "name":  slugify(generalInfo.title),
         seoMeta: {
           ...generalInfo,
           template: formData?.name || generalInfo.template,
@@ -638,7 +639,12 @@ console.log(formData);
                   <input
                     type="text"
                     value={generalInfo.canonicalUrl}
-                    onChange={(e) => handleGeneralInfoChange("canonicalUrl", e.target.value)}
+                    // onChange={(e) => handleGeneralInfoChange("canonicalUrl", e.target.value)}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      const onlyLetters = value.replace(/[^A-Za-z]/g, "");
+                      handleGeneralInfoChange("canonicalUrl", onlyLetters);
+                    }}
                     className="w-full p-3 border rounded-xl"
                     placeholder="https://example.com/page"
                   />

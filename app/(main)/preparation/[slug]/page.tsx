@@ -1,22 +1,17 @@
-import Gmat from "@/app/components/test-preparation/Gmat";
+
 import Gre from "@/app/components/test-preparation/Gre";
-import Ielts from "@/app/components/test-preparation/Ielts";
-import Pte from "@/app/components/test-preparation/Pte";
+import { getPageInfo } from "@/app/services/api";
 
 
-export default async function PreparationPage({ params }) {
+export default async function PreparationPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
 
-  switch (slug) {
-    case "gre":
-      return <Gre />;
-    case "ielts":
-      return <Ielts />;
-    case "pte":
-      return <Pte />;
-    case "gmat":
-      return <Gmat />;
-    default:
-      return <h1 className="text-center text-xl">Course Not Found</h1>;
+  const pageData = await getPageInfo(slug);
+
+
+  if (slug) {
+      return <Gre pageInfo={pageData} />;
+
   }
+      return <h1 className="text-center text-xl">Course Not Found</h1>;
 }

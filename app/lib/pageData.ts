@@ -154,63 +154,36 @@ export const pageData: any = {
         fields: [
           { name: "title", label: "Hero Title", type: "text", required: false, placeholder: "Welcome to Our Platform" },
           { name: "subtitle", label: "Hero Subtitle", type: "text", required: false, placeholder: "Your journey to success starts here" },
-          { name: "paragraph", label: "Hero paragraph", type: "textarea", required: false, placeholder: "" }
+          { name: "heroImage", label: "Hero Image", type: "file", accept: "image/*" },
+          ]
+      },
+      {
+        name: "Resent-section",
+        label: "Resent-section",
+        fields: [
+          { name: "title", label: "Title", type: "editor" }
         ]
       },
       {
-        name: "Registations",
-        label: "Registation",
+        name: "AppInfo",
+        label: "AppInfo",
         fields: [
-          { name: "Formsection", label: "form Image", type: "file", accept: "image/*" }
-        ]
-      },
-       {
-        name: "Home-f&q",
-        label: "Home page F&Q",
-        fields: [
-          { name: "title", label: "Home Page F&Q Title", type: "editor", required: true },
+          { name: "title", label: "Title", type: "text" },
+          { name: "subtitle", label: "Subtitle", type: "text" },
           {
-            name: "items",
-            label: "Items",
+            name: "details",
+            label: "Details",
             type: "repeater",
             fields: [
-              { name: "question", label: "Question", type: "text" },
-              { name: "answer", label: "Answer", type: "textarea" }
+          { name: "title", label: "Title", type: "text" },
+          { name: "subtitle", label: "Subtitle", type: "text" },
             ]
           }
         ]
       }
     ]
   },
-
-  student: {
-    name :"Student",
-    description: "Add student by this page ",
-    require: false,
-    sections : [
-      {
-        name: "Student-section",
-        label: "Student-section",
-        require: false,
-        fields: [
-          { name: "name", label: "student Name", type: "text", required: true, placeholder: "Enter name hare" },
-          { name: "course", label: "student course", type: "text", required: false, placeholder: "" },
-          { name: "score", label: "student score", type: "number", required: false, placeholder: "" },
-          { name: "image", label: "student Image", type: "file", accept: "image/*" },
-          { name: "university", label: "University name", type: "text", required: false, placeholder: "Your journey starts here" },
-          { name: "universityLogo", label: "University logo", type: "file", accept: "image/*" },
-          { name: "about", label: "student about", type: "editor", required: false, placeholder: "" },
-          { name: "outcome", label: "student Outcome", type: "editor", required: false, placeholder: "" },
-          { name: "type", label : "Testimonial Type" , type: "select" , required:true, option: ['image', 'video']},
-          { name: "message", label: "student Message", type: "text", required: false, placeholder: "" },
-          { name: "messageDate", label: "Message Date", type: "text", required: false, placeholder: "" },
-          { name: "rating", label: "rating by student", type: "text", required: false, placeholder: "" },
-          { name: "video", label: "Video Url", type: "text", required: false, placeholder: "Add the youtube url" }
-        ]
-      }
-    ]
-  },
-    
+ 
   preparation: {
     name: "Preparation",
     require: true,
@@ -303,7 +276,7 @@ export const pageData: any = {
         fields: [
           { name: "title", label: "Section Title", type: "editor", required: false },
           { name: "subtitle", label: "Section Subtitle", type: "text", required: false },
-          { name: "bgImage", label: "Background Image", type: "file", accept: "image/*" },
+          // { name: "bgImage", label: "Background Image", type: "file", accept: "image/*" },
           {
             name: "features",
             label: "Feature Cards",
@@ -319,8 +292,8 @@ export const pageData: any = {
       {
         name: "pricing-section",
         label: "Pricing Plans",
-        fields: [
-          { name: "testimonial", label: "Testimonial Quote", type: "textarea", required: false },
+        fields: [ 
+          { name: "testimonial", label: "Testimonial Quote", type: "editor", required: false },
           {
             name: "pricing_plans",
             label: "Pricing Plans",
@@ -358,8 +331,6 @@ export const pageData: any = {
         fields: [
           { name: "sectionTitle", label: "Section Title", type: "editor", required: false },
           { name: "sectionSubtitle", label: "Section Subtitle", type: "textarea", required: false },
-          { name: "appStoreIcon", label: "App Store Icon", type: "file", accept: "image/*" },
-          { name: "playStoreIcon", label: "Play Store Icon", type: "file", accept: "image/*" },
           {
             name: "apps",
             label: "App Cards",
@@ -390,7 +361,7 @@ export const pageData: any = {
               { name: "quote", label: "Quote", type: "textarea" },
               { name: "name", label: "Student Name", type: "text" },
               { name: "meta", label: "Meta (year/cohort)", type: "text", placeholder: "Student - 2021" },
-              { name: "thumbnail", label: "Video Thumbnail", type: "file", accept: "image/*" },
+              { name: "thumbnail", label: "Video Thumbnail", type: "text",  },
               { name: "ratingImage", label: "Rating Image", type: "file", accept: "image/*" }
             ]
           },
@@ -425,5 +396,33 @@ export const pageData: any = {
       }
     ]
   },
+  student: {
+    name :"Student",
+    description: "Add student by this page ",
+    require: false,
+    sections : [
+      {
+        name: "Student-section",
+        label: "Student-section",
+        require: false,
+        fields: [
+          { name: "name", label: "student Name", type: "text", required: true, placeholder: "Enter name hare" },
+          { name: "course", label: "student course", type: "text", required: false, placeholder: "" },
+          { name: "score", label: "student score", type: "number", required: false, placeholder: "" },
+          { name: "image", label: "student Image", type: "file", accept: "image/*" },
+          { name: "university", label: "University name", type: "text", required: false, placeholder: "Your journey starts here" },
+          { name: "universityLogo", label: "University logo", type: "file", accept: "image/*" },
+          { name: "about", label: "student about", type: "editor", required: false, placeholder: "" },
+          { name: "outcome", label: "student Outcome", type: "editor", required: false, placeholder: "" },
+          { name: "type", label : "Testimonial Type" , type: "select" , required:true, option: ['image', 'video']},
+          { name: "message", label: "student Message", type: "text", required: false, placeholder: "" },
+          { name: "messageDate", label: "Message Date", type: "text", required: false, placeholder: "" },
+          { name: "rating", label: "rating by student", type: "text", required: false, placeholder: "" },
+          { name: "video", label: "Video Url", type: "text", required: false, placeholder: "Add the youtube url" }
+        ]
+      }
+    ]
+  },
+   
 
 };
