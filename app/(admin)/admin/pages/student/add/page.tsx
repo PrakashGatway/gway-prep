@@ -3,25 +3,29 @@ import React, { useState } from "react";
 import { pageData } from "@/app/lib/pageData";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { createStudent } from "@/app/services/api";
+import { createStudent, uploadImage } from "@/app/services/api";
 
-const CKEditorComponent = dynamic(() => import("../../../components/ckEditor"), {
-  ssr: false,
-  loading: () => (
-    <div className="p-4 border rounded bg-gray-50">Loading Rich Editor...</div>
-  ),
-});
-
-
+const CKEditorComponent = dynamic(
+  () => import("../../../components/ckEditor"),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="p-4 border rounded bg-gray-50">
+        Loading Rich Editor...
+      </div>
+    ),
+  },
+);
 
 const EditorForm = () => {
   const router = useRouter();
-  const formData =  pageData.student.sections;
+  const formData = pageData.student.sections;
   const [values, setValues] = useState<Record<string, any>>({});
   const [file, setFile] = useState<Record<string, any>>();
   const [loading, setloading] = useState(false);
 
-  if (!formData) return <div className="p-10">Section configuration not found.</div>;
+  if (!formData)
+    return <div className="p-10">Section configuration not found.</div>;
 
   const handleInputChange = (name: string, e: any) => {
     let value;
@@ -53,15 +57,16 @@ const EditorForm = () => {
     }
   };
 
-  
+  const saveFile = async (
+    name: string,
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
 
-  const saveFile = async (name:string, e: React.FormEvent) => {
-    e.preventDefault();
-    if (!values) return alert("Please select a file first");
-    setloading(true);
     
+    if (!e.target.files || e.target.files.length === 0) return alert("Please select a file first");
+    setloading(true);
 
-    const file = e.target?.files?.[0];
+    const file = e.target.files[0];
     const formData = new FormData();
     formData.append("file", file);
 
@@ -75,28 +80,25 @@ const EditorForm = () => {
     };
 
     try {
-      const response = await fetch("https://www.ooshasprep.com/api/admin/uploadimg", requestOptions);
-      const res = await response.json();
+      // const response = await fetch("/api/admin/uploadimg", requestOptions);
+      // const res = await response.json();
+
+      const res = await uploadImage(requestOptions.body as FormData);
       console.log(res.url, "res");
-      setloading(false);
-      setValues((prev) => ({...prev, [name] : res.url }));
+      setValues((prev) => ({ ...prev, [name]: res.url }));
     } catch (error) {
       console.error("Upload failed:", error);
+    } finally {
+      setloading(false);
     }
   };
 
   return (
     <div className=" m-1 p-8 bg-white shadow-lg rounded-xl border border-gray-100 h-[90vh] overflow-y-auto">
-     
-        <header className="mb-8 border-b pb-4">
-          <h1 className="text-xl font-extrabold text-gray-900">
-            Add student
-          </h1>
-          <p className="text-gray-500">
-            add the content for the students.
-          </p>
-        </header>
-        
+      <header className="mb-8 border-b pb-4">
+        <h1 className="text-xl font-extrabold text-gray-900">Add student</h1>
+        <p className="text-gray-500">add the content for the students.</p>
+      </header>
 
       <form className="space-y-8" onSubmit={(e) => handleSubmit(e)}>
         {formData[0]?.fields?.map((field: any, index: number) => (
@@ -136,21 +138,18 @@ const EditorForm = () => {
                 accept={field.accept}
                 onChange={(data: any) => {
                   //  handleInputChange(field.name, data);
-                  saveFile(field.name,data);
+                  saveFile(field.name, data);
                 }}
                 className="block w-full text-sm text-gray-500 file:mr-4 file:py-2.5 
                 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 transition cursor-pointer"
               />
-            ) 
-            : field.type === "select" ? (
-                <select 
-                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 border-gray-300 outline-none transition"
-                >
-                  <option>Select an option</option>
-                  {field?.option.map((ele:string) => (
-                    <option value={ele}>{ele}</option>
-                  ))}
-                </select>
+            ) : field.type === "select" ? (
+              <select className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 border-gray-300 outline-none transition">
+                <option>Select an option</option>
+                {field?.option.map((ele: string) => (
+                  <option value={ele}>{ele}</option>
+                ))}
+              </select>
             ) : null}
           </div>
         ))}
@@ -168,7 +167,7 @@ const EditorForm = () => {
             className="w-full md:w-auto px-8 py-3 bg-red-500 text-white rounded-lg font-bold hover:bg-red-700 shadow-md transition-all active:scale-95"
             type="button"
           >
-            Cancel 
+            Cancel
           </button>
         </div>
       </form>

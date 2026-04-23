@@ -17,7 +17,7 @@ export interface loginFormData {
 
 export interface loginResponse {
     success : boolean;
-    token? : string;
+    adminToken? : string;
     user? : AdminUser;
     error? : string;
 }

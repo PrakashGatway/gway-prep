@@ -39,20 +39,6 @@ export const pageData: any = {
           { name: "Formsection", label: "form Image", type: "file", accept: "image/*" }
         ]
       },
-      // {
-      //   name: "Home-Student",
-      //   label: "Student",
-      //   fields: [
-      //     {
-      //       name: "students",
-      //       label: "students",
-      //       type: "repeater",
-      //       fields: [
-      //         { name: "student", label: "student", type: "select", option: [] }
-      //       ]
-      //     },
-      //   ]
-      // },
       {
         name: "Home-Services",
         label: "Services",
@@ -138,40 +124,6 @@ export const pageData: any = {
           }
         ]
       },
-      // {
-      //   name: "Home-Video-Testimonial",
-      //   label: "Video Testimonial",
-      //   fields: [
-      //     { name: "video-testimonial-title", label: "Video Testimoinal Title", type: "editor", required: true },
-      //     // {
-      //     //   name: "items",
-      //     //   label: "Items",
-      //     //   type: "repeater",
-      //     //   fields: [
-      //     //     { name: "title", label: "Title", type: "text" },
-      //     //     { name: "youtubeurl", label: "Youtube Url", type: "text" }
-      //     //   ]
-      //     // }
-      //   ]
-      // },
-      // {
-      //   name: "Home-Text-Testimonial",
-      //   label: "Text Testimonial",
-      //   fields: [
-      //     { name: "title", label: "Text Testimonial Title", type: "editor", required: true },
-      //     // {
-      //     //   name: "items",
-      //     //   label: "Items",
-      //     //   type: "repeater",
-      //     //   fields: [
-      //     //     { name: "Name", label: "Name", type: "text" },
-      //     //     { name: "Points", label: "Points", type: "text" },
-      //     //     { name: "Stars", label: "Stars", type: "number" },
-      //     //     { name: "content", label: "Content", type: "textarea" }
-      //     //   ]
-      //     // }
-      //   ]
-      // },
       {
         name: "Home-f&q",
         label: "Home page F&Q",
@@ -190,6 +142,7 @@ export const pageData: any = {
       }
     ]
   },
+
   blog: {
     name: "Blog",
     require: true,
@@ -210,9 +163,26 @@ export const pageData: any = {
         fields: [
           { name: "Formsection", label: "form Image", type: "file", accept: "image/*" }
         ]
+      },
+       {
+        name: "Home-f&q",
+        label: "Home page F&Q",
+        fields: [
+          { name: "title", label: "Home Page F&Q Title", type: "editor", required: true },
+          {
+            name: "items",
+            label: "Items",
+            type: "repeater",
+            fields: [
+              { name: "question", label: "Question", type: "text" },
+              { name: "answer", label: "Answer", type: "textarea" }
+            ]
+          }
+        ]
       }
     ]
   },
+
   student: {
     name :"Student",
     description: "Add student by this page ",
@@ -239,5 +209,221 @@ export const pageData: any = {
         ]
       }
     ]
-  }
+  },
+    
+  preparation: {
+    name: "Preparation",
+    require: true,
+    description: "All preparation category pages (IELTS, GMAT, PTE, GRE, etc.)",
+    is_dynamic: true,           // <-- slug-based dynamic pages
+    slug_field: "slug",         // <-- used to generate /preparation/[slug]
+    sections: [
+      {
+        name: "hero-section",
+        label: "Hero",
+        fields: [
+          { name: "slug", label: "Page Slug", type: "text", required: true, placeholder: "ielts-preparation" },
+          { name: "category_name", label: "Category Name", type: "text", required: true, placeholder: "IELTS Preparation" },
+          { name: "nav_subtitle", label: "Nav Dropdown Subtitle", type: "text", required: true, placeholder: "Comprehensive IELTS coaching" },
+          { name: "title", label: "Hero Title", type: "editor", required: false, placeholder: "Welcome to Our Platform" },
+          { name: "paragraph", label: "Hero Paragraph", type: "textarea", required: false, placeholder: "" },
+          { name: "heroImage", label: "Hero Image", type: "file", accept: "image/*" },
+          { name: "ctaButtonText", label: "CTA Button Text", type: "text", placeholder: "Full courses starts at $99" }
+        ]
+      },
+      {
+        name: "Registrations",
+        label: "Registration",
+        fields: [
+          { name: "Formsection", label: "Form Image", type: "file", accept: "image/*" }
+        ]
+      },
+      {
+        name: "comparison-section",
+        label: "Comparison",
+        fields: [
+          { name: "sectionTitle", label: "Section Title", type: "editor", required: false },
+          { name: "sectionSubtitle", label: "Section Subtitle", type: "text", required: false },
+          {
+            name: "ourFeatures",
+            label: "Our Features (checkmark list)",
+            type: "repeater",
+            fields: [
+              { name: "feature", label: "Feature", type: "text", placeholder: "The only course with official questions" }
+            ]
+          },
+          { name: "competitorLabel", label: "Competitor Column Label", type: "text", placeholder: "other \"Premium\" Courses" },
+          {
+            name: "competitorDrawbacks",
+            label: "Competitor Drawbacks (X list)",
+            type: "repeater",
+            fields: [
+              { name: "drawback", label: "Drawback", type: "text", placeholder: "No access to real questions" }
+            ]
+          }
+        ]
+      },
+      {
+        name: "ai-study-section",
+        label: "AI Study Section",
+        fields: [
+          { name: "sectionTitle", label: "Section Title", type: "editor", required: false },
+          { name: "sectionSubtitle", label: "Section Subtitle", type: "textarea", required: false },
+          {
+            name: "aiFeatures",
+            label: "AI Feature Cards",
+            type: "repeater",
+            fields: [
+              { name: "heading", label: "Heading", type: "text", placeholder: "5,000+ Similar Practice Questions" },
+              { name: "content", label: "Content", type: "textarea" },
+              { name: "image", label: "Feature Image", type: "file", accept: "image/*" }
+            ]
+          }
+        ]
+      },
+      {
+        name: "test-dates-section",
+        label: "Test Dates",
+        fields: [
+          { name: "toggleButtonText", label: "Toggle Button Text", type: "text", placeholder: "Choose the best schedule for your test date!" },
+          {
+            name: "testDates",
+            label: "Test Dates",
+            type: "repeater",
+            fields: [
+              { name: "start_date", label: "Start Date", type: "text", placeholder: "Saturday, March 14, 2026" },
+              { name: "end_date", label: "End Date", type: "text", placeholder: "Friday, March 27, 2026 or TBD" }
+            ]
+          }
+        ]
+      },
+      {
+        name: "score-guarantee-section",
+        label: "Score Guarantee",
+        fields: [
+          { name: "title", label: "Section Title", type: "editor", required: false },
+          { name: "subtitle", label: "Section Subtitle", type: "text", required: false },
+          { name: "bgImage", label: "Background Image", type: "file", accept: "image/*" },
+          {
+            name: "features",
+            label: "Feature Cards",
+            type: "repeater",
+            max: 6,
+            fields: [
+              { name: "title", label: "Title", type: "text", placeholder: "Practice Tests" },
+              { name: "description", label: "Description", type: "textarea" }
+            ]
+          }
+        ]
+      },
+      {
+        name: "pricing-section",
+        label: "Pricing Plans",
+        fields: [
+          { name: "testimonial", label: "Testimonial Quote", type: "textarea", required: false },
+          {
+            name: "pricing_plans",
+            label: "Pricing Plans",
+            type: "repeater",
+            max: 3,
+            fields: [
+              { name: "plan_name", label: "Plan Name", type: "text", placeholder: "Premium · 1 month" },
+              { name: "subtitle", label: "Plan Subtitle", type: "text" },
+              { name: "is_highlighted", label: "Highlighted (featured)", type: "toggle" },
+              { name: "bundle_offer", label: "Bundle Offer Badge", type: "text", placeholder: "Bundle and save $854 ($1073 value)" },
+              {
+                name: "content_features",
+                label: "Content Features",
+                type: "repeater",
+                fields: [
+                  { name: "feature", label: "Feature", type: "text" }
+                ]
+              },
+              {
+                name: "access_features",
+                label: "Access Features",
+                type: "repeater",
+                fields: [
+                  { name: "feature", label: "Feature", type: "text" }
+                ]
+              },
+              { name: "price", label: "Price", type: "text", placeholder: "$99 USD" }
+            ]
+          }
+        ]
+      },
+      {
+        name: "mobile-apps-section",
+        label: "Mobile Apps",
+        fields: [
+          { name: "sectionTitle", label: "Section Title", type: "editor", required: false },
+          { name: "sectionSubtitle", label: "Section Subtitle", type: "textarea", required: false },
+          { name: "appStoreIcon", label: "App Store Icon", type: "file", accept: "image/*" },
+          { name: "playStoreIcon", label: "Play Store Icon", type: "file", accept: "image/*" },
+          {
+            name: "apps",
+            label: "App Cards",
+            type: "repeater",
+            max: 2,
+            fields: [
+              { name: "title", label: "App Name", type: "text" },
+              { name: "description", label: "App Description", type: "text" },
+              { name: "screenshot", label: "App Screenshot", type: "file", accept: "image/*" }
+            ]
+          },
+          { name: "videoSectionLabel", label: "Video Label (small tag)", type: "text" },
+          { name: "videoBoxTitle", label: "Video Box Title", type: "editor", required: false },
+          { name: "videoBoxDescription", label: "Video Box Description", type: "textarea", required: false }
+        ]
+      },
+      {
+        name: "testimonials-section",
+        label: "Testimonials",
+        fields: [
+          { name: "sectionTitle", label: "Section Title", type: "editor", required: false },
+          { name: "sectionSubtitle", label: "Section Subtitle", type: "text", required: false },
+          {
+            name: "featuredTestimonial",
+            label: "Featured Testimonial",
+            type: "group",
+            fields: [
+              { name: "quote", label: "Quote", type: "textarea" },
+              { name: "name", label: "Student Name", type: "text" },
+              { name: "meta", label: "Meta (year/cohort)", type: "text", placeholder: "Student - 2021" },
+              { name: "thumbnail", label: "Video Thumbnail", type: "file", accept: "image/*" },
+              { name: "ratingImage", label: "Rating Image", type: "file", accept: "image/*" }
+            ]
+          },
+          {
+            name: "testimonials",
+            label: "Testimonial Cards",
+            type: "repeater",
+            fields: [
+              { name: "quote", label: "Quote", type: "textarea" },
+              { name: "name", label: "Student Name", type: "text" },
+              { name: "meta", label: "Meta (year/cohort)", type: "text" },
+              { name: "ratingImage", label: "Rating Image", type: "file", accept: "image/*" }
+            ]
+          }
+        ]
+      },
+      {
+        name: "f&q",
+        label: "FAQ",
+        fields: [
+          { name: "title", label: "FAQ Title", type: "editor", required: true },
+          {
+            name: "items",
+            label: "Items",
+            type: "repeater",
+            fields: [
+              { name: "question", label: "Question", type: "text" },
+              { name: "answer", label: "Answer", type: "textarea" }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
 };

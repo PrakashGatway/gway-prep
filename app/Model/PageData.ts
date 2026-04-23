@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 export interface IPageData extends Document {
   name: string;
   description: string;
+  published: boolean;
   seoMeta: Record<string, any>;
   sections: Record<string, any>;
   extraDetails: Record<string, any>;
@@ -22,6 +23,10 @@ const PageDataSchema = new Schema<IPageData>(
     description: {
       type: String,
       default: "",
+    },
+    published : {
+      type: Boolean,
+      default: true,
     },
     seoMeta: {
       type: Schema.Types.Mixed,

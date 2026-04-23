@@ -1,14 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
-import { Edit, Pencil, Trash, ArrowLeft } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Edit, Pencil, Trash, ArrowLeft, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import EditorForm from "../../components/editorForm";
 import { pageData } from "@/app/lib/pageData";
+import { getPages } from "@/app/services/api";
 
 const Page = () => {
   const [show, setShow] = useState(true);
-  const [heading, setHeading] = useState<Record<string, any>>({});
+  const [heading, setHeading] = useState<Record<string, any>>([]);
   const [activeSection, setActiveSection] = useState<string | null>(null);
 
   const router = useRouter();
@@ -21,6 +22,16 @@ const Page = () => {
     console.log("Delete:", id);
   };
 
+
+  useEffect(() => {
+    const fetchPages = async () => {
+      const pages = await getPages();
+      console.log("Pages:", pages);
+      setHeading(pages);
+    };
+    fetchPages();
+  }, []);
+
   return (
     <div className="max-h-screen overflow-auto bg-gray-50 p-6">
       {/* HEADER */}
@@ -32,7 +43,7 @@ const Page = () => {
           <p className="text-sm text-gray-500 mt-1">Manage your pages data</p>
         </div>
 
-        {heading?.name && (
+        {heading?.name ? (
           <button
             onClick={() => {
               setShow(true);
@@ -44,30 +55,39 @@ const Page = () => {
             <ArrowLeft size={18} />
             Back
           </button>
+        ) : (
+          <button
+            onClick={() => {router.push("/admin/pages/editor/new")}}
+            className="flex items-center gap-2 bg-white border px-4 py-2 rounded-lg shadow-sm hover:shadow-md transition"
+          >
+            <Plus size={18} />
+            Create Page
+          </button>
         )}
       </div>
 
       {/* PAGE LIST */}
       {show && (
         <div className="grid md:grid-cols-2 gap-5 mt-6">
-          {Object.keys(pageData).map((data: any, idx: number) => {
+          {heading.map((data: any, idx: number) => {
             const ele = pageData[data];
 
             return (
               <div
                 key={idx}
-                onClick={() => {
-                  setShow(false);
-                  setHeading(ele);
-                }}
+                // onClick={() => {
+                //   setShow(false);
+                //   setHeading(ele);
+                // }}
+                onClick={() => {router.push(`/admin/pages/editor/${data.name.toLowerCase()}`)}}
                 className={`${
-                  ele.require ? "block" : "hidden"
+                  data.seoMeta?.isPublished ? "bg-green-100" : "bg-gray-100"
                 } bg-white rounded-2xl p-5 border shadow-sm hover:shadow-md cursor-pointer transition`}
               >
                 <div className="flex justify-between items-center">
                   <div>
                     <h2 className="font-bold text-lg text-gray-800">
-                      {ele.name} Page
+                      {data.name} Page
                     </h2>
                     <p className="text-sm text-gray-500">
                       Click to edit sections
@@ -82,7 +102,7 @@ const Page = () => {
       )}
 
       {/* SECTIONS */}
-      {!show && (
+      {/* {!show && (
         <div className="mt-6 space-y-4">
           {heading?.sections?.map((ele: any, idx: number) => (
             <div key={idx} className="bg-white rounded-2xl shadow-sm border">
@@ -108,7 +128,7 @@ const Page = () => {
             </div>
           ))}
         </div>
-      )}
+      )} */}
     </div>
   );
 };
