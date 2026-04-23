@@ -14,7 +14,7 @@ import { PageDataSchema } from "@/app/type";
 export async function GET(): Promise<NextResponse> {
   try {
     await connectDB();
-    const pages = await PageData.find({}).select("name seoMeta.isPublished seoMeta.template").lean();
+    const pages = await PageData.find({}).select("name seoMeta").lean();
 
     return NextResponse.json(
       { message: "Pages fetched.", data: pages },
