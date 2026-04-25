@@ -5,19 +5,7 @@ import { useState, useEffect } from "react";
 import { BlogSlider } from "./blog-slider";
 import { Consultants } from "./destinations-consultants";
 
-// Default categories and blogs as fallback
-const defaultCategories = [
-  "ALL",
-  "UK",
-  "USA",
-  "IRELAND",
-  "DUBAI",
-  "CANADA",
-  "VISA",
-  "NEW ZEALAND",
-  "PTE",
-  "SAT",
-];
+
 
 const defaultBlogs = [
   {
@@ -92,7 +80,7 @@ const appInfoData = [
   },
 ];
 
-export default function Blog({ pageInfo }: { pageInfo: any }) {
+export default function Blog({ pageInfo,categories }: { pageInfo: any, categories: any }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [filteredBlogs, setFilteredBlogs] = useState(defaultBlogs);
@@ -112,7 +100,7 @@ export default function Blog({ pageInfo }: { pageInfo: any }) {
 
   // Get blogs from section data or use defaults
   const blogs = recentSection.blogs || recentSection.items || defaultBlogs;
-  const categories = recentSection.categories || defaultCategories;
+  // const categories = recentSection.categories || defaultCategories;
 
   // Get app info data
   const appInfo = appInfoSection.items || appInfoData;
@@ -153,57 +141,63 @@ export default function Blog({ pageInfo }: { pageInfo: any }) {
   return (
     <section>
       {/* Hero Section */}
-      <div className="lg:relative h-[80vh] bg-gray-200">
-        <div
-          className="h-[40vh] bg-cover bg-center bg-no-repeat md:rounded-[0_0_8rem_8rem]"
-          style={{ backgroundImage: `url('${bgImage}')` }}
-        >
-          <div className="flex lg:pl-40 justify-center lg:justify-start items-center h-full w-full bg-black/60 text-white md:rounded-[0_0_8rem_8rem]">
-            <span>
-              {heroSubtitle && (
-                <h2 className="font-semibold text-xl md:text-2xl lg:text-3xl text-center">
-                  {heroSubtitle}
-                </h2>
-              )}
-              <h1 className="font-extrabold text-5xl md:text-6xl lg:text-8xl">
-                {heroTitle}
-              </h1>
-              {heroParagraph && (
-                <p className="mt-4 text-lg max-w-2xl">{heroParagraph}</p>
-              )}
-            </span>
-          </div>
-        </div>
-
-        <div className="flex items-center flex-wrap lg:pl-40">
-          {/* Search Bar */}
-          <div className="lg:max-w-[40rem] my-4 flex items-center justify-center border-2 border-black gap-2 bg-white lg:rounded-full w-full h-10 lg:h-20 px-10 text-gray-800 lg:text-xl">
-            <Search />
-            <input
-              type="text"
-              placeholder="What are you looking for?"
-              className="w-full outline-none"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button
-              type="button"
-              className="font-semibold text-black"
-              onClick={() => setSearchQuery(searchQuery)}
-            >
-              Search
-            </button>
-          </div>
-
-          {heroImage && (
-            <img
-              src={heroImage}
-              alt="Hero"
-              className="lg:h-[30rem] lg:absolute top-10 right-14"
-            />
-          )}
+    <div className="relative min-h-[80vh] lg:h-[80vh] bg-gray-200 overflow-hidden">
+      {/* Background Section */}
+      <div
+        className="h-[50vh] lg:h-[40vh] bg-cover bg-center bg-no-repeat md:rounded-[0_0_8rem_8rem]"
+        style={{ backgroundImage: `url('${bgImage}')` }}
+      >
+        <div className="flex px-6 lg:pl-40 justify-center lg:justify-start items-center h-full w-full bg-black/60 text-white md:rounded-[0_0_8rem_8rem]">
+          <span className="text-center lg:text-left">
+            {heroSubtitle && (
+              <h2 className="font-semibold text-xl md:text-2xl lg:text-3xl">
+                {heroSubtitle}
+              </h2>
+            )}
+            <h1 className="font-extrabold text-4xl md:text-6xl lg:text-8xl">
+              {heroTitle}
+            </h1>
+            {heroParagraph && (
+              <p className="mt-4 text-base md:text-lg max-w-2xl mx-auto lg:mx-0">
+                {heroParagraph}
+              </p>
+            )}
+          </span>
         </div>
       </div>
+
+      {/* Content Wrapper */}
+      <div className="flex flex-col lg:flex-row items-center lg:pl-40 px-6">
+        {/* Search Bar */}
+        <div className="z-10 -mt-5 lg:mt-4 lg:max-w-[40rem] flex items-center justify-center border-2 border-black gap-2 bg-white rounded-full w-full h-14 lg:h-20 px-6 lg:px-10 text-gray-800 lg:text-xl shadow-lg">
+          <Search className="shrink-0" />
+          <input
+            type="text"
+            placeholder="What are you looking for?"
+            className="w-full outline-none bg-transparent"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <button
+            type="button"
+            className="font-semibold text-black hover:text-gray-600 transition-colors"
+            onClick={() => setSearchQuery(searchQuery)}
+          >
+            Search
+          </button>
+        </div>
+
+        {/* Hero Image */}
+        {heroImage && (
+          <img
+            src={heroImage}
+            alt="Hero"
+            className="mt-8 lg:mt-0 w-4/5 md:w-1/2 lg:w-auto lg:h-[30rem] lg:absolute top-10 right-14 object-contain"
+          />
+        )}
+      </div>
+    </div>
+
 
       {/* Category Filter */}
       {categories.length > 0 && (
@@ -219,7 +213,7 @@ export default function Blog({ pageInfo }: { pageInfo: any }) {
                     : "bg-gray-100 text-gray-700 hover:bg-gray-200"
                 }`}
               >
-                {category}
+                {category.name}
               </button>
             ))}
           </div>

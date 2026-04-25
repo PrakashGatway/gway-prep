@@ -18,18 +18,18 @@ export const pageData: any = {
             label: "students",
             type: "repeater",
             fields: [
-              { name: "student", label: "Student", type: "text", placeholder : "Enter the name" },
-              { name: "course", label: "Course", type: "text", placeholder : "Enter the Course name" },
-              { name: "score", label: "Score", type: "text", placeholder : "Enter the name" },
-              { name: "studentImg", label: "Student Image", type: "file", placeholder : "Enter the name" },
-              { name: "experience", label: "Experience", type: "text", placeholder : "Enter the lable name || value" },
-              { name: "Happystudent", label: "Happy student", type: "text", placeholder : "Enter the lable name || value" },
-              { name: "Rating", label: "Rating", type: "text", placeholder : "Enter the lable name || value" },
-              { name: "Lectured", label: "Lectured", type: "text", placeholder : "Enter the lable name || value" }
+              { name: "student", label: "Student", type: "text", placeholder: "Enter the name" },
+              { name: "course", label: "Course", type: "text", placeholder: "Enter the Course name" },
+              { name: "score", label: "Score", type: "text", placeholder: "Enter the name" },
+              { name: "studentImg", label: "Student Image", type: "file", placeholder: "Enter the name" },
+              { name: "experience", label: "Experience", type: "text", placeholder: "Enter the lable name || value" },
+              { name: "Happystudent", label: "Happy student", type: "text", placeholder: "Enter the lable name || value" },
+              { name: "Rating", label: "Rating", type: "text", placeholder: "Enter the lable name || value" },
+              { name: "Lectured", label: "Lectured", type: "text", placeholder: "Enter the lable name || value" }
 
             ]
           }
-          
+
         ]
       },
       {
@@ -143,19 +143,137 @@ export const pageData: any = {
     ]
   },
 
+  blogdetails: {
+    "name": "Blog",
+    "description": "Create and manage blog posts",
+    "require": false,
+    "sections": [
+      {
+        "name": "basic-info",
+        "label": "Basic Information",
+        "require": true,
+        "fields": [
+          {
+            "name": "title",
+            "label": "Blog Title",
+            "type": "text",
+            "required": true,
+            "placeholder": "Enter blog title"
+          },
+          {
+            "name": "slug",
+            "label": "Slug",
+            "type": "text",
+            "required": false,
+            "placeholder": "auto-generated from title"
+          },
+          {
+            "name": "category",
+            "label": "Category",
+            "type": "text",
+            "required": true,
+            "placeholder": "e.g. React, Tech"
+          },
+          {
+            "name": "tags",
+            "label": "Tags",
+            "type": "text",
+            "required": false,
+            "placeholder": "comma separated (react, frontend)"
+          },
+          {
+            "name": "author",
+            "label": "Author Name",
+            "type": "text",
+            "required": false,
+            "placeholder": "Admin"
+          },
+          {
+            "name": "image",
+            "label": "Featured Image",
+            "type": "file",
+            "accept": "image/*"
+          }
+        ]
+      },
+      {
+        "name": "content-section",
+        "label": "Content",
+        "require": true,
+        "fields": [
+          {
+            "name": "excerpt",
+            "label": "Short Description",
+            "type": "textarea",
+            "required": false,
+            "placeholder": "Short summary of blog"
+          },
+          {
+            "name": "content",
+            "label": "Blog Content",
+            "type": "editor",
+            "required": true,
+            "placeholder": "Write full blog content..."
+          }
+        ]
+      },
+      {
+        "name": "seo-section",
+        "label": "SEO Settings",
+        "require": false,
+        "fields": [
+          {
+            "name": "metaTitle",
+            "label": "Meta Title",
+            "type": "text",
+            "required": false,
+            "placeholder": "SEO title"
+          },
+          {
+            "name": "metaDescription",
+            "label": "Meta Description",
+            "type": "textarea",
+            "required": false,
+            "placeholder": "SEO description"
+          }
+        ]
+      },
+      {
+        "name": "publish-section",
+        "label": "Publish Settings",
+        "require": false,
+        "fields": [
+          {
+            "name": "isPublished",
+            "label": "Publish Status",
+            "type": "select",
+            "required": true,
+            "option": ["true", "false"]
+          },
+          {
+            "name": "publishedDate",
+            "label": "Publish Date",
+            "type": "date",
+            "required": false
+          }
+        ]
+      }
+    ]
+  },
+
   blog: {
     name: "Blog",
     require: true,
     description: "blogs & articals page",
     sections: [
       {
-        name: "Home-hero-section",
-        label: "Hero",
+        name: "hero-section",
+        label: "Hero section",
         fields: [
           { name: "title", label: "Hero Title", type: "text", required: false, placeholder: "Welcome to Our Platform" },
           { name: "subtitle", label: "Hero Subtitle", type: "text", required: false, placeholder: "Your journey to success starts here" },
           { name: "heroImage", label: "Hero Image", type: "file", accept: "image/*" },
-          ]
+        ]
       },
       {
         name: "Resent-section",
@@ -175,15 +293,15 @@ export const pageData: any = {
             label: "Details",
             type: "repeater",
             fields: [
-          { name: "title", label: "Title", type: "text" },
-          { name: "subtitle", label: "Subtitle", type: "text" },
+              { name: "title", label: "Title", type: "text" },
+              { name: "subtitle", label: "Subtitle", type: "text" },
             ]
           }
         ]
       }
     ]
   },
- 
+
   preparation: {
     name: "Preparation",
     require: true,
@@ -292,7 +410,7 @@ export const pageData: any = {
       {
         name: "pricing-section",
         label: "Pricing Plans",
-        fields: [ 
+        fields: [
           { name: "testimonial", label: "Testimonial Quote", type: "editor", required: false },
           {
             name: "pricing_plans",
@@ -361,7 +479,7 @@ export const pageData: any = {
               { name: "quote", label: "Quote", type: "textarea" },
               { name: "name", label: "Student Name", type: "text" },
               { name: "meta", label: "Meta (year/cohort)", type: "text", placeholder: "Student - 2021" },
-              { name: "thumbnail", label: "Video Thumbnail", type: "text",  },
+              { name: "thumbnail", label: "Video Thumbnail", type: "text", },
               { name: "ratingImage", label: "Rating Image", type: "file", accept: "image/*" }
             ]
           },
@@ -396,11 +514,12 @@ export const pageData: any = {
       }
     ]
   },
+
   student: {
-    name :"Student",
+    name: "Student",
     description: "Add student by this page ",
     require: false,
-    sections : [
+    sections: [
       {
         name: "Student-section",
         label: "Student-section",
@@ -414,7 +533,7 @@ export const pageData: any = {
           { name: "universityLogo", label: "University logo", type: "file", accept: "image/*" },
           { name: "about", label: "student about", type: "editor", required: false, placeholder: "" },
           { name: "outcome", label: "student Outcome", type: "editor", required: false, placeholder: "" },
-          { name: "type", label : "Testimonial Type" , type: "select" , required:true, option: ['image', 'video']},
+          { name: "type", label: "Testimonial Type", type: "select", required: true, option: ['image', 'video'] },
           { name: "message", label: "student Message", type: "text", required: false, placeholder: "" },
           { name: "messageDate", label: "Message Date", type: "text", required: false, placeholder: "" },
           { name: "rating", label: "rating by student", type: "text", required: false, placeholder: "" },
@@ -423,6 +542,41 @@ export const pageData: any = {
       }
     ]
   },
-   
+
+  contectus: {
+    name: "ContectUs",
+    require: true,
+    description: "Contectus page",
+    sections: [
+      {
+        name: "hero-section",
+        label: "Hero",
+        fields: [
+          { name: "title", label: "Hero Title", type: "text", required: false, placeholder: "Welcome to Our Platform" },
+          { name: "subtitle", label: "Hero Subtitle", type: "text", required: false, placeholder: "Your journey to success starts here" },
+        ]
+      },
+      {
+        name: "Contectus-detils",
+        label: "Contectus Detils",
+        fields: [
+          { name: "title", label: "Title", type: "editor" },
+          { name: "subtitle", label: "Subtitle", type: "text" },
+          {
+            name: "contect-details",
+            label: "Contect Details",
+            type: "repeater",
+            fields: [
+              { name: "title", label: "Title", type: "text" },
+              { name: "icon", label: "Icon", type: "text", placeholder: "Add the lucide icon name like Mail" },
+              { name: "value", label: "Value", type: "text" },
+
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
 
 };

@@ -2,12 +2,12 @@ import type React from "react";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "../globals.css";
-import { Topbar } from "@/app/components/topbar";
 import { Navbar } from "@/app/components/navbar";
 import { Noto_Sans } from "next/font/google";
 import { Footer } from "@/app/components/footer";
 import Script from "next/script";
 import { Montserrat } from "next/font/google";
+import { getPages } from "../services/api";
 
 
 
@@ -27,11 +27,14 @@ const montserrat = Montserrat({
 // });
 
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const NavData = await getPages();
+
   return (
     <html lang="en">
       <head>
@@ -64,8 +67,7 @@ export default function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           ></iframe>
         </noscript>
-        <Topbar />
-        <Navbar />
+        <Navbar Data={NavData} />
         {children}
         <Footer />
       </body>

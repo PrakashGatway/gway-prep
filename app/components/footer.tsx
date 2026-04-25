@@ -34,7 +34,7 @@ export function Footer() {
             <div className="flex flex-col lg:flex-row">
 
               {/* BRAND */}
-              <div className="w-full lg:w-1/4 pr-0 lg:pr-8 mb-10 lg:mb-0 flex items-center justify-center flex-col text-center">
+              <div className="w-full lg:w-1/4 pr-0 lg:pr-8 mb-10 lg:mb-0 flex items-start justify-center flex-col ">
                 <Image
                   src="/home/logo.png"
                   alt="GAway Global"

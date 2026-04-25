@@ -67,3 +67,19 @@ export const loginAdmin = async (form: any) => {
     });
     return response.json();
 };
+
+export const getBlogs = async (page = 1, limit = 10, search = "") => {
+    const res = await axiosInstance.get(`/admin/blogs?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`);
+    return res.data;
+};
+
+export const deleteBlog = async (slug: string) => {
+    const res = await axiosInstance.delete(`/admin/blogs/${encodeURIComponent(slug)}`);
+    return res.data;
+};
+
+export const getBlogBySlug = async (slug: string) => {
+    const res = await axiosInstance.get(`/admin/blogs/${encodeURIComponent(slug)}`);
+    return res.data.data;
+};
+

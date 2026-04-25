@@ -87,11 +87,33 @@ import { getPageInfo, getStudent } from "../services/api";
 export const dynamic = "force-dynamic";
 
 
-export const metadata: Metadata = {
-  title: "Gateway Abroad Education - Best Study Abroad Consultants in Jaipur",
-  description:
-    "Trusted overseas education consultancy helping students achieve their dreams of studying abroad.",
-};
+// export const metadata: Metadata = {
+//   title: "Gateway Abroad Education - Best Study Abroad Consultants in Jaipur",
+//   description:
+//     "Trusted overseas education consultancy helping students achieve their dreams of studying abroad.",
+//  };
+
+
+export async function generateMetadata() {
+  const  data  = await getPageInfo("home");
+  const seo = data.seoMeta;
+
+  return {
+    title: seo?.title?.trim() || "Home",
+    description: seo?.description,
+    keywords: seo?.keywords,
+    alternates: {
+      canonical: `/${seo?.canonicalUrl || ""}`,
+    },
+    openGraph: {
+      title: seo?.title,
+      description: seo?.description,
+      url: `${seo?.canonicalUrl || "https://ooshasprap.com/home/"}`,
+      type: "website",
+    },
+  };
+}
+
 
 export default async function Home() {
   const pageData = await getPageInfo("home");

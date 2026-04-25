@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IPageData extends Document {
   name: string;
+  slug: string;
   description: string;
   published: boolean;
   seoMeta: Record<string, any>;
@@ -19,6 +20,11 @@ const PageDataSchema = new Schema<IPageData>(
       unique: true,
       trim: true,
       lowercase: true,
+    },
+    slug: {
+      type : String,
+      required: true,
+      unique: true, 
     },
     description: {
       type: String,

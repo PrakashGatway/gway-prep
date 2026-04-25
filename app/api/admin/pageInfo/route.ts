@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/app/lib/db";
 import PageData from "@/app/Model/PageData";
 import { PageDataSchema } from "@/app/type";
+import { slugify } from "@/app/lib/slug";
 
 // ─── GET /api/pages ───────────────────────────────────────────────────────────
 export async function GET(): Promise<NextResponse> {
@@ -53,6 +54,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     const page = await PageData.create({
       name: name.toLowerCase(),
+      slug : slugify(name),
       description,
       seoMeta,
       sections,
