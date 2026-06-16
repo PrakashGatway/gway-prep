@@ -170,7 +170,7 @@ export function Navbar({ Data }: any) {
               </button>
 
 
-              {user && user.email ? <button onClick={() => setDrawer(!drawer)} className="border border-[#F36C45] text-[#F36C45] px-4 py-2 rounded-lg hover:bg-orange-50 transition">
+              { !user?.email ? <button onClick={() => setDrawer(!drawer)} className="border border-[#F36C45] text-[#F36C45] px-4 py-2 rounded-lg hover:bg-orange-50 transition">
                 Login / Signup
               </button> : <button onClick={() => window.location.href = "https://dashboard.ooshasprep.com"} className="border border-[#F36C45] text-[#F36C45] px-4 py-2 rounded-lg hover:bg-orange-50 transition">
                 Go to Dashboard
