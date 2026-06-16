@@ -1,3 +1,4 @@
+
 import type React from "react";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
@@ -8,6 +9,8 @@ import { Footer } from "@/app/components/footer";
 import Script from "next/script";
 import { Montserrat } from "next/font/google";
 import { getPages } from "../services/api";
+import { GlobalProvider } from "@/hooks/AppStateContext";
+import AuthDrawer from "../components/auth/drawer";
 
 
 
@@ -67,9 +70,11 @@ export default async function RootLayout({
             style={{ display: "none", visibility: "hidden" }}
           ></iframe>
         </noscript>
-        <Navbar Data={NavData} />
-        {children}
-        <Footer />
+        <GlobalProvider>
+          <Navbar Data={NavData} />
+          {children}
+          <Footer />
+        </GlobalProvider>
       </body>
     </html>
   );

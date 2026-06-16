@@ -1,7 +1,8 @@
 import axios from "axios";
 
+let mode = "devdd" ;
 const getBaseURL = () => {
-  if (process.env.NODE_ENV === "development") {
+  if (mode === "dev") {
     return "http://localhost:3000/api";
   }
   return `${process.env.NEXT_PUBLIC_API_URL}/api`;
