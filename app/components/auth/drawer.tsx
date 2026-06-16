@@ -44,10 +44,9 @@ const AuthDrawer = ({ isOpen, setIsOpen }:any) => {
                         {/* Close button */}
                         <button
                             onClick={toggleDrawer}
-                            variant="ghost"
-                            className="absolute top-4 p-3 border right-4 z-10 rounded-full hover:bg-gray-100"
+                            className="absolute top-4 p-2 border right-4 z-10 rounded-full hover:bg-gray-100"
                         >
-                            <X className="w-12 h-12 font-bold" />
+                            <X className="w-6 h-6 font-" />
                         </button>
 
                         <div className="absolute inset-0 overflow-hidden">
