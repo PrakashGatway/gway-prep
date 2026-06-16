@@ -154,7 +154,7 @@ export default function Auth({ toggleDrawer }: any) {
                 // Auto redirect after success
                 setTimeout(() => {
                     toggleDrawer();
-                    window.location.href = "https://dashboard.gatewayabroadeducations.com/";
+                    window.location.href = "https://dashboard.ooshasprep.com/";
                 }, 2000);
             } else {
                 setErrors({ otp: "Invalid OTP. Please try again." });
