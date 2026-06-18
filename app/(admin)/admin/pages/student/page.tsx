@@ -87,14 +87,14 @@ const Blog = () => {
 
                 {/* ACTIONS */}
                 <div className="flex justify-end gap-3 mt-4">
-                  <button
+                  {/* <button
                     onClick={() =>
                       router.push(`/admin/pages/student/edit/${student._id}`)
                     }
                     className="p-2 rounded-md bg-blue-100 text-blue-600 hover:bg-blue-200 transition"
                   >
                     <Pencil size={16} />
-                  </button>
+                  </button> */}
 
                   <button
                     onClick={() => handleDelete(student._id)}

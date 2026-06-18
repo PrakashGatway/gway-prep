@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let mode = "dev2" ;
+let mode = "dev" ;
 const getBaseURL = () => {
   if (mode === "dev") {
     return "http://localhost:3000/api";
@@ -34,7 +34,7 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401 && typeof window !== "undefined") {
       localStorage.removeItem("token");
-      window.location.href = "/auth/login";
+      window.location.href = "/admin";
     }
     return Promise.reject(error);
   }
