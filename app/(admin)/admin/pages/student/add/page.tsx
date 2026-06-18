@@ -55,6 +55,9 @@ const EditorForm = () => {
     const res =  res1.data;
       console.log(res);
       setValues({});
+      if(res.message === "Student created successfully."){
+        router.push('/admin/pages/student')
+      }
       setloading(false);
     } catch (error) {
       console.error("Error:", error);
