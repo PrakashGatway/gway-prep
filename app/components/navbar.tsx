@@ -28,6 +28,7 @@ export function Navbar({ Data }: any) {
       (item: any) =>
         item?.seoMeta?.template?.toLowerCase() === "preparation"
     ) || []
+    console.log(Data,"data")
 
   const [isOpen, setIsOpen] = React.useState(false)
   const { user, course, logout, drawer, setDrawer } = useGlobal();
@@ -76,15 +77,15 @@ export function Navbar({ Data }: any) {
           }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
+          <div className="flex h-20 items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex-shrink-0">
               <Image
                 src="/image/logo.png"
                 alt="Logo"
                 width={140}
-                height={40}
-                className="w-auto h-10 sm:h-12"
+                height={60}
+                className="w-auto h-10 sm:h-20"
                 priority
               />
             </Link>

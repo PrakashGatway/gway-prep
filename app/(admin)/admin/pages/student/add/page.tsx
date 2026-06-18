@@ -4,6 +4,7 @@ import { pageData } from "@/app/lib/pageData";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { createStudent, uploadImage } from "@/app/services/api";
+import axiosInstance from "@/app/lib/axios";
 
 const CKEditorComponent = dynamic(
   () => import("../../../components/ckEditor"),
@@ -48,7 +49,10 @@ const EditorForm = () => {
     setloading(true);
     try {
       console.log(values);
-      const res = await createStudent(values);
+      // const res = await createStudent(values);
+      
+    const res1 = await axiosInstance.post("/admin/student", values);
+    const res =  res1.data;
       console.log(res);
       setValues({});
       setloading(false);

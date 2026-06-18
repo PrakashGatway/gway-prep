@@ -73,44 +73,50 @@ const AdminLoginPage = () => {
   }
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setServerError("");
+  e.preventDefault();
 
-    const validationErrors = validate(form);
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+  setServerError("");
+  setErrors({});
+
+  const validationErrors = validate(form);
+
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
+
+  setIsLoading(true);
+
+  try {
+    const data: loginResponse = await loginAdmin(form);
+
+    if (data.message !== "Login Successful") {
+      setServerError(data.error || "Login failed. Please try again.");
       return;
     }
 
-    setIsLoading(true);
+    // Store token
+    if (data.adminToken) {
+      const maxAge = form.remember
+        ? "; max-age=604800" // 7 days
+        : "";
 
-    try {
-      const data: loginResponse = await loginAdmin(form);
-
-      // if (!data.ok) {
-      //   setServerError(data.error || "Login failed. Please try again.");
-      //   return;
-      // }
-
-      // ✅ Store token
-      if (data.adminToken) {
-        document.cookie = `adminToken=${data.adminToken}; path=/; max-age=${
-          form.remember ? 604800 : 0
-        }; SameSite=Lax`;
-      }
-
-      if (data.user) {
-        document.cookie = `role=${data.user.role}; path=/; SameSite=Lax`;
-      }
-
-      router.push("/admin/pages/home");
-    } catch (error) {
-      console.error(error);
-      setServerError("Something went wrong. Please try again.");
-    } finally {
-      setIsLoading(false);
+      document.cookie = `adminToken=${data.adminToken}; path=/; SameSite=Lax${maxAge}`;
     }
+
+    // Store role
+    if (data.user?.role) {
+      document.cookie = `role=${data.user.role}; path=/; SameSite=Lax`;
+    }
+
+    router.replace("/admin/pages/home");
+  } catch (error) {
+    console.error("Login Error:", error);
+    setServerError("Something went wrong. Please try again.");
+  } finally {
+    setIsLoading(false);
   }
+}
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 px-4">
