@@ -41,7 +41,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <head>
-        <Script
+        {/* <Script
           id="gtm-script"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
@@ -56,7 +56,8 @@ export default async function RootLayout({
               })(window,document,'script','dataLayer','GTM-WPTCBD4T');
             `,
           }}
-        />
+        /> */}
+        <meta name="google-site-verification" content="2C7LwN4EhdIjyPz-O86evTun7OVY91YICLZQBpfjQnM" />
       </head>
       <body
         className={`${montserrat.className} bg-white text-gray-900 max-w-[1640px] mx-auto`}
