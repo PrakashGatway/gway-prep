@@ -54,8 +54,9 @@ const EditorForm = () => {
     const res1 = await axiosInstance.post("/admin/student", values);
     const res =  res1.data;
       console.log(res);
-      setValues({});
+      // setValues({});
       if(res.message === "Student created successfully."){
+        console.log(res)
         router.push('/admin/pages/student')
       }
       setloading(false);

@@ -260,6 +260,7 @@ const EditorForm = ({ slug }: PageProps) => {
       ? sectionValues[parent]?.[index]?.[field.name] || ""
       : sectionValues[field.name] || "";
 
+      
     const baseInputClasses = "w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all";
 
     switch (field.type) {
@@ -727,6 +728,8 @@ console.log(formData);
                           <div className="space-y-5">
                             {ele.fields.map((field: any) => (
                               <div key={field.name}>
+                  {console.log(formData?.sections,"formData?.sections",field, ele.name)}
+
                                 <label className="block text-sm font-medium mb-2">
                                   {field.label}
                                   {field.required && <span className="text-red-500 ml-1">*</span>}
