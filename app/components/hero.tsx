@@ -138,7 +138,7 @@ const [images,setimages] = useState<any[]>([
       bg-no-repeat 
       flex gap-12 items-center justify-center flex-wrap h-auto "
     >
-      <div className=" mx-auto p-4 sm:px-6  flex flex-col lg:flex-row  items-center gap-6 md:gap-10 max-w-7xl">
+      <div className={`h-[22rem]  lg:h-[25rem] mx-auto m-6 flex flex-col lg:flex-row  items-center gap-6 md:gap-10 max-w-7xl`}>
         {/* Left Content Section */}
         <div className="lg:w-[70%] w-full pt-20">
           <div className="">
