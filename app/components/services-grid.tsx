@@ -36,7 +36,7 @@ export function ServicesGrid({data}:{data:any}) {
                   border-brand-orange`} >
                     
                 <Image
-                  src={item.icon}
+                  src={item?.icon || null}
                   alt="icon"
                   width={84}
                   height={84}

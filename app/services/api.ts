@@ -32,10 +32,26 @@ export const deleteBlogCategory = async (id: string) => {
     return res.data;
 };
 
+// export const getPageInfo = async (id: string) => {
+//     const res = await axiosInstance.get(`/admin/pageInfo/${encodeURIComponent(id)}`);
+//     return res.data.data || [];
+// };
+
 export const getPageInfo = async (id: string) => {
+  if (!id) {
+    console.error("getPageInfo Error: 'id' parameter is missing or empty.");
+    return [];
+  }
+  
+  try {
     const res = await axiosInstance.get(`/admin/pageInfo/${encodeURIComponent(id)}`);
-    return res.data.data;
+    return res.data.data || [];
+  } catch (error) {
+    console.error("API Call Failed:", error);
+    throw error;
+  }
 };
+
 
 
 export const getPages = async () => {
