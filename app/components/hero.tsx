@@ -143,17 +143,15 @@ const [images,setimages] = useState<any[]>([
         <div className="lg:w-[70%] w-full pt-20">
           <div className="">
             <h1 className="text-2xl  md:text-3xl lg:text-5xl font-bold leading-tight text-white">
-              {data.fields.title || `World's Leading Test <p> Prep, Tutoring & Collage </p> Admissions
-              Centre`}
+              {data.fields.title || ``}
             </h1>
 
             <h1 className="text-xl  md:text-2xl lg:text-4xl font-semibold leading-tight text-white mt-4">
-              {data.fields.subtitle ||"Coaching for SAT, AP, IB,IGCSE, A -Levels & CompetitiveEntrance Exams"}
+              {data.fields.subtitle ||""}
             </h1>
 
             <p className=" mt-2 md:mt-4 leading-relaxed text-lg text-white font-medium">
-             {data.fields.paragraph || ` Live online exam preparation, score optimisation, and personalised
-              admissions mentorship.`}
+             {data.fields.paragraph || ``}
             </p>
           </div>
 

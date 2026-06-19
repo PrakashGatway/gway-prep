@@ -77,10 +77,20 @@ export function VideoTestimonialCard({heading,data}:any) {
           if (timeout) clearTimeout(timeout);
         }
 
+        // function nextTimeout() {
+        //   if (mouseOver) return;
+        //   timeout = setTimeout(() => {
+        //     slider.next();
+        //   }, 4000);
+        // }
+
         function nextTimeout() {
           if (mouseOver) return;
           timeout = setTimeout(() => {
-            slider.next();
+            // Fix: Only slide forward if the slider track infrastructure is still active
+            if (slider.track && slider.track.details) {
+              slider.next();
+            }
           }, 4000);
         }
 
@@ -181,7 +191,7 @@ export function VideoTestimonialCard({heading,data}:any) {
             key={i}
             onClick={() => slider?.current?.moveToIdx(i)}
             className={`w-3 h-3 rounded-full ${
-              slider?.current?.track.details.rel === i
+              slider?.current?.track?.details?.rel === i
                 ? "bg-[#FF6B35]"
                 : "bg-[#FF6B35]/30"
             }`}

@@ -34,14 +34,14 @@ export function ServicesGrid({data}:{data:any}) {
                   ${!isLastInRow ? "lg:border-r-3 " : ""} 
                   ${isFirstRow ? "lg:border-b-3 " : ""} 
                   border-brand-orange`} >
-                    
+                {item?.icon &&     
                 <Image
                   src={item?.icon || null}
                   alt="icon"
                   width={84}
                   height={84}
                   className="h-[7rem] w-[8rem]"
-                />
+                />}
                 <p className="mt-2 text-gray-600 text-xl font-medium max-w-[180px]">
                   {item.title}
                 </p>

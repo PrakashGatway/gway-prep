@@ -98,55 +98,73 @@ const data = [
 
 
 export function HomeStudent({data}:{data : any}) {
+
   const [sliderRef, slider] = useKeenSlider(
-    {
-      loop: true,
-      slides: {
-        perView: 1,
-        spacing: 16,
-      },
-      breakpoints: {
-        "(min-width: 640px)": {
-          slides: {
-            perView: 1, // 🔥 important (your card is big)
-            spacing: 20,
-          },
+  {
+    loop: true,
+    slides: {
+      perView: 1,
+      spacing: 16,
+    },
+    breakpoints: {
+      "(min-width: 640px)": {
+        slides: {
+          perView: 1, 
+          spacing: 20,
         },
       },
     },
-    [
-      (slider) => {
-        let timeout: any;
-        let mouseOver = false;
+  },
+  [
+    (slider) => {
+      let timeout: any;
+      let mouseOver = false;
 
-        const clearNextTimeout = () => timeout && clearTimeout(timeout);
+      const clearNextTimeout = () => {
+        if (timeout) clearTimeout(timeout);
+      };
 
-        const nextTimeout = () => {
+      const nextTimeout = () => {
+        clearNextTimeout();
+        if (mouseOver) return;
+        
+        // Fix 1: Guard against missing track details before sliding
+        timeout = setTimeout(() => {
+          if (slider.track && slider.track.details) {
+            slider.next();
+          }
+        }, 4000);
+      };
+
+      slider.on("created", () => {
+        slider.container.addEventListener("mouseover", () => {
+          mouseOver = true;
           clearNextTimeout();
-          if (mouseOver) return;
-          timeout = setTimeout(() => slider.next(), 4000);
-        };
-
-        slider.on("created", () => {
-          slider.container.addEventListener("mouseover", () => {
-            mouseOver = true;
-            clearNextTimeout();
-          });
-
-          slider.container.addEventListener("mouseout", () => {
-            mouseOver = false;
-            nextTimeout();
-          });
-
-          nextTimeout();
         });
 
-        slider.on("dragStarted", clearNextTimeout);
-        slider.on("animationEnded", nextTimeout);
-        slider.on("updated", nextTimeout);
-      },
-    ]
-  );
+        slider.container.addEventListener("mouseout", () => {
+          mouseOver = false;
+          // Fix 2: Safety check when mouse leaves
+          if (slider.track && slider.track.details) {
+            nextTimeout();
+          }
+        });
+
+        nextTimeout();
+      });
+
+      slider.on("dragStarted", clearNextTimeout);
+      slider.on("animationEnded", nextTimeout);
+      slider.on("updated", nextTimeout);
+
+      // Fix 3: Clear timers when KeenSlider destroys itself
+      slider.on("destroyed", () => {
+        clearNextTimeout();
+      });
+    },
+  ]
+);
+
 
   return (
     <div className="relative">
