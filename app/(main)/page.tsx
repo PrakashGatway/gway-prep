@@ -49,9 +49,10 @@ export default async function Home() {
   const studentsData =  await getStudent("",1,8);
 
   const sections = pageData?.sections || {};
+  // console.log(sections,'sections')
   
   return (
-    <main className="lg:min-w-7xl">
+    <main className="">
       <Hero data={sections["Home-hero-section"]} />
       <RegistrationSection data={sections["Registations"]} />
       <Aboutresult data={studentsData} />

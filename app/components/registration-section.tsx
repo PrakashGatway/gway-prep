@@ -167,7 +167,7 @@ export function RegistrationSection({ data }: any) {
 
   return (
     <section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 py-12 px-4">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 items-center gap-8 sm:gap-12 lg:gap-16">
+      <div className="max-w-7xl mx-auto flex items-center gap-8 sm:gap-10 lg:gap-12">
         {/* Left Side - Image/Illustration */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
@@ -178,9 +178,10 @@ export function RegistrationSection({ data }: any) {
           <div className="relative">
             <div className="absolute -inset-4 " />
             <img
-              src={data?.fields?.img ?? "/home/1.png"}
+              src={data?.fields?.Formsection ?? "/home/1.png"}
               alt="Registration"
-              className="relative rounded-2xl shadow-2xl"
+              // height={850}
+              className="relative "
             />
             <motion.div
               animate={{ y: [0, -10, 0] }}

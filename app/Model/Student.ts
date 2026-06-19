@@ -24,7 +24,7 @@ const StudentSchema = new Schema<IStudent>(
         course: { type: String, required: true, trim: true }, // Removed unique: true
         score: String,
         image: String,
-        university: { type: String, required: true, trim: true },
+        university: { type: String, trim: true },
         universityLogo: String,
         about: { type: Schema.Types.Mixed, default: {} },
         outcome: { type: Schema.Types.Mixed, default: {} },

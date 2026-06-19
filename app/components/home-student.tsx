@@ -194,20 +194,21 @@ export function HomeStudent({data}:{data : any}) {
                 <h2 className="text-[#FF6B35] text-2xl font-bold">
                   {student.name}
                 </h2>
-                <p className="text-gray-600 text-lg">
+                {student?.university && <p className="text-gray-600 text-lg">
                   {student?.university}
-                </p>
+                </p>}
                 <p className="text-gray-600 text-lg font-semibold uppercase">
                   {student?.course}{" "}
                   {student?.score}
                 </p>
               </div>
 
+              {student?.universityLogo && 
               <img
                 src={student?.universityLogo}
                 alt="logo"
                 className="h-20 w-full mt-8 mx-auto"
-              />
+              />}
             </div>
 
 

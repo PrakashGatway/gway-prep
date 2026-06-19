@@ -35,62 +35,6 @@ const [images,setimages] = useState<any[]>([
               "Rating": "Overall Rating || 4",
               "Lectured": "Total Hours Lectured || 20000"
   },
-  // {
-  //   url: "https://img.freepik.com/premium-photo/young-handsome-man-pointing-camera-choosing-you-university-student-concept_1194-262936.jpg",
-  //   score: 9,
-  //   name: "john doe",
-  //   score_type: "ACT Score",
-  //   data: [
-  //     {
-  //       number: "20",
-  //       text: "Years of Experience",
-  //       past: "+",
-  //     },
-  //     {
-  //       number: "3000",
-  //       text: "Happy Students",
-  //       past: "+",
-  //     },
-  //     {
-  //       number: "4",
-  //       text: "Overall  Rating",
-  //       past: ".8/5",
-  //     },
-  //     {
-  //       number: "20000",
-  //       text: "Total Hours Lectured",
-  //       past: "+",
-  //     },
-  //   ],
-  // },
-  // {
-  //   url: "https://as2.ftcdn.net/jpg/05/29/12/57/1000_F_529125762_omW1yTehDLLFJKwLJjRET0G3sXiQnK5g.jpg",
-  //   score: 7,
-  //   name: "jane smith",
-  //   score_type: "PSAT Score",
-  //   data: [
-  //     {
-  //       number: "20",
-  //       text: "Years of Experience",
-  //       past: "+",
-  //     },
-  //     {
-  //       number: "3000",
-  //       text: "Happy Students",
-  //       past: "+",
-  //     },
-  //     {
-  //       number: "4",
-  //       text: "Overall  Rating",
-  //       past: ".8/5",
-  //     },
-  //     {
-  //       number: "20000",
-  //       text: "Total Hours Lectured",
-  //       past: "+",
-  //     },
-  //   ],
-  // },
 ]);
   const [index, setIndex] = useState(0);
 
@@ -138,7 +82,7 @@ const [images,setimages] = useState<any[]>([
       bg-no-repeat 
       flex gap-12 items-center justify-center flex-wrap h-auto "
     >
-      <div className={`h-[22rem]  lg:h-[25rem] mx-auto m-6 flex flex-col lg:flex-row  items-center gap-6 md:gap-10 max-w-7xl`}>
+      <div className={`h-[22rem]  lg:h-[30rem] mx-auto m-6 flex flex-col lg:flex-row  items-center gap-6 md:gap-10 max-w-7xl`}>
         {/* Left Content Section */}
         <div className="lg:w-[70%] w-full pt-20">
           <div className="">
@@ -164,7 +108,6 @@ const [images,setimages] = useState<any[]>([
         </div>
 
 
-        {/* ================= LEFT CONTENT ================= */}
         <div className="lg:w-1/2 w-full flex flex-col gap-4">
           {/* IMAGE SLIDER */}
            <div className="relative w-[22rem] h-[22rem] lg:w-[25rem] lg:h-[25rem] mx-auto">
@@ -201,7 +144,7 @@ const [images,setimages] = useState<any[]>([
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 // width: "24rem",
-                height: "8rem",
+                height: "7rem",
                 // borderRadius: "93px",
               }}
               className="flex gap-4 lg:w-[24rem] w-full items-center justify-around capitalize mb-10"
