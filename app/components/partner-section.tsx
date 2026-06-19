@@ -3,7 +3,7 @@ import { Phone, MessageCircle, Mail, MapPin, Facebook, Twitter, Instagram, Youtu
 
 export function PartnerSection() {
   return (
-    <section className="py-12 md:py-16 lg:py-20  bg-[url('/image/bg.jpeg')] bg-cover bg-center relative overflow-hidden" id="partner">
+    <section className="py-12 md:py-16 lg:py-20  bg-[url('/image/bg-contect.jpeg')]  bg-cover bg-center relative overflow-hidden" id="partner">
      
      
 
@@ -127,7 +127,7 @@ export function PartnerSection() {
                   ))}
                 </select>
               </div>
-              <button className="w-full py-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg transition">
+              <button className="w-full py-4 bg-[#f26e46] text-white font-bold rounded-lg transition">
                 Send Message
               </button>
             </form>

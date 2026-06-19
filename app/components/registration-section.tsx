@@ -3,29 +3,332 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { 
+  User, 
+  Mail, 
+  Phone, 
+  MapPin, 
+  Calendar, 
+  BookOpen, 
+  Target, 
+  Clock, 
+  CheckCircle,
+  ArrowRight,
+  ArrowLeft,
+  Send,
+  Lock,
+  Star,
+  Award,
+  Users,
+  Briefcase,
+  GraduationCap,
+  Home,
+  Search,
+  Instagram,
+  Facebook,
+  Youtube,
+  Share2,
+  FileText,
+  ClipboardCheck,
+  BarChart,
+  TrendingUp,
+  Book,
+  PenTool,
+  Headphones,
+  MessageSquare,
+  Hash,
+  Calculator,
+  Sun,
+  Moon,
+  Monitor,
+  Zap,
+  Calendar as CalendarIcon,
+  Globe,
+  Building,
+  UserCheck,
+  Users as UsersIcon
+} from "lucide-react";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
 /* ------------------------------------------------------------------ */
 type FormData = {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  city: string;
-  age: string;
-  profile: string;
-  source: string;
-  exam: string;
-  purpose: string;
-  targetScore: string;
-  examDate: string;
-  attempts: string;
-  englishLevel: string;
-  weakAreas: string[];
-  batchType: string;
-  startTimeline: string;
-  notes: string;
+  [key: string]: string | string[];
+};
+
+type FieldConfig = {
+  name: string;
+  label: string;
+  type: "text" | "email" | "tel" | "number" | "date" | "select" | "textarea" | "checkbox-group" | "button-group";
+  required?: boolean;
+  placeholder?: string;
+  options?: Array<{ value: string; label: string; icon?: any }>;
+  step: number;
+  grid?: "full" | "half" | "third";
+  icon?: any;
+};
+
+type StepConfig = {
+  step: number;
+  title: string;
+  icon: any;
+  fields: string[];
+};
+
+/* ------------------------------------------------------------------ */
+/* Form Configuration - JSON                                          */
+/* ------------------------------------------------------------------ */
+const FORM_CONFIG = {
+  steps: [
+    {
+      step: 1,
+      title: "Personal Information",
+      icon: User,
+      fields: ["firstName", "lastName", "email", "phone", "city", "age", "profile", "source"]
+    },
+    {
+      step: 2,
+      title: "Exam Details",
+      icon: BookOpen,
+      fields: ["exam", "purpose", "targetScore", "examDate", "attempts"]
+    },
+    {
+      step: 3,
+      title: "Current Level & Preferences",
+      icon: BarChart,
+      fields: ["englishLevel", "weakAreas", "batchType", "startTimeline", "notes"]
+    }
+  ],
+  fields: [
+    {
+      name: "firstName",
+      label: "First Name",
+      type: "text",
+      required: true,
+      placeholder: "Priya",
+      step: 1,
+      grid: "half",
+      icon: User
+    },
+    {
+      name: "lastName",
+      label: "Last Name",
+      type: "text",
+      required: true,
+      placeholder: "Mehta",
+      step: 1,
+      grid: "half",
+      icon: User
+    },
+    {
+      name: "email",
+      label: "Email Address",
+      type: "email",
+      required: true,
+      placeholder: "priya@email.com",
+      step: 1,
+      grid: "full",
+      icon: Mail
+    },
+    {
+      name: "phone",
+      label: "Phone Number",
+      type: "tel",
+      required: true,
+      placeholder: "+91 98765 43210",
+      step: 1,
+      grid: "full",
+      icon: Phone
+    },
+    {
+      name: "city",
+      label: "City",
+      type: "text",
+      required: false,
+      placeholder: "Jaipur",
+      step: 1,
+      grid: "half",
+      icon: MapPin
+    },
+    {
+      name: "age",
+      label: "Age",
+      type: "number",
+      required: false,
+      placeholder: "24",
+      step: 1,
+      grid: "half",
+      icon: Calendar
+    },
+    {
+      name: "profile",
+      label: "Current Profile",
+      type: "select",
+      required: false,
+      step: 1,
+      grid: "full",
+      options: [
+        { value: "", label: "Select your profile" },
+        { value: "School student", label: "School student" },
+        { value: "Undergraduate student", label: "Undergraduate student" },
+        { value: "Recent graduate", label: "Recent graduate" },
+        { value: "Working professional", label: "Working professional" },
+        { value: "Homemaker", label: "Homemaker" }
+      ]
+    },
+    {
+      name: "source",
+      label: "How did you hear about us?",
+      type: "select",
+      required: false,
+      step: 1,
+      grid: "full",
+      options: [
+        { value: "", label: "Select source" },
+        { value: "Google Search", label: "Google Search" },
+        { value: "Instagram", label: "Instagram" },
+        { value: "Facebook", label: "Facebook" },
+        { value: "YouTube", label: "YouTube" },
+        { value: "Friend Referral", label: "Friend Referral" },
+        { value: "Education Fair", label: "Education Fair" },
+        { value: "Walk-in", label: "Walk-in" },
+        { value: "Other", label: "Other" }
+      ]
+    },
+    {
+      name: "exam",
+      label: "Target Exam",
+      type: "button-group",
+      required: true,
+      step: 2,
+      grid: "full",
+      options: [
+        { value: "IELTS", label: "IELTS", icon: Book },
+        { value: "TOEFL", label: "TOEFL", icon: FileText },
+        { value: "PTE", label: "PTE", icon: PenTool },
+        { value: "GRE", label: "GRE", icon: TrendingUp },
+        { value: "GMAT", label: "GMAT", icon: Briefcase },
+        { value: "SAT", label: "SAT", icon: Calculator }
+      ]
+    },
+    {
+      name: "purpose",
+      label: "Purpose",
+      type: "select",
+      required: false,
+      step: 2,
+      grid: "full",
+      options: [
+        { value: "", label: "Select purpose" },
+        { value: "Study Abroad", label: "Study Abroad" },
+        { value: "Job / PR Visa", label: "Job / PR Visa" },
+        { value: "MBA Admission", label: "MBA Admission" },
+        { value: "English Proficiency", label: "English Proficiency" }
+      ]
+    },
+    {
+      name: "targetScore",
+      label: "Target Score",
+      type: "text",
+      required: false,
+      placeholder: "e.g. IELTS 7.5, GRE 320",
+      step: 2,
+      grid: "full",
+      icon: Target
+    },
+    {
+      name: "examDate",
+      label: "Exam Date",
+      type: "date",
+      required: false,
+      step: 2,
+      grid: "full",
+      icon: CalendarIcon
+    },
+    {
+      name: "attempts",
+      label: "Previous Attempts",
+      type: "select",
+      required: false,
+      step: 2,
+      grid: "full",
+      options: [
+        { value: "", label: "Select attempts" },
+        { value: "First attempt", label: "First attempt" },
+        { value: "Second attempt", label: "Second attempt" },
+        { value: "Third attempt or more", label: "Third attempt or more" }
+      ]
+    },
+    {
+      name: "englishLevel",
+      label: "English Level",
+      type: "button-group",
+      required: false,
+      step: 3,
+      grid: "full",
+      options: [
+        { value: "Beginner", label: "Beginner", icon: Book, desc: "Just starting" },
+        { value: "Intermediate", label: "Intermediate", icon: TrendingUp, desc: "Can communicate" },
+        { value: "Upper-Intermediate", label: "Upper-Intermediate", icon: Award, desc: "Good command" },
+        { value: "Advanced", label: "Advanced", icon: Star, desc: "Fluent speaker" }
+      ]
+    },
+    {
+      name: "weakAreas",
+      label: "Weak Areas",
+      type: "checkbox-group",
+      required: false,
+      step: 3,
+      grid: "full",
+      options: [
+        { value: "Reading", label: "Reading", icon: Book },
+        { value: "Writing", label: "Writing", icon: PenTool },
+        { value: "Listening", label: "Listening", icon: Headphones },
+        { value: "Speaking", label: "Speaking", icon: MessageSquare },
+        { value: "Verbal", label: "Verbal", icon: Hash },
+        { value: "Quant/Math", label: "Quant/Math", icon: Calculator }
+      ]
+    },
+    {
+      name: "batchType",
+      label: "Preferred Batch",
+      type: "select",
+      required: false,
+      step: 3,
+      grid: "full",
+      options: [
+        { value: "", label: "Select batch type" },
+        { value: "Weekday Morning", label: "Weekday Morning" },
+        { value: "Weekday Evening", label: "Weekday Evening" },
+        { value: "Weekend", label: "Weekend" },
+        { value: "Online", label: "Online" }
+      ]
+    },
+    {
+      name: "startTimeline",
+      label: "Start Timeline",
+      type: "select",
+      required: false,
+      step: 3,
+      grid: "full",
+      options: [
+        { value: "", label: "Select timeline" },
+        { value: "Immediately (within 1 week)", label: "Immediately (within 1 week)" },
+        { value: "Within 2-4 weeks", label: "Within 2-4 weeks" },
+        { value: "Within 1-2 months", label: "Within 1-2 months" },
+        { value: "Just exploring", label: "Just exploring" }
+      ]
+    },
+    {
+      name: "notes",
+      label: "Additional Notes",
+      type: "textarea",
+      required: false,
+      placeholder: "Any specific requirements or questions...",
+      step: 3,
+      grid: "full"
+    }
+  ]
 };
 
 /* ------------------------------------------------------------------ */
@@ -35,41 +338,34 @@ export function RegistrationSection({ data }: any) {
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState<FormData>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    city: "",
-    age: "",
-    profile: "",
-    source: "",
-    exam: "",
-    purpose: "",
-    targetScore: "",
-    examDate: "",
-    attempts: "",
-    englishLevel: "",
-    weakAreas: [],
-    batchType: "",
-    startTimeline: "",
-    notes: "",
+  
+  // Initialize form data from config
+  const initialFormData: FormData = {};
+  FORM_CONFIG.fields.forEach(field => {
+    if (field.type === "checkbox-group") {
+      initialFormData[field.name] = [];
+    } else {
+      initialFormData[field.name] = "";
+    }
   });
+  
+  const [formData, setFormData] = useState<FormData>(initialFormData);
 
-  const updateField = (field: keyof FormData, value: string | string[]) => {
+  const primaryColor = "#f26e46";
+
+  const updateField = (field: string, value: string | string[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const toggleWeakArea = (area: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      weakAreas: prev.weakAreas.includes(area)
-        ? prev.weakAreas.filter((a) => a !== area)
-        : [...prev.weakAreas, area],
-    }));
+  const toggleCheckboxGroup = (fieldName: string, value: string) => {
+    const currentValues = formData[fieldName] as string[];
+    const newValues = currentValues.includes(value)
+      ? currentValues.filter((v) => v !== value)
+      : [...currentValues, value];
+    setFormData((prev) => ({ ...prev, [fieldName]: newValues }));
   };
 
-  const nextStep = () => setStep((s) => Math.min(s + 1, 4));
+  const nextStep = () => setStep((s) => Math.min(s + 1, FORM_CONFIG.steps.length));
   const prevStep = () => setStep((s) => Math.max(s - 1, 1));
 
   const handleSubmit = async (e: FormEvent) => {
@@ -89,34 +385,27 @@ export function RegistrationSection({ data }: any) {
   const restart = () => {
     setStep(1);
     setSubmitted(false);
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      city: "",
-      age: "",
-      profile: "",
-      source: "",
-      exam: "",
-      purpose: "",
-      targetScore: "",
-      examDate: "",
-      attempts: "",
-      englishLevel: "",
-      weakAreas: [],
-      batchType: "",
-      startTimeline: "",
-      notes: "",
+    const resetData: FormData = {};
+    FORM_CONFIG.fields.forEach(field => {
+      if (field.type === "checkbox-group") {
+        resetData[field.name] = [];
+      } else {
+        resetData[field.name] = "";
+      }
     });
+    setFormData(resetData);
   };
 
-  const steps = [
-    { num: 1, label: "Personal", icon: "👤" },
-    { num: 2, label: "Exam", icon: "📝" },
-    { num: 3, label: "Level", icon: "📊" },
-    { num: 4, label: "Review", icon: "✅" },
-  ];
+  const getFieldsForStep = (stepNumber: number) => {
+    return FORM_CONFIG.fields.filter(field => field.step === stepNumber);
+  };
+
+  // Get current step fields
+  const currentStepFields = getFieldsForStep(step);
+  const currentStep = FORM_CONFIG.steps.find(s => s.step === step);
+
+  // Get total steps
+  const totalSteps = FORM_CONFIG.steps.length;
 
   if (submitted) {
     return (
@@ -131,32 +420,48 @@ export function RegistrationSection({ data }: any) {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="w-20 h-20 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6"
+            className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+            style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)` }}
           >
-            <svg className="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-            </svg>
+            <CheckCircle className="w-10 h-10 text-white" />
           </motion.div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Thank You!</h2>
           <p className="text-gray-600 mb-6 text-lg">
             Our counsellor will contact you within 24 hours.
           </p>
-          <div className="flex justify-center gap-2 mb-6">
-            {["📞", "✉️", "💬"].map((emoji, i) => (
-              <motion.span
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + i * 0.1 }}
-                className="text-2xl"
-              >
-                {emoji}
-              </motion.span>
-            ))}
+          <div className="flex justify-center gap-3 mb-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="w-12 h-12 rounded-full flex items-center justify-center"
+              style={{ background: `${primaryColor}15` }}
+            >
+              <Phone className="w-5 h-5" style={{ color: primaryColor }} />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.5 }}
+              className="w-12 h-12 rounded-full flex items-center justify-center"
+              style={{ background: `${primaryColor}15` }}
+            >
+              <Mail className="w-5 h-5" style={{ color: primaryColor }} />
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              className="w-12 h-12 rounded-full flex items-center justify-center"
+              style={{ background: `${primaryColor}15` }}
+            >
+              <MessageSquare className="w-5 h-5" style={{ color: primaryColor }} />
+            </motion.div>
           </div>
           <button
             onClick={restart}
-            className="px-6 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-xl font-semibold hover:from-teal-700 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl"
+            className="px-6 py-3 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl"
+            style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)` }}
           >
             Submit Another Enquiry
           </button>
@@ -166,22 +471,20 @@ export function RegistrationSection({ data }: any) {
   }
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 py-12 px-4">
-      <div className="max-w-7xl mx-auto flex items-center gap-8 sm:gap-10 lg:gap-12">
+    <section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 py-34 px-4">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-start gap-8 lg:gap-12">
         {/* Left Side - Image/Illustration */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="hidden lg:block"
+          className="hidden lg:block lg:w-1/2 sticky top-32"
         >
           <div className="relative">
-            <div className="absolute -inset-4 " />
             <img
               src={data?.fields?.Formsection ?? "/home/1.png"}
               alt="Registration"
-              // height={850}
-              className="relative "
+              className="relative w-full h-auto rounded-2xl shadow-2xl"
             />
             <motion.div
               animate={{ y: [0, -10, 0] }}
@@ -189,8 +492,8 @@ export function RegistrationSection({ data }: any) {
               className="absolute -top-6 -right-6 bg-white rounded-2xl shadow-xl p-4"
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                  <span className="text-2xl">🎯</span>
+                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: `${primaryColor}15` }}>
+                  <Target className="w-6 h-6" style={{ color: primaryColor }} />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-900">98% Success Rate</p>
@@ -204,8 +507,8 @@ export function RegistrationSection({ data }: any) {
               className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-xl p-4"
             >
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                  <span className="text-2xl">⭐</span>
+                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: `${primaryColor}15` }}>
+                  <Star className="w-6 h-6" style={{ color: primaryColor }} />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-gray-900">4.9 Rating</p>
@@ -217,7 +520,7 @@ export function RegistrationSection({ data }: any) {
         </motion.div>
 
         {/* Right Side - Form */}
-        <div className="max-w-lg mx-auto w-full">
+        <div className="w-full lg:w-1/2">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -229,7 +532,8 @@ export function RegistrationSection({ data }: any) {
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-600 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4"
+                className="inline-flex items-center gap-2 text-white px-4 py-2 rounded-full text-sm font-semibold mb-4"
+                style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)` }}
               >
                 <span className="w-2 h-2 bg-yellow-400 rounded-full animate-pulse" />
                 Limited Seats Available
@@ -244,41 +548,7 @@ export function RegistrationSection({ data }: any) {
 
             {/* Progress Steps */}
             <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
-              {/* <div className="flex items-center justify-between mb-8">
-                {steps.map((s, i) => (
-                  <div key={s.num} className="flex items-center flex-1">
-                    <div className="flex flex-col items-center">
-                      <motion.div
-                        animate={s.num === step ? { scale: [1, 1.1, 1] } : {}}
-                        transition={{ duration: 0.5 }}
-                        className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                          s.num < step
-                            ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white shadow-lg"
-                            : s.num === step
-                            ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white ring-4 ring-teal-100 shadow-xl scale-110"
-                            : "bg-gray-100 text-gray-500"
-                        }`}
-                      >
-                        {s.num < step ? "✓" : s.icon}
-                      </motion.div>
-                      <span
-                        className={`text-xs mt-2 font-semibold transition-colors duration-300 ${
-                          s.num === step ? "text-teal-700" : "text-gray-500"
-                        }`}
-                      >
-                        {s.label}
-                      </span>
-                    </div>
-                    {i < 3 && (
-                      <div
-                        className={`flex-1 h-1 mx-2 rounded-full transition-colors duration-300 ${
-                          s.num < step ? "bg-gradient-to-r from-teal-600 to-emerald-600" : "bg-gray-200"
-                        }`}
-                      />
-                    )}
-                  </div>
-                ))}
-              </div> */}
+              
 
               {/* Form */}
               <form onSubmit={handleSubmit}>
@@ -290,451 +560,300 @@ export function RegistrationSection({ data }: any) {
                     exit={{ opacity: 0, x: -20 }}
                     transition={{ duration: 0.3 }}
                   >
-                    {/* Step 1: Personal Info */}
-                    {step === 1 && (
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center">
-                            <span className="text-lg">👤</span>
-                          </div>
-                          <h3 className="text-xl font-bold text-gray-900">Personal Information</h3>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                              First Name <span className="text-red-500">*</span>
-                            </label>
-                            <div className="relative">
-                              <input
-                                type="text"
-                                required
-                                value={formData.firstName}
-                                onChange={(e) => updateField("firstName", e.target.value)}
-                                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white"
-                                placeholder="Priya"
-                              />
-                            </div>
-                          </div>
-                          <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">
-                              Last Name <span className="text-red-500">*</span>
-                            </label>
-                            <div className="relative">
-                              <input
-                                type="text"
-                                required
-                                value={formData.lastName}
-                                onChange={(e) => updateField("lastName", e.target.value)}
-                                className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white"
-                                placeholder="Mehta"
-                              />
-                            </div>
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Email Address <span className="text-red-500">*</span>
-                          </label>
-                          <div className="relative">
-                            <input
-                              type="email"
-                              required
-                              value={formData.email}
-                              onChange={(e) => updateField("email", e.target.value)}
-                              className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white"
-                              placeholder="priya@email.com"
-                            />
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">✉️</span>
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Phone Number <span className="text-red-500">*</span>
-                          </label>
-                          <div className="relative">
-                            <input
-                              type="tel"
-                              required
-                              value={formData.phone}
-                              onChange={(e) => updateField("phone", e.target.value)}
-                              className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white"
-                              placeholder="+91 98765 43210"
-                            />
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">📱</span>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">City</label>
-                            <div className="relative">
-                              <input
-                                type="text"
-                                value={formData.city}
-                                onChange={(e) => updateField("city", e.target.value)}
-                                className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white"
-                                placeholder="Jaipur"
-                              />
-                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🏙️</span>
-                            </div>
-                          </div>
-                          <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-2">Age</label>
-                            <div className="relative">
-                              <input
-                                type="number"
-                                value={formData.age}
-                                onChange={(e) => updateField("age", e.target.value)}
-                                className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white"
-                                placeholder="24"
-                              />
-                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">🎂</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Current Profile
-                          </label>
-                          <select
-                            value={formData.profile}
-                            onChange={(e) => updateField("profile", e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white"
-                          >
-                            <option value="">Select your profile</option>
-                            <option>📚 School student</option>
-                            <option>🎓 Undergraduate student</option>
-                            <option>💼 Recent graduate</option>
-                            <option>👔 Working professional</option>
-                            <option>🏠 Homemaker</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            How did you hear about us?
-                          </label>
-                          <select
-                            value={formData.source}
-                            onChange={(e) => updateField("source", e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white"
-                          >
-                            <option value="">Select source</option>
-                            <option>🔍 Google Search</option>
-                            <option>📸 Instagram</option>
-                            <option>👍 Facebook</option>
-                            <option>▶️ YouTube</option>
-                            <option>🤝 Friend Referral</option>
-                            <option>🏫 Education Fair</option>
-                            <option>🚶 Walk-in</option>
-                            <option>📌 Other</option>
-                          </select>
-                        </div>
+                    {/* Step Header */}
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${primaryColor}15` }}>
+                        {currentStep && <currentStep.icon className="w-4 h-4" style={{ color: primaryColor }} />}
                       </div>
-                    )}
+                      <h3 className="text-xl font-bold text-gray-900">{currentStep?.title}</h3>
+                    </div>
 
-                    {/* Step 2: Exam Details */}
-                    {step === 2 && (
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center">
-                            <span className="text-lg">📝</span>
+                    {/* Dynamic Fields */}
+                    <div className="space-y-4">
+                      {currentStepFields.map((field) => {
+                        const gridClass = field.grid === "half" ? "col-span-1" : "col-span-2";
+                        
+                        return (
+                          <div key={field.name} className={gridClass}>
+                            {field.type === "select" && (
+                              <>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                  {field.label}
+                                  {field.required && <span className="text-red-500 ml-1">*</span>}
+                                </label>
+                                <select
+                                  value={formData[field.name] as string || ""}
+                                  onChange={(e) => updateField(field.name, e.target.value)}
+                                  className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
+                                  style={{ borderColor: "#e5e7eb" }}
+                                  onFocus={(e) => {
+                                    e.target.style.borderColor = primaryColor;
+                                    e.target.style.boxShadow = `0 0 0 4px ${primaryColor}20`;
+                                  }}
+                                  onBlur={(e) => {
+                                    e.target.style.borderColor = "#e5e7eb";
+                                    e.target.style.boxShadow = "none";
+                                  }}
+                                  required={field.required}
+                                >
+                                  {field.options?.map((option) => (
+                                    <option key={option.value} value={option.value}>
+                                      {option.label}
+                                    </option>
+                                  ))}
+                                </select>
+                              </>
+                            )}
+
+                            {field.type === "text" && field.icon && (
+                              <>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                  {field.label}
+                                  {field.required && <span className="text-red-500 ml-1">*</span>}
+                                </label>
+                                <div className="relative">
+                                  <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                  <input
+                                    type="text"
+                                    value={formData[field.name] as string || ""}
+                                    onChange={(e) => updateField(field.name, e.target.value)}
+                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
+                                    style={{ borderColor: "#e5e7eb" }}
+                                    onFocus={(e) => {
+                                      e.target.style.borderColor = primaryColor;
+                                      e.target.style.boxShadow = `0 0 0 4px ${primaryColor}20`;
+                                    }}
+                                    onBlur={(e) => {
+                                      e.target.style.borderColor = "#e5e7eb";
+                                      e.target.style.boxShadow = "none";
+                                    }}
+                                    placeholder={field.placeholder}
+                                    required={field.required}
+                                  />
+                                </div>
+                              </>
+                            )}
+
+                            {field.type === "email" && field.icon && (
+                              <>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                  {field.label}
+                                  {field.required && <span className="text-red-500 ml-1">*</span>}
+                                </label>
+                                <div className="relative">
+                                  <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                  <input
+                                    type="email"
+                                    value={formData[field.name] as string || ""}
+                                    onChange={(e) => updateField(field.name, e.target.value)}
+                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
+                                    style={{ borderColor: "#e5e7eb" }}
+                                    onFocus={(e) => {
+                                      e.target.style.borderColor = primaryColor;
+                                      e.target.style.boxShadow = `0 0 0 4px ${primaryColor}20`;
+                                    }}
+                                    onBlur={(e) => {
+                                      e.target.style.borderColor = "#e5e7eb";
+                                      e.target.style.boxShadow = "none";
+                                    }}
+                                    placeholder={field.placeholder}
+                                    required={field.required}
+                                  />
+                                </div>
+                              </>
+                            )}
+
+                            {field.type === "tel" && field.icon && (
+                              <>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                  {field.label}
+                                  {field.required && <span className="text-red-500 ml-1">*</span>}
+                                </label>
+                                <div className="relative">
+                                  <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                  <input
+                                    type="tel"
+                                    value={formData[field.name] as string || ""}
+                                    onChange={(e) => updateField(field.name, e.target.value)}
+                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
+                                    style={{ borderColor: "#e5e7eb" }}
+                                    onFocus={(e) => {
+                                      e.target.style.borderColor = primaryColor;
+                                      e.target.style.boxShadow = `0 0 0 4px ${primaryColor}20`;
+                                    }}
+                                    onBlur={(e) => {
+                                      e.target.style.borderColor = "#e5e7eb";
+                                      e.target.style.boxShadow = "none";
+                                    }}
+                                    placeholder={field.placeholder}
+                                    required={field.required}
+                                  />
+                                </div>
+                              </>
+                            )}
+
+                            {field.type === "number" && field.icon && (
+                              <>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                  {field.label}
+                                  {field.required && <span className="text-red-500 ml-1">*</span>}
+                                </label>
+                                <div className="relative">
+                                  <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                  <input
+                                    type="number"
+                                    value={formData[field.name] as string || ""}
+                                    onChange={(e) => updateField(field.name, e.target.value)}
+                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
+                                    style={{ borderColor: "#e5e7eb" }}
+                                    onFocus={(e) => {
+                                      e.target.style.borderColor = primaryColor;
+                                      e.target.style.boxShadow = `0 0 0 4px ${primaryColor}20`;
+                                    }}
+                                    onBlur={(e) => {
+                                      e.target.style.borderColor = "#e5e7eb";
+                                      e.target.style.boxShadow = "none";
+                                    }}
+                                    placeholder={field.placeholder}
+                                    required={field.required}
+                                  />
+                                </div>
+                              </>
+                            )}
+
+                            {field.type === "date" && field.icon && (
+                              <>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                  {field.label}
+                                  {field.required && <span className="text-red-500 ml-1">*</span>}
+                                </label>
+                                <div className="relative">
+                                  <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                                  <input
+                                    type="date"
+                                    value={formData[field.name] as string || ""}
+                                    onChange={(e) => updateField(field.name, e.target.value)}
+                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
+                                    style={{ borderColor: "#e5e7eb" }}
+                                    onFocus={(e) => {
+                                      e.target.style.borderColor = primaryColor;
+                                      e.target.style.boxShadow = `0 0 0 4px ${primaryColor}20`;
+                                    }}
+                                    onBlur={(e) => {
+                                      e.target.style.borderColor = "#e5e7eb";
+                                      e.target.style.boxShadow = "none";
+                                    }}
+                                    required={field.required}
+                                  />
+                                </div>
+                              </>
+                            )}
+
+                            {field.type === "textarea" && (
+                              <>
+                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                  {field.label}
+                                  {field.required && <span className="text-red-500 ml-1">*</span>}
+                                </label>
+                                <textarea
+                                  value={formData[field.name] as string || ""}
+                                  onChange={(e) => updateField(field.name, e.target.value)}
+                                  rows={4}
+                                  className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white resize-none"
+                                  style={{ borderColor: "#e5e7eb" }}
+                                  onFocus={(e) => {
+                                    e.target.style.borderColor = primaryColor;
+                                    e.target.style.boxShadow = `0 0 0 4px ${primaryColor}20`;
+                                  }}
+                                  onBlur={(e) => {
+                                    e.target.style.borderColor = "#e5e7eb";
+                                    e.target.style.boxShadow = "none";
+                                  }}
+                                  placeholder={field.placeholder}
+                                  required={field.required}
+                                />
+                              </>
+                            )}
+
+                            {field.type === "button-group" && (
+                              <>
+                                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                                  {field.label}
+                                  {field.required && <span className="text-red-500 ml-1">*</span>}
+                                </label>
+                                <div className="grid grid-cols-3 gap-3">
+                                  {field.options?.map((option) => {
+                                    const OptionIcon = option.icon;
+                                    const isSelected = formData[field.name] === option.value;
+                                    return (
+                                      <motion.button
+                                        key={option.value}
+                                        type="button"
+                                        whileHover={{ scale: 1.05 }}
+                                        whileTap={{ scale: 0.95 }}
+                                        onClick={() => updateField(field.name, isSelected ? "" : option.value)}
+                                        className="p-3 rounded-xl border-2 font-semibold text-sm transition-all"
+                                        style={{
+                                          background: isSelected 
+                                            ? `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
+                                            : "#f9fafb",
+                                          color: isSelected ? "white" : "#374151",
+                                          borderColor: isSelected ? "transparent" : "#e5e7eb",
+                                          boxShadow: isSelected ? `0 4px 14px ${primaryColor}40` : "none"
+                                        }}
+                                      >
+                                        {OptionIcon && <OptionIcon className="w-6 h-6 mx-auto mb-1" />}
+                                        {option.label}
+                                        {option.desc && (
+                                          <p className="text-xs mt-1 opacity-80">{option.desc}</p>
+                                        )}
+                                      </motion.button>
+                                    );
+                                  })}
+                                </div>
+                              </>
+                            )}
+
+                            {field.type === "checkbox-group" && (
+                              <>
+                                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                                  {field.label}
+                                  <span className="text-gray-400 text-xs ml-1">(select all that apply)</span>
+                                  {field.required && <span className="text-red-500 ml-1">*</span>}
+                                </label>
+                                <div className="grid grid-cols-2 gap-3">
+                                  {field.options?.map((option) => {
+                                    const OptionIcon = option.icon;
+                                    const isSelected = (formData[field.name] as string[] || []).includes(option.value);
+                                    return (
+                                      <motion.button
+                                        key={option.value}
+                                        type="button"
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        onClick={() => toggleCheckboxGroup(field.name, option.value)}
+                                        className="p-3 rounded-xl border-2 font-medium text-sm transition-all flex items-center gap-2"
+                                        style={{
+                                          background: isSelected 
+                                            ? `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
+                                            : "#f9fafb",
+                                          color: isSelected ? "white" : "#374151",
+                                          borderColor: isSelected ? "transparent" : "#e5e7eb",
+                                          boxShadow: isSelected ? `0 4px 14px ${primaryColor}40` : "none"
+                                        }}
+                                      >
+                                        {OptionIcon && <OptionIcon className="w-4 h-4" />}
+                                        {option.label}
+                                      </motion.button>
+                                    );
+                                  })}
+                                </div>
+                              </>
+                            )}
                           </div>
-                          <h3 className="text-xl font-bold text-gray-900">Exam Details</h3>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-3">
-                            Target Exam <span className="text-red-500">*</span>
-                          </label>
-                          <div className="grid grid-cols-3 gap-3">
-                            {[
-                              { name: "IELTS", icon: "📗" },
-                              { name: "TOEFL", icon: "📘" },
-                              { name: "PTE", icon: "📙" },
-                              { name: "GRE", icon: "🧠" },
-                              { name: "GMAT", icon: "💼" },
-                              { name: "SAT", icon: "📐" },
-                            ].map((exam) => (
-                              <motion.button
-                                key={exam.name}
-                                type="button"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
-                                onClick={() => updateField("exam", formData.exam === exam.name ? "" : exam.name)}
-                                className={`p-3 rounded-xl border-2 font-semibold text-sm transition-all ${
-                                  formData.exam === exam.name
-                                    ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white border-transparent shadow-lg"
-                                    : "bg-gray-50 text-gray-700 border-gray-200 hover:border-teal-400 hover:shadow-md"
-                                }`}
-                              >
-                                <span className="text-xl mb-1 block">{exam.icon}</span>
-                                {exam.name}
-                              </motion.button>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Purpose
-                          </label>
-                          <select
-                            value={formData.purpose}
-                            onChange={(e) => updateField("purpose", e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white"
-                          >
-                            <option value="">Select purpose</option>
-                            <option>✈️ Study Abroad</option>
-                            <option>💼 Job / PR Visa</option>
-                            <option>🎓 MBA Admission</option>
-                            <option>🗣️ English Proficiency</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Target Score
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.targetScore}
-                            onChange={(e) => updateField("targetScore", e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white"
-                            placeholder="e.g. IELTS 7.5, GRE 320"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Exam Date
-                          </label>
-                          <input
-                            type="date"
-                            value={formData.examDate}
-                            onChange={(e) => updateField("examDate", e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Previous Attempts
-                          </label>
-                          <select
-                            value={formData.attempts}
-                            onChange={(e) => updateField("attempts", e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white"
-                          >
-                            <option value="">Select attempts</option>
-                            <option>1️⃣ First attempt</option>
-                            <option>2️⃣ Second attempt</option>
-                            <option>3️⃣ Third attempt or more</option>
-                          </select>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Step 3: Current Level */}
-                    {step === 3 && (
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center">
-                            <span className="text-lg">📊</span>
-                          </div>
-                          <h3 className="text-xl font-bold text-gray-900">
-                            Current Level & Preferences
-                          </h3>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-3">
-                            English Level
-                          </label>
-                          <div className="grid grid-cols-2 gap-3">
-                            {[
-                              { level: "Beginner", icon: "🌱", desc: "Just starting" },
-                              { level: "Intermediate", icon: "📈", desc: "Can communicate" },
-                              { level: "Upper-Intermediate", icon: "⭐", desc: "Good command" },
-                              { level: "Advanced", icon: "🏆", desc: "Fluent speaker" },
-                            ].map((item) => (
-                              <motion.button
-                                key={item.level}
-                                type="button"
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={() =>
-                                  updateField(
-                                    "englishLevel",
-                                    formData.englishLevel === item.level ? "" : item.level
-                                  )
-                                }
-                                className={`p-4 rounded-xl border-2 text-left transition-all ${
-                                  formData.englishLevel === item.level
-                                    ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white border-transparent shadow-lg"
-                                    : "bg-gray-50 text-gray-700 border-gray-200 hover:border-teal-400 hover:shadow-md"
-                                }`}
-                              >
-                                <span className="text-2xl mb-1 block">{item.icon}</span>
-                                <span className="font-semibold text-sm">{item.level}</span>
-                                <p className="text-xs mt-1 opacity-80">{item.desc}</p>
-                              </motion.button>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-3">
-                            Weak Areas <span className="text-gray-400 text-xs">(select all that apply)</span>
-                          </label>
-                          <div className="grid grid-cols-2 gap-3">
-                            {[
-                              { area: "Reading", icon: "📖" },
-                              { area: "Writing", icon: "✍️" },
-                              { area: "Listening", icon: "👂" },
-                              { area: "Speaking", icon: "🗣️" },
-                              { area: "Verbal", icon: "🔤" },
-                              { area: "Quant/Math", icon: "🔢" },
-                            ].map((item) => (
-                              <motion.button
-                                key={item.area}
-                                type="button"
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={() => toggleWeakArea(item.area)}
-                                className={`p-3 rounded-xl border-2 font-medium text-sm transition-all ${
-                                  formData.weakAreas.includes(item.area)
-                                    ? "bg-gradient-to-r from-teal-600 to-emerald-600 text-white border-transparent shadow-lg"
-                                    : "bg-gray-50 text-gray-700 border-gray-200 hover:border-teal-400 hover:shadow-md"
-                                }`}
-                              >
-                                <span className="mr-2">{item.icon}</span>
-                                {item.area}
-                              </motion.button>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Preferred Batch
-                          </label>
-                          <select
-                            value={formData.batchType}
-                            onChange={(e) => updateField("batchType", e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white"
-                          >
-                            <option value="">Select batch type</option>
-                            <option>🌅 Weekday Morning</option>
-                            <option>🌆 Weekday Evening</option>
-                            <option>📅 Weekend</option>
-                            <option>💻 Online</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Start Timeline
-                          </label>
-                          <select
-                            value={formData.startTimeline}
-                            onChange={(e) => updateField("startTimeline", e.target.value)}
-                            className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white"
-                          >
-                            <option value="">Select timeline</option>
-                            <option>⚡ Immediately (within 1 week)</option>
-                            <option>📅 Within 2-4 weeks</option>
-                            <option>🗓️ Within 1-2 months</option>
-                            <option>🔍 Just exploring</option>
-                          </select>
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-semibold text-gray-700 mb-2">
-                            Additional Notes
-                          </label>
-                          <textarea
-                            value={formData.notes}
-                            onChange={(e) => updateField("notes", e.target.value)}
-                            rows={4}
-                            className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-teal-500 focus:ring-4 focus:ring-teal-50 outline-none transition-all bg-gray-50 hover:bg-white resize-none"
-                            placeholder="Any specific requirements or questions..."
-                          />
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Step 4: Review */}
-                    {step === 4 && (
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center">
-                            <span className="text-lg">✅</span>
-                          </div>
-                          <h3 className="text-xl font-bold text-gray-900">Review Your Details</h3>
-                        </div>
-
-                        <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 space-y-3">
-                          <div className="grid grid-cols-2 gap-3">
-                            <div className="bg-white p-3 rounded-lg">
-                              <p className="text-xs text-gray-500 mb-1">Full Name</p>
-                              <p className="font-semibold text-gray-900">
-                                {formData.firstName} {formData.lastName}
-                              </p>
-                            </div>
-                            <div className="bg-white p-3 rounded-lg">
-                              <p className="text-xs text-gray-500 mb-1">Email</p>
-                              <p className="font-semibold text-gray-900">{formData.email}</p>
-                            </div>
-                            <div className="bg-white p-3 rounded-lg">
-                              <p className="text-xs text-gray-500 mb-1">Phone</p>
-                              <p className="font-semibold text-gray-900">{formData.phone}</p>
-                            </div>
-                            <div className="bg-white p-3 rounded-lg">
-                              <p className="text-xs text-gray-500 mb-1">Target Exam</p>
-                              <p className="font-semibold text-gray-900">{formData.exam || "—"}</p>
-                            </div>
-                            <div className="bg-white p-3 rounded-lg">
-                              <p className="text-xs text-gray-500 mb-1">English Level</p>
-                              <p className="font-semibold text-gray-900">{formData.englishLevel || "—"}</p>
-                            </div>
-                            <div className="bg-white p-3 rounded-lg">
-                              <p className="text-xs text-gray-500 mb-1">Batch Preference</p>
-                              <p className="font-semibold text-gray-900">{formData.batchType || "—"}</p>
-                            </div>
-                          </div>
-                          {formData.weakAreas.length > 0 && (
-                            <div className="bg-white p-3 rounded-lg">
-                              <p className="text-xs text-gray-500 mb-2">Weak Areas</p>
-                              <div className="flex flex-wrap gap-2">
-                                {formData.weakAreas.map((area) => (
-                                  <span
-                                    key={area}
-                                    className="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-semibold"
-                                  >
-                                    {area}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-
-                        <div className="bg-teal-50 rounded-xl p-4 border border-teal-200">
-                          <div className="flex items-start gap-3">
-                            <span className="text-2xl">🔒</span>
-                            <p className="text-sm text-teal-800">
-                              Your information is secure and will only be used to contact you about our
-                              test preparation programs.
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
+                        );
+                      })}
+                    </div>
                   </motion.div>
                 </AnimatePresence>
 
@@ -746,23 +865,28 @@ export function RegistrationSection({ data }: any) {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={prevStep}
-                      className="px-6 py-3 text-sm font-semibold text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all"
+                      className="px-6 py-3 text-sm font-semibold text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all flex items-center gap-2"
                     >
-                      ← Back
+                      <ArrowLeft className="w-4 h-4" />
+                      Back
                     </motion.button>
                   ) : (
                     <div />
                   )}
 
-                  {step < 4 ? (
+                  {step < totalSteps ? (
                     <motion.button
                       type="button"
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={nextStep}
-                      className="px-8 py-3 text-sm font-bold text-white bg-gradient-to-r from-teal-600 to-emerald-600 rounded-xl hover:from-teal-700 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl"
+                      className="px-8 py-3 text-sm font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+                      style={{ 
+                        background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
+                      }}
                     >
-                      Continue →
+                      Continue
+                      <ArrowRight className="w-4 h-4" />
                     </motion.button>
                   ) : (
                     <motion.button
@@ -770,7 +894,10 @@ export function RegistrationSection({ data }: any) {
                       disabled={isLoading}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-8 py-3 text-sm font-bold text-white bg-gradient-to-r from-teal-600 to-emerald-600 rounded-xl hover:from-teal-700 hover:to-emerald-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-8 py-3 text-sm font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                      style={{ 
+                        background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
+                      }}
                     >
                       {isLoading ? (
                         <span className="flex items-center gap-2">
@@ -793,7 +920,10 @@ export function RegistrationSection({ data }: any) {
                           Submitting...
                         </span>
                       ) : (
-                        "Submit Enquiry 🚀"
+                        <>
+                          Submit Enquiry
+                          <Send className="w-4 h-4" />
+                        </>
                       )}
                     </motion.button>
                   )}
@@ -806,9 +936,6 @@ export function RegistrationSection({ data }: any) {
     </section>
   );
 }
-
-
-
 
 // "use client"
 

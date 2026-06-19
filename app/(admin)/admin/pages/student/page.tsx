@@ -89,7 +89,7 @@ const Blog = () => {
                 <div className="flex justify-end gap-3 mt-4">
                   {/* <button
                     onClick={() =>
-                      router.push(`/admin/pages/student/edit/${student._id}`)
+                      router.push(`/admin/pages/student/${student._id}`)
                     }
                     className="p-2 rounded-md bg-blue-100 text-blue-600 hover:bg-blue-200 transition"
                   >

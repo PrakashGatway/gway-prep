@@ -22,11 +22,11 @@ export function Aboutresult({ data }: { data: any }) {
             }}
           >
             {/* 3. REMOVED key={idx} from here. Adding it twice causes warnings */}
-            <div className="shadow-lg py-4 px-2 bg-white">
-              <img src={ele?.image} className="h-48 w-44 mx-auto" alt={ele?.name} />
+            <div className="shadow-lg p-3 bg-white">
+              <img src={ele?.image} className="h-44 w-46 mx-auto bg-[#f3f3f3] " alt={ele?.name} />
               
               {/* 4. FIX: Use <div> instead of <span> because <span> cannot contain <h2> or <ul> (HTML nesting rule) */}
-              <div className="text-center flex items-center capitalize">
+              <div className="text-center grid grid-cols-2 items-center capitalize">
                 <h2 className="font-bold">{ele?.name}</h2>
                 <ul>
                   <li className="font-semibold">{ele?.course}</li>

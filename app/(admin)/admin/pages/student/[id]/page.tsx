@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { pageData } from "@/app/lib/pageData";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createStudent, uploadImage } from "@/app/services/api";
 import axiosInstance from "@/app/lib/axios";
 
@@ -18,12 +18,14 @@ const CKEditorComponent = dynamic(
   },
 );
 
-const EditorForm = () => {
+ const  EditorForm =async ({params}: any) => {
   const router = useRouter();
   const formData = pageData.student.sections;
   const [values, setValues] = useState<Record<string, any>>({});
   const [file, setFile] = useState<Record<string, any>>();
   const [loading, setloading] = useState(false);
+    const { id } = await params;
+  console.log(id,"id");
 
   if (!formData)
     return <div className="p-10">Section configuration not found.</div>;
@@ -50,15 +52,26 @@ const EditorForm = () => {
     try {
       console.log(values);
       // const res = await createStudent(values);
-      
-    const res1 = await axiosInstance.post("/admin/student", values);
-    const res =  res1.data;
-      console.log(res);
-      // setValues({});
-      if(res.message === "Student created successfully."){
-        console.log(res)
-        router.push('/admin/pages/student')
-      }
+      if(id === 'add'){
+        const res1 = await axiosInstance.post("/admin/student", values);
+        const res =  res1.data;
+          console.log(res);
+          // setValues({});
+          if(res.message === "Student created successfully."){
+            console.log(res)
+            router.push('/admin/pages/student')
+          }
+    }else{
+        const res1 = await axiosInstance.put("/admin/student", {id, values});
+        const res =  res1.data;
+          console.log(res);
+          // setValues({});
+          if(res.message === "Student created successfully."){
+            console.log(res)
+            router.push('/admin/pages/student')
+          }
+    }
+    
       setloading(false);
     } catch (error) {
       console.error("Error:", error);

@@ -11,7 +11,6 @@ export default async function PreparationPage({ params }: { params: Promise<{ sl
 
   if (slug) {
       return <Gre pageInfo={pageData} />;
-
   }
       return <h1 className="text-center text-xl">Course Not Found</h1>;
 }

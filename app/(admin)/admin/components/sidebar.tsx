@@ -86,7 +86,7 @@ const Sidebar = () => {
               className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg transition
               ${
                 isActive
-                  ? "bg-orange-50 text-orange-700 font-medium"
+                  ? "bg-orange-50 text-[#f26e46] font-medium"
                   : "text-gray-600 hover:bg-gray-100"
               }`}
             >

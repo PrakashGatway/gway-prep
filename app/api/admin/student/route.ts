@@ -155,3 +155,49 @@ console.log(id)
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
+
+
+export async function PUT(req: NextRequest): Promise<NextResponse> {
+  
+  const token = req.cookies.get("adminToken")?.value;
+  if (!token) {
+    return NextResponse.json({ error: "No token provided" }, { status: 401 });
+  }
+
+  Tokenchecker(token);
+
+  try {
+    const body = await req.json();
+
+    const result = StudentValidationSchema.safeParse(body);
+
+    if (!result.success) {
+      return NextResponse.json(
+        { error: result.error.flatten().fieldErrors },
+        { status: 400 },
+      );
+    }
+
+    await connectDB();
+
+    const { id, ...updatedbody } = body; 
+
+    await Student.findByIdAndUpdate(id,
+      { $set: updatedbody }, 
+      { new: true, runValidators: true } // Crucial options setup
+    );
+
+
+    return NextResponse.json(
+      { message: "Student updated successfully." },
+      { status: 200 },
+    );
+
+  } catch (error) {
+    console.error("[STUDENT_POST]", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 },
+    );
+  }
+}

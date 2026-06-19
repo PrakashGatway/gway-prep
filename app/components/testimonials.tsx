@@ -205,45 +205,6 @@ export function VideoTestimonialCard({heading,data}:any) {
 
 
 export function TextTestimonials({heading,data}:any) {
-  const testimonials = [
-    {
-      name: "Khushal",
-      score: 80,
-      text: "My journey with Gateway Abroad Jaipur went beyond my expectations. The mock tests provided by my trainers gave an accurate simulation of the real exam, regular feedback on my performance...",
-      rating: 5,
-    },
-    {
-      name: "Mayank",
-      score: 80,
-      text: "Gateway Abroad Jaipur made studying PTE seamless. I still can't believe that I scored 80. This is all because of the efforts of my trainers. They provided everything from personal attention to practice tests to doubt sessions. So, in my opinion, thi....",
-      rating: 5,
-    },
-    {
-      name: "Mayank",
-      score: 80,
-      text: "Gateway Abroad Jaipur made studying PTE seamless. I still can't believe that I scored 80. This is all because of the efforts of my trainers. They provided everything, from personal attention to practice tests to doubt sessions. So, in my opinion, thi....",
-      rating: 5,
-    },
-  
-    {
-      name: "Khushal",
-      score: 80,
-      text: "My journey with Gateway Abroad Jaipur went beyond my expectations. The mock tests provided by my trainers gave an accurate simulation of the real exam, regular feedback on my performance...",
-      rating: 5,
-    },
-    {
-      name: "Mayank",
-      score: 80,
-      text: "Gateway Abroad Jaipur made studying PTE seamless. I still can't believe that I scored 80. This is all because of the efforts of my trainers. They provided everything from personal attention to practice tests to doubt sessions. So, in my opinion, thi....",
-      rating: 5,
-    },
-    {
-      name: "Mayank",
-      score: 80,
-      text: "Gateway Abroad Jaipur made studying PTE seamless. I still can't believe that I scored 80. This is all because of the efforts of my trainers. They provided everything, from personal attention to practice tests to doubt sessions. So, in my opinion, thi....",
-      rating: 5,
-    }
-  ]; 
 
   
   const [sliderRef, slider] = useKeenSlider(
@@ -319,7 +280,7 @@ export function TextTestimonials({heading,data}:any) {
                 
               <div key={idx} className={`${num} keen-slider__slide h-64  shadow-lg w-full bg-white  rounded-3xl p-6 transform lg:translate-x-0 z-10`}>
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between mb-4 gap-2">
-                  <h3 className="text-xl sm:text-2xl font-bold text-[#FF6B35]">
+                  <h3 className="text-xl sm:text-2xl font-bold text-[#f26e46]">
                     {item.name}: {item.score}
                   </h3>
                   <div className="flex gap-1">

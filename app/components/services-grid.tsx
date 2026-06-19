@@ -30,7 +30,7 @@ export function ServicesGrid({data}:{data:any}) {
             return (
               <div
                 key={index}
-                className={` relative flex flex-col items-center text-center px-4 py-8 
+                className={` relative grid grid-rows-2 grid-flow-col justify-items-center text-center px-4 py-8 
                   ${!isLastInRow ? "lg:border-r-3 " : ""} 
                   ${isFirstRow ? "lg:border-b-3 " : ""} 
                   border-brand-orange`} >
@@ -40,7 +40,7 @@ export function ServicesGrid({data}:{data:any}) {
                   alt="icon"
                   width={84}
                   height={84}
-                  className="h-[7rem] w-[8rem]"
+                  className=""
                 />}
                 <p className="mt-2 text-gray-600 text-xl font-medium max-w-[180px]">
                   {item.title}

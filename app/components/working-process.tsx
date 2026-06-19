@@ -1,32 +1,8 @@
 "use client"
 
-import { cn } from "@/app/lib/utils"
-import { MessageSquare, BookOpen, Brain, PenTool, CheckCircle } from "lucide-react"
 import Image from "next/image"
 
-const steps = [
-  {
-    Icon: "/home/01.png",
-    title: "Counsell",
-    desc: "It involves providing personalized advice to aid students in selecting the most suitable exam for their desired countries.",
-  },
-  {
-    Icon: "/home/02.png",
-    title: "Teach",
-    desc: "Guiding individuals through a comprehensive process aimed at clearing the fundamentals of the students.",
-  },
-  {
-    Icon: "/home/03.png",
-    title: "Practice",
-    desc: "Engaging in regular and focused practice not only enhances one's understanding of the material but also hones skills, refines problem-solving abilities, and builds confidence.",
-  },
-  {
-    Icon: "/home/04.png",
-    title: "Feedback & Mock",
-    desc: "Regularly engage in mock exams and feedback sessions to familiarize yourself with the exam environment, improve time management, and identify areas that need further attention.",
-  },
-  { Icon: "/home/05.png", title: "Book Test Date", desc: "Test date booking facility offered by Gateway Abroad." },
-]
+
 
 export function WorkingProcess({data}:{data: any}) {  
   return (
@@ -42,26 +18,26 @@ export function WorkingProcess({data}:{data: any}) {
           {data.fields.subtitle}
         </p>
 
-        <div className="relative flex flex-col lg:flex-row items-center gap-20">
-          <div className="lg:w-1/2 space-y-12">
+        <div className="relative flex flex-col lg:flex-row items-center gap-2">
+          <div className="w-2/3 space-y-6 ">
             {data.fields.items.map((step:any, i:number) => {
               const IconComponent = step.icon
               return (
-                <div key={i} className="flex gap-6 group">
-                  <div className="flex-shrink-0 w-16 h-16  flex items-center justify-center text-brand-orange group-hover:bg-brand-orange group-hover:text-white transition-all">
+                <div key={i} className="flex gap-6 group w-full hover:scale:1.5">
+                  <div className="flex-shrink-0 w-16 h-16  flex items-center justify-center text-brand-orange  transition-all">
                     {/* <IconComponent size={28} /> */}
                     <img src={IconComponent} alt={step.title}/>
                   </div>
                   <div>
                     <h3 className="text-2xl font-bold text-brand-orange mb-2">{step.title}</h3>
-                    <p className="text-gray-600 leading-relaxed text-base max-w-md">{step.subtitle}</p>
+                    <p className="text-gray-600 leading-relaxed text-base ">{step.subtitle}</p>
                   </div>
                 </div>
               )
             })}
           </div>
 
-          <div className="lg:block hidden lg:w-1/2 relative">
+          <div className="lg:block hidden absolute -right-20">
             <Image
               src="/image/steps.png"
               alt="Working Process"

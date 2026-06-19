@@ -55,28 +55,53 @@ export function TestPrepGrid({ data }: { data: any }) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {data.fields.items.map((exam: any, i: number) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ amount: 0.2 }} // ones: true for the one time
-              transition={{
-                duration: 0.6,
-                delay: i * 0.1, // 0.1s gap between each item
-              }}
-              className={cn(
-                "rounded-3xl p-8 text-white flex flex-col items-center text-center justify-center transition-transform hover:scale-105 shadow-lg",
-                "bg-[#555] hover:bg-orange-600 cursor-pointer",
-                exam.name === "DUOLINGO" && "lg:col-start-2",
-              )}
-            >
-              <h3 className="text-3xl font-black mb-2 uppercase">
-                {exam.title}
-              </h3>
-              <p className="text-sm text-white/90 leading-relaxed max-w-[400px]">
-                {exam.subtitle}
-              </p>
-            </motion.div>
+
+<motion.div
+  key={i}
+  initial="initial"
+  whileHover="hover"
+  className={cn(
+    "relative overflow-hidden rounded-3xl h-44 p-8",
+    "bg-[#ededed] text-black hover:bg-gradient-to-r hover:from-gray-600 hover:to-gray-900 hover:text-white cursor-pointer",
+    exam.name === "DUOLINGO" && "lg:col-start-2"
+  )}
+>
+  {/* Title */}
+  <motion.div
+    variants={{
+      initial: { opacity: 1, y: 0 },
+      hover: { opacity: 0, y: -40 },
+    }}
+    transition={{ duration: 0.3 }}
+    className="absolute inset-0 flex items-center justify-center"
+  >
+    <h3 className="text-3xl font-black uppercase">
+      {exam.title}
+    </h3>
+  </motion.div>
+
+  {/* Description */}
+  <motion.div
+    variants={{
+      initial: {
+        opacity: 0,
+        y: "100%",
+      },
+      hover: {
+        opacity: 1,
+        y: 0,
+      },
+    }}
+    transition={{ duration: 0.6, ease: "easeOut" }}
+    className="absolute inset-0 flex items-center justify-center px-6"
+  >
+    <p className="text-sm leading-relaxed text-center">
+      {exam.subtitle}
+    </p>
+  </motion.div>
+</motion.div>
+
+
           ))}
         </div>
       </div>

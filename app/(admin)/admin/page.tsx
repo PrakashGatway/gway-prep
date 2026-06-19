@@ -225,7 +225,7 @@ const AdminLoginPage = () => {
             type="submit"
             disabled={isLoading}
             className="w-full h-10 rounded-lg bg-orange-600 text-white text-sm font-medium
-            hover:bg-orange-700 active:scale-[0.98] transition disabled:opacity-60"
+            hover:bg-[#f26e46] active:scale-[0.98] transition disabled:opacity-60"
           >
             {isLoading ? "Signing in..." : "Sign in"}
           </button>
