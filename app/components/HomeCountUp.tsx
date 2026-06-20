@@ -96,14 +96,14 @@ export const HomeCountUp: React.FC<HomeCountUpProps> = ({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="flex flex-wrap justify-center my-8 md:my-20 mx-4 md:mx-20 gap-6 md:gap-16"
+        className="flex flex-wrap justify-center  mx-4 md:mx-16 gap-6 md:gap-16"
       >
         {countItems.map((item, idx) => {
           const { label, value, suffix } = getItemData(item.key);
           
           return (
             <div key={idx} className="relative w-full sm:w-[15rem] md:min-w-[18rem]">
-              <div className="absolute w-full h-full border-2 border-[#F36C45] rounded-[20px] md:rounded-[26px] -rotate-3 md:-rotate-5" />
+              {/* <div className="absolute w-full h-full border-2 border-[#F36C45] rounded-[20px] md:rounded-[26px] -rotate-3 md:-rotate-5" /> */}
               <div className="bg-white p-4 md:p-6 rounded-[20px] md:rounded-[26px] text-center shadow-sm relative">
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#F36C45] mb-1 md:mb-2">
                   {isVisible ? (

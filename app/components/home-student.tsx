@@ -113,6 +113,18 @@ export function HomeStudent({data}:{data : any}) {
           spacing: 20,
         },
       },
+      "(min-width: 768px)": {
+        slides: {
+          perView: 1,
+          spacing: 24,
+        },
+      },
+      "(min-width: 1024px)": {
+        slides: {
+          perView: 1,
+          spacing: 32,
+        },
+      },
     },
   },
   [
@@ -167,21 +179,25 @@ export function HomeStudent({data}:{data : any}) {
 
 
   return (
-    <div className="relative">
+    <div className="relative px-4 sm:px-6 lg:px-8">
       
       <section
         ref={sliderRef}
-        className="keen-slider max-w-7xl mx-auto py-12 md:py-16 lg:py-20 bg-white"
+        className="keen-slider max-w-7xl mx-auto py-8 sm:py-12 md:py-16 lg:py-20 bg-white"
       >
         {data.data.map((student: any, idx: number) => (
           <div
             key={idx}
-            className="keen-slider__slide  bg-[#F3F4F6] rounded-[40px] p-8 md:p-12 flex flex-col md:flex-row gap-8"
+            className="keen-slider__slide bg-[#F3F4F6] rounded-[30px] sm:rounded-[35px] md:rounded-[40px] p-6 
+            sm:p-8 md:p-10 lg:p-12 flex flex-col lg:flex-row gap-16 sm:gap-28"
           >
 
-            <div className="md:w-1/3 flex flex-col items-center">
-              <div className="relative mb-6">
-                <div className="w-40 h-40 md:w-64 md:h-64 rounded-2xl overflow-hidden border-4 border-white shadow-sm">
+            <div className="lg:w-1/3 flex flex-col items-center ">
+              <div className="relative mb-4 sm:mb-6">
+                <div className="h-14 w-14 rounded-lg bg-[#f26e46] absolute bottom-18 -left-16" />
+                <div className="h-16 w-16 rounded-lg border-2 border-[#f26e46] absolute bottom-6 -right-18" />
+                <div className="h-10 w-10 rounded-lg bg-[#f26e46] absolute top-2 -right-14" />
+                <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64 rounded-2xl overflow-hidden border-4 border-white shadow-sm">
                   <img
                     src={student.image ?? "/students/01.jpg"}
                     alt={student?.name}
@@ -190,14 +206,14 @@ export function HomeStudent({data}:{data : any}) {
                 </div>
               </div>
 
-              <div className="text-center md:text-left">
-                <h2 className="text-[#FF6B35] text-2xl font-bold">
+              <div className="text-center ">
+                <h2 className="text-[#FF6B35] text-xl sm:text-2xl font-bold">
                   {student.name}
                 </h2>
-                {student?.university && <p className="text-gray-600 text-lg">
+                {student?.university && <p className="text-gray-600 text-base sm:text-lg">
                   {student?.university}
                 </p>}
-                <p className="text-gray-600 text-lg font-semibold uppercase">
+                <p className="text-gray-600 text-base sm:text-lg font-semibold uppercase">
                   {student?.course}{" "}
                   {student?.score}
                 </p>
@@ -207,39 +223,25 @@ export function HomeStudent({data}:{data : any}) {
               <img
                 src={student?.universityLogo}
                 alt="logo"
-                className="h-20 w-full mt-8 mx-auto"
+                className="h-16 sm:h-20 w-auto mt-6 sm:mt-8"
               />}
             </div>
 
 
-            <div className="md:w-2/3 flex flex-col gap-6">
-              <div className="bg-white rounded-3xl p-6 shadow-sm border">
-                <h3 className="text-[#FF6B35] font-bold mb-4">
+            <div className="lg:w-2/3 flex flex-col gap-4 sm:gap-6">
+              <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border">
+                <h3 className="text-[#FF6B35] font-bold mb-3 sm:mb-4 text-base sm:text-lg">
                   How did {"Ooshaprap"} help{" "}
                   {student.name}?
                 </h3>
-                {/* <ul className="space-y-3">
-                  {student.partnership_details.support_offered.map(
-                    (item: string, i: number) => (
-                      <li key={i} className="flex gap-2 text-sm text-gray-700">
-                        <span className="text-[#FF6B35]">•</span>
-                        {item}
-                      </li>
-                    )
-                  )}
-                </ul> */}
 
-                <div dangerouslySetInnerHTML={{__html: student.about}} />
+                <div className="text-sm sm:text-base" dangerouslySetInnerHTML={{__html: student.about}} />
               </div>
 
-              <div className="bg-white rounded-3xl p-6 shadow-sm border">
-                <h3 className="text-[#FF6B35] font-bold mb-4">Outcome</h3>
-                {/* <ul className="space-y-1">
-                  <li>• {student.outcome.admission}</li>
-                  <li>• {student.outcome.business_school}</li>
-                  <li>• {student.outcome.financial_aid}</li>
-                </ul> */}
-                <div dangerouslySetInnerHTML={{__html : student.outcome}} />
+              <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border">
+                <h3 className="text-[#FF6B35] font-bold mb-3 sm:mb-4 text-base sm:text-lg">Outcome</h3>
+                
+                <div className="text-sm sm:text-base" dangerouslySetInnerHTML={{__html : student.outcome}} />
               </div>
             </div>
           </div>
@@ -249,16 +251,16 @@ export function HomeStudent({data}:{data : any}) {
       {/* Buttons */}
       <button
         onClick={() => slider?.current?.prev()}
-        className="absolute left-4 top-1/2 -translate-y-1/2 z-10"
+        className="absolute left-1 sm:left-2 md:left-4 top-1/2 -translate-y-1/2 z-10"
       >
-        <ChevronLeft size={36} className="text-[#FF6B35]" />
+        <ChevronLeft size={28} className="sm:size-[32px] md:size-[36px] text-[#FF6B35]" />
       </button>
 
       <button
         onClick={() => slider?.current?.next()}
-        className="absolute right-4 top-1/2 -translate-y-1/2 z-10"
+        className="absolute right-1 sm:right-2 md:right-4 top-1/2 -translate-y-1/2 z-10"
       >
-        <ChevronRight size={36} className="text-[#FF6B35]" />
+        <ChevronRight size={28} className="sm:size-[32px] md:size-[36px] text-[#FF6B35]" />
       </button>
     </div>
   );

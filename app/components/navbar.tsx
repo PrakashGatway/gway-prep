@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import Link from "next/link"
-import Image from "next/image"
+import * as React from "react";
+import Link from "next/link";
+import Image from "next/image";
 import {
   ChevronDown,
   Menu,
@@ -17,33 +17,34 @@ import {
   User,
   Settings,
   LogOut,
-} from "lucide-react"
-import { motion, AnimatePresence } from "framer-motion"
-import { useGlobal } from "@/hooks/AppStateContext"
-import AuthDrawer from "./auth/drawer"
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useGlobal } from "@/hooks/AppStateContext";
+import AuthDrawer from "./auth/drawer";
 
 export function Navbar({ Data }: any) {
   const NAVDATA =
     Data?.filter(
-      (item: any) =>
-        item?.seoMeta?.template?.toLowerCase() === "preparation"
-    ) || []
-    console.log(Data,"data")
+      (item: any) => item?.seoMeta?.template?.toLowerCase() === "preparation",
+    ) || [];
+  console.log(Data, "data");
 
-  const [isOpen, setIsOpen] = React.useState(false)
+  const [isOpen, setIsOpen] = React.useState(false);
   const { user, course, logout, drawer, setDrawer } = useGlobal();
 
-  const [scrolled, setScrolled] = React.useState(false)
-  const [mobileDropdown, setMobileDropdown] = React.useState<string | null>(null)
+  const [scrolled, setScrolled] = React.useState(false);
+  const [mobileDropdown, setMobileDropdown] = React.useState<string | null>(
+    null,
+  );
 
   React.useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10)
-    }
+      setScrolled(window.scrollY > 10);
+    };
 
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navItems = [
     { name: "Home", href: "/" },
@@ -62,7 +63,7 @@ export function Navbar({ Data }: any) {
     { name: "Blogs", href: "/blog" },
     { name: "Career", href: "/career" },
     { name: "Contact Us", href: "/contact" },
-  ]
+  ];
 
   React.useEffect(() => {
     scrolled && setIsOpen(false);
@@ -71,12 +72,11 @@ export function Navbar({ Data }: any) {
   return (
     <>
       <nav
-        className={`sticky top-0 z-50 transition-all duration-300  ${scrolled
-          ? "bg-white/60 backdrop-blur-md shadow-md"
-          : "bg-white"
-          }`}
+        className={`sticky top-0 z-100 transition-all duration-300  ${
+          scrolled ? "bg-white/60 backdrop-blur-md shadow-md" : "bg-white"
+        }`}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-[100%] mx-auto px-4 sm:px-6 lg:px-14">
           <div className="flex h-20 items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex-shrink-0">
@@ -154,8 +154,6 @@ export function Navbar({ Data }: any) {
                             </Link>
                           </motion.div>
                         ))}
-
-
                       </motion.div>
                     </div>
                   )}
@@ -170,19 +168,27 @@ export function Navbar({ Data }: any) {
                 +91 9887120429
               </button>
 
-
-              { !user?.email ? <button onClick={() => setDrawer(!drawer)} className="border border-[#F36C45] text-[#F36C45] px-4 py-2 rounded-lg hover:bg-orange-50 transition">
-                Login / Signup
-              </button> : <button onClick={() => window.location.href = "https://dashboard.ooshasprep.com"} className="border border-[#F36C45] text-[#F36C45] px-4 py-2 rounded-lg hover:bg-orange-50 transition">
-                Go to Dashboard
-              </button>}
+              {!user?.email ? (
+                <button
+                  onClick={() => setDrawer(!drawer)}
+                  className="border border-[#F36C45] text-[#F36C45] px-4 py-2 rounded-lg hover:bg-orange-50 transition"
+                >
+                  Login / Signup
+                </button>
+              ) : (
+                <button
+                  onClick={() =>
+                    (window.location.href = "https://dashboard.ooshasprep.com")
+                  }
+                  className="border border-[#F36C45] text-[#F36C45] px-4 py-2 rounded-lg hover:bg-orange-50 transition"
+                >
+                  Go to Dashboard
+                </button>
+              )}
             </div>
 
             {/* Mobile Button */}
-            <button
-              className="lg:hidden"
-              onClick={() => setIsOpen(true)}
-            >
+            <button className="lg:hidden" onClick={() => setIsOpen(true)}>
               <Menu size={28} />
             </button>
           </div>
@@ -225,9 +231,7 @@ export function Navbar({ Data }: any) {
                         <button
                           onClick={() =>
                             setMobileDropdown(
-                              mobileDropdown === item.name
-                                ? null
-                                : item.name
+                              mobileDropdown === item.name ? null : item.name,
                             )
                           }
                           className="w-full flex justify-between items-center py-3 text-left font-medium"
@@ -236,27 +240,25 @@ export function Navbar({ Data }: any) {
                           {item.hasDropdown && <ChevronDown size={16} />}
                         </button>
 
-                        {item.hasDropdown &&
-                          mobileDropdown === item.name && (
-                            <div className="pl-4 pb-3 space-y-2">
-                              {item.dropdownItems?.map((subItem: any) => (
-                                <Link
-                                  key={subItem.slug}
-                                  href={`/preparation/${subItem.slug}`}
-                                  className="block text-sm text-gray-600"
-                                  onClick={() => setIsOpen(false)}
-                                >
-                                  {subItem.name}
-                                </Link>
-                              ))}
-                            </div>
-                          )}
+                        {item.hasDropdown && mobileDropdown === item.name && (
+                          <div className="pl-4 pb-3 space-y-2">
+                            {item.dropdownItems?.map((subItem: any) => (
+                              <Link
+                                key={subItem.slug}
+                                href={`/preparation/${subItem.slug}`}
+                                className="block text-sm text-gray-600"
+                                onClick={() => setIsOpen(false)}
+                              >
+                                {subItem.name}
+                              </Link>
+                            ))}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
 
                   <div className="mt-8 space-y-3">
-
                     <button
                       className="flex btn-primary lg:flex text-sm hidden items-center justify-center !py-2 !px-3 space-x-1 "
                       onClick={() => setDrawer(!drawer)}
@@ -276,9 +278,6 @@ export function Navbar({ Data }: any) {
         </AnimatePresence>
       </nav>
       <AuthDrawer isOpen={drawer} setIsOpen={setDrawer} />
-
     </>
-  )
+  );
 }
-
-
