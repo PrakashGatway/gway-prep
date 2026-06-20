@@ -1,11 +1,6 @@
 import type React from "react";
-import '@/app/globals.css'
+import "@/app/globals.css";
 import { Noto_Sans } from "next/font/google";
-
-
-
-
-
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
@@ -16,15 +11,16 @@ const notoSans = Noto_Sans({
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className={`${notoSans.className}`} suppressHydrationWarning>
-        
-          {children}
-          
+      <body
+        className={notoSans.className}
+        suppressHydrationWarning
+      >
+        {children}
       </body>
     </html>
   );

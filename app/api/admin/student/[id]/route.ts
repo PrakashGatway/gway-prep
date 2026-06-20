@@ -2,20 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/app/lib/db";
 import Student from "@/app/Model/Student";
 
-type Params = {
-  params: {
-    id: string;
-  };
-};
-
 export async function GET(
-  _req: NextRequest,
-  { params }: Params
-): Promise<NextResponse> {
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
     await connectDB();
 
-    const { id } = params;
+    const { id } = await params;
+
+    // console.log("ID:", id);
 
     const student = await Student.findById(id);
 
@@ -27,9 +23,7 @@ export async function GET(
     }
 
     return NextResponse.json(
-      {
-        data: student,
-      },
+      { data: student },
       { status: 200 }
     );
   } catch (error) {
@@ -41,4 +35,3 @@ export async function GET(
     );
   }
 }
-
