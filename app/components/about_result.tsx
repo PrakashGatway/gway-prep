@@ -26,9 +26,9 @@ export function Aboutresult({ data }: { data: any }) {
               <img src={ele?.image} className="h-44 w-46 mx-auto bg-[#f3f3f3] " alt={ele?.name} />
               
               {/* 4. FIX: Use <div> instead of <span> because <span> cannot contain <h2> or <ul> (HTML nesting rule) */}
-              <div className="text-center grid grid-cols-2 items-center capitalize">
-                <h2 className="font-bold">{ele?.name}</h2>
-                <ul>
+              <div className="text-center grid grid-cols-1 items-center capitalize">
+                <h2 className="font-bold break-words text-center ml-4">{ele?.name}</h2>
+                <ul className="grid grid-cols-2 items-center ">
                   <li className="font-semibold">{ele?.course}</li>
                   <li className="bg-[#F36C45] font-bold text-white mx-2">
                     {ele?.score}

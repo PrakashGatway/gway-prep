@@ -13,22 +13,26 @@ export const pageData: any = {
           { name: "title", label: "Hero Title", type: "text", required: false, placeholder: "Welcome to Our Platform" },
           { name: "subtitle", label: "Hero Subtitle", type: "text", required: false, placeholder: "Your journey to success starts here" },
           { name: "paragraph", label: "Hero paragraph", type: "textarea", required: false, placeholder: "" },
-          {
-            name: "students",
-            label: "students",
-            type: "repeater",
-            fields: [
-              { name: "student", label: "Student", type: "text", placeholder: "Enter the name" },
-              { name: "course", label: "Course", type: "text", placeholder: "Enter the Course name" },
-              { name: "score", label: "Score", type: "text", placeholder: "Enter the name" },
-              { name: "studentImg", label: "Student Image", type: "file", placeholder: "Enter the name" },
-              { name: "experience", label: "Experience", type: "text", placeholder: "Enter the lable name || value" },
-              { name: "Happystudent", label: "Happy student", type: "text", placeholder: "Enter the lable name || value" },
-              { name: "Rating", label: "Rating", type: "text", placeholder: "Enter the lable name || value" },
-              { name: "Lectured", label: "Lectured", type: "text", placeholder: "Enter the lable name || value" }
+          { name: "experience", label: "Experience", type: "text", placeholder: "Enter the lable name || value" },
+          { name: "Happystudent", label: "Happy student", type: "text", placeholder: "Enter the lable name || value" },
+          { name: "Rating", label: "Rating", type: "text", placeholder: "Enter the lable name || value" },
+          { name: "Lectured", label: "Lectured", type: "text", placeholder: "Enter the lable name || value" },
+          // {
+          //   name: "students",
+          //   label: "students",
+          //   type: "repeater",
+          //   fields: [
+          //     { name: "student", label: "Student", type: "text", placeholder: "Enter the name" },
+          //     { name: "course", label: "Course", type: "text", placeholder: "Enter the Course name" },
+          //     { name: "score", label: "Score", type: "text", placeholder: "Enter the name" },
+          //     { name: "studentImg", label: "Student Image", type: "file", placeholder: "Enter the name" },
+          //     { name: "experience", label: "Experience", type: "text", placeholder: "Enter the lable name || value" },
+          //     { name: "Happystudent", label: "Happy student", type: "text", placeholder: "Enter the lable name || value" },
+          //     { name: "Rating", label: "Rating", type: "text", placeholder: "Enter the lable name || value" },
+          //     { name: "Lectured", label: "Lectured", type: "text", placeholder: "Enter the lable name || value" }
 
-            ]
-          }
+          //   ]
+          // }
 
         ]
       },

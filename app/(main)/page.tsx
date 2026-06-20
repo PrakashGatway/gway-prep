@@ -53,7 +53,7 @@ export default async function Home() {
   
   return (
     <main className="">
-      <Hero data={sections["Home-hero-section"]} />
+      <Hero data={sections["Home-hero-section"]} student={studentsData} />
       <RegistrationSection data={sections["Registations"]} />
       <Aboutresult data={studentsData} />
       <ServicesGrid data={sections["Home-Services"]} />

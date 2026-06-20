@@ -3,9 +3,7 @@
 import { Phone } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-
-import CountUp from "react-countup";
-
+import {HomeCountUp} from '@/app/components/HomeCountUp';
 
 
 type HeroProps = {
@@ -17,27 +15,18 @@ type HeroProps = {
       students : any;
     };
   };
+  student : any;
 };
 
 
-export function Hero({data}:HeroProps) {
+export function Hero({data, student}:HeroProps) {
   const bookCallRef = useRef<HTMLButtonElement>(null);
   const callUsRef = useRef<HTMLButtonElement>(null);
   const [isDesktop, setIsDesktop] = useState(false);
-const [images,setimages] = useState<any[]>([
-  {
-              "student": "Ankit ",
-              "course": "Act",
-              "score": "0",
-              "studentImg": "https://res.cloudinary.com/drsainihk/image/upload/v1776831639/cway-admin/xhzumiirdnxawaccrwr8.jpg",
-              "experience": "Years of Experience || 20",
-              "Happystudent": "Happy Students || 3000",
-              "Rating": "Overall Rating || 4",
-              "Lectured": "Total Hours Lectured || 20000"
-  },
-]);
+  const [images,setimages] = useState<any[]>(student.data || []);
   const [index, setIndex] = useState(0);
 
+  console.log(data)
   // AUTO SLIDE
   useEffect(() => {
     const interval = setInterval(() => {
@@ -120,7 +109,7 @@ const [images,setimages] = useState<any[]>([
                     <div
                       className="absolute inset-0 z-10 lg:w-[335px] lg:h-[335px] lg:top-[41px] lg:left-[38px]"
                       style={{
-                        backgroundImage: `url(${images?.[index]?.studentImg})`,
+                        backgroundImage: `url(${images?.[index]?.image})`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         // width: "335px",
@@ -150,7 +139,7 @@ const [images,setimages] = useState<any[]>([
               className="flex gap-4 lg:w-[24rem] w-full items-center justify-around capitalize mb-10"
             >
               <h2 className="text-2xl font-bold text-white">
-                {images[index].student}
+                {images[index].name}
               </h2>
               <ul className="text-lg text-white">
                 <li>{images[index].course}</li>
@@ -164,29 +153,30 @@ const [images,setimages] = useState<any[]>([
         </div>
       </div>
 
-      {/* 3D Buttons */}
-      <div>
+      <HomeCountUp data={data} />
+      {/* <div>
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-wrap my-20 mx-20 gap-16"
-          transition={{ duration: 0.6, delay: 0.2 }}
-         
+  initial={{ opacity: 0, y: 20 }}
+  whileInView={{ opacity: 1, y: 0 }} // Changes from animate to whileInView
+  viewport={{ once: false, amount: 0.2 }} // Ensures it runs every time (once: false)
+  transition={{ duration: 0.6, delay: 0.2 }}
+  className="flex flex-wrap my-20 mx-20 gap-16"
         >
+
           {['experience','Happystudent','Rating','Lectured'].map((ele, idx) => (
             <div key={idx} className="relative min-w-[18rem]">
               <div className="absolute  w-full h-full border-2 border-[#F36C45] rounded-[26px] -rotate-5 " />
               <div className="bg-white p-4 rounded-[26px] text-center shadow-sm relative">
                 <h2 className="text-4xl font-bold text-[#F36C45] mb-2">
-                  <CountUp end={parseInt(images[index]?.[ele]?.split("||")[1])} duration={1} />
-                  {ele === "Rating" ? '.8/5': "+"}
+                  <CountUp end={parseInt(data?.fields?.[ele]?.split("||")[1])} duration={1} />
+                  {ele === "Rating" ? '/5': "+"}
                 </h2>
-                <p className="text-gray-600 text-xl">{images[index]?.[ele]?.split("||")[0]}</p>
+                <p className="text-gray-600 text-xl">{data?.fields?.[ele]?.split("||")[0]}</p>
               </div>
             </div>
           ))}
         </motion.div>
-      </div>
+      </div> */}
     </section>
   );
 }
