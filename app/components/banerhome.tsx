@@ -7,7 +7,7 @@ export function Banerhome({ data, img }: any) {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-10 lg:gap-12 items-start">
           
           <img
-            src={img || "/image/about.jpeg"}
+            src={data.fields.image || "/image/about.jpeg"}
             alt="About Us"
             className="w-full h-auto md:sticky top-32 rounded-lg sm:rounded-xl lg:rounded-2xl order-1 lg:order-none"
           />

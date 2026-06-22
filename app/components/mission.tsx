@@ -42,7 +42,7 @@ export function Mission({data}:any) {
           </div>
 
           {/* Middle Left - Square */}
-          <div className="absolute top-[30%] sm:top-[32%] md:top-[35%] lg:top-[38%] left-2 sm:left-3 md:left-4 lg:left-6 xl:left-8 w-[30%] sm:w-[27%] md:w-[25%] lg:w-[23%] z-30">
+          <div className="absolute top-[30%] sm:top-[32%] md:top-[35%] lg:top-[38%] left-2 sm:left-3 md:left-4 lg:left-0 w-[30%] sm:w-[27%] md:w-[25%] lg:w-[23%] z-30">
             <div className="rounded-[12px] sm:rounded-[16px] md:rounded-[20px] overflow-hidden shadow-md">
               <img
                 src={data.fields.items[2]?.image || imgs[0].src}
@@ -64,7 +64,8 @@ export function Mission({data}:any) {
           </div>
 
           {/* Bottom Right - Large Horizontal */}
-          <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 lg:bottom-10 right-2 sm:right-3 md:right-4 lg:right-8 xl:right-12 w-[48%] sm:w-[46%] md:w-[44%] lg:w-[42%] z-20">
+          <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 lg:bottom-10 right-2 sm:right-3 md:right-4
+           lg:right-8 xl:right-12 w-[48%] sm:w-[46%] md:w-[44%] lg:w-[42%] z-20">
             <div className="rounded-[12px] sm:rounded-[16px] md:rounded-[20px] overflow-hidden shadow-md">
               <img
                 src={data.fields.items[4]?.image || imgs[0].src}

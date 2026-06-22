@@ -50,10 +50,10 @@ export async function POST(req: NextRequest) {
       `data:${file.type};base64,${buffer.toString("base64")}`,
       {
         folder: "cway-admin",
-        transformation: [
-          { width: 800, height: 600, crop: "limit" },
-          { quality: "auto" },
-        ],
+        // transformation: [
+        //   { width: 800, height: 600, crop: "limit" },
+        //   { quality: "auto" },
+        // ],
       }
     );
 

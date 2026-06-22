@@ -503,7 +503,6 @@ const EditorForm = ({ slug }: PageProps) => {
     );
   }
 
-console.log(formData);
   if (!formData) return <div className="p-8 text-center">Loading form data...</div>;
 
   return (
