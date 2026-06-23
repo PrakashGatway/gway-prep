@@ -133,8 +133,8 @@ export function Aboutresult({ data }: { data: any }) {
         
       </div>
 
-          <ExploreCourses />
-      {/* Inline keyframes for the marquee */}
+          {/* <ExploreCourses /> */}
+          
       <style jsx>{`
         @keyframes marquee {
           0% {
@@ -165,7 +165,7 @@ function ExploreCourses() {
     {
       title: 'Live Courses',
       icon: (
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
+        <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
           </svg>
@@ -175,7 +175,7 @@ function ExploreCourses() {
     {
       title: 'Classroom',
       icon: (
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600">
+        <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-green-100 text-green-600">
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
           </svg>
@@ -185,7 +185,7 @@ function ExploreCourses() {
     {
       title: 'Self Study',
       icon: (
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-100 text-blue-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-blue-100 text-blue-500">
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5a2 2 0 00-2-2H9a2 2 0 00-2 2v5a2 2 0 01-2 2z" />
           </svg>
@@ -195,7 +195,7 @@ function ExploreCourses() {
     {
       title: 'Test Series',
       icon: (
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-100 text-sky-600">
+        <div className="flex h-16 w-16 items-center justify-center rounded-xl bg-sky-100 text-sky-600">
           <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
           </svg>
@@ -205,8 +205,8 @@ function ExploreCourses() {
   ];
 
   return (
-    <section className="w-full mt-10  px-6 py-12 ">
-      <div className="mx-auto max-w-7xl">
+    <section className="w-full mt-10  px-6 py-10 ">
+      <div className="mx-auto max-w-6xl">
         {/* Section Heading */}
         <h2 className="mb-6 text-2xl font-bold text-slate-800 dark:text-white">
           Explore Courses
@@ -220,7 +220,7 @@ function ExploreCourses() {
               className="group flex flex-col justify-between rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:cursor-pointer hover:shadow-md dark:border-slate-800 dark:bg-slate-800"
             >
               {/* Icon Container */}
-              <div className="mb-8 transition-transform duration-200 group-hover:scale-105">
+              <div className="mb-2 transition-transform duration-200 group-hover:scale-105">
                 {category.icon}
               </div>
 
