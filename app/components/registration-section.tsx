@@ -446,7 +446,7 @@ export function RegistrationSection({ data }: any) {
           </div>
           <button
             onClick={restart}
-            className="px-6 py-3 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl"
+            className="px-6 py-2 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl"
             style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)` }}
           >
             Submit Another Enquiry
@@ -457,20 +457,20 @@ export function RegistrationSection({ data }: any) {
   }
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 py-20 px-4">
+    <section className="  py-12 px-4">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-start gap-8 lg:gap-12">
         {/* Left Side - Image/Illustration */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="hidden lg:block lg:w-1/2 sticky top-32"
+          className="hidden lg:block lg:w-1/2  m-auto top-32"
         >
           <div className="relative">
             <img
               src={data?.fields?.Formsection ?? "/home/1.png"}
               alt="Registration"
-              className="relative w-full h-[60%] rounded-2xl shadow-2xl"
+              className="relative w-full h-[60%] "
             />
             <motion.div
               animate={{ y: [0, -10, 0] }}
@@ -570,7 +570,7 @@ export function RegistrationSection({ data }: any) {
                                 <select
                                   value={formData[field.name] as string || ""}
                                   onChange={(e) => updateField(field.name, e.target.value)}
-                                  className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
+                                  className="w-full border-2 border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
                                   style={{ borderColor: "#e5e7eb" }}
                                   onFocus={(e) => {
                                     e.target.style.borderColor = primaryColor;
@@ -603,7 +603,7 @@ export function RegistrationSection({ data }: any) {
                                     type="text"
                                     value={formData[field.name] as string || ""}
                                     onChange={(e) => updateField(field.name, e.target.value)}
-                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
+                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
                                     style={{ borderColor: "#e5e7eb" }}
                                     onFocus={(e) => {
                                       e.target.style.borderColor = primaryColor;
@@ -632,7 +632,7 @@ export function RegistrationSection({ data }: any) {
                                     type="email"
                                     value={formData[field.name] as string || ""}
                                     onChange={(e) => updateField(field.name, e.target.value)}
-                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
+                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
                                     style={{ borderColor: "#e5e7eb" }}
                                     onFocus={(e) => {
                                       e.target.style.borderColor = primaryColor;
@@ -661,7 +661,7 @@ export function RegistrationSection({ data }: any) {
                                     type="tel"
                                     value={formData[field.name] as string || ""}
                                     onChange={(e) => updateField(field.name, e.target.value)}
-                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
+                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
                                     style={{ borderColor: "#e5e7eb" }}
                                     onFocus={(e) => {
                                       e.target.style.borderColor = primaryColor;
@@ -690,7 +690,7 @@ export function RegistrationSection({ data }: any) {
                                     type="number"
                                     value={formData[field.name] as string || ""}
                                     onChange={(e) => updateField(field.name, e.target.value)}
-                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
+                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
                                     style={{ borderColor: "#e5e7eb" }}
                                     onFocus={(e) => {
                                       e.target.style.borderColor = primaryColor;
@@ -719,7 +719,7 @@ export function RegistrationSection({ data }: any) {
                                     type="date"
                                     value={formData[field.name] as string || ""}
                                     onChange={(e) => updateField(field.name, e.target.value)}
-                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
+                                    className="w-full border-2 border-gray-200 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white"
                                     style={{ borderColor: "#e5e7eb" }}
                                     onFocus={(e) => {
                                       e.target.style.borderColor = primaryColor;
@@ -745,7 +745,7 @@ export function RegistrationSection({ data }: any) {
                                   value={formData[field.name] as string || ""}
                                   onChange={(e) => updateField(field.name, e.target.value)}
                                   rows={4}
-                                  className="w-full border-2 border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white resize-none"
+                                  className="w-full border-2 border-gray-200 rounded-xl px-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white resize-none"
                                   style={{ borderColor: "#e5e7eb" }}
                                   onFocus={(e) => {
                                     e.target.style.borderColor = primaryColor;
@@ -851,7 +851,7 @@ export function RegistrationSection({ data }: any) {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={prevStep}
-                      className="px-6 py-3 text-sm font-semibold text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all flex items-center gap-2"
+                      className="px-6 py-2 text-sm font-semibold text-gray-700 bg-gray-100 rounded-xl hover:bg-gray-200 transition-all flex items-center gap-2"
                     >
                       <ArrowLeft className="w-4 h-4" />
                       Back
@@ -866,7 +866,7 @@ export function RegistrationSection({ data }: any) {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={nextStep}
-                      className="px-8 py-3 text-sm font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+                      className="px-8 py-2 text-sm font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
                       style={{ 
                         background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
                       }}
@@ -880,7 +880,7 @@ export function RegistrationSection({ data }: any) {
                       disabled={isLoading}
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-8 py-3 text-sm font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                      className="px-8 py-2 text-sm font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                       style={{ 
                         background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
                       }}

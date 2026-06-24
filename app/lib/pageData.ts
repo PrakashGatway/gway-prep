@@ -10,7 +10,7 @@ export const pageData: any = {
         name: "Home-hero-section",
         label: "Hero",
         fields: [
-          { name: "title", label: "Hero Title", type: "text", required: false, placeholder: "Welcome to Our Platform" },
+          { name: "title", label: "Hero Title", type: "editor", required: false, placeholder: "Welcome to Our Platform" },
           { name: "subtitle", label: "Hero Subtitle", type: "text", required: false, placeholder: "Your journey to success starts here" },
           { name: "paragraph", label: "Hero paragraph", type: "textarea", required: false, placeholder: "" },
           { name: "experience", label: "Experience", type: "text", placeholder: "Enter the lable name || value" },
@@ -319,7 +319,6 @@ export const pageData: any = {
         fields: [
           { name: "slug", label: "Page Slug", type: "text", required: true, placeholder: "ielts-preparation" },
           { name: "category_name", label: "Category Name", type: "text", required: true, placeholder: "IELTS Preparation" },
-          { name: "nav_subtitle", label: "Nav Dropdown Subtitle", type: "text", required: true, placeholder: "Comprehensive IELTS coaching" },
           { name: "title", label: "Hero Title", type: "editor", required: false, placeholder: "Welcome to Our Platform" },
           { name: "paragraph", label: "Hero Paragraph", type: "textarea", required: false, placeholder: "" },
           { name: "heroImage", label: "Hero Image", type: "file", accept: "image/*" },

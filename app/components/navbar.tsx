@@ -27,7 +27,7 @@ export function Navbar({ Data }: any) {
     Data?.filter(
       (item: any) => item?.seoMeta?.template?.toLowerCase() === "preparation",
     ) || [];
-  console.log(Data, "data");
+  console.log(NAVDATA, "data");
 
   const [isOpen, setIsOpen] = React.useState(false);
   const { user, course, logout, drawer, setDrawer } = useGlobal();
@@ -55,9 +55,9 @@ export function Navbar({ Data }: any) {
       href: "#",
       hasDropdown: true,
       dropdownItems: NAVDATA.map((item: any) => ({
-        name: item.seoMeta.title,
+        name: item.seoMeta.navTitle,
         slug: item.seoMeta.canonicalUrl,
-        description: item.seoMeta.description,
+        description: item.seoMeta.navSubtitle,
       })),
     },
     { name: "Blogs", href: "/blog" },

@@ -25,6 +25,8 @@ interface GeneralInfo {
   description: string;
   keywords: string;
   ogTitle: string;
+  navTitle: string;
+  navSubtitle:string;
   ogDescription: string;
   ogImage: string;
   canonicalUrl: string;
@@ -41,6 +43,8 @@ const EditorForm = ({ slug }: PageProps) => {
     title: "",
     description: "",
     keywords: "",
+    navTitle:"",
+    navSubtitle:"",
     ogTitle: "",
     ogDescription: "",
     ogImage: "",
@@ -616,6 +620,32 @@ const EditorForm = ({ slug }: PageProps) => {
                     onChange={(e) => handleGeneralInfoChange("keywords", e.target.value)}
                     className="w-full p-3 border rounded-xl"
                     placeholder="keyword1, keyword2, keyword3"
+                  />
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Navbar Title
+                  </label>
+                  <input
+                    type="text"
+                    value={generalInfo.navTitle}
+                    onChange={(e) => handleGeneralInfoChange("navTitle", e.target.value)}
+                    className="w-full p-3 border rounded-xl"
+                    placeholder="Nav title"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Navbar Subtitle
+                  </label>
+                  <input
+                    type="text"
+                    value={generalInfo.navSubtitle}
+                    onChange={(e) => handleGeneralInfoChange("navSubtitle", e.target.value)}
+                    className="w-full p-3 border rounded-xl"
+                    placeholder="Nav title"
                   />
                 </div>
 

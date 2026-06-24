@@ -62,14 +62,14 @@ function FloatingBadge({ icon: Icon, label, value, position, delay }: {
       <motion.div
         animate={{ y: [0, -8, 0] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay }}
-        className="bg-white/10 backdrop-blur-xl border border-white/15 rounded-2xl px-3.5 py-2.5 sm:px-4 sm:py-3 shadow-xl shadow-black/20"
+        className="bg-[#FEF9F] backdrop-blur-xl border border-white/15 rounded-2xl px-3.5 py-2.5 sm:px-4 sm:py-3 shadow-xl shadow-black/20"
       >
         <div className="flex items-center gap-2 sm:gap-2.5">
           <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-[#F36C45]/20 flex items-center justify-center">
             <Icon size={16} className="text-[#F36C45] sm:w-5 sm:h-5" />
           </div>
           <div>
-            <p className="text-white font-bold text-sm sm:text-base leading-tight">{value}</p>
+            <p className="text-black font-bold text-sm sm:text-base leading-tight">{value}</p>
             <p className="text-gray-400 text-[10px] sm:text-xs">{label}</p>
           </div>
         </div>
@@ -157,7 +157,7 @@ export function Hero({ data, student }: HeroProps) {
   ];
 
   return (
-    <section className="relative overflow-hidden min-h-screen flex flex-col bg-[#3f3f3f] ">
+    <section className="relative overflow-hidden flex flex-col bg-[#FDF4EF] ">
       {/* ─── Background Layer ─── */}
       {/* <div className="absolute inset-0 bg-[#3f3f3f]">
         
@@ -190,7 +190,7 @@ export function Hero({ data, student }: HeroProps) {
       {/* ─── Main Content ─── */}
       <div className="relative z-10 flex-1 flex flex-col justify-center px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 py-16 lg:py-0">
         <div className="max-w-7xl mx-auto w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 xl:gap-20 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2  items-center">
 
             {/* ─── Left Content ─── */}
             <motion.div
@@ -204,7 +204,8 @@ export function Hero({ data, student }: HeroProps) {
                 initial={{ opacity: 0, y: 20, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-                className="inline-flex items-center gap-2.5 bg-[#F36C45]/10 border border-[#F36C45]/20 rounded-full px-5 py-2 mb-7 backdrop-blur-sm"
+                className="inline-flex items-center gap-2.5 bg-[#F36C45]/10 border 
+                border-[#F36C45]/20 rounded-full px-5 py-2 mb-7 backdrop-blur-sm"
               >
                 <div className="relative flex">
                   <Star size={14} className="text-[#F36C45] fill-[#F36C45]" />
@@ -220,11 +221,14 @@ export function Hero({ data, student }: HeroProps) {
               </motion.div>
 
               {/* Title */}
-              <h1 className="text-2xl sm:text-3xl md:text-5xl  font-bold leading-[1.08] tracking-tight">
-                <span className="text-white">{data.fields.title || ""}</span>
+              <div className="text-black font-bold leading-[1.08] tracking-tight">
+                   <div
+                    className="text-center text-2xl md:text-3xl lg:text-6xl "
+                    dangerouslySetInnerHTML={{ __html: data.fields.title }}
+                  />
                 <br />
                 <span className="relative">
-                  <span className="bg-gradient-to-r from-[#F36C45] via-[#ff8a65] to-[#F36C45] bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient-x">
+                  <span className=" text-black animate-gradient-x">
                     {data.fields.subtitle || ""}
                   </span>
                   <motion.div
@@ -234,14 +238,14 @@ export function Hero({ data, student }: HeroProps) {
                     className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-[#F36C45] to-transparent rounded-full origin-left"
                   />
                 </span>
-              </h1>
+              </div>
 
               {/* Paragraph */}
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.8 }}
-                className="mt-6 lg:mt-7 text-base sm:text-lg text-gray-300/90 leading-relaxed max-w-xl font-light"
+                className="mt-6 lg:mt-7 text-base sm:text-lg text-gray-900/90 leading-relaxed max-w-xl font-[300]"
               >
                 {data.fields.paragraph || ""}
               </motion.p>
@@ -287,9 +291,9 @@ export function Hero({ data, student }: HeroProps) {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1, duration: 0.8 }}
-                className="mt-10 flex items-center gap-5"
+                className="mt-10 flex items-center gap-5 bg-[#FEF9F5] p-4 w-fit"
               >
-                <div className="flex -space-x-2.5">
+                <div className="flex -space-x-2.5 ">
                   {[
                     "from-[#F36C45] to-[#ff8a65]",
                     "from-[#4ECDC4] to-[#45B7AA]",
@@ -310,7 +314,7 @@ export function Hero({ data, student }: HeroProps) {
                     +9k
                   </div>
                 </div>
-                <div className="border-l border-white/10 pl-5">
+                <div className="border-l border-white/10 pl-5 ">
                   <div className="flex gap-0.5">
                     {[1, 2, 3, 4, 5].map((i) => (
                       <Star key={i} size={13} className="text-yellow-400 fill-yellow-400" />
@@ -355,7 +359,7 @@ export function Hero({ data, student }: HeroProps) {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.6, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                    className="relative w-[120%] h-[130%] m-auto rounded-[2.5rem] overflow-hidden "
+                    className="relative w-[120%] h-[130%] m-auto  overflow-hidden "
                   >
                     {/* Graduation Hero Image */}
                     <img
