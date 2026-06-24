@@ -83,7 +83,7 @@ const appInfoData = [
 export default function Blog({ pageInfo,categories }: { pageInfo: any, categories: any }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("ALL");
-  const [filteredBlogs, setFilteredBlogs] = useState(defaultBlogs);
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
 
   // Extract sections from pageInfo
   const heroSection = pageInfo?.sections?.["Home-hero-section"]?.fields || {};
@@ -99,7 +99,7 @@ export default function Blog({ pageInfo,categories }: { pageInfo: any, categorie
   const bgImage = heroSection.bgImage || "/image/03.jpeg";
 
   // Get blogs from section data or use defaults
-  const blogs = recentSection.blogs || recentSection.items || defaultBlogs;
+  const blogs = recentSection.blogs || recentSection.items || [];
   // const categories = recentSection.categories || defaultCategories;
 
   // Get app info data

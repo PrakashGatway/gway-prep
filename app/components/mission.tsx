@@ -1,3 +1,4 @@
+// Mission.tsx
 "use client";
 
 const imgs = [
@@ -8,72 +9,78 @@ const imgs = [
   { id: 5, src: "/apple-icon.png", alt: "Consultation with family" },
 ];
 
-export function Mission({data}:any) {
-  console.log(data,"mission",data.fields.items)
+export function Mission({ data }: any) {
   return (
-    <section className="py-8 sm:py-12 md:py-16 lg:py-24 bg-white" id="about">
+    <section
+      className="py-8 md:py-12 bg-white font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]"
+      id="about"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div
+          className="text-center sm:text-left mb-10"
+          dangerouslySetInnerHTML={{
+            __html: data.fields["mission title"],
+          }}
+        />
 
-        <div className="text-center sm:text-left" dangerouslySetInnerHTML={{ __html: data.fields['mission title'] }} />
+        {/* Collage Container */}
+        <div className="relative mx-auto w-full max-w-5xl h-[500px] md:h-[600px]">
 
-        {/* Collage Grid */}
-        <div className="relative w-full max-w-7xl mx-auto h-[400px] sm:h-[500px] md:h-[620px] lg:h-[720px] xl:h-[780px] overflow-hidden py-4 sm:py-6 md:py-8">
-          
-          {/* Top Center - Large Horizontal */}
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[55%] sm:w-[50%] md:w-[46%] lg:w-[42%] z-20">
-            <div className="rounded-[12px] sm:rounded-[16px] md:rounded-[20px] overflow-hidden shadow-md">
+          {/* Top Center */}
+          <div className="absolute -top-8 left-[48%] -translate-x-1/2 w-[42%] z-20">
+            <div className="rounded-2xl overflow-hidden shadow-lg">
               <img
                 src={data.fields.items[0]?.image || imgs[0].src}
                 alt={data.fields.items[0]?.title || imgs[0].alt}
-                className="w-full h-auto object-cover"
+                className="w-full object-cover"
               />
             </div>
           </div>
 
-          {/* Top Right - Small Vertical */}
-          <div className="absolute top-4 sm:top-6 md:top-8 right-3 sm:right-4 md:right-6 lg:right-10 xl:right-14 w-[28%] sm:w-[25%] md:w-[24%] lg:w-[23%] z-10">
-            <div className="rounded-[12px] sm:rounded-[16px] md:rounded-[20px] overflow-hidden shadow-md">
+          {/* Top Right */}
+          <div className="absolute top-10 right-22 w-[20%] z-10">
+            <div className="rounded-2xl overflow-hidden shadow-lg">
               <img
-                src={data.fields.items[1]?.image || imgs[0].src}
-                alt={data.fields.items[1]?.title || imgs[0].alt}
-                className="w-full h-auto object-cover aspect-[4/5]"
+                src={data.fields.items[1]?.image || imgs[1].src}
+                alt={data.fields.items[1]?.title || imgs[1].alt}
+                className="w-full object-cover aspect-[3/4]"
               />
             </div>
           </div>
 
-          {/* Middle Left - Square */}
-          <div className="absolute top-[30%] sm:top-[32%] md:top-[35%] lg:top-[38%] left-2 sm:left-3 md:left-4 lg:left-0 w-[30%] sm:w-[27%] md:w-[25%] lg:w-[23%] z-30">
-            <div className="rounded-[12px] sm:rounded-[16px] md:rounded-[20px] overflow-hidden shadow-md">
+          {/* Middle Left */}
+          <div className="absolute top-[40%] left-8 w-[22%] z-30">
+            <div className="rounded-2xl overflow-hidden shadow-lg">
               <img
-                src={data.fields.items[2]?.image || imgs[0].src}
-                alt={data.fields.items[2]?.title || imgs[0].alt}
-                className="w-full h-auto object-cover"
+                src={data.fields.items[2]?.image || imgs[2].src}
+                alt={data.fields.items[2]?.title || imgs[2].alt}
+                className="w-full object-cover"
               />
             </div>
           </div>
 
-          {/* Bottom Leftish - Large Vertical */}
-          <div className="absolute bottom-0 left-[15%] sm:left-[18%] md:left-[20%] lg:left-[22%] xl:left-[24%] w-[32%] sm:w-[30%] md:w-[29%] z-10">
-            <div className="rounded-[12px] sm:rounded-[16px] md:rounded-[20px] overflow-hidden shadow-md">
+          {/* Bottom Left */}
+          <div className="absolute -bottom-6 left-[28%] w-[26%] z-10">
+            <div className="rounded-2xl overflow-hidden shadow-lg">
               <img
-                src={data.fields.items[3]?.image || imgs[0].src}
-                alt={data.fields.items[3]?.title || imgs[0].alt}
-                className="w-full h-auto object-cover aspect-[5/6]"
+                src={data.fields.items[3]?.image || imgs[3].src}
+                alt={data.fields.items[3]?.title || imgs[3].alt}
+                className="w-full object-cover aspect-[3/4]"
               />
             </div>
           </div>
 
-          {/* Bottom Right - Large Horizontal */}
-          <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 lg:bottom-10 right-2 sm:right-3 md:right-4
-           lg:right-8 xl:right-12 w-[48%] sm:w-[46%] md:w-[44%] lg:w-[42%] z-20">
-            <div className="rounded-[12px] sm:rounded-[16px] md:rounded-[20px] overflow-hidden shadow-md">
+          {/* Bottom Right */}
+          <div className="absolute bottom-8 right-22 w-[35%] z-20">
+            <div className="rounded-2xl overflow-hidden shadow-lg">
               <img
-                src={data.fields.items[4]?.image || imgs[0].src}
-                alt={data.fields.items[4]?.title || imgs[0].alt}
-                className="w-full h-auto object-cover"
+                src={data.fields.items[4]?.image || imgs[4].src}
+                alt={data.fields.items[4]?.title || imgs[4].alt}
+                className="w-full object-cover"
               />
             </div>
           </div>
+
         </div>
       </div>
     </section>

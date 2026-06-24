@@ -49,9 +49,7 @@ import {
   Users as UsersIcon
 } from "lucide-react";
 
-/* ------------------------------------------------------------------ */
-/* Types                                                               */
-/* ------------------------------------------------------------------ */
+
 type FormData = {
   [key: string]: string | string[];
 };
@@ -75,16 +73,14 @@ type StepConfig = {
   fields: string[];
 };
 
-/* ------------------------------------------------------------------ */
-/* Form Configuration - JSON                                          */
-/* ------------------------------------------------------------------ */
+
 const FORM_CONFIG = {
   steps: [
     {
       step: 1,
-      title: "Personal Information",
+      title: "Share Your Info & Let Our Team Reach Out",
       icon: User,
-      fields: ["firstName", "lastName", "email", "phone", "city", "age", "profile", "source"]
+      fields: ["fullName", "email", "phone", "city", "age", "profile", "source"]
     },
     {
       step: 2,
@@ -101,23 +97,13 @@ const FORM_CONFIG = {
   ],
   fields: [
     {
-      name: "firstName",
-      label: "First Name",
+      name: "fullName",
+      label: "Full Name",
       type: "text",
       required: true,
       placeholder: "Priya",
       step: 1,
-      grid: "half",
-      icon: User
-    },
-    {
-      name: "lastName",
-      label: "Last Name",
-      type: "text",
-      required: true,
-      placeholder: "Mehta",
-      step: 1,
-      grid: "half",
+      grid: "full",
       icon: User
     },
     {
@@ -166,7 +152,7 @@ const FORM_CONFIG = {
       type: "select",
       required: false,
       step: 1,
-      grid: "full",
+      grid: "half",
       options: [
         { value: "", label: "Select your profile" },
         { value: "School student", label: "School student" },
@@ -182,7 +168,7 @@ const FORM_CONFIG = {
       type: "select",
       required: false,
       step: 1,
-      grid: "full",
+      grid: "half",
       options: [
         { value: "", label: "Select source" },
         { value: "Google Search", label: "Google Search" },
@@ -471,7 +457,7 @@ export function RegistrationSection({ data }: any) {
   }
 
   return (
-    <section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 py-34 px-4">
+    <section className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 py-20 px-4">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-start gap-8 lg:gap-12">
         {/* Left Side - Image/Illustration */}
         <motion.div
@@ -484,7 +470,7 @@ export function RegistrationSection({ data }: any) {
             <img
               src={data?.fields?.Formsection ?? "/home/1.png"}
               alt="Registration"
-              className="relative w-full h-auto rounded-2xl shadow-2xl"
+              className="relative w-full h-[60%] rounded-2xl shadow-2xl"
             />
             <motion.div
               animate={{ y: [0, -10, 0] }}
@@ -527,7 +513,7 @@ export function RegistrationSection({ data }: any) {
             transition={{ duration: 0.6 }}
           >
             {/* Header */}
-            <div className="text-center mb-8">
+            {/* <div className="text-center mb-8">
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
@@ -544,10 +530,10 @@ export function RegistrationSection({ data }: any) {
               <p className="text-gray-600 text-lg">
                 Start your journey to success today
               </p>
-            </div>
+            </div> */}
 
             {/* Progress Steps */}
-            <div className="bg-white rounded-2xl shadow-xl p-6 mb-6 border border-gray-100">
+            <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
               
 
               {/* Form */}
@@ -569,12 +555,12 @@ export function RegistrationSection({ data }: any) {
                     </div>
 
                     {/* Dynamic Fields */}
-                    <div className="space-y-4">
+                    <div className="space-y-4 grid grid-cols-2 gap-2">
                       {currentStepFields.map((field) => {
                         const gridClass = field.grid === "half" ? "col-span-1" : "col-span-2";
                         
                         return (
-                          <div key={field.name} className={gridClass}>
+                          <div key={field.name} className={` ${gridClass}`}>
                             {field.type === "select" && (
                               <>
                                 <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -858,7 +844,7 @@ export function RegistrationSection({ data }: any) {
                 </AnimatePresence>
 
                 {/* Navigation Buttons */}
-                <div className="flex justify-between mt-8 pt-6 border-t">
+                <div className="flex justify-between  ">
                   {step > 1 ? (
                     <motion.button
                       type="button"
@@ -936,121 +922,3 @@ export function RegistrationSection({ data }: any) {
     </section>
   );
 }
-
-// "use client"
-
-// import Image from "next/image"
-// import { useEffect, useState } from "react"
-
-// const images = [
-//   "https://t3.ftcdn.net/jpg/06/23/84/22/360_F_623842281_ECGgEpMEkQdH83gbmexIn5l3ACl7V3M0.jpg",
-//   "https://img.freepik.com/premium-photo/young-handsome-man-pointing-camera-choosing-you-university-student-concept_1194-262936.jpg",
-//   "https://as2.ftcdn.net/jpg/05/29/12/57/1000_F_529125762_omW1yTehDLLFJKwLJjRET0G3sXiQnK5g.jpg",
-// ]
-
-// const formdata = [
-//   {
-//     type: 'text',
-//     placeholder: 'First Name' 
-//   },
-//   {
-//     type: 'text',
-//     placeholder: 'Last Name' 
-//   },
-//   {
-//     type: 'email',
-//     placeholder: 'Email Id'
-//   },
-//   {
-//     type: 'tel',
-//     placeholder: 'Mobile Number'
-//   },
-//   {
-//     type: 'option',
-//     placeholder:'Preferred Destination',
-//     options: ['USA', 'UK', 'Canada', 'Australia', 'Germany']
-//   },
-
-//   {
-//     type: 'text',
-//     placeholder: 'Course' 
-//   },
-//   {
-//     type: 'month',
-//     placeholder:'When do you plan to study'
-//   },
-
-//   {
-//     type: 'year',
-//     placeholder:'Your Preferred Year'
-//   }
-// ]
-
-// export function RegistrationSection({data}:{data : any}) {
-
-//   const [index, setIndex] = useState(0)
-
-//   // AUTO SLIDE
-//   useEffect(() => {
-//     const interval = setInterval(() => {
-//       setIndex((prev) => (prev + 1) % images.length)
-//     }, 3000)
-
-//     return () => clearInterval(interval)
-//   }, [])
-
-
-//   return (
-//     <section className="py-8 sm:py-10 lg:py-12 bg-white overflow-hidden px-4 sm:px-6 lg:px-8">
-//   <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 items-center gap-8 sm:gap-12 lg:gap-16">
-    
-//     <div>
-//         <img src={data.fields.img ?? "/home/1.png"} alt="img"  />
-//     </div>
-
-//     <div className=" w-full">
-//       <div className=" rounded-2xl sm:rounded-3xl text-black lg:rounded-[32px] p-6 sm:p-7 lg:p-8  
-//       ">
-//         <h3 className=" font-bold  text-xl sm:text-2xl mb-10 uppercase">
-//           Let Our Team Reach Out To You
-//         </h3>
-
-//         <form className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-         
-//           {formdata.map((ele, index) => (
-//              <div key={index} className="col-span-1">
-//               <label htmlFor={ele.placeholder} className="text-gray-600 my-2 px-1">{ele.placeholder}</label>
-//               {ele.type === 'option' ? (
-//                 <select className="w-full border-gray-300 border-2 rounded-lg px-3 py-2 ">
-//                   <option value="" disabled hidden>{ele.placeholder}</option>
-//                   {ele?.options?.map((option, idx) => (<option key={idx} value={option}>{option}</option>))}
-//                 </select>
-//               ):
-//               (
-//                 <input type={ele.type} placeholder={ele.placeholder} className="w-full border-gray-300 rounded-lg px-3 py-2 border-2" /> 
-//               )
-//               }
-//               </div>
-//           ))}
-        
-//           <button
-//             type="submit"
-//             className="w-full bg-[#F36C45] text-white mt-4 font-bold py-2 sm:py-3 rounded-lg sm:rounded-xl tracking-widest 
-//             hover:opacity-90 transition text-sm sm:text-base"
-//           >
-//             SUBMIT
-//           </button>
-//         </form>
-//       </div>
-//     </div>
-//   </div>
-// </section>
-//   )
-// }
-
-
-
-
-
-
-

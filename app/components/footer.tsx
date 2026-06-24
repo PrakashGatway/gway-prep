@@ -37,13 +37,13 @@ export function Footer() {
               <div className="w-full lg:w-1/4 pr-0 lg:pr-8 mb-10 lg:mb-0 flex items-start justify-center flex-col ">
                 <Image
                   src="/home/logo.png"
-                  alt="GAway Global"
+                  alt="Ooshas Prep"
                   width={150}
                   height={50}
                   className="mb-4"
                   onClick={() => route.push('/')}
                 />
-                <h3 className="text-xl font-bold  mb-3">GA Way Global</h3>
+                <h3 className="text-xl font-bold  mb-3">Ooshas Prep</h3>
                 <p className=" text-sm leading-relaxed mb-6">
                   Your trusted partner for global education, university admissions, and international study planning.
                 </p>
@@ -144,7 +144,7 @@ export function Footer() {
 
           {/* ================= BOTTOM BAR ================= */}
           <div className="mt-10 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500 gap-4">
-            <p>© 2026 GAway Global. All rights reserved.</p>
+            <p>© 2026 Ooshas Prep. All rights reserved.</p>
 
             <div className="flex gap-4 md:gap-6 flex-wrap justify-center">
               <a href="#" className="hover:">Privacy Policy</a>

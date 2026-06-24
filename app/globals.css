@@ -140,7 +140,14 @@
       transform: scale(0.95);
     }
   }
+
 }
+
+.heading1{
+  font-size: 38px;
+  line-height: 44px;
+}
+
 
 @utility zoom-in-95 {
   animation-name: zoom-in;

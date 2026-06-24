@@ -1,17 +1,18 @@
+// Baners.tsx
 "use client";
 
 export function Baners({ heading, img }: { heading?: any; img?: any }) {
   return (
-    <section className="bg-white py-20" id="about">
+    <section className="bg-white py-8 sm:py-10 md:py-12 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]" id="about">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top Header */}
-        <h2 className="text-4xl md:text-5xl text-[#626363] font-bold text-center mb-16">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl text-[#626363] font-bold text-center mb-6 sm:mb-8">
           Everything you need to{" "}
           <span className="text-[#E6883C]">prep any time</span>
         </h2>
 
         {/* Main Layout Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           
           {/* 1. Top Large Card (Self-Paced Courses) */}
           <div className="col-span-1 lg:col-span-2 bg-[#F4F5F5] rounded-[40px] p-8 flex flex-col md:flex-row items-center justify-between gap-8 shadow-sm border border-gray-200/50">
@@ -25,7 +26,7 @@ export function Baners({ heading, img }: { heading?: any; img?: any }) {
               <img
                 src={"/image/s1.png"}
                 alt="Self-Paced Courses Interface"
-                className="w-full max-w-[550px] h-auto  object-cover "
+                className="w-full max-w-[550px] h-auto object-cover"
               />
             </div>
           </div>
@@ -36,7 +37,7 @@ export function Baners({ heading, img }: { heading?: any; img?: any }) {
               <img
                 src="/image/s3.png"
                 alt="AI Tutoring Interface"
-                className="w-full rounded h-[22rem] object-fit "
+                className="w-full rounded h-[22rem] object-fit"
               />
             </div>
             <div className="space-y-3">
@@ -50,13 +51,11 @@ export function Baners({ heading, img }: { heading?: any; img?: any }) {
           {/* 3. Bottom Right Card (Mobile Apps) */}
           <div className="col-span-1 bg-[#F4F5F5] rounded-[40px] p-8 flex flex-col justify-between gap-6 shadow-sm border border-gray-200/50 min-h-[400px]">
             <div className="w-full flex justify-center relative">
-              {/* Phone Mockup Layer */}
               <img
                 src="/image/s2.png"
                 alt="Mobile App Interface"
-                className="w-auto  z-10 object-cover"
+                className="w-auto z-10 object-cover"
               />
-               {/* Background Card Layer for depth */}
               <div className="absolute right-10 top-4 w-[200px] h-[150px] bg-white/80 rounded-xl shadow-md -z-0 transform rotate-6"></div>
             </div>
             <div className="space-y-3">

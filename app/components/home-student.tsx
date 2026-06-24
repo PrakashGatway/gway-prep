@@ -1,198 +1,98 @@
+// HomeStudent.tsx
 "use client";
 
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const data = [
-  {
-    "name": "Akash Vikram",
-    "education": {
-      "university": "Carnegie Mellon University",
-      "test_score": {
-        "exam": "GMAT",
-        "score": 760
-      },
-      logo : "/university.jpg"
-    },
-    "partnership_details": {
-      "service_provider": "Ooshas",
-      "support_offered": [
-        "Offered him early morning classes to accommodate his work schedule",
-        "Provided personalised sessions post-classes to increase his accuracy and speed",
-        "Aided his prep through concept videos, sectional & full-length tests, solutions, and analytics of his performance via smart online learning portal",
-        "Shortlisted MBA programs that suited his requirements",
-        "Conducted brainstorming sessions with editors to write strong essays"
-      ]
-    },
-    "outcome": {
-      "admission": "Carnegie Mellon University",
-      "business_school": "Tepper School of Business",
-      "financial_aid": "$20,000 Scholarship"
-    },
-    "affiliations": [
-      "University of Applied Sciences Europe"
-    ]
-  },
-  {
-    "name": " Vikram",
-    "education": {
-      "university": "Carnegie University",
-      "test_score": {
-        "exam": "GMAT",
-        "score": 760
-      },
-      logo : "/university.jpg"
-    },
-    "partnership_details": {
-      "service_provider": "Ooshas",
-      "support_offered": [
-        "Offered him early morning classes to accommodate his work schedule",
-        "Provided personalised sessions post-classes to increase his accuracy and speed",
-        "Aided his prep through concept videos, sectional & full-length tests, solutions, and analytics of his performance via smart online learning portal",
-        "Shortlisted MBA programs that suited his requirements",
-        "Conducted brainstorming sessions with editors to write strong essays"
-      ]
-    },
-    "outcome": {
-      "admission": "Carnegie Mellon University",
-      "business_school": "Tepper School of Business",
-      "financial_aid": "$20,000 Scholarship"
-    },
-    "affiliations": [
-      "University of Applied Sciences Europe"
-    ]
-  },
-  {
-    "name": "Akash ",
-    "education": {
-      "university": "Carnegie Mellon University",
-      "test_score": {
-        "exam": "GMAT",
-        "score": 760
-      },
-      logo : "/university.jpg"
-    },
-    "partnership_details": {
-      "service_provider": "Ooshas",
-      "support_offered": [
-        "Offered him early morning classes to accommodate his work schedule",
-        "Provided personalised sessions post-classes to increase his accuracy and speed",
-        "Aided his prep through concept videos, sectional & full-length tests, solutions, and analytics of his performance via smart online learning portal",
-        "Shortlisted MBA programs that suited his requirements",
-        "Conducted brainstorming sessions with editors to write strong essays"
-      ]
-    },
-    "outcome": {
-      "admission": "Carnegie Mellon University",
-      "business_school": "Tepper School of Business",
-      "financial_aid": "$20,000 Scholarship"
-    },
-    "affiliations": [
-      "University of Applied Sciences Europe"
-    ]
-  }
-
-
-];
-
-
 export function HomeStudent({data}:{data : any}) {
-
   const [sliderRef, slider] = useKeenSlider(
-  {
-    loop: true,
-    slides: {
-      perView: 1,
-      spacing: 16,
+    {
+      loop: true,
+      slides: {
+        perView: 1,
+        spacing: 16,
+      },
+      breakpoints: {
+        "(min-width: 640px)": {
+          slides: {
+            perView: 1, 
+            spacing: 20,
+          },
+        },
+        "(min-width: 768px)": {
+          slides: {
+            perView: 1,
+            spacing: 24,
+          },
+        },
+        "(min-width: 1024px)": {
+          slides: {
+            perView: 1,
+            spacing: 32,
+          },
+        },
+      },
     },
-    breakpoints: {
-      "(min-width: 640px)": {
-        slides: {
-          perView: 1, 
-          spacing: 20,
-        },
-      },
-      "(min-width: 768px)": {
-        slides: {
-          perView: 1,
-          spacing: 24,
-        },
-      },
-      "(min-width: 1024px)": {
-        slides: {
-          perView: 1,
-          spacing: 32,
-        },
-      },
-    },
-  },
-  [
-    (slider) => {
-      let timeout: any;
-      let mouseOver = false;
+    [
+      (slider) => {
+        let timeout: any;
+        let mouseOver = false;
 
-      const clearNextTimeout = () => {
-        if (timeout) clearTimeout(timeout);
-      };
+        const clearNextTimeout = () => {
+          if (timeout) clearTimeout(timeout);
+        };
 
-      const nextTimeout = () => {
-        clearNextTimeout();
-        if (mouseOver) return;
-        
-        // Fix 1: Guard against missing track details before sliding
-        timeout = setTimeout(() => {
-          if (slider.track && slider.track.details) {
-            slider.next();
-          }
-        }, 4000);
-      };
+        const nextTimeout = () => {
+          clearNextTimeout();
+          if (mouseOver) return;
+          
+          timeout = setTimeout(() => {
+            if (slider.track && slider.track.details) {
+              slider.next();
+            }
+          }, 4000);
+        };
 
-      slider.on("created", () => {
-        slider.container.addEventListener("mouseover", () => {
-          mouseOver = true;
+        slider.on("created", () => {
+          slider.container.addEventListener("mouseover", () => {
+            mouseOver = true;
+            clearNextTimeout();
+          });
+
+          slider.container.addEventListener("mouseout", () => {
+            mouseOver = false;
+            if (slider.track && slider.track.details) {
+              nextTimeout();
+            }
+          });
+
+          nextTimeout();
+        });
+
+        slider.on("dragStarted", clearNextTimeout);
+        slider.on("animationEnded", nextTimeout);
+        slider.on("updated", nextTimeout);
+        slider.on("destroyed", () => {
           clearNextTimeout();
         });
-
-        slider.container.addEventListener("mouseout", () => {
-          mouseOver = false;
-          // Fix 2: Safety check when mouse leaves
-          if (slider.track && slider.track.details) {
-            nextTimeout();
-          }
-        });
-
-        nextTimeout();
-      });
-
-      slider.on("dragStarted", clearNextTimeout);
-      slider.on("animationEnded", nextTimeout);
-      slider.on("updated", nextTimeout);
-
-      // Fix 3: Clear timers when KeenSlider destroys itself
-      slider.on("destroyed", () => {
-        clearNextTimeout();
-      });
-    },
-  ]
-);
-
+      },
+    ]
+  );
 
   return (
-    <div className="relative px-4 sm:px-6 lg:px-8">
-      
+    <div className="relative px-4 sm:px-6 lg:px-8 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]">
       <section
         ref={sliderRef}
-        className="keen-slider max-w-7xl mx-auto py-8 sm:py-12 md:py-16 lg:py-20 bg-white"
+        className="keen-slider max-w-7xl mx-auto py-8 sm:py-12 md:py-16 lg:py-12 bg-white"
       >
         {data.data.map((student: any, idx: number) => (
           <div
             key={idx}
             className="keen-slider__slide bg-[#F3F4F6] rounded-[30px] sm:rounded-[35px] md:rounded-[40px] p-6 
-            sm:p-8 md:p-10 lg:p-12 flex flex-col lg:flex-row gap-16 sm:gap-28"
+             flex flex-col lg:flex-row gap-10 sm:gap-16 lg:gap-20"
           >
-
-            <div className="lg:w-1/3 flex flex-col items-center ">
+            <div className="lg:w-1/3 flex flex-col items-center">
               <div className="relative mb-4 sm:mb-6">
                 <div className="h-14 w-14 rounded-lg bg-[#f26e46] absolute bottom-18 -left-16" />
                 <div className="h-16 w-16 rounded-lg border-2 border-[#f26e46] absolute bottom-6 -right-18" />
@@ -206,7 +106,7 @@ export function HomeStudent({data}:{data : any}) {
                 </div>
               </div>
 
-              <div className="text-center ">
+              <div className="text-center">
                 <h2 className="text-[#FF6B35] text-xl sm:text-2xl font-bold">
                   {student.name}
                 </h2>
@@ -227,20 +127,17 @@ export function HomeStudent({data}:{data : any}) {
               />}
             </div>
 
-
             <div className="lg:w-2/3 flex flex-col gap-4 sm:gap-6">
               <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border">
                 <h3 className="text-[#FF6B35] font-bold mb-3 sm:mb-4 text-base sm:text-lg">
                   How did {"Ooshaprap"} help{" "}
                   {student.name}?
                 </h3>
-
                 <div className="text-sm sm:text-base" dangerouslySetInnerHTML={{__html: student.about}} />
               </div>
 
               <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border">
                 <h3 className="text-[#FF6B35] font-bold mb-3 sm:mb-4 text-base sm:text-lg">Outcome</h3>
-                
                 <div className="text-sm sm:text-base" dangerouslySetInnerHTML={{__html : student.outcome}} />
               </div>
             </div>

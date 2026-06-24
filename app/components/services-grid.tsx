@@ -1,3 +1,4 @@
+// ServicesGrid.tsx
 "use client";
 
 import Image from "next/image";
@@ -7,17 +8,16 @@ export function ServicesGrid({ data }: { data: any }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   return (
-    <section className="max-w-7xl mx-auto py-24 bg-white">
+    <section className="max-w-7xl mx-auto py-16 sm:py-14 bg-white font-['Open_Sans','Helvetica_Neue',Arial,sans-serif] ">
       <div className="sm:mx-6 lg:px-8 mx-auto">
         {/* Heading */}
         <div
-          className="text-center mb-16"
+          className="text-center mb-14 md:mb-12"
           dangerouslySetInnerHTML={{ __html: data.fields.title }}
         />
 
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 divide-y sm:divide-y-0
-         sm:divide-x divide-brand-orange/20">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 divide-y sm:divide-y-0 sm:divide-x divide-brand-orange/20">
           {data.fields.items.map((item: any, index: number) => {
             const isHovered = hoveredIndex === index;
 
@@ -28,7 +28,7 @@ export function ServicesGrid({ data }: { data: any }) {
                 onMouseLeave={() => setHoveredIndex(null)}
                 className={`
                   group relative flex flex-col items-center text-center 
-                  px-6 py-6 lg:py-4
+                  px-6 py-8 lg:py-10
                   transition-all duration-300 ease-out
                   ${isHovered ? "bg-brand-orange/[0.03]" : "bg-transparent"}
                   cursor-default
@@ -80,7 +80,6 @@ export function ServicesGrid({ data }: { data: any }) {
                 >
                   {item.title}
                 </p>
-
               </div>
             );
           })}

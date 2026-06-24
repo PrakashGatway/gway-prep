@@ -1,49 +1,4 @@
-// "use client";
-
-// import { motion } from "framer-motion";
-
-// export function Aboutresult({ data }: { data: any }) {
-//   // 1. Safety Guard: Prevents "Cannot read properties of undefined"
-//   if (!data || !data.data) return null;
-
-//   return (
-//     <section className="py-12 md:py-16 lg:py-20 bg-[#EAEAEA]" id="about">
-//       <div className="max-w-7xl mx-auto flex flex-wrap justify-center gap-8">
-//         {data.data.map((ele: any, idx: number) => (
-//           <motion.div
-//             // 2. The ONLY key should be here (on the top-level element of the map)
-//             key={ele._id || ele.id || idx} 
-//             initial={{ opacity: 0, y: 20 }}
-//             whileInView={{ opacity: 1, y: 0 }}
-//             viewport={{ amount: 0.2 }}
-//             transition={{
-//               duration: 0.6,
-//               delay: idx * 0.1,
-//             }}
-//           >
-//             {/* 3. REMOVED key={idx} from here. Adding it twice causes warnings */}
-//             <div className="shadow-lg p-3 bg-white">
-//               <img src={ele?.image} className="h-44 w-46 mx-auto bg-[#f3f3f3] " alt={ele?.name} />
-              
-//               {/* 4. FIX: Use <div> instead of <span> because <span> cannot contain <h2> or <ul> (HTML nesting rule) */}
-//               <div className="text-center grid grid-cols-1 items-center capitalize">
-//                 <h2 className="font-bold break-words text-center ml-4">{ele?.name}</h2>
-//                 <ul className="grid grid-cols-2 items-center ">
-//                   <li className="font-semibold">{ele?.course}</li>
-//                   <li className="bg-[#F36C45] font-bold text-white mx-2">
-//                     {ele?.score}
-//                   </li>
-//                 </ul>
-//               </div>
-//             </div>
-//           </motion.div>
-//         ))}
-//       </div>
-//     </section>
-//   );
-// }
-
-
+// Aboutresult.tsx
 "use client";
 
 import { motion } from "framer-motion";
@@ -56,14 +11,14 @@ export function Aboutresult({ data }: { data: any }) {
   const duplicatedData = [...data.data, ...data.data, ...data.data];
 
   return (
-    <section className="py-12 md:py-16 lg:py-20 bg-[#EAEAEA] overflow-hidden " id="about">
+    <section className="py-12 md:py-16  bg-[#EAEAEA] overflow-hidden font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]" id="about">
       {/* Heading */}
-      <div className="text-center mb-10 px-4">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 flex items-center justify-center gap-2">
+      <div className="text-center mb-12 px-4">
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 flex items-center justify-center gap-3">
           Meet our stars{" "}
-          <Stars className="w-7 h-7 md:w-8 md:h-8 text-[#f26e46] fill-[#f26e46]" />
+          <Stars className="w-8 h-8 md:w-10 md:h-10 text-[#f26e46] fill-[#f26e46]" />
         </h1>
-        <p className="text-gray-500 mt-2 text-sm md:text-base">
+        <p className="text-gray-500 mt-3 text-base md:text-lg">
           Our students who made us proud
         </p>
       </div>
@@ -88,52 +43,46 @@ export function Aboutresult({ data }: { data: any }) {
                 duration: 0.5,
                 delay: (idx % data.data.length) * 0.08,
               }}
-              className="flex-shrink-0 w-[200px] sm:w-[220px] mx-2.5 sm:mx-3"
+              className="flex-shrink-0 w-[200px] sm:w-[240px] mx-3 sm:mx-4"
             >
-              <div className="shadow-md hover:shadow-xl transition-shadow duration-300 p-3 bg-white rounded-lg group cursor-pointer">
+              <div className="shadow-md hover:shadow-xl transition-shadow duration-300 p-4 bg-white rounded-lg group cursor-pointer">
                 {/* Image */}
                 <div className="relative overflow-hidden rounded">
                   <img
                     src={ele?.image}
-                    className="h-44 w-full object-cover mx-auto bg-[#f3f3f3] group-hover:scale-105 transition-transform duration-500"
+                    className="h-48 w-full object-cover mx-auto bg-[#f3f3f3] group-hover:scale-105 transition-transform duration-500"
                     alt={ele?.name}
                   />
                   {/* Exam Type Badge */}
-                  <span className="absolute bottom-0 left-0 w-full text-sm text-center  font-bold bg-[#000] text-white px-2.5 py-1 ">
+                  <span className="absolute bottom-0 left-0 w-full text-sm text-center font-bold bg-[#000] text-white px-2.5 py-1.5">
                     {ele?.course || ele?.exam_type || "NEET - UG '25"}
                   </span>
                 </div>
 
                 {/* Info */}
-                <div className="text-left mt-2 capitalize px-1">
+                <div className="text-left mt-3 capitalize px-1">
                   <h2 className="font-bold text-base sm:text-lg break-words text-gray-800 leading-tight">
                     {ele?.name}
                   </h2>
-                  <div className="flex flex-col items-start justify-between  ">
-                    
+                  <div className="flex flex-col items-start justify-between mt-1">
                     <span className="font-medium text-xs sm:text-sm text-gray-500 truncate">
-                      {/* Official Exam Score Report */} Standardized Test Results
+                      Standardized Test Results
                     </span>
-                    
                     <span className="font-medium text-xs sm:text-sm text-gray-500 truncate">
                       Score
                     </span>
-                    
-                    <span className="text-[#f26e46] m-0 p-0 font-bold text-sm sm:text-[2rem] transition-colors duration-200">
+                    <span className="text-[#f26e46] m-0 p-0 font-bold text-2xl sm:text-3xl md:text-4xl transition-colors duration-200">
                       {ele?.score}
                     </span>
-                    
                   </div>
-
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
-        
       </div>
 
-          {/* <ExploreCourses /> */}
+      {/* <ExploreCourses /> */}
           
       <style jsx>{`
         @keyframes marquee {
@@ -205,27 +154,22 @@ function ExploreCourses() {
   ];
 
   return (
-    <section className="w-full mt-10  px-6 py-10 ">
+    <section className="w-full mt-12 px-6 py-12">
       <div className="mx-auto max-w-6xl">
-        {/* Section Heading */}
-        <h2 className="mb-6 text-2xl font-bold text-slate-800 dark:text-white">
+        <h2 className="mb-6 text-3xl font-bold text-slate-800">
           Explore Courses
         </h2>
 
-        {/* Responsive Grid System */}
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-4">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-4">
           {categories.map((category, index) => (
             <div
               key={index}
-              className="group flex flex-col justify-between rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:cursor-pointer hover:shadow-md dark:border-slate-800 dark:bg-slate-800"
+              className="group flex flex-col justify-between rounded-2xl border border-slate-100 bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:cursor-pointer hover:shadow-md"
             >
-              {/* Icon Container */}
-              <div className="mb-2 transition-transform duration-200 group-hover:scale-105">
+              <div className="mb-3 transition-transform duration-200 group-hover:scale-105">
                 {category.icon}
               </div>
-
-              {/* Title */}
-              <span className="text-base font-semibold text-slate-700 dark:text-slate-200">
+              <span className="text-base font-semibold text-slate-700">
                 {category.title}
               </span>
             </div>
