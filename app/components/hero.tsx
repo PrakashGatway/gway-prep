@@ -5,7 +5,6 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { HomeCountUp } from '@/app/components/HomeCountUp';
 
-const GRADUATION_IMG = "https://z-cdn-media.chatglm.cn/files/51546d0a-86a2-4ea0-a27e-a2a39fdd06d5.jpg?auth_key=1881952724-26356742959c4c2e848eac1ca44892ea-0-ddfe36700117930b6022e9b606a7d4ce";
 
 // ─── Confetti Particle ───
 function ConfettiParticle({ delay, x, duration, color, size, rotationEnd }: {
