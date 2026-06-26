@@ -5,7 +5,7 @@
 
 import type { Metadata } from "next";
 import { Hero } from "@/app/components/hero";
-import { ServicesGrid } from "@/app/components/services-grid";
+import  ServicesGrid  from "@/app/components/services-grid";
 import { RegistrationSection } from "@/app/components/registration-section";
 import { TestPrepGrid } from "@/app/components/test-prep-grid";
 import { WorkingProcess } from "@/app/components/working-process";
@@ -19,6 +19,7 @@ import { Baners } from "@/app/components/baner";
 import { HomeStudent } from "@/app/components/home-student";
 import { Mission } from "@/app/components/mission";
 import { Aboutresult } from "@/app/components/about_result";
+import { AboutSection } from "@/app/components/about-section";
 import { Banerhome } from "@/app/components/banerhome";
 import { getPageInfo, getStudent } from "../services/api";
 export const dynamic = "force-dynamic";
@@ -50,23 +51,60 @@ export default async function Home() {
 
   const sections = pageData?.sections || {};
   // console.log(sections,'sections')
+  const banner = [
+    '/home/banner/1.jpeg',
+    '/home/banner/4.jpeg',
+    '/home/banner/2.jpeg',
+    '/home/banner/3.jpeg',
+  ]
+  const serviceData = [
+  {
+    "id": 1,
+    "title": "Online Live Classes",
+    "description": "High-energy interactive sessions with real-time doubt clearing, live Q&A polls and peer discussion—from anywhere in the world.",
+    "buttonText": "Book a Free Demo",
+    "image": "/images/online-class.png"
+  },
+  {
+    "id": 2,
+    "title": "Offline Classroom",
+    "description": "Distraction-free focused learning at our state-of-the-art centers with structured study plans and peer groups.",
+    "buttonText": "Visit a Center",
+    "image": "/images/offline-class.png"
+  },
+  {
+    "id": 3,
+    "title": "One-on-One Classes",
+    "description": "Dedicated sessions with a certified mentor, customized to your weak areas and target scores.",
+    "buttonText": "Book 1:1 Session",
+    "image": "/images/one-to-one.png"
+  },
+  {
+    "id": 4,
+    "title": "AI Tutor (Self-Paced)",
+    "description": "An intelligent AI tutor available 24/7 that adapts to your learning curve and explains every concept.",
+    "buttonText": "Try AI Tutor Free",
+    "image": "/images/ai-tutor.png"
+  }
+]
   
   return (
     <main className="">
       <Hero data={sections["Home-hero-section"]} student={studentsData} />
       <RegistrationSection data={sections["Registations"]} />
-      <Aboutresult data={studentsData} />
-      <ServicesGrid data={sections["Home-Services"]} />
+      {/* <Aboutresult data={studentsData} /> */}
+      <AboutSection data={banner}/>
+      <ServicesGrid data={serviceData} />
       <TestPrepGrid data={sections["Home-Courses"]} />
-      <Baners img="/home/000002.png" />
+      {/* <Baners img="/home/000002.png" /> */}
       <WorkingProcess data={sections["Home-Working-Process"]} />
       <HomeStudent data={studentsData} />
       <Banerhome img="/home/000002.png" data={sections["Home-Tech-platform"]}/>
       <Mission data={sections["Home-page-mission"]} />
-      <VideoTestimonialCard
+      {/* <VideoTestimonialCard
         heading={sections["Home-Video-Testimonial"]}
         data={studentsData}
-      />
+      /> */}
       <TextTestimonials
         heading={sections["Home-Text-Testimonial"]}
         data={studentsData}

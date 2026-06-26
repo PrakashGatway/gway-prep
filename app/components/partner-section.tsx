@@ -93,7 +93,7 @@ export function PartnerSection() {
                 <input type="text" placeholder="School Name" className="w-full p-2 bg-gray-50 border rounded-md" />
               </div>
               </div>
-              <div>
+              {/* <div>
                 <label className="block text-sm font-semibold mb-1">Student Grade *</label>
                 <select className="w-full p-2 bg-gray-50 border rounded-md">
                   <option value="">Select Grade</option>
@@ -101,7 +101,7 @@ export function PartnerSection() {
                   <option value="2">Grade 2</option>
                   <option value="3">Grade 3</option>
                 </select>
-              </div>
+              </div> */}
               <div>
                 <label className="block text-sm font-semibold mb-1">Which Program are you looking for? *</label>
                 <div className="flex flex-wrap gap-3 text-xs">
@@ -112,10 +112,10 @@ export function PartnerSection() {
                   ))}
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <label className="block text-sm font-semibold mb-1">Comment or Message *</label>
                 <textarea placeholder="Message" className="w-full p-2 bg-gray-50 border rounded-md h-24"></textarea>
-              </div>
+              </div> */}
 
               <div>
                 <label className="block text-sm font-semibold mb-1">How did you come to know about us?</label>

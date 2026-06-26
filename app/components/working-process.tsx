@@ -22,10 +22,10 @@ export function WorkingProcess({ data }: { data: any }) {
   }, []);
 
   return (
-    <section className="py-8 sm:py-10 md:py-12 bg-gray-100 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]">
+    <section className="py-1 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="text-center mb-10 sm:mb-14 md:mb-18">
+        <div className="text-center mb-8 sm:mb-10 md:mb-12">
           <div 
             className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-extrabold text-center"
             dangerouslySetInnerHTML={{ __html: data.fields.title }} 

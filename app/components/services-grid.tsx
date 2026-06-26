@@ -1,90 +1,82 @@
-// ServicesGrid.tsx
 "use client";
-
 import Image from "next/image";
-import { useState } from "react";
 
-export function ServicesGrid({ data }: { data: any }) {
-  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
+export default function ServicesGrid({ data }: any) {
   return (
-    <section className="max-w-7xl mx-auto py-16 sm:py-14 bg-white font-['Open_Sans','Helvetica_Neue',Arial,sans-serif] ">
-      <div className="sm:mx-6 lg:px-8 mx-auto">
-        {/* Heading */}
-        <div
-          className="text-center mb-14 md:mb-12"
-          dangerouslySetInnerHTML={{ __html: data.fields.title }}
-        />
+    <section className="py-2 bg-[#fff] overflow-hidden">
+      <div className="container mx-auto px-4">
+        <div className="max-w-4xl mx-auto text-center ">
+          <h2 className="text-4xl md:text-5xl font-bold">
+            <span className="text-[#f26e46]">Four Ways to Learn.</span>{" "}
+            <span className="text-gray-800"> One Standard of Excellence. </span>
+          </h2>
+          <p className="mt-6 text-lg text-gray-600 leading-relaxed">
+            Whether you prefer the energy of live classrooms, the intimacy of
+            1-on-1 sessions, or the freedom of self-paced AI coaching—we deliver
+            world-class preparation in the format that fits your life.
+          </p>
+        </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 divide-y sm:divide-y-0 sm:divide-x divide-brand-orange/20">
-          {data.fields.items.map((item: any, index: number) => {
-            const isHovered = hoveredIndex === index;
+        <div className="hidden lg:block min-h-[800px] flex items-center justify-center">
+          <div
+            className="relative w-[900px] h-[800px] mx-auto"
+            style={{
+              backgroundImage: 'url("/home/3.png")',
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "contain",
+            }}
+          >
+            <div className="absolute top-20 left-[260px] w-[280px]">
+              <Card item={data?.[0]} />
+            </div>
 
-            return (
-              <div
-                key={index}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                className={`
-                  group relative flex flex-col items-center text-center 
-                  px-6 py-8 lg:py-10
-                  transition-all duration-300 ease-out
-                  ${isHovered ? "bg-brand-orange/[0.03]" : "bg-transparent"}
-                  cursor-default
-                `}
-              >
-                {/* Hover indicator line */}
-                <div
-                  className={`
-                    absolute top-0 left-1/2 -translate-x-1/2 h-1 rounded-full
-                    bg-brand-orange transition-all duration-300 ease-out
-                    ${isHovered ? "w-12 opacity-100" : "w-0 opacity-0"}
-                  `}
-                />
+            <div className="absolute top-[260px] right-20 w-[280px]">
+              <Card item={data?.[1]} />
+            </div>
 
-                {/* Icon container */}
-                <div
-                  className={`
-                    relative flex items-center justify-center
-                    w-20 h-20 lg:w-24 lg:h-24 rounded-2xl
-                    transition-all duration-300 ease-out
-                    ${
-                      isHovered
-                        ? "bg-brand-orange/10 scale-110 shadow-lg shadow-brand-orange/10"
-                        : "bg-gray-50 scale-100 shadow-none"
-                    }
-                  `}
-                >
-                  {item?.icon && (
-                    <Image
-                      src={item.icon}
-                      alt={item.title || "service icon"}
-                      width={56}
-                      height={56}
-                      className={`
-                        transition-all duration-300 ease-out
-                        ${isHovered ? "scale-110" : "scale-100"}
-                      `}
-                    />
-                  )}
-                </div>
+            <div className="absolute bottom-30 left-[260px] w-[280px]">
+              <Card item={data?.[2]} />
+            </div>
 
-                {/* Title */}
-                <p
-                  className={`
-                    mt-5 text-lg lg:text-xl font-semibold leading-snug
-                    max-w-[200px] transition-colors duration-300
-                    ${isHovered ? "text-brand-orange" : "text-gray-800"}
-                  `}
-                >
-                  {item.title}
-                </p>
-              </div>
-            );
-          })}
+            <div className="absolute top-[350px] left-0 w-[280px]">
+              <Card item={data?.[3]} />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:hidden">
+          {data?.map((item: any, index: number) => (
+            <Card key={index} item={item} />
+          ))}
         </div>
       </div>
     </section>
+  );
+}
+
+type CardProps = {
+  item: {
+    title: string;
+    description: string;
+    buttonText: string;
+    image: string;
+  };
+};
+
+function Card({ item }: CardProps) {
+  if (!item) return null;
+  return (
+    <div className="bg-white rounded-3xl p-2 shadow-md border border-orange-100 hover:-translate-y-2 transition-all duration-300">
+     
+      <p className="text-gray-600 text-center mt-2 leading-relaxed text-sm">
+        {item.description}
+      </p>
+      <div className="mt-2 flex justify-center">
+        <button className="bg-orange-500 text-white px-5 py-2 rounded-full text-sm hover:bg-orange-600 transition">
+          {item.buttonText}
+        </button>
+      </div>
+    </div>
   );
 }

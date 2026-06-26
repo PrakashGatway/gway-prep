@@ -81,27 +81,33 @@ export function HomeStudent({data}:{data : any}) {
   );
 
   return (
-    <div className="relative px-4 sm:px-6 lg:px-8 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]">
+    <div className="relative my-4 sm:my-6 lg:my-8 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]  bg-[#FDF4EF]"  style={{
+              backgroundImage: 'url("/home/grid.png")',
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+            }}>
+
       <section
         ref={sliderRef}
-        className="keen-slider max-w-7xl mx-auto py-8 sm:py-12 md:py-16 lg:py-12 bg-white"
+        className="keen-slider max-w-7xl mx-auto py-4 "
       >
         {data.data.map((student: any, idx: number) => (
           <div
             key={idx}
-            className="keen-slider__slide bg-[#F3F4F6] rounded-[30px] sm:rounded-[35px] md:rounded-[40px] p-6 
-             flex flex-col lg:flex-row gap-10 sm:gap-16 lg:gap-20"
+            className="keen-slider__slide  p-6 
+             flex flex-col lg:flex-row gap-10 sm:gap-16 lg:gap-20 "
           >
             <div className="lg:w-1/3 flex flex-col items-center">
               <div className="relative mb-4 sm:mb-6">
                 <div className="h-14 w-14 rounded-lg bg-[#f26e46] absolute bottom-18 -left-16" />
                 <div className="h-16 w-16 rounded-lg border-2 border-[#f26e46] absolute bottom-6 -right-18" />
                 <div className="h-10 w-10 rounded-lg bg-[#f26e46] absolute top-2 -right-14" />
-                <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64 rounded-2xl overflow-hidden border-4 border-white shadow-sm">
+                <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64 rounded-2xl ">
                   <img
                     src={student.image ?? "/students/01.jpg"}
                     alt={student?.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover  rounded-2xl "
                   />
                 </div>
               </div>

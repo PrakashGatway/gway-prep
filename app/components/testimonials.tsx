@@ -406,11 +406,15 @@ export function VideoTestimonialCard({ heading, data }: any) {
 
 
 
-// TextTestimonials.tsx
+
 export function TextTestimonials({ heading, data }: any) {
   const imageTestimonials = data?.data?.filter(
     (ele: any) => ele.type === "image",
   ) || [];
+
+  const validTestimonials = imageTestimonials.filter((ele: any) => ele.message !== "");
+
+  const [currentSlide, setCurrentSlide] = useState(0);
 
   const [sliderRef, slider] = useKeenSlider(
     {
@@ -419,6 +423,9 @@ export function TextTestimonials({ heading, data }: any) {
       breakpoints: {
         "(min-width: 640px)": { slides: { perView: 2, spacing: 20 } },
         "(min-width: 1024px)": { slides: { perView: 3, spacing: 24 } },
+      },
+      slideChanged(s) {
+        setCurrentSlide(s.track.details.rel);
       },
     },
     [
@@ -454,12 +461,9 @@ export function TextTestimonials({ heading, data }: any) {
     ],
   );
 
-  const currentSlide = slider?.current?.track?.details?.rel || 0;
-
   return (
     <div className="bg-gradient-to-b from-gray-50 to-gray-100 mt-10 py-12 md:py-20 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12">
-        {/* Heading */}
         <div className="text-center mb-12">
           <div
             className="prose prose-headings:mb-0"
@@ -467,57 +471,55 @@ export function TextTestimonials({ heading, data }: any) {
           />
         </div>
 
-        {/* Slider Container */}
         <div className="relative">
           <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 lg:w-24 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none rounded-l-2xl" />
           <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 lg:w-24 bg-gradient-to-l from-gray-100 to-transparent z-10 pointer-events-none rounded-r-2xl" />
 
-          <div ref={sliderRef} className="keen-slider">
-            {imageTestimonials.filter(ele => ele.message != "").map((item: any, idx: number) => (
-              <div key={idx} className="keen-slider__slide">
-                <div className="h-full flex flex-col">
-                  <div className="mb-4">
-                    <div className="w-16 h-16 rounded-xl absolute -top-3 left-0 z-100 flex items-center justify-center">
-                      <img src="/icon/text.png" alt="icon" />
-                    </div>
-                  </div>
+          <div ref={sliderRef} className="keen-slider py-4">
+            {validTestimonials.map((item: any, idx: number) => (
+              <div key={idx} className="keen-slider__slide relative bg-white rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 mt-4">
+                
+                <div className="absolute top-2 left-3 w-12 h-12 border border-gray-50 flex items-center justify-center z-20">
+                  <img src="/icon/text.png" alt="quote icon" className="w-12 h-12 object-contain" />
+                </div>
 
-                  <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100">
-                    <p className="text-gray-600 leading-relaxed text-sm sm:text-[15px] flex-1 line-clamp-6">
-                      &ldquo;{item.message}&rdquo;
-                    </p>
+                <div className="h-full flex flex-col pt-4 mt-2">
+                  <p className="text-gray-600 leading-relaxed text-sm sm:text-[15px] flex-1 overflow-hidden text-ellipsis"> 
+                    &ldquo;{item.message}&rdquo; 
+                  </p>
 
-                    <div className="mt-6 pt-5 border-t border-gray-100">
-                      <div className="flex items-center justify-between">
-                        <div className="flex gap-2 items-center">
-                          <img src={item.image} alt="img" className="h-14 w-14 rounded-full" />
-                          <div>
-                            <p className="font-bold text-gray-900 text-base">
-                              {item.name}
-                            </p>
-                            <p className="text-[#FF6B35] text-sm font-semibold">
-                              {item.score}
-                            </p>
-                          </div>
+
+                  <div className="mt-6 pt-5 border-t border-gray-100">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="flex gap-3 items-center min-w-0">
+                        <img src={item.image} alt={item.name} className="h-12 w-12 rounded-full object-cover flex-shrink-0" />
+                        <div className="min-w-0">
+                          <p className="font-bold text-gray-900 text-base truncate">
+                            {item.name}
+                          </p>
+                          <p className="text-[#FF6B35] text-sm font-semibold truncate">
+                            {item.score}
+                          </p>
                         </div>
+                      </div>
 
-                        <div className="flex gap-0.5">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              size={16}
-                              className={
-                                i < item.rating
-                                  ? "fill-amber-400 text-amber-400"
-                                  : "fill-gray-200 text-gray-200"
-                              }
-                            />
-                          ))}
-                        </div>
+                      <div className="flex gap-0.5 flex-shrink-0">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            size={14}
+                            className={
+                              i < item.rating
+                                ? "fill-amber-400 text-amber-400"
+                                : "fill-gray-200 text-gray-200"
+                            }
+                          />
+                        ))}
                       </div>
                     </div>
                   </div>
                 </div>
+
               </div>
             ))}
           </div>
@@ -546,7 +548,7 @@ export function TextTestimonials({ heading, data }: any) {
         </div>
 
         <div className="flex justify-center gap-2 mt-8">
-          {imageTestimonials.map((_: any, i: number) => (
+          {validTestimonials.map((_: any, i: number) => (
             <button
               key={i}
               onClick={() => slider?.current?.moveToIdx(i)}

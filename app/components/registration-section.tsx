@@ -458,21 +458,21 @@ export function RegistrationSection({ data }: any) {
 
   return (
     <section className="  py-12 px-4">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-start gap-8 lg:gap-12">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-8 lg:gap-8">
         {/* Left Side - Image/Illustration */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="hidden lg:block lg:w-1/2  m-auto top-32"
+          className="hidden lg:block lg:w-1/2 bg-[#F8F8F8] rounded-2xl px-6 py-19 border border-gray-100"
         >
-          <div className="relative">
+          <div className="relative ">
             <img
               src={data?.fields?.Formsection ?? "/home/1.png"}
               alt="Registration"
               className="relative w-full h-[60%] "
             />
-            <motion.div
+            {/* <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               className="absolute -top-6 -right-6 bg-white rounded-2xl shadow-xl p-4"
@@ -501,18 +501,18 @@ export function RegistrationSection({ data }: any) {
                   <p className="text-xs text-gray-600">By 10,000+ Students</p>
                 </div>
               </div>
-            </motion.div>
+            </motion.div> */}
           </div>
         </motion.div>
 
         {/* Right Side - Form */}
-        <div className="w-full lg:w-1/2">
+        <div className="w-full lg:w-1/2 overflow-auto">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            {/* Header */}
+            
             {/* <div className="text-center mb-8">
               <motion.div
                 initial={{ scale: 0 }}
@@ -532,8 +532,8 @@ export function RegistrationSection({ data }: any) {
               </p>
             </div> */}
 
-            {/* Progress Steps */}
-            <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+
+            <div className="bg-white rounded-2xl shadow-xl p-7 border border-gray-100">
               
 
               {/* Form */}
@@ -555,7 +555,7 @@ export function RegistrationSection({ data }: any) {
                     </div>
 
                     {/* Dynamic Fields */}
-                    <div className="space-y-4 grid grid-cols-2 gap-2">
+                    <div className="space-y-2 grid grid-cols-2 gap-2">
                       {currentStepFields.map((field) => {
                         const gridClass = field.grid === "half" ? "col-span-1" : "col-span-2";
                         
@@ -563,7 +563,7 @@ export function RegistrationSection({ data }: any) {
                           <div key={field.name} className={` ${gridClass}`}>
                             {field.type === "select" && (
                               <>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                <label className="block text-sm text-gray-700 mb-1">
                                   {field.label}
                                   {field.required && <span className="text-red-500 ml-1">*</span>}
                                 </label>
@@ -593,7 +593,7 @@ export function RegistrationSection({ data }: any) {
 
                             {field.type === "text" && field.icon && (
                               <>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                <label className="block text-sm  text-gray-700 mb-1">
                                   {field.label}
                                   {field.required && <span className="text-red-500 ml-1">*</span>}
                                 </label>
@@ -622,7 +622,7 @@ export function RegistrationSection({ data }: any) {
 
                             {field.type === "email" && field.icon && (
                               <>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                <label className="block text-sm  text-gray-700 mb-1">
                                   {field.label}
                                   {field.required && <span className="text-red-500 ml-1">*</span>}
                                 </label>
@@ -651,7 +651,7 @@ export function RegistrationSection({ data }: any) {
 
                             {field.type === "tel" && field.icon && (
                               <>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                <label className="block text-sm  text-gray-700 mb-1">
                                   {field.label}
                                   {field.required && <span className="text-red-500 ml-1">*</span>}
                                 </label>
@@ -680,7 +680,7 @@ export function RegistrationSection({ data }: any) {
 
                             {field.type === "number" && field.icon && (
                               <>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                <label className="block text-sm  text-gray-700 mb-1">
                                   {field.label}
                                   {field.required && <span className="text-red-500 ml-1">*</span>}
                                 </label>
@@ -709,7 +709,7 @@ export function RegistrationSection({ data }: any) {
 
                             {field.type === "date" && field.icon && (
                               <>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                <label className="block text-sm  text-gray-700 mb-1">
                                   {field.label}
                                   {field.required && <span className="text-red-500 ml-1">*</span>}
                                 </label>
@@ -737,7 +737,7 @@ export function RegistrationSection({ data }: any) {
 
                             {field.type === "textarea" && (
                               <>
-                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                <label className="block text-sm  text-gray-700 mb-1">
                                   {field.label}
                                   {field.required && <span className="text-red-500 ml-1">*</span>}
                                 </label>
@@ -763,7 +763,7 @@ export function RegistrationSection({ data }: any) {
 
                             {field.type === "button-group" && (
                               <>
-                                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                                <label className="block text-sm  text-gray-700 mb-1">
                                   {field.label}
                                   {field.required && <span className="text-red-500 ml-1">*</span>}
                                 </label>
@@ -778,7 +778,7 @@ export function RegistrationSection({ data }: any) {
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                         onClick={() => updateField(field.name, isSelected ? "" : option.value)}
-                                        className="p-3 rounded-xl border-2 font-semibold text-sm transition-all"
+                                        className="p-3 rounded-xl border-2  text-sm transition-all"
                                         style={{
                                           background: isSelected 
                                             ? `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
@@ -802,7 +802,7 @@ export function RegistrationSection({ data }: any) {
 
                             {field.type === "checkbox-group" && (
                               <>
-                                <label className="block text-sm font-semibold text-gray-700 mb-3">
+                                <label className="block text-sm  text-gray-700 mb-1">
                                   {field.label}
                                   <span className="text-gray-400 text-xs ml-1">(select all that apply)</span>
                                   {field.required && <span className="text-red-500 ml-1">*</span>}
@@ -844,7 +844,7 @@ export function RegistrationSection({ data }: any) {
                 </AnimatePresence>
 
                 {/* Navigation Buttons */}
-                <div className="flex justify-between  ">
+                <div className="flex justify-between mt-2 ">
                   {step > 1 ? (
                     <motion.button
                       type="button"
