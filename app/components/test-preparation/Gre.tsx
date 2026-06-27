@@ -200,9 +200,9 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
             {aiStudySection.aiFeatures?.map((ele: any, idx: number) => (
               <div
                 key={idx}
-                className={`border-2 rounded-xl bg-gray-100 w-full flex items-center gap-4 ${idx === 1 && "flex-row-reverse"}`}
+                className={`border-2 rounded-xl bg-gray-100 w-full flex items-center gap-4 ${idx%2 === 0 && "flex-row-reverse"}`}
               >
-                {ele.image && <img src={ele.image} alt="img" className="h-1/4" />}
+                {ele.image && <img src={ele.image} alt="img" className="h-[400px]" />}
                 <span className="p-4">
                   <h2 className="font-bold text-xl mb-4">{ele.heading}</h2>
                   <p>{ele.content}</p>
@@ -241,10 +241,15 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
 
       {/* Score Guarantee Section */}
       <section
-        className="relative lg:overflow-hidden bg-cover bg-start bg-no-repeat lg:h-[100vh]"
-        style={{ backgroundImage: `url( '/Gre/orangebg.jpg')` }}
+        className="relative lg:overflow-hidden bg-cover bg-start bg-no-repeat lg:h-auto"
+        style={{ 
+              backgroundImage: `url( '/Gre/orangebg.jpg')`, 
+              // backgroundPosition: "start",
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover"
+            }}
       >
-        <div className="flex justify-center items-center flex-col w-full mt-20">
+        <div className="flex justify-center items-center flex-col w-full mt-12">
           <div dangerouslySetInnerHTML={{ __html: scoreGuaranteeSection.title || "" }} />
           <p className="my-6">{scoreGuaranteeSection.subtitle}</p>
         </div>
@@ -259,10 +264,13 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
             </div>
           ))}
         </div>
-      </section>
 
+      
       {/* Pricing Section */}
       <PricingSection plans={pricingData.pricing_plans} />
+      
+      </section>
+
 
       {/* Mobile Apps Section */}
       <section className="max-w-6xl mx-auto px-6 py-20 text-center">

@@ -222,10 +222,11 @@ export function Hero({ data, student }: HeroProps) {
 
               {/* Title */}
               <div className="text-black font-bold leading-[1.08] tracking-tight">
-                   <div
-                    className="text-center text-2xl md:text-3xl lg:text-6xl "
-                    dangerouslySetInnerHTML={{ __html: data.fields.title }}
-                  />
+                <div 
+                  className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl" 
+                  dangerouslySetInnerHTML={{ __html: data.fields.title }} 
+                />
+
                 <br />
                 <span className="relative">
                   <span className=" text-black animate-gradient-x">
@@ -325,7 +326,7 @@ export function Hero({ data, student }: HeroProps) {
               </motion.div>
             </motion.div>
 
-            {/* ─── Right Content - Hero Image ─── */}
+
             <motion.div
               initial={{ opacity: 0, x: 60, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
@@ -350,7 +351,7 @@ export function Hero({ data, student }: HeroProps) {
                 </motion.div> */}
 
                 {/* ─── Main Image Container ─── */}
-                <div className="relative aspect-[3/4] sm:aspect-square">
+                <div className="relative aspect-[3/4] sm:aspect-square hidden lg:block">
                   {/* Background glow */}
                   {/* <div className="absolute inset-0 m-auto w-[70%] h-[70%] bg-[#F36C45]/15 rounded-full blur-[80px]" /> */}
 
@@ -361,7 +362,7 @@ export function Hero({ data, student }: HeroProps) {
                     transition={{ delay: 0.6, duration: 1, ease: [0.22, 1, 0.36, 1] }}
                     className="relative w-[120%] h-[130%] m-auto  overflow-hidden "
                   >
-                    {/* Graduation Hero Image */}
+                    
                     <img
                       src={"/image/heroimg.png"}
                       alt="Graduate celebrating success"
@@ -472,7 +473,7 @@ export function Hero({ data, student }: HeroProps) {
         </div>
       </div>
 
-      {/* ─── CountUp Section ─── */}
+
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -481,8 +482,7 @@ export function Hero({ data, student }: HeroProps) {
       >
         <HomeCountUp data={data} />
       </motion.div>
-
-      {/* ─── CSS Animations ─── */}
+      
       <style jsx global>{`
         @keyframes gradient-x {
           0%, 100% { background-position: 0% 50%; }

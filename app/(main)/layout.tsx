@@ -27,7 +27,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   return (
     <html lang="en" className={inter.variable}>
       <head>
-        <link rel="icon" href="/image/ooshasprep.png" className="w-20 " />
+        <link rel="icon" href="/image/ooshasprep.png" className="w-20 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]" />
         <meta name="google-site-verification" content="2C7LwN4EhdIjyPz-O86evTun7OVY91YICLZQBpfjQnM" />
       </head>
       <body className={`${notoSans.className} bg-white text-gray-900 max-w-[1640px] mx-auto`} suppressHydrationWarning>

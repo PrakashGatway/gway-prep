@@ -17,15 +17,22 @@ import "keen-slider/keen-slider.min.css";
 
 function isYoutubeUrl(url: string): boolean {
   if (!url) return false;
-  return /youtu\.?be/.test(url);
+  return /youtu\.?be|youtube\.com\/(watch|embed|shorts)/i.test(url);
+}
+
+function isYoutubeShortUrl(url: string): boolean {
+  if (!url) return false;
+  return /youtube\.com\/shorts\//i.test(url) || /youtu\.be\/shorts\//i.test(url);
 }
 
 function getYoutubeId(url: string): string | null {
   if (!url) return null;
-  const regExp =
-    /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-  const match = url.match(regExp);
-  return match && match[2].length === 11 ? match[2] : null;
+
+  const match = url.match(
+    /(?:youtube\.com\/shorts\/|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/watch\?v=|youtube\.com\/v\/|youtube\.com\/u\/\w\/|[?&]v=)([^#&?/]+)/i
+  );
+
+  return match && match[1].length === 11 ? match[1] : null;
 }
 
 /* ─────────────── YOUTUBE THUMBNAIL ─────────────── */
@@ -33,9 +40,11 @@ function getYoutubeId(url: string): string | null {
 function YoutubeThumbnail({
   videoId,
   onClick,
+  isShort = false,
 }: {
   videoId: string;
   onClick: () => void;
+  isShort?: boolean;
 }) {
   const [imgError, setImgError] = useState(false);
 
@@ -63,9 +72,11 @@ function YoutubeThumbnail({
             className="absolute inset-0 rounded-full bg-white/20 animate-ping"
             style={{ animationDuration: "2s" }}
           />
-          <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-white/95 flex items-center justify-center shadow-2xl shadow-black/30 transition-transform duration-300 group-hover:scale-110">
+          <div className={`relative rounded-full bg-white/95 flex items-center justify-center shadow-2xl shadow-black/30 transition-transform duration-300 group-hover:scale-110 ${
+            isShort ? 'w-12 h-12 sm:w-14 sm:h-14' : 'w-16 h-16 sm:w-20 sm:h-20'
+          }`}>
             <Play
-              size={28}
+              size={isShort ? 20 : 28}
               className="text-[#FF6B35] ml-1"
               fill="#FF6B35"
               strokeWidth={0}
@@ -73,16 +84,23 @@ function YoutubeThumbnail({
           </div>
         </div>
       </div>
+      
+      {/* Shorts Badge */}
+      {isShort && (
+        <div className="absolute top-3 right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md shadow-lg">
+          SHORTS
+        </div>
+      )}
     </button>
   );
 }
 
 /* ─────────────── YOUTUBE IFRAME ─────────────── */
 
-function YoutubeIframe({ videoId }: { videoId: string }) {
+function YoutubeIframe({ videoId, isShort = false }: { videoId: string; isShort?: boolean }) {
   return (
     <iframe
-      src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`}
+      src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0${isShort ? '&loop=1' : ''}`}
       title="Testimonial video"
       className="w-full h-full absolute inset-0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -228,6 +246,7 @@ export function VideoTestimonialCard({ heading, data }: any) {
         ...item,
         isYoutube: isYoutubeUrl(item.video),
         youtubeId: getYoutubeId(item.video),
+        isShort: isYoutubeShortUrl(item.video),
       })) || [];
 
   const [sliderRef, slider] = useKeenSlider(
@@ -297,14 +316,18 @@ export function VideoTestimonialCard({ heading, data }: any) {
                 key={item._id}
                 className="keen-slider__slide flex justify-center"
               >
-                <div className="w-full max-w-[420px] max-h-[420px] group">
+                <div className="w-full max-w-[420px] group">
                   {/* Video Area */}
-                  <div className="relative aspect-video rounded-2xl overflow-hidden bg-gray-900 shadow-xl 
-                  shadow-black/10 ring-1 ring-black/5">
+                  <div className={`relative rounded-2xl overflow-hidden bg-gray-900 shadow-xl 
+                    shadow-black/10 ring-1 ring-black/5 ${
+                      item.isShort 
+                        ? 'aspect-[9/16] max-h-[400px] mx-auto w-[70%] sm:w-[85%]' 
+                        : 'aspect-video'
+                    }`}>
                     {isPlaying ? (
                       item.isYoutube ? (
                         <div className="relative w-full h-full">
-                          <YoutubeIframe videoId={item.youtubeId} />
+                          <YoutubeIframe videoId={item.youtubeId} isShort={item.isShort} />
                           <button
                             onClick={() => setActiveVideo(null)}
                             className="absolute -top-1 -right-1 z-20 w-8 h-8 bg-black/70 hover:bg-black/90 text-white rounded-full flex items-center justify-center transition-colors"
@@ -323,6 +346,7 @@ export function VideoTestimonialCard({ heading, data }: any) {
                       <YoutubeThumbnail
                         videoId={item.youtubeId}
                         onClick={() => setActiveVideo(item.video)}
+                        isShort={item.isShort}
                       />
                     ) : (
                       <VideoThumbnail
@@ -330,10 +354,20 @@ export function VideoTestimonialCard({ heading, data }: any) {
                         onClick={() => setActiveVideo(item.video)}
                       />
                     )}
+                    
+                    {/* Shorts Indicator on Thumbnail */}
+                    {item.isShort && !isPlaying && (
+                      <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M17.77 10.32c-.77-.32-1.2-.5-1.2-.5L18 9.06c1.84-.96 2.53-1.64 2.53-2.33 0-1.17-1.96-2.1-4.53-2.1-2.57 0-4.53.93-4.53 2.1 0 .69.69 1.37 2.53 2.33l.43.22c-.52.2-.94.38-1.32.56-.96.46-2.18 1.04-2.18 2.17 0 1.17 1.96 2.1 4.53 2.1 2.57 0 4.53-.93 4.53-2.1 0-1.13-1.22-1.71-2.18-2.17-.38-.18-.8-.36-1.32-.56zm-10.28-2.9c-.37-.15-.78-.22-1.2-.22-1.66 0-3 1.12-3 2.5s1.34 2.5 3 2.5 3-1.12 3-2.5c0-.37-.12-.74-.34-1.07-.14-.2-.3-.38-.46-.53z"/>
+                        </svg>
+                        Short
+                      </div>
+                    )}
                   </div>
 
                   {/* Info bar */}
-                  <div className="mt-4 flex items-center justify-between gap-3">
+                  <div className="mt-4 flex items-center justify-between gap-3 px-10">
                     <div className="min-w-0">
                       <p className="text-sm font-semibold text-gray-900 truncate">
                         {item.name}
@@ -346,9 +380,15 @@ export function VideoTestimonialCard({ heading, data }: any) {
                       </p>
                     </div>
                     {!isPlaying && (
-                      <div className="flex-shrink-0 px-3 py-1.5 bg-[#FF6B35]/10 rounded-full">
-                        <span className="text-xs font-semibold text-[#FF6B35]">
-                          ▶ Watch
+                      <div className={`flex-shrink-0 px-3 py-1.5 rounded-full ${
+                        item.isShort 
+                          ? 'bg-gradient-to-r from-red-500 to-red-600' 
+                          : 'bg-[#FF6B35]/10'
+                      }`}>
+                        <span className={`text-xs font-semibold ${
+                          item.isShort ? 'text-white' : 'text-[#FF6B35]'
+                        }`}>
+                          {item.isShort ? '⚡ Short' : '▶ Watch'}
                         </span>
                       </div>
                     )}
@@ -401,8 +441,6 @@ export function VideoTestimonialCard({ heading, data }: any) {
     </div>
   );
 }
-
-
 
 
 

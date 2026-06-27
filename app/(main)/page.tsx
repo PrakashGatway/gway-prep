@@ -100,11 +100,11 @@ export default async function Home() {
       <WorkingProcess data={sections["Home-Working-Process"]} />
       <HomeStudent data={studentsData} />
       <Banerhome img="/home/000002.png" data={sections["Home-Tech-platform"]}/>
-      <Mission data={sections["Home-page-mission"]} />
-      {/* <VideoTestimonialCard
+      {/* <Mission data={sections["Home-page-mission"]} /> */}
+      <VideoTestimonialCard
         heading={sections["Home-Video-Testimonial"]}
         data={studentsData}
-      /> */}
+      />
       <TextTestimonials
         heading={sections["Home-Text-Testimonial"]}
         data={studentsData}

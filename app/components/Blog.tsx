@@ -83,7 +83,7 @@ const appInfoData = [
 export default function Blog({ pageInfo,categories }: { pageInfo: any, categories: any }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("ALL");
-  const [filteredBlogs, setFilteredBlogs] = useState([]);
+  const [filteredBlogs, setFilteredBlogs] = useState<any>([]);
 
   // Extract sections from pageInfo
   const heroSection = pageInfo?.sections?.["Home-hero-section"]?.fields || {};

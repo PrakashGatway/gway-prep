@@ -423,7 +423,7 @@ export const pageData: any = {
             fields: [
               { name: "plan_name", label: "Plan Name", type: "text", placeholder: "Premium · 1 month" },
               { name: "subtitle", label: "Plan Subtitle", type: "text" },
-              { name: "is_highlighted", label: "Highlighted (featured)", type: "toggle" },
+              { name: "is_highlighted", label: "Highlighted (featured)", type: "select", option: ['true', 'false']},
               { name: "bundle_offer", label: "Bundle Offer Badge", type: "text", placeholder: "Bundle and save $854 ($1073 value)" },
               {
                 name: "content_features",
