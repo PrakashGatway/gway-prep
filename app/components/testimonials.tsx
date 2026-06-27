@@ -408,21 +408,28 @@ export function VideoTestimonialCard({ heading, data }: any) {
 
 
 export function TextTestimonials({ heading, data }: any) {
-  const imageTestimonials = data?.data?.filter(
-    (ele: any) => ele.type === "image",
-  ) || [];
+  const imageTestimonials =
+    data?.data?.filter((ele: any) => ele.type === "image") || [];
 
-  const validTestimonials = imageTestimonials.filter((ele: any) => ele.message !== "");
+  const validTestimonials = imageTestimonials.filter(
+    (ele: any) => ele.message !== ""
+  );
 
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [selectedTestimonial, setSelectedTestimonial] =
+    useState<any>(null);
 
   const [sliderRef, slider] = useKeenSlider(
     {
       loop: true,
       slides: { perView: 1, spacing: 16 },
       breakpoints: {
-        "(min-width: 640px)": { slides: { perView: 2, spacing: 20 } },
-        "(min-width: 1024px)": { slides: { perView: 3, spacing: 24 } },
+        "(min-width: 640px)": {
+          slides: { perView: 2, spacing: 20 },
+        },
+        "(min-width: 1024px)": {
+          slides: { perView: 3, spacing: 24 },
+        },
       },
       slideChanged(s) {
         setCurrentSlide(s.track.details.rel);
@@ -436,9 +443,12 @@ export function TextTestimonials({ heading, data }: any) {
         const clearNextTimeout = () => clearTimeout(timeout);
 
         const nextTimeout = () => {
+          clearNextTimeout();
+
           if (mouseOver) return;
+
           timeout = setTimeout(() => {
-            if (slider.track?.details) slider.next();
+            slider.next();
           }, 5000);
         };
 
@@ -447,10 +457,12 @@ export function TextTestimonials({ heading, data }: any) {
             mouseOver = true;
             clearNextTimeout();
           });
+
           slider.container.addEventListener("mouseout", () => {
             mouseOver = false;
             nextTimeout();
           });
+
           nextTimeout();
         });
 
@@ -458,45 +470,73 @@ export function TextTestimonials({ heading, data }: any) {
         slider.on("animationEnded", nextTimeout);
         slider.on("updated", nextTimeout);
       },
-    ],
+    ]
   );
 
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-gray-100 mt-10 py-12 md:py-20 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]">
+    <div className="py-8 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]">
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12">
-        <div className="text-center mb-12">
+        {/* Heading */}
+        <div className="text-center mb-2">
           <div
             className="prose prose-headings:mb-0"
-            dangerouslySetInnerHTML={{ __html: heading?.fields["title"] }}
+            dangerouslySetInnerHTML={{
+              __html: heading?.fields["title"],
+            }}
           />
         </div>
 
+        {/* Slider */}
         <div className="relative">
-          <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 lg:w-24 bg-gradient-to-r from-gray-50 to-transparent z-10 pointer-events-none rounded-l-2xl" />
-          <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 lg:w-24 bg-gradient-to-l from-gray-100 to-transparent z-10 pointer-events-none rounded-r-2xl" />
-
-          <div ref={sliderRef} className="keen-slider py-4">
+          <div ref={sliderRef} className="keen-slider py-2">
             {validTestimonials.map((item: any, idx: number) => (
-              <div key={idx} className="keen-slider__slide relative bg-white rounded-2xl p-6 sm:p-8 shadow-sm hover:shadow-xl transition-shadow duration-300 border border-gray-100 mt-4">
-                
-                <div className="absolute top-2 left-3 w-12 h-12 border border-gray-50 flex items-center justify-center z-20">
-                  <img src="/icon/text.png" alt="quote icon" className="w-12 h-12 object-contain" />
+              <div
+                key={idx}
+                className="keen-slider__slide relative bg-white rounded-2xl p-6 sm:p-8 transition-shadow duration-300 border-2 border-gray-100 mt-4"
+              >
+                {/* Quote Icon */}
+                <div className="absolute top-2 left-3 w-14 h-14 flex items-center justify-center z-20">
+                  <img
+                    src="/icon/text.png"
+                    alt="quote icon"
+                    className="w-14 h-14 object-contain"
+                  />
                 </div>
 
-                <div className="h-full flex flex-col pt-4 mt-2">
-                  <p className="text-gray-600 leading-relaxed text-sm sm:text-[15px] flex-1 overflow-hidden text-ellipsis"> 
-                    &ldquo;{item.message}&rdquo; 
-                  </p>
+                <div className="h-full flex flex-col pt-6 mt-2">
+                  {/* Testimonial Text */}
+                  <div className="flex-1">
+                    <p className="text-gray-600 leading-relaxed text-sm sm:text-[1.2rem] line-clamp-4">
+                      {item.message}
+                    </p>
 
+                    {item.message?.length > 150 && (
+                      <button
+                        onClick={() =>
+                          setSelectedTestimonial(item)
+                        }
+                        className="mt-3 text-[#FF6B35] font-semibold hover:underline"
+                      >
+                        Read More
+                      </button>
+                    )}
+                  </div>
 
+                  {/* Footer */}
                   <div className="mt-6 pt-5 border-t border-gray-100">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex gap-3 items-center min-w-0">
-                        <img src={item.image} alt={item.name} className="h-12 w-12 rounded-full object-cover flex-shrink-0" />
+                        <img
+                          src={item.image}
+                          alt={item.name}
+                          className="h-12 w-12 rounded-full object-cover flex-shrink-0"
+                        />
+
                         <div className="min-w-0">
                           <p className="font-bold text-gray-900 text-base truncate">
                             {item.name}
                           </p>
+
                           <p className="text-[#FF6B35] text-sm font-semibold truncate">
                             {item.score}
                           </p>
@@ -519,34 +559,30 @@ export function TextTestimonials({ heading, data }: any) {
                     </div>
                   </div>
                 </div>
-
               </div>
             ))}
           </div>
 
+          {/* Prev Button */}
           <button
             onClick={() => slider?.current?.prev()}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 
-              bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100
-              flex items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white
-              transition-all duration-200 hover:scale-105 active:scale-95"
+            className="absolute -left-20 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100 flex items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white transition-all duration-200 hover:scale-105 active:scale-95"
             aria-label="Previous"
           >
             <ChevronLeft size={18} />
           </button>
 
+          {/* Next Button */}
           <button
             onClick={() => slider?.current?.next()}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 
-              bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100
-              flex items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white
-              transition-all duration-200 hover:scale-105 active:scale-95"
+            className="absolute -right-20 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100 flex items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white transition-all duration-200 hover:scale-105 active:scale-95"
             aria-label="Next"
           >
             <ChevronRight size={18} />
           </button>
         </div>
 
+        {/* Dots */}
         <div className="flex justify-center gap-2 mt-8">
           {validTestimonials.map((_: any, i: number) => (
             <button
@@ -557,16 +593,72 @@ export function TextTestimonials({ heading, data }: any) {
                   ? "w-8 h-3 bg-[#FF6B35]"
                   : "w-3 h-3 bg-[#FF6B35]/25 hover:bg-[#FF6B35]/40"
               }`}
-              aria-label={`Go to slide ${i + 1}`}
             />
           ))}
         </div>
       </div>
+
+      {/* Modal */}
+      {selectedTestimonial && (
+        <div
+          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
+          onClick={() => setSelectedTestimonial(null)}
+        >
+          <div
+            className="bg-white rounded max-w-2xl w-full max-h-[80vh] overflow-y-auto p-8 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close */}
+            <button
+              onClick={() => setSelectedTestimonial(null)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-black"
+            >
+              <X size={24} />
+            </button>
+
+            {/* User Info */}
+            <div className="flex items-center gap-4 mb-6">
+              <img
+                src={selectedTestimonial.image}
+                alt={selectedTestimonial.name}
+                className="w-16 h-16 rounded-full object-cover"
+              />
+
+              <div>
+                <h3 className="text-xl font-bold">
+                  {selectedTestimonial.name}
+                </h3>
+
+                <p className="text-[#FF6B35] font-medium">
+                  {selectedTestimonial.score}
+                </p>
+
+                <div className="flex gap-1 mt-2">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      size={16}
+                      className={
+                        i < selectedTestimonial.rating
+                          ? "fill-amber-400 text-amber-400"
+                          : "fill-gray-200 text-gray-200"
+                      }
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Full Message */}
+            <p className="text-gray-700 leading-8 whitespace-pre-wrap text-base">
+              {selectedTestimonial.message}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
-
 
 
 

@@ -72,27 +72,28 @@ export function Consultants({ data }: any) {
         {/* Left Side: Animated Character Image */}
         <motion.div
         
-          initial={{ x: '-150%', opacity: 0 }}
-          whileInView={{ x: 0, opacity: 1 }} // Triggers when element is visible
-          viewport={{ once: true, amount: 0.2 }} // Fires only once when 20% visible
-          transition={{ 
-            type: 'spring', 
-            stiffness: 60, 
-            damping: 15,
-            duration: 1 
-          }}
           // initial={{ x: '-150%', opacity: 0 }}
-          // animate={{ x: 0, opacity: 1 }}
+          // whileInView={{ x: 0, opacity: 1 }} // Triggers when element is visible
+          // viewport={{ once: true, amount: 0.2 }} // Fires only once when 20% visible
           // transition={{ 
           //   type: 'spring', 
           //   stiffness: 60, 
           //   damping: 15,
           //   duration: 1 
           // }}
+          initial={{ x: '-150%', opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ 
+            type: 'spring', 
+            stiffness: 60, 
+            damping: 15,
+            duration: 1 
+          }}
           className="flex-shrink-0 z-100 w-[180px] md:w-[220px] md:absolute md:left-8 md:bottom-0"
         >
           <img 
-            src="footer.png" 
+            src="/footer.png" 
             alt="Student reading on beanbag" 
             className="w-full h-auto object-contain block"
           />
