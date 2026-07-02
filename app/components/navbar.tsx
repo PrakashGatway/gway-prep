@@ -165,7 +165,9 @@ export function Navbar({ Data }: any) {
             <div className="hidden lg:flex items-center gap-3">
               <button className="flex items-center gap-2 text-sm text-gray-700 hover:text-[#F36C45]">
                 <HeadsetIcon size={18} />
-                +91 9887120429
+                <p>
+                  +91 9875863347
+                </p>
               </button>
 
               {!user?.email ? (

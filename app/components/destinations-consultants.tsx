@@ -90,7 +90,7 @@ export function Consultants({ data }: any) {
             damping: 15,
             duration: 1 
           }}
-          className="flex-shrink-0 z-100 w-[180px] md:w-[220px] md:absolute md:left-8 md:bottom-0"
+          className="flex-shrink-0 z-50 w-[180px] md:w-[220px] md:absolute md:left-8 md:bottom-0"
         >
           <img 
             src="/footer.png" 
@@ -109,9 +109,9 @@ export function Consultants({ data }: any) {
         >
           {/* Text Content */}
           <div className="text-white max-w-xl">
-            <h2 className="text-2xl md:text-4xl font-bold tracking-tight mb-2">
+            <h6 className="text-2xl md:text-4xl font-bold tracking-tight mb-2">
               Ready to Achieve Your Dreams?
-            </h2>
+            </h6>
             <p className="text-sm md:text-base opacity-90 font-medium">
               Join thousands of successful students and start your journey today.
             </p>

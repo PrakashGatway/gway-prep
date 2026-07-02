@@ -36,8 +36,20 @@ export function TextTestimonials() {
           </h1>
         </div>
 
+        {/* Mobile Layout */}
+        <div className="flex flex-col gap-6 md:hidden">
+          {testimonials.map((item, idx) => (
+            <div
+              key={idx}
+              className="bg-white border rounded-3xl p-6 shadow-sm"
+            >
+              <CardContent data={item} />
+            </div>
+          ))}
+        </div>
+
         {/* Desktop: Animated Stack | Mobile: Vertical List */}
-        <div className="relative h-[500px] md:h-[350px]">
+        <div className="hidden lg:block relative h-[500px] md:h-[350px]">
           <div className="flex flex-col md:relative md:block mt-20">
             
             {/* Card 1 (Bottom/Left) */}
@@ -87,7 +99,7 @@ export function TextTestimonials() {
                 x: typeof window !== 'undefined' && window.innerWidth > 688 ? x5 : 0,
                 rotate: 0
               }}
-              className="md:absolute top-0 -left-12 w-full md:w-[40rem] h-[20rem]   p-6 z-30 mb-6"
+              className="md:absolute top-0 -left-12 w-full md:w-[40rem] h-[20rem] hidden lg:block  p-6 z-30 mb-6"
             >
               <img src={'/image/grt.png'} className="h-full w-full" />
             </motion.div>

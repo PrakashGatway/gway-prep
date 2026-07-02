@@ -106,7 +106,7 @@ export const HomeCountUp: React.FC<HomeCountUpProps> = ({
             <div key={idx} className="relative w-full sm:w-[15rem] md:min-w-[18rem] ">
               {/* <div className="absolute w-full h-full border-2 border-[#F36C45] rounded-[20px] md:rounded-[26px] -rotate-3 md:-rotate-5" /> */}
               <div className="text-center relative">
-                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#F36C45] mb-1 md:mb-2">
+                <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#F36C45] mb-1 md:mb-2">
                   {isVisible ? (
                     <CountUp 
                       key={`${item.key}-${counterKey}`}
@@ -120,7 +120,7 @@ export const HomeCountUp: React.FC<HomeCountUpProps> = ({
                     <span>0</span>
                   )}
                   {suffix}
-                </h2>
+                </p>
                 <p className="text-gray-600 text-sm sm:text-base md:text-xl capitalize">
                   {label}
                 </p>

@@ -37,20 +37,44 @@ export const deleteBlogCategory = async (id: string) => {
 //     return res.data.data || [];
 // };
 
+// export const getPageInfo = async (id: string) => {
+//     console.log(id)
+//   if (!id) {
+//     console.error("getPageInfo Error: 'id' parameter is missing or empty.");
+//     return [];
+//   }
+//   try {
+//     const res = await axiosInstance.get(`/admin/pageInfo/${encodeURIComponent(id)}`);
+//     console.log(res,'res data')
+//     return res?.data?.data || [];
+//   } catch (error) {
+//     console.error("API Call Failed:", error);
+//     throw error;
+//   }
+// };
+
+// app\services\api.ts
 export const getPageInfo = async (id: string) => {
-  if (!id) {
-    console.error("getPageInfo Error: 'id' parameter is missing or empty.");
+    
+  if (!id || id === 'undefined') {
+    console.error("❌ getPageInfo aborted: 'id' parameter is missing or undefined.");
     return [];
   }
+
   
   try {
-    const res = await axiosInstance.get(`/admin/pageInfo/${encodeURIComponent(id)}`);
-    return res.data.data || [];
-  } catch (error) {
-    console.error("API Call Failed:", error);
-    throw error;
+    const targetUrl = `/admin/pageInfo/${encodeURIComponent(id)}`;
+    console.log(`📡 Fetching API: ${targetUrl}`); // Debug the exact endpoint
+    
+    const res = await axiosInstance.get(targetUrl);
+    console.log(res, 'res data');
+    return res?.data?.data || [];
+  } catch (err) {
+    console.error("API Fetch Error:", err);
+    return [];
   }
 };
+
 
 
 

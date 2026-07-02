@@ -41,12 +41,12 @@ export function TestPrepGrid({ data }: { data: any }) {
               ✦ Trusted by 50,000+ Students Globally ✦
             </span>
 
-            <h2 className="mt-2 text-4xl md:text-5xl font-bold text-gray-900">
+            <h3 className="mt-2 text-4xl md:text-5xl font-bold text-gray-900">
               Master Your Test Prep
               <span className="block text-[#f26e46]">
                 With Ooshas Prep
               </span>
-            </h2>
+            </h3>
 
             <p className="mt-2 text-lg text-gray-600 leading-relaxed">
               From language proficiency to aptitude exams, get structured
@@ -104,12 +104,12 @@ export function TestPrepGrid({ data }: { data: any }) {
               ✦ Trusted by 50,000+ Students Globally ✦
             </span>
 
-            <h2 className="mt-3 sm:mt-4 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
+            <p className="mt-3 sm:mt-4 text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
               Master Your Test Prep
               <span className="block text-[#f26e46]">
                 With Ooshas Prep
               </span>
-            </h2>
+            </p>
 
             <p className="mt-2 sm:mt-3 text-sm sm:text-base text-gray-600 leading-relaxed px-2">
               From language proficiency to aptitude exams, get structured

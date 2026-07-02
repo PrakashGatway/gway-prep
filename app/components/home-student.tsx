@@ -113,9 +113,9 @@ export function HomeStudent({data}:{data : any}) {
               </div>
 
               <div className="text-center">
-                <h2 className="text-[#FF6B35] text-xl sm:text-2xl font-bold">
+                <p className="text-[#FF6B35] text-xl sm:text-2xl font-bold">
                   {student.name}
-                </h2>
+                </p>
                 {student?.university && <p className="text-gray-600 text-base sm:text-lg">
                   {student?.university}
                 </p>}
@@ -135,15 +135,15 @@ export function HomeStudent({data}:{data : any}) {
 
             <div className="lg:w-2/3 flex flex-col gap-4 sm:gap-6">
               <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border">
-                <h3 className="text-[#FF6B35] font-bold mb-3 sm:mb-4 text-base sm:text-lg">
+                <p className="text-[#FF6B35] font-bold mb-3 sm:mb-4 text-base sm:text-lg">
                   How did {"Ooshaprap"} help{" "}
                   {student.name}?
-                </h3>
+                </p>
                 <div className="text-sm sm:text-base" dangerouslySetInnerHTML={{__html: student.about}} />
               </div>
 
               <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border">
-                <h3 className="text-[#FF6B35] font-bold mb-3 sm:mb-4 text-base sm:text-lg">Outcome</h3>
+                <p className="text-[#FF6B35] font-bold mb-3 sm:mb-4 text-base sm:text-lg">Outcome</p>
                 <div className="text-sm sm:text-base" dangerouslySetInnerHTML={{__html : student.outcome}} />
               </div>
             </div>

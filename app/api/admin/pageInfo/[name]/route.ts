@@ -31,7 +31,7 @@ export async function GET(
 
     if (!page) {
       return NextResponse.json(
-        { error: `Page "${name}" not found.` },
+        { message: `Page "${name}" not found.`,data:[] },
         { status: 404 }
       );
     }

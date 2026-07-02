@@ -11,9 +11,9 @@ export function Aboutresult({ data }: { data: any }) {
   const duplicatedData = [...data.data, ...data.data, ...data.data];
 
   return (
-    <section className="py-12 md:py-16  bg-[#EAEAEA] overflow-hidden font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]" id="about">
+    <section className="py-10 md:py-12  bg-[#fff] overflow-hidden font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]" id="about">
       {/* Heading */}
-      <div className="text-center mb-12 px-4">
+      <div className="text-center mb-8 px-4">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 flex items-center justify-center gap-3">
           Meet our stars{" "}
           <Stars className="w-8 h-8 md:w-10 md:h-10 text-[#f26e46] fill-[#f26e46]" />
@@ -24,15 +24,15 @@ export function Aboutresult({ data }: { data: any }) {
       </div>
 
       {/* Slider Container */}
-      <div className="relative max-w-7xl mx-auto overflow-hidden">
+      <div className="relative max-w-8xl bg-[#FFB399] mx-auto overflow-hidden">
         {/* Left Fade Overlay */}
-        <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-20 md:w-32 lg:w-40 bg-gradient-to-r from-[#EAEAEA] via-[#EAEAEAbb] to-transparent z-10 pointer-events-none" />
 
-        {/* Right Fade Overlay */}
-        <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-20 md:w-32 lg:w-40 bg-gradient-to-l from-[#EAEAEA] via-[#EAEAEAbb] to-transparent z-10 pointer-events-none" />
+        {/* <div className="absolute left-0 top-0 bottom-0 w-12 sm:w-20 md:w-32 lg:w-40 bg-gradient-to-r from-[#FFB399] via-[#EAEAEAbb] to-transparent z-10 pointer-events-none" />
+
+        <div className="absolute right-0 top-0 bottom-0 w-12 sm:w-20 md:w-32 lg:w-40 bg-gradient-to-l from-[#EAEAEA] via-[#EAEAEAbb] to-transparent z-10 pointer-events-none" /> */}
 
         {/* Scrolling Track */}
-        <div className="flex w-max animate-marquee">
+        <div className="flex w-max animate-marquee bg-[#FFB399] p-10">
           {duplicatedData.map((ele: any, idx: number) => (
             <motion.div
               key={`${ele._id || ele.id || 'slide'}-${idx}`} 
@@ -50,7 +50,7 @@ export function Aboutresult({ data }: { data: any }) {
                 <div className="relative overflow-hidden rounded">
                   <img
                     src={ele?.image}
-                    className="h-48 w-full object-cover mx-auto bg-[#f3f3f3] group-hover:scale-105 transition-transform duration-500"
+                    className="h-48 w-full object-cover mx-auto bg-[#FEFBEA] group-hover:scale-105 transition-transform duration-500"
                     alt={ele?.name}
                   />
                   {/* Exam Type Badge */}

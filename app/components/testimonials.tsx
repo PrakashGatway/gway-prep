@@ -297,12 +297,14 @@ export function VideoTestimonialCard({ heading, data }: any) {
     <div className="max-w-7xl mx-auto font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]">
       {/* Heading */}
       <div className="text-center mb-12 px-4">
-        <div
+        {/* <div
           className="prose prose-headings:mb-0"
           dangerouslySetInnerHTML={{
             __html: heading?.fields["video-testimonial-title"],
           }}
-        />
+        /> */}
+        <p className="text-4xl font-bold"><span className="text-[#FF6B35]">What Our</span> <span className="text-[#626363]">Students Say</span></p>
+        
       </div>
 
       {/* Slider */}
@@ -402,7 +404,7 @@ export function VideoTestimonialCard({ heading, data }: any) {
         {/* Arrows */}
         <button
           onClick={() => slider?.current?.prev()}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 
+          className="hidden md:block  absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 
             bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100
             flex items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white
             transition-all duration-200 hover:scale-105 active:scale-95"
@@ -413,7 +415,7 @@ export function VideoTestimonialCard({ heading, data }: any) {
 
         <button
           onClick={() => slider?.current?.next()}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 
+          className="hidden md:block  absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 
             bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100
             flex items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white
             transition-all duration-200 hover:scale-105 active:scale-95"
@@ -516,12 +518,14 @@ export function TextTestimonials({ heading, data }: any) {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12">
         {/* Heading */}
         <div className="text-center mb-2">
-          <div
+          {/* <div
             className="prose prose-headings:mb-0"
             dangerouslySetInnerHTML={{
               __html: heading?.fields["title"],
             }}
-          />
+          /> */}
+          <p className="text-2xl sm:text-3xl md:text4xl font-semibold text-gray-600 leading-tight">
+            What Our Test Preparation <span className="text-[#FF6B35]">Achievers Say</span></p>
         </div>
 
         {/* Slider */}
@@ -604,7 +608,7 @@ export function TextTestimonials({ heading, data }: any) {
           {/* Prev Button */}
           <button
             onClick={() => slider?.current?.prev()}
-            className="absolute -left-20 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100 flex items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white transition-all duration-200 hover:scale-105 active:scale-95"
+            className="hidden md:block absolute -left-20 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100 flex items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white transition-all duration-200 hover:scale-105 active:scale-95"
             aria-label="Previous"
           >
             <ChevronLeft size={18} />
@@ -613,7 +617,7 @@ export function TextTestimonials({ heading, data }: any) {
           {/* Next Button */}
           <button
             onClick={() => slider?.current?.next()}
-            className="absolute -right-20 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100 flex items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white transition-all duration-200 hover:scale-105 active:scale-95"
+            className="hidden md:block absolute -right-20 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100 flex items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white transition-all duration-200 hover:scale-105 active:scale-95"
             aria-label="Next"
           >
             <ChevronRight size={18} />
@@ -663,9 +667,9 @@ export function TextTestimonials({ heading, data }: any) {
               />
 
               <div>
-                <h3 className="text-xl font-bold">
+                <p className="text-xl font-bold">
                   {selectedTestimonial.name}
-                </h3>
+                </p>
 
                 <p className="text-[#FF6B35] font-medium">
                   {selectedTestimonial.score}

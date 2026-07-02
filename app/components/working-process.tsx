@@ -66,15 +66,15 @@ export function WorkingProcess({ data }: { data: any }) {
                       </span> */}
                     </div>
                     
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold text-[#f26e46] sm:hidden">
+                    <p className="text-lg sm:text-xl md:text-2xl font-bold text-[#f26e46] sm:hidden">
                       {step.title}
-                    </h3>
+                    </p>
                   </div>
                   
                   <div className="flex-1">
-                    <h3 className="text-xl sm:text-2xl font-bold text-[#f26e46] mb-1 sm:mb-2 hidden sm:block">
+                    <p className="text-xl sm:text-2xl font-bold text-[#f26e46] mb-1 sm:mb-2 hidden sm:block">
                       {step.title}
-                    </h3>
+                    </p>
                     <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
                       {step.subtitle}
                     </p>

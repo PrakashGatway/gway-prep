@@ -10,10 +10,10 @@ export function PartnerSection() {
           
           {/* Left Column: Contact Info */}
           <div className="lg:w-1/2 w-full space-y-2">
-            <h1 className="text-3xl md:text-5xl font-bold">Get Started</h1>
-            <h2 className="text-2xl md:text-3xl font-bold leading-tight">
+            <p className="text-3xl md:text-5xl font-bold">Get Started</p>
+            <p className="text-2xl md:text-3xl font-bold leading-tight">
               Ready to Build Your Score Strategy?
-            </h2>
+            </p>
             <p className="text-lg opacity-90 max-w-md">
               Take the first step towards your dream university. Our experts will help you plan your roadmap to success.
             </p>
@@ -33,7 +33,7 @@ export function PartnerSection() {
                 <div className="bg-white p-3 rounded-lg"><Phone className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">Call Us</p>
-                  <p className="text-xl">+91 97403 35170</p>
+                  <p className="text-xl">+91 9875863347</p>
                 </div>
               </div>
 

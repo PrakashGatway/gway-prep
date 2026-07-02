@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let mode = "dev2" ;
+let mode = "dev" ;
 const getBaseURL = () => {
   if (mode === "dev") {
     return "http://localhost:3000/api";

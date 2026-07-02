@@ -118,15 +118,13 @@ export function AboutSection({data}:{data : any}) {
       {/* Buttons */}
       <button
         onClick={() => slider?.current?.prev()}
-        className="absolute left-1 sm:left-2 md:left-24 bottom-[40%]  z-10"
-      >
+        className="absolute left-1 sm:left-2 md:left-24 bottom-[40%]  z-10">
         <ChevronLeft size={28} className="sm:size-[32px] md:size-[36px] text-[#FF6B35]" />
       </button>
 
       <button
         onClick={() => slider?.current?.next()}
-        className="absolute right-1 sm:right-2 md:right-24 bottom-[40%]  z-10"
-      >
+        className="absolute right-1 sm:right-2 md:right-24 bottom-[40%]  z-10">
         <ChevronRight size={28} className="sm:size-[32px] md:size-[36px] text-[#FF6B35]" />
       </button>
     </div>

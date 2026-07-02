@@ -28,9 +28,9 @@ export function Banerhome({ data, img }: any) {
                     />
                   </div>
                   <div className="text-center sm:text-left flex-1">
-                    <h3 className="text-lg sm:text-xl font-bold text-gray-700">
+                    <p className="text-lg sm:text-xl font-bold text-gray-700">
                       {item.title ?? "Reliable Study Materials"}
-                    </h3>
+                    </p>
                     <p className="text-sm sm:text-base text-gray-500 mt-1 leading-relaxed">
                       {item.subtitle}
                     </p>

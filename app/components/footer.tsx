@@ -43,7 +43,7 @@ export function Footer() {
                   className="mb-4"
                   onClick={() => route.push('/')}
                 />
-                <h3 className="text-xl font-bold  mb-3">Ooshas Prep</h3>
+                <p className="text-xl font-bold  mb-3">Ooshas Prep</p>
                 <p className=" text-sm leading-relaxed mb-6">
                   Your trusted partner for global education, university admissions, and international study planning.
                 </p>
@@ -62,9 +62,9 @@ export function Footer() {
                   <div className="hidden lg:block absolute left-0 top-0 w-[3px] h-full bg-white rounded-full"></div>
 
                   <div className="h-full flex flex-col">
-                    <h4 className=" font-bold text-lg mb-4">
+                    <p className=" font-bold text-lg mb-4">
                       Quick Links
-                    </h4>
+                    </p>
                     <ul className="space-y-2  text-sm flex-1">
                       <li className=" cursor-pointer" onClick={() => route.push('/')}>Home</li>
                       <li className=" cursor-pointer" onClick={() => route.push('/about')}>About Us</li>
@@ -81,9 +81,9 @@ export function Footer() {
                   {/* Right divider - only on lg screens */}
                   <div className="hidden lg:block absolute left-0 top-0 w-[3px] h-full bg-white rounded-full"></div>
                   <div className="h-full flex flex-col">
-                    <h4 className=" font-bold text-lg mb-4">
+                    <p className=" font-bold text-lg mb-4">
                       Our Services
-                    </h4>
+                    </p>
                     <ul className="space-y-2  text-sm flex-1">
                       <li className=" cursor-pointer" onClick={() => route.push('/ielts')}>IELTS Preparation</li>
                       <li className=" cursor-pointer" onClick={() => route.push('/gmat')}>GMAT Preparation</li>
@@ -101,9 +101,9 @@ export function Footer() {
                   <div className="hidden lg:block absolute left-0 top-0 w-[3px] h-full bg-white rounded-full"></div>
 
                   <div className="h-full flex flex-col">
-                    <h4 className=" font-bold text-lg mb-4">
+                    <p className=" font-bold text-lg mb-4">
                       Resources
-                    </h4>
+                    </p>
                     <ul className="space-y-2  text-sm flex-1">
                       <li className=" cursor-pointer" onClick={() => route.push('/blog')}>Blogs</li>
                       <li className=" cursor-pointer" onClick={() => route.push('/blog')}>Case Studies</li>
@@ -122,9 +122,9 @@ export function Footer() {
                   <div className="hidden lg:block absolute left-0 top-0 w-[3px] h-full bg-white rounded-full"></div>
 
                   <div className="h-full flex flex-col">
-                    <h4 className=" font-bold text-lg mb-4">
+                    <p className=" font-bold text-lg mb-4">
                       Connect
-                    </h4>
+                    </p>
                     <ul className="space-y-2  text-sm flex-1">
                       <li className="flex gap-2 cursor-pointer" onClick={() => route.push('https://www.instagram.com/ooshasprep?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==')}><Instagram />Instagram</li>
                       <li className="flex gap-2 cursor-pointer" onClick={() => route.push('https://www.facebook.com/share/18aH5VifRr/?mibextid=wwXIfr')}><Facebook />Facebook</li>

@@ -1,5 +1,6 @@
 "use client";
 
+import { IndianRupee } from "lucide-react";
 import React from "react";
 
 const PricingSection = ({ plans }: { plans: any }) => {
@@ -17,11 +18,11 @@ const PricingSection = ({ plans }: { plans: any }) => {
     .filter(Boolean);
 
   return (
-    <section className="bg-[#f7f7f7] py-20 px-4">
+    <section className=" py-12 px-4">
       <div className="max-w-7xl mx-auto">
         {/* Heading */}
-        <div className="max-w-4xl mx-auto text-center mb-16">
-          <h2 className="text-2xl md:text-4xl font-bold leading-relaxed text-[#3d3d3d]">
+        <div className="max-w-4xl mx-auto text-center mb-24">
+          <h2 className="text-lg md:text-xl font-bold leading-relaxed text-[#3d3d3d]">
             {testimonial}
           </h2>
         </div>
@@ -81,8 +82,8 @@ const PricingSection = ({ plans }: { plans: any }) => {
 
                 {/* Price */}
                 <div className="text-center mt-10">
-                  <h3 className="text-5xl font-extrabold text-[#444]">
-                    {plan.price}
+                  <h3 className="text-5xl font-extrabold text-[#444] flex items-center justify-center ">
+                   <IndianRupee /> {plan.price}
                   </h3>
                 </div>
 

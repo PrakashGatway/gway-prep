@@ -222,7 +222,7 @@ export function Hero({ data, student }: HeroProps) {
 
               {/* Title */}
               <div className="text-black font-bold leading-[1.08] tracking-tight">
-                <div 
+                <h1 
                   className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl" 
                   dangerouslySetInnerHTML={{ __html: data.fields.title }} 
                 />

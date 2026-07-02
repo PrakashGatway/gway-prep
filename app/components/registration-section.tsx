@@ -551,7 +551,7 @@ export function RegistrationSection({ data }: any) {
                       <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${primaryColor}15` }}>
                         {currentStep && <currentStep.icon className="w-4 h-4" style={{ color: primaryColor }} />}
                       </div>
-                      <h3 className="text-xl font-bold text-gray-900">{currentStep?.title}</h3>
+                      <p className="text-xl font-bold text-gray-900">{currentStep?.title}</p>
                     </div>
 
                     {/* Dynamic Fields */}
