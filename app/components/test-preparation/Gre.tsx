@@ -31,7 +31,7 @@ function AIStudySection({ aiStudySection }: { aiStudySection: any }) {
             }}
           />
 
-          <p className="text-lg text-gray-600 ">
+          <p className="text-base text-gray-600 ">
             {aiStudySection.sectionSubtitle}
           </p>
         </div>
@@ -40,7 +40,13 @@ function AIStudySection({ aiStudySection }: { aiStudySection: any }) {
           {aiStudySection.aiFeatures?.map((feature: any, index: number) => (
             <FeatureCard key={index} feature={feature} index={index} />
           ))}
+          <div className="flex justify-center mb-4">
+             <button className="bg-[#FF6A39] hover:bg-[#e05626] text-white text-sm font-semibold px-4 py-3 rounded-md shadow-sm transition">
+            Talk to a GRE expert
+          </button>
+          </div>
         </div>
+        
       </div>
     </section>
   );
@@ -63,7 +69,7 @@ function FeatureCard({ feature, index }: { feature: any; index: number }) {
   return (
     <div
       ref={ref}
-      className={`h-[50vh] sticky top-42 flex items-center justify-center `}
+      className={`h-[46vh] sticky top-42 flex items-center justify-center `}
       style={{
         zIndex: index + 1,
       }}
@@ -74,17 +80,17 @@ function FeatureCard({ feature, index }: { feature: any; index: number }) {
           opacity,
           y,
         }}
-        className={`w-full max-w-6xl rounded-3xl overflow-hidden  border-2 border-gray-300 flex flex-col lg:flex-row
+        className={`w-full max-w-5xl rounded-[40px] overflow-hidden  border-2 border-gray-300 flex flex-col lg:flex-row items-center
           ${index % 2 === 0 ? "bg-[#FEFBEA]" : "bg-[#FDF4EF]"}
         ${index % 2 !== 0 ? "lg:flex-row-reverse" : ""}`}
       >
         {/* Image */}
-        <div className="w-full lg:w-1/2">
+        <div className="w-full lg:w-1/2 px-2" >
           {feature.image && (
             <img
               src={feature.image}
               alt={feature.heading}
-              className="w-full h-[350px] lg:h-[400px] object-fit p-1"
+              className="w-full h-[350px] lg:h-[350px] object-contain "
             />
           )}
         </div>
@@ -95,11 +101,11 @@ function FeatureCard({ feature, index }: { feature: any; index: number }) {
             AI Feature {index + 1}
           </span>
 
-          <h2 className="text-4xl lg:text-5xl font-bold mt-4 mb-6">
+          <h2 className="text-4xl lg:text-2xl font-bold mt-4 mb-6">
             {feature.heading}
           </h2>
 
-          <p className="text-gray-600 text-lg leading-relaxed">
+          <p className="text-gray-600 text-base leading-relaxed">
             {feature.content}
           </p>
         </div>
@@ -141,13 +147,16 @@ function GreSection() {
   return (
     <section className="w-full max-w-7xl mx-auto px-4 py-8  text-[#2d2d2d] bg-white">
       {/* Top Banner */}
-      <div className="w-full bg-[#f06437] text-white rounded-2xl px-20 py-4 flex flex-col md:flex-row items-center justify-between gap-4 mb-12 shadow-sm">
+      <div className="w-full bg-[#f06437] text-white rounded-[30px] px-20 py-0 flex flex-col md:flex-row items-center justify-between gap-4 mb-12 shadow-sm">
         <div className="flex items-center gap-3">
           {/* Decorative Graduation Cap Icon Placeholder */}
           <h2 className="text-xl md:text-2xl font-bold tracking-wide ">
             {greData.header.banner_text?.split("||")[0]} <br />
             {greData.header.banner_text?.split("||")[1]}
           </h2>
+        </div>
+        <div>
+          <img src="/pc.png" alt="" className="w-30 h-30 object-contain" />
         </div>
 
         <button
@@ -173,7 +182,7 @@ function GreSection() {
             {/* {greData.main_content.title} */}
             What is <p className="text-[#f06437]">GRE?</p>
           </h3>
-          <p className="text-gray-600 text-lg leading-relaxed text-justify ">
+          <p className="text-gray-600 text-base leading-relaxed text-justify ">
             {greData.main_content.introduction}
           </p>
         </div>
@@ -196,7 +205,7 @@ function GreSection() {
             </h3>
 
             {/* Component Section Right Context */}
-            <p className="text-gray-600 text-sm md:text-lg leading-relaxed text-justify">
+            <p className="text-gray-600 text-sm md:text-base leading-relaxed text-justify">
               {item.description}
             </p>
           </div>
@@ -256,14 +265,14 @@ function GrePatternTable() {
   };
 
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 sm:p-6 bg-[#F8F9FD]">
+    <div className="w-full max-w-7xl rounded-xl mx-auto p-4 sm:p-6 bg-[#F8F9FD]">
       {/* Title Header Section */}
       <div className="mb-6">
         <h1 className="text-xl sm:text-2xl font-bold text-[#333333] mb-3">
           <span className="text-[#f06437]">{data.title.split(" - ")[0]}</span> -{" "}
           {data.title.split(" - ")[1]}
         </h1>
-        <p className="text-gray-600 text-sm sm:text-lg leading-relaxed max-w-5xl">
+        <p className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-5xl">
           {data.subtitle}
         </p>
       </div>
@@ -505,11 +514,11 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
                 }}
               />
 
-              <p className="mt-6 text-[#555] text-base sm:text-lg leading-8">
+              <p className="mt-6 text-[#555] text-base sm:text-base leading-8">
                 {heroSection.subtitle}
               </p>
 
-              <button className="mt-10 rounded-full bg-[#F86C43] hover:bg-[#ef5a2f] transition px-8 py-4 text-white text-lg font-semibold shadow-lg">
+              <button className="mt-10 rounded-full bg-[#F86C43] hover:bg-[#ef5a2f] transition px-8 py-4 text-white text-base font-semibold shadow-lg">
                 {heroSection.ctaButtonText || "Full Courses starts at $99"}
               </button>
             </div>
@@ -595,44 +604,41 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
       {/* Official Questions Section */}
       <section className="md:min-h-150 relative lg:overflow-hidden h-150 flex items-center justify-center mb-10">
         <div
-          className="flex p-10 pl-20 flex-row-reverse items-center mx-auto lg:h-[60vh] 
+          className="flex p-10 pl-0  flex justify-center items-center mx-auto lg:h-[60vh] 
           bg-gradient-to-r from-[#F1AA94] to-[#EE653C] pt-20 bg-cover bg-center bg-no-repeat"
         >
-          <div className="w-full lg:w-1/2 relative text-white px-auto">
+           <div className="hidden lg:block  lg:w-[40%] z-10 rounded-full">
+            <img src="/Gre/laptop.png" alt="img" />
+          </div>
+          <div className="w-full lg:w-[45%] relative text-white pl-20">
             <span className="text-5xl font-bold">
               Official GRE Questions
-              <br /> - only with Ooshas
+              - only with Ooshas
             </span>
             <p className="my-6">
               We're the only GRE prep course licensed to use official ETS
               practice questions, so you know you're studying exactly what
               you'll see on test day.
             </p>
-            <button className="bg-white text-gray-800 px-6 py-3 rounded-xl flex gap-2 ">
+           <div className="flex justify-end"> <button className="bg-gray-700 text-white px-6 py-3 rounded-xl flex gap-2 ">
               <Play /> Preview Dashboard
-            </button>
+            </button></div>
           </div>
-          <div className="hidden lg:block  lg:w-1/2 z-10 rounded-full">
-            <img src="/Gre/laptop.png" alt="img" />
-          </div>
+         
         </div>
       </section>
 
       <AIStudySection aiStudySection={aiStudySection} />
 
-      <div className="w-full max-w-5xl mx-auto mb-8">
-        <div className="flex justify-center mb-4">
-          <button className="bg-[#FF6A39] hover:bg-[#e05626] text-white text-xs font-semibold px-4 py-1.5 rounded-md shadow-sm transition">
-            Talk to a GRE expert
-          </button>
-        </div>
+      <div className="w-full max-w-6xl mx-auto my-14 relative">
+       
 
-        <div className="bg-[#FDF0EB] rounded-3xl p-4 md:p-8 flex flex-col md:flex-row items-center justify-between overflow-hidden relative min-h-[300px]">
-          <div className="flex-1 z-10 text-center md:text-left space-y-4 max-w-lg">
+        <div className="bg-[#FDF0EB] rounded-[40px] p-4 md:p-8 grid grid-cols-[800px_100px] items-center justify-between   min-h-[300px] z-1">
+          <div className="flex-1 z-10 text-center md:text-left space-y-4 max-w-5xl pl-20">
             <span className="text-[#FF6A39] text-sm md:text-base font-medium tracking-wide block">
               Test Prep & Profile Building
             </span>
-            <h1 className="text-[#333333] text-2xl md:text-3xl lg:text-4xl font-extrabold leading-tight">
+            <h1 className="text-[#333333] text-2xl md:text-3xl lg:text-5xl font-extrabold leading-tight">
               Boost Your <br className="hidden md:inline" />
               Study Abroad Profile!
             </h1>
@@ -643,11 +649,12 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
             </div>
           </div>
 
-          <div className="flex-1 flex justify-center md:justify-end mt-6 md:mt-0 w-full relative h-64 md:h-auto">
+          <div className="">
             <img
-              src="https://unsplash.com"
+              src="/girl-preparation.webp"
               alt="Graduate Student"
-              className="object-contain max-h-72 md:max-h-96 md:absolute md:bottom-[-48px] md:right-0"
+              className="object-contain 
+              md:w-80 md:absolute md:-top-[134px] md:right-25 z-10"
             />
           </div>
         </div>
@@ -655,13 +662,8 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
 
       {/* Score Guarantee Section */}
       <section
-        className="relative lg:overflow-hidden bg-cover bg-start bg-no-repeat lg:h-auto"
-        style={{
-          backgroundImage: `url( '/Gre/orangebg.jpg')`,
-          // backgroundPosition: "start",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-        }}
+        className="relative lg:overflow-hidden bg-cover bg-start bg-no-repeat lg:h-auto bg-gradient-to-b from-[#fdf0eb] to-white"
+       
       >
         <div className="flex justify-center items-center flex-col w-full mt-32">
           <div
@@ -697,13 +699,13 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
       {/* Comparison Section */}
       <section className="max-w-5xl mx-auto flex flex-col my-12 gap-8">
         <div className="flex items-center flex-col gap-4">
-          <h4 className="text-lg">We offer more</h4>
+          <h4 className="text-base">We offer more</h4>
           <div
             dangerouslySetInnerHTML={{
               __html: comparisonSection.sectionTitle || "",
             }}
           />
-          <p className="text-lg">{comparisonSection.sectionSubtitle}</p>
+          <p className="text-base">{comparisonSection.sectionSubtitle}</p>
         </div>
         <div className="flex flex-wrap mt-8 gap-8 border-2 justify-evenly rounded-[2rem] px-10 py-8">
           <ul>
@@ -764,7 +766,7 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
               __html: mobileAppsSection.sectionTitle || "",
             }}
           />
-          <p className="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed">
+          <p className="text-gray-500 max-w-2xl mx-auto text-base leading-relaxed">
             {mobileAppsSection.sectionSubtitle}
           </p>
           <div className="flex justify-center gap-4 mt-6">
@@ -815,7 +817,7 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
                 __html: mobileAppsSection.videoBoxTitle || "",
               }}
             />
-            <p className="text-gray-600 text-lg leading-relaxed">
+            <p className="text-gray-600 text-base leading-relaxed">
               {mobileAppsSection.videoBoxDescription}
             </p>
           </div>
@@ -836,7 +838,7 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
               __html: testimonialsSection.sectionTitle || "",
             }}
           />
-          <p className="text-gray-500 max-w-2xl mx-auto text-lg">
+          <p className="text-gray-500 max-w-2xl mx-auto text-base">
             {testimonialsSection.sectionSubtitle}
           </p>
         </div>
@@ -854,7 +856,7 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
               top-[7rem] p-2 md:pl-[10rem] md:pr-10 pt-10 right-[10rem] h-[75%]"
             >
               <div className="hidden md:block lg:w-1/2 absolute -top-3 left-0 rounded-[0_1rem] h-3 bg-[#F36C45]" />
-              <p className="text-gray-700 text-lg leading-relaxed mb-4">
+              <p className="text-gray-700 text-base leading-relaxed mb-4">
                 "{featuredTestimonial.quote}"
               </p>
               <div className="flex justify-between items-center">
@@ -879,7 +881,7 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
               key={idx}
               className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm text-left"
             >
-              <p className="text-gray-600 mb-6 text-lg">
+              <p className="text-gray-600 mb-6 text-base">
                 "{testimonial.quote}"
               </p>
               <div className="flex justify-between items-center">
@@ -1192,7 +1194,7 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
 //                 third of the price of other "premium" options.
 //               </p>
 
-//               <button className="bg-black rounded-2xl lg:absolute -bottom-[6rem] left-25 text-lg px-4 py-1 text-white">
+//               <button className="bg-black rounded-2xl lg:absolute -bottom-[6rem] left-25 text-base px-4 py-1 text-white">
 //                 Full courses starts at $99
 //               </button>
 //             </div>
@@ -1210,12 +1212,12 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
 
 //       <section className="max-w-5xl mx-auto flex flex-col my-20  gap-8">
 //         <div className="flex items-center flex-col gap-4">
-//           <h4 className="text-lg">We offer more</h4>
+//           <h4 className="text-base">We offer more</h4>
 //           <h2 className="flex flex-wrap  gap-2 text-2xl md:text-4xl lg:text-5xl font-bold">
 //             Better scores. Better{" "}
 //             <p className="text-[#F36C45]">Price. Guaranteed.</p>
 //           </h2>
-//           <p className="text-lg">
+//           <p className="text-base">
 //             Improve your score by 5 points or your money back.
 //           </p>
 //         </div>
@@ -1302,7 +1304,7 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
 //             <span className="text-[#F36C45]">Al</span>{" "}
 //           </h2>
 
-//           <p className="text-gray-600 mb-12 text-lg">
+//           <p className="text-gray-600 mb-12 text-base">
 //             Get instant, GRE-style essay scoring and targete eedback , chate
 //             with and expert Al tutor, and practice with Ooshas.
 //           </p>
@@ -1415,7 +1417,7 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
 //             Turn any free minute into{" "}
 //             <span className="text-[#ff5733]">study time</span>
 //           </h1>
-//           <p className="text-gray-500 max-w-2xl mx-auto text-lg leading-relaxed">
+//           <p className="text-gray-500 max-w-2xl mx-auto text-base leading-relaxed">
 //             Review key vocab with our Flashcard App or dive into lessons and
 //             practice using the Prep-on-the-Go App.
 //           </p>
@@ -1465,7 +1467,7 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
 //               Video explanations for
 //               <p className="text-[#F36C45]">every question</p>
 //             </h2>
-//             <p className="text-gray-600 text-lg leading-relaxed">
+//             <p className="text-gray-600 text-base leading-relaxed">
 //               Want to go further? We also include 290+ curated lessons shaped by
 //               student feedback to deliver material in the way you learn best.
 //             </p>
@@ -1488,7 +1490,7 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
 //             <br />
 //             else.
 //           </h1>
-//           <p className="text-gray-500 max-w-2xl mx-auto text-lg">
+//           <p className="text-gray-500 max-w-2xl mx-auto text-base">
 //             Check out what others say about us.
 //           </p>
 //         </div>
@@ -1512,7 +1514,7 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
 //             >
 //               <div className="hidden md:block lg:w-1/2 absolute -top-3 left-0 rounded-[0_1rem] h-3 bg-[#F36C45]" />
 
-//               <p className="text-gray-700 text-lg leading-relaxed mb-4 ">
+//               <p className="text-gray-700 text-base leading-relaxed mb-4 ">
 //                 "The best thing for me about Ooshas prep was the flexibility...
 //                 Ooshas being within my price range was the difference between me
 //                 potentially getting into grad school and not getting in
@@ -1529,7 +1531,7 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
 //           </div>
 
 //           <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm text-left">
-//             <p className="text-gray-600 mb-6 text-lg">
+//             <p className="text-gray-600 mb-6 text-base">
 //               "Vast question bank provided for various levels of questions with
 //               helpful explanations. Also, the AI tutor helped clear any further
 //               doubts."
@@ -1545,7 +1547,7 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
 //           </div>
 
 //           <div className="bg-white border border-gray-100 rounded-2xl p-8 shadow-sm text-left">
-//             <p className="text-gray-600 mb-6 text-lg">
+//             <p className="text-gray-600 mb-6 text-base">
 //               "There were plenty of practice questions and tests available, and
 //               everything was super easy to use! A bonus is that Magoosh has
 //               official ETS practice sections..."
@@ -1618,7 +1620,7 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
 //       </div>
 
 //       {/* CONTENT */}
-//       <p className="text-gray-600 text-lg font-semibold leading-relaxed">
+//       <p className="text-gray-600 text-base font-semibold leading-relaxed">
 //         {testimonial}
 //       </p>
 //     </div>
