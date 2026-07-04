@@ -93,7 +93,7 @@ export default async function Home() {
       <Hero data={sections["Home-hero-section"]} student={studentsData} />
       <RegistrationSection data={sections["Registations"]} />
       {/* <Aboutresult data={studentsData} /> */}
-      <AboutSection data={banner}/>
+      <AboutSection data={sections["Home-Banner"]}/>
       <ServicesGrid data={serviceData} />
       <TestPrepGrid data={sections["Home-Courses"]} />
       {/* <Baners img="/home/000002.png" /> */}

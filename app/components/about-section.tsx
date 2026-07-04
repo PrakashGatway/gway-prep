@@ -79,17 +79,18 @@ export function AboutSection({data}:{data : any}) {
       },
     ]
   );
+  console.log(data.fields ,"qweqeqweqwqwqwqw ")
 
   return (
     <div className="relative py-8 sm:py-10 lg:py-12  font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]">
          {/* Heading */}
       <div className="text-center px-4">
         <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 flex items-center justify-center gap-3">
-          Meet our stars{" "}
+          {data.fields?.title || "Meet our stars"}{" "}
           <Stars className="w-8 h-8 md:w-10 md:h-10 text-[#f26e46] fill-[#f26e46]" />
         </h2>
         <p className="text-gray-500 mt-3 text-base md:text-lg">
-          Our students who made us proud
+          {data.fields?.subtitle || "Our students who made us proud"}
         </p>
       </div>
 
@@ -97,7 +98,7 @@ export function AboutSection({data}:{data : any}) {
         ref={sliderRef}
         className="keen-slider max-w-5xl mx-auto bg-white"
       >
-        {data.map((student: any, idx: number) => (
+        {data.fields?.items.map((student: any, idx: number) => (
           <div
             key={idx}
             className="keen-slider__slide flex flex-col lg:flex-row gap-10 sm:gap-16 lg:gap-20"
@@ -105,7 +106,7 @@ export function AboutSection({data}:{data : any}) {
             <div className="lg:w-full flex flex-col items-center p-2">
             
               <img
-                src={student}
+                src={student.image}
                 alt="logo"
                 className="sm:h-full w-auto mt-6 "
               />

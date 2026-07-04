@@ -1,6 +1,6 @@
 import { MetadataRoute } from "next";
 
-const BASE_URL = "https://www.ooshasprep.com/"; // Replace with your domain
+const BASE_URL = "https://www.ooshasprep.com"; // Replace with your domain
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [

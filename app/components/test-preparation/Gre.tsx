@@ -271,7 +271,7 @@ function GrePatternTable() {
       {/* Title Header Section */}
       <div className="mb-6">
         <h1 className="text-xl sm:text-2xl font-bold text-[#333333] mb-3">
-          <span className="text-[#f06437]">{data.title.split(" - ")[0]}</span> -{" "}
+          <span className="text-[#f06437]">{data.title.split(" - ")[0]}</span> - {" "}
           {data.title.split(" - ")[1]}
         </h1>
         <p className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-5xl">
@@ -389,21 +389,15 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
 
   // Extract sections from pageInfo
   const heroSection = pageInfo?.sections?.["hero-section"]?.fields || {};
-  const comparisonSection =
-    pageInfo?.sections?.["comparison-section"]?.fields || {};
+  const comparisonSection = pageInfo?.sections?.["comparison-section"]?.fields || {};
   const aiStudySection = pageInfo?.sections?.["ai-study-section"]?.fields || {};
-  const testDatesSection =
-    pageInfo?.sections?.["test-dates-section"]?.fields || {};
-  const scoreGuaranteeSection =
-    pageInfo?.sections?.["score-guarantee-section"]?.fields || {};
+  const testDatesSection = pageInfo?.sections?.["test-dates-section"]?.fields || {};
+  const scoreGuaranteeSection = pageInfo?.sections?.["score-guarantee-section"]?.fields || {};
   const pricingSection = pageInfo?.sections?.["pricing-section"]?.fields || {};
-  const mobileAppsSection =
-    pageInfo?.sections?.["mobile-apps-section"]?.fields || {};
-  const testimonialsSection =
-    pageInfo?.sections?.["testimonials-section"]?.fields || {};
+  const mobileAppsSection = pageInfo?.sections?.["mobile-apps-section"]?.fields || {};
+  const testimonialsSection = pageInfo?.sections?.["testimonials-section"]?.fields || {};
   const faqSection = pageInfo?.sections?.["f&q"] || {};
-  const registrationSection =
-    pageInfo?.sections?.["Registrations"]?.fields || {};
+  const registrationSection = pageInfo?.sections?.["Registrations"]?.fields || {};
   const [studentsData, setstudentsData] = useState<any[]>([]);
 
   // load students once on mount
