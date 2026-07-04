@@ -13,7 +13,7 @@ export async function generateMetadata() {
   const seo = data.seoMeta || [];
 
   return {
-    title: seo?.title?.trim() || "Home",
+    title: seo?.title?.trim() || "contectUs",
     description: seo?.description,
     keywords: seo?.keywords,
     alternates: {

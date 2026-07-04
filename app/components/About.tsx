@@ -1,6 +1,6 @@
 "use client"
-import ThreeDButton from "@/app/components/3dbutton";
-import { Button } from "@/app/components/ui/button";
+// import ThreeDButton from "@/app/components/3dbutton";
+// import { Button } from "@/app/components/ui/button";
 import { motion } from "framer-motion"
 import Image from "next/image"
 
@@ -62,7 +62,7 @@ export default function About() {
 
       {/* BUTTONS */}
       <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mt-4">
-        <ThreeDButton
+        {/* <ThreeDButton
           children="Get Started Today"
           bgColor="bg-brand-orange"
           textColor="text-white"
@@ -71,7 +71,7 @@ export default function About() {
           children="Learn More"
           bgColor="bg-white"
           textColor="text-brand-orange"
-        />
+        /> */}
       </div>
     </div>
 

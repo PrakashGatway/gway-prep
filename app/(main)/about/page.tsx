@@ -1,27 +1,11 @@
-import About from "@/app/components/About"
-import { div } from "framer-motion/client"
+import About from "@/app/components/About";
 
-
-
-
-
-
-export default function Aboutsection(){
-
-
-   
-
-
-    return (
-        <>
-        <div className="relative overflow-hidden ">
-            <About/>
-
-        </div>
-    
-        
-        </>
-         
-    
-    )
+export default function Aboutsection() {
+  return (
+    <>
+      <div className="relative overflow-hidden ">
+        <About />
+      </div>
+    </>
+  );
 }
