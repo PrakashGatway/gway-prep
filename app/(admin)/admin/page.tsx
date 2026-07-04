@@ -109,7 +109,7 @@ const AdminLoginPage = () => {
       document.cookie = `role=${data.user.role}; path=/; SameSite=Lax`;
     }
 
-    router.replace("/admin/pages/home");
+    router.replace("/admin/pages/dashboard");
   } catch (error) {
     console.error("Login Error:", error);
     setServerError("Something went wrong. Please try again.");

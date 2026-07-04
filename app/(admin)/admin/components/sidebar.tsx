@@ -53,7 +53,7 @@ const Sidebar = () => {
   };
 
   const navItems: NavItem[] = [
-    { icon: <Home size={18} />, label: "Dashboard", href: "/admin/pages/home" },
+    { icon: <Home size={18} />, label: "Dashboard", href: "/admin/pages/dashboard" },
     { icon: <Users size={18} />, label: "Students", href: "/admin/pages/student" },
     { icon: <FileEditIcon size={18} />, label: "Editor", href: "/admin/pages/editor" },
     { icon: <File size={18} />, label: "Blog", href: "/admin/pages/Blogs" },

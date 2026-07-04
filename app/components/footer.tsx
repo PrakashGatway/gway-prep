@@ -13,7 +13,11 @@ export function Footer() {
   return (
     <>
       {/* Footer */}
-      <footer className="bg-black/80 pt-20 lg:pt-32 pb-20 overflow-visible">
+      <footer className=" pt-20 lg:pt-32 pb-20 overflow-visible object-cover" style={{
+        backgroundImage: `url(/footer.jpeg)`,
+        backgroundRepeat : 'no-repeat',
+        // backgroundSize: 'containt'
+      }}>
         <div className=" mx-auto px-4 sm:px-6 lg:px-8 overflow-visible">
 
 
@@ -126,10 +130,10 @@ export function Footer() {
                       Connect
                     </p>
                     <ul className="space-y-2  text-sm flex-1">
-                      <li className="flex gap-2 cursor-pointer" onClick={() => route.push('https://www.instagram.com/ooshasprep?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==')}><Instagram />Instagram</li>
+                      <li className="flex gap-2 cursor-pointer" onClick={() => route.push('https://www.instagram.com/ooshasprep')}><Instagram />Instagram</li>
                       <li className="flex gap-2 cursor-pointer" onClick={() => route.push('https://www.facebook.com/share/18aH5VifRr/?mibextid=wwXIfr')}><Facebook />Facebook</li>
                       <li className="flex gap-2 cursor-pointer" onClick={() => route.push('#')}><Linkedin />LinkedIn</li>
-                      <li className="flex gap-2 cursor-pointer" onClick={() => route.push('https://youtube.com/@ooshasprep?si=VB6cGU0WyuEGKlPi')}><Youtube />YouTube</li>
+                      <li className="flex gap-2 cursor-pointer" onClick={() => route.push('https://youtube.com/@ooshasprep')}><Youtube />YouTube</li>
                     </ul>
                   </div>
                 </div>
@@ -147,9 +151,9 @@ export function Footer() {
             <p>© 2026 Ooshas Prep. All rights reserved.</p>
 
             <div className="flex gap-4 md:gap-6 flex-wrap justify-center">
-              <a href="#" className="hover:">Privacy Policy</a>
-              <a href="#" className="hover:">Terms of Service</a>
-              <a href="#" className="hover:">Cookie Policy</a>
+              <a href="/privacy-policy" className="hover:">Privacy Policy</a>
+              <a href="/terms-and-conditions" className="hover:">Terms of Service</a>
+              {/* <a href="#" className="hover:">Cookie Policy</a> */}
             </div>
           </div>
 

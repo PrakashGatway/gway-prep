@@ -132,7 +132,7 @@ export function Navbar({ Data }: any) {
                         className="w-64 rounded-xl bg-white border border-gray-100 shadow-2xl py-4 overflow-hidden"
                       >
                         {/* <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-400 to-[#F36C45]" /> */}
-
+                          
                         {item.dropdownItems?.map((dropdownItem, index) => (
                           <motion.div
                             key={dropdownItem.name}
@@ -142,7 +142,7 @@ export function Navbar({ Data }: any) {
                           >
                             <Link
                               key={dropdownItem.slug}
-                              href={`/preparation/${dropdownItem.slug}`}
+                              href={`/${dropdownItem.slug}`}
                               className="block px-5 py-3 text-sm text-gray-700 hover:bg-orange-50 hover:text-orange-600 group/item transition-all duration-200 border-l-2 border-transparent hover:border-orange-400"
                             >
                               <div className="font-semibold text-gray-800 group-hover/item:text-orange-600 transition-colors">

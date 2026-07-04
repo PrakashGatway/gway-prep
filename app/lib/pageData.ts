@@ -44,17 +44,34 @@ export const pageData: any = {
         ]
       },
       {
-        name: "Home-Services",
-        label: "Services",
+        name: "Home-Banner",
+        label: "Banner section",
         fields: [
-          { name: "title", label: "Service title", type: "editor", required: false, placeholder: "" },
+          { name: "title", label: "Banner title", type: "text", required: false, placeholder: "Enter the title" },
+          { name: "subtitle", label: "Banner Subtitle", type: "text", required: false, placeholder: "" },
           {
             name: "items",
             label: "Items",
             type: "repeater",
             fields: [
-              { name: "title", label: "Title", type: "text" },
-              { name: "icon", label: "Icon", type: "file" }
+              { name: "image", label: "Image", type: "file" }
+            ]
+          }
+        ]
+      },
+      {
+        name: "Home-Standard",
+        label: "Standard section",
+        fields: [
+          { name: "title", label: "Standard title", type: "text", required: false, placeholder: "along with the content for the split using (||). For example : Four Ways to Learn || One Standard of Excellence." },
+          { name: "subtitle", label: "Standard Subtitle", type: "text", required: false, placeholder: "" },
+          {
+            name: "items",
+            label: "Items",
+            type: "repeater",
+            fields: [
+              { name: "content", label: "content", type: "text" },
+              { name: "heading", label: "heading", type: "text" }
             ]
           }
         ]
@@ -63,16 +80,9 @@ export const pageData: any = {
         name: "Home-Courses",
         label: "Courses",
         fields: [
-          { name: "title", label: "Courses title", type: "editor", required: true },
-          {
-            name: "items",
-            label: "Items",
-            type: "repeater",
-            fields: [
-              { name: "title", label: "Title", type: "text" },
-              { name: "subtitle", label: "Sub Title", type: "text" }
-            ]
-          }
+          { name: "title", label: "Courses title", type: "text", required: true },
+          { name: "title", label: "Courses title", type: "text", required: true, placeholder: "along with the content for the split using (||). For example : Four Ways to Learn || One Standard of Excellence." },
+          { name: "subtitle", label: "Courses subtitle", type: "text", required: true },
         ]
       },
       {
@@ -560,8 +570,8 @@ export const pageData: any = {
         ]
       },
       {
-        name: "Contectus-detils",
-        label: "Contectus Detils",
+        name: "Contectus-Details",
+        label: "Contectus Details",
         fields: [
           { name: "title", label: "Title", type: "editor" },
           { name: "subtitle", label: "Subtitle", type: "text" },
@@ -581,5 +591,27 @@ export const pageData: any = {
     ]
   },
 
+  setting: {
+    name: "Setting",
+    require: true,
+    description: "Setting page",
+    sections: [
+      {
+        name: "hero-section",
+        label: "Hero",
+        fields: [
+          { name: "title", label: "Hero Title", type: "text", required: false, placeholder: "Welcome to Our Platform" },
+          { name: "subtitle", label: "Hero Subtitle", type: "text", required: false, placeholder: "Your journey to success starts here" },
+        ]
+      },
+      {
+        name: "Setting-Details",
+        label: "Setting Details",
+        fields: [
+          { name: "allContent", label: "allContent", type: "editor" }
+        ]
+      }
+    ]
+  },
 
 };

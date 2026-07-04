@@ -24,7 +24,7 @@ export function PartnerSection() {
                 <div className="bg-white p-3 rounded-lg"><MessageCircle className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">WhatsApp Us</p>
-                  <p className="text-xl">+91 97403 35125</p>
+                  <p className="text-xl">+91 8302092630</p>
                 </div>
               </div>
 
@@ -33,7 +33,7 @@ export function PartnerSection() {
                 <div className="bg-white p-3 rounded-lg"><Phone className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">Call Us</p>
-                  <p className="text-xl">+91 9875863347</p>
+                  <p className="text-xl">+91 8302092630</p>
                 </div>
               </div>
 
@@ -42,7 +42,7 @@ export function PartnerSection() {
                 <div className="bg-white p-3 rounded-lg"><Mail className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">Email Us</p>
-                  <p className="text-xl">info@questforsuccess.in</p>
+                  <p className="text-xl">info@ooshasprap.com</p>
                 </div>
               </div>
 
@@ -51,7 +51,7 @@ export function PartnerSection() {
                 <div className="bg-white p-3 rounded-lg"><MapPin className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">Location</p>
-                  <p className="text-xl">Bangalore, India</p>
+                  <p className="text-xl">Jaipur, Rajasthan, India</p>
                 </div>
               </div>
             </div>

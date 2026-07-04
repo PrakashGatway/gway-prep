@@ -28,7 +28,7 @@ export function TextTestimonials() {
   ];
 
   return (
-    <div ref={containerRef} className="min-h-[80vh] bg-gray-100 py-14 px-4 overflow-hidden">
+    <div ref={containerRef} className="min-h-[80vh]  py-4 px-4 overflow-hidden">
       <div className="max-w-7xl m-auto">
         <div className="text-center mt-10">
           <h1 className="text-xl md:text-2xl text-left text-gray-600">
