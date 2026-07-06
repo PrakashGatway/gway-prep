@@ -981,14 +981,14 @@ export default function Gre({ pageInfo }: { pageInfo: any }) {
                 <div className="mt-10 flex items-center gap-4">
 
                   <img
-                    src="https://i.pravatar.cc/120?img=12"
+                    src="/image/logo.png"
                     alt="Instructor"
-                    className="w-16 h-16 rounded-full object-cover"
+                    className="w-16 h-16 rounded-full object-fit"
                   />
 
                   <div>
                     <h4 className="text-xl font-semibold text-[#333333]">
-                      By Mike McGarry
+                      By Roshni
                     </h4>
 
                     <p className="text-sm text-[#666666]">

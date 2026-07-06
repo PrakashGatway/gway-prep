@@ -889,14 +889,67 @@ export const pageData: any = {
       },
      
       {
-        name: "student-count-section",
-        label: "Student Count",
+        name: "student-dashboard",
+        label: "Student Dashbaord Info",
         fields: [
           {
             name: "title",
             label: "Title",
-            type: "editor",
+            type: "text",
             value: "Purchased by 500,000+ GRE students",
+          },
+          {
+            name: "Subtitle",
+            label: "Subtitle",
+            type: "text",
+            value: "Purchased by 500,000+ GRE students",
+          },
+          {
+            
+            name: "Points",
+            label: "Dashboard Points",
+            type: "repeater",
+            max: 5,
+            fields: [
+              {
+                name: "Points",
+                label: "Points ",
+                type: "text",
+                placeholder: "",
+              },
+            ]
+          }
+        ],
+      },
+      
+      {
+        name: "student-video",
+        label: "Student video Info",
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+            value: "for split the taxt use this (||) for ex. : text1 || text2",
+          },
+          {
+            name: "Subtitle",
+            label: "Subtitle",
+            type: "text",
+            value: "Purchased by 500,000+ GRE students",
+          },
+          {
+            name: "button-text",
+            label: "Button Text",
+            type: "text",
+            value: "watch solution",
+          },
+          
+          {
+            name: "video-url",
+            label: "Video Url",
+            type: "text",
+            value: "Enter the you",
           },
         ],
       },
