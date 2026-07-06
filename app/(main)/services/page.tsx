@@ -1,5 +1,4 @@
-
-"use client"
+"use client";
 // app/page.tsx
 import Image from "next/image";
 import {
@@ -41,18 +40,6 @@ import {
   Youtube,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
-
-const heroData = {
-  
-  title: "Score Higher.|| Dream Further. || Study Abroad.",
-  subtitle:
-    "Our comprehensive service ecosystem bridges the gap between effort and outcomes—combining flexible formats, AI-powered analytics, and certified mentors to ensure your peak performance on exam day.",
-  ctas: [
-    { label: "Start Free Trial", primary: true },
-    { label: "View Plans", primary: false },
-  ],
-};
 
 const examPills = [
   { title: "GRE", image: "/home/subject icon/grre.png" },
@@ -194,69 +181,71 @@ const aiStackData = {
   ],
 };
 
-
-
 const resourcesData = {
   title: "Resources to Power Your Prep",
-  heading: "From personalized result PDFs to expert strategy guides build your complete study library with our professionally designed downloadable resources",
+  heading:
+    "From personalized result PDFs to expert strategy guides build your complete study library with our professionally designed downloadable resources",
   cards: [
     {
-      "title": "Mock Tests",
-      "description": "Full-length adaptive tests across all exams",
-      "metric": "500+"
+      title: "Mock Tests",
+      description: "Full-length adaptive tests across all exams",
+      metric: "500+",
     },
     {
-      "title": "PDF Notes",
-      "description": "Expert-curated comprehensive study materials",
-      "metric": "1,200+"
+      title: "PDF Notes",
+      description: "Expert-curated comprehensive study materials",
+      metric: "1,200+",
     },
     {
-      "title": "Previous Papers",
-      "description": "Real exam papers with detailed video solutions",
-      "metric": "300+"
+      title: "Previous Papers",
+      description: "Real exam papers with detailed video solutions",
+      metric: "300+",
     },
     {
-      "title": "Vocabulary Builder",
-      "description": "High-frequency words with audio and context",
-      "metric": "3,500+"
+      title: "Vocabulary Builder",
+      description: "High-frequency words with audio and context",
+      metric: "3,500+",
     },
     {
-      "title": "Practice Sets",
-      "description": "Topic-wise practice with instant AI feedback",
-      "metric": "50K+"
-    }
+      title: "Practice Sets",
+      description: "Topic-wise practice with instant AI feedback",
+      metric: "50K+",
+    },
   ],
-  "button_text": "Access All Free Download"
-
+  button_text: "Access All Free Download",
 };
 
-
 const supportData = {
-  "heading": "You're Never Alone in This Journey.",
-  "subheading": "From personalized result PDFs to expert strategy guides build your complete study library with our professionally designed downloadable resources",
-  "cards": [
+  heading: "You're Never Alone in This Journey.",
+  subheading:
+    "From personalized result PDFs to expert strategy guides build your complete study library with our professionally designed downloadable resources",
+  cards: [
     {
-      "title": "24/7 Helpline",
-      "description": "Academic questions, technical issues, or just need guidance — our support team is live 24 hours a day, 7 days a week.",
-      "contact_info": "1800-000-0000",
-      "button_text": "Call Now"
+      title: "24/7 Helpline",
+      description:
+        "Academic questions, technical issues, or just need guidance — our support team is live 24 hours a day, 7 days a week.",
+      contact_info: "1800-000-0000",
+      button_text: "Call Now",
     },
     {
-      "title": "1-on-1 Counseling",
-      "description": "Personalized career & exam counseling sessions to align your exam strategy with your target universities and career goals.",
-      "button_text": "Book Session"
+      title: "1-on-1 Counseling",
+      description:
+        "Personalized career & exam counseling sessions to align your exam strategy with your target universities and career goals.",
+      button_text: "Book Session",
     },
     {
-      "title": "WhatsApp Support",
-      "description": "Get instant answers from our academic team directly on WhatsApp — doubt resolution within 15 minutes, guaranteed during study hours.",
-      "button_text": "Chat on WhatsApp"
+      title: "WhatsApp Support",
+      description:
+        "Get instant answers from our academic team directly on WhatsApp — doubt resolution within 15 minutes, guaranteed during study hours.",
+      button_text: "Chat on WhatsApp",
     },
     {
-      "title": "Motivational Check-ins",
-      "description": "Weekly mentor-led motivational calls to keep you on track, accountable, and energized — especially during the tough stretches of preparation.",
-      "button_text": "Learn More"
-    }
-  ]
+      title: "Motivational Check-ins",
+      description:
+        "Weekly mentor-led motivational calls to keep you on track, accountable, and energized — especially during the tough stretches of preparation.",
+      button_text: "Learn More",
+    },
+  ],
 };
 
 const testimonialsData = {
@@ -309,15 +298,37 @@ const testimonialsData = {
 };
 
 const universitiesData = {
-  title: "Your Dream University Awaits",
-  subtitle: "Our students have gone to the world's best institutions.",
   cards: [
-    { name: "Harvard", country: "USA", logo: "🏛️" },
-    { name: "Oxford", country: "UK", logo: "🎓" },
-    { name: "MIT", country: "USA", logo: "⚙️" },
-    { name: "Cambridge", country: "UK", logo: "📚" },
-    { name: "Stanford", country: "USA", logo: "🌲" },
-    { name: "Yale", country: "USA", logo: "🔷" },
+    {
+      name: "USA",
+      logo: "/services/icons/destination 01.webp",
+      bg: "bg-[#F3F6FF]",
+    },
+    {
+      name: "Canada",
+      logo: "/services/icons/destination 02.webp",
+      bg: "bg-[#FFF4F4]",
+    },
+    {
+      name: "Australia",
+      logo: "/services/icons/destination 03.webp",
+      bg: "bg-[#F3F6FF]",
+    },
+    {
+      name: "UK",
+      logo: "/services/icons/destination 04.webp",
+      bg: "bg-[#FFF7F2]",
+    },
+    {
+      name: "France",
+      logo: "/services/icons/destination 05.webp",
+      bg: "bg-[#F4FBF2]",
+    },
+    {
+      name: "Italy",
+      logo: "/services/icons/destination 06.webp",
+      bg: "bg-[#FAF5FF]",
+    },
   ],
 };
 
@@ -361,37 +372,33 @@ function AIStackSection() {
   return (
     <section className="bg-[#FDF4EF] py-12 overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 ">
-      <div className="flex items-center justify-evenly flex-col md:flex-row px-8">
-        
-        {/* Heading */}
-        <div className="max-w-3xl">
-          <h2 className="text-3xl md:text-5xl font-samibold leading-tight text-[#343434]">
-            {aiStackData.title}{" "}
-            <span className="text-[#F2643D]">
-              {aiStackData.highlight}
-            </span>
-          </h2>
+        <div className="flex items-center justify-evenly flex-col md:flex-row ">
+          {/* Heading */}
+          <div className="max-w-3xl">
+            <h2 className="text-3xl md:text-5xl font-bold leading-tight text-[#343434]">
+              {aiStackData.title}{" "}
+              <span className="text-[#f26e46]">{aiStackData.highlight}</span>
+            </h2>
 
-          <p className="mt-2 text-lg leading-8 text-[#5A5A5A] max-w-2xl">
-            {aiStackData.description}
-          </p>
-        </div>
+            <p className="mt-2 text-lg leading-8 text-[#5A5A5A] max-w-2xl">
+              {aiStackData.description}
+            </p>
+          </div>
 
-        {/* AI Network */}
-        <div className="flex justify-center mt-10">
-          <Image
-            src="/services/ai 2.webp"
-            alt="AI Network"
-            width={420}
-            height={280}
-            className="object-contain"
-          />
+          {/* AI Network */}
+          <div className="flex justify-center mt-10">
+            <Image
+              src="/services/ai 2.webp"
+              alt="AI Network"
+              width={420}
+              height={280}
+              className="object-contain"
+            />
+          </div>
         </div>
-      </div>
 
         {/* Cards + Robot */}
         <div className="relative mt-10 hidden lg:block h-[640px]">
-
           {/* Robot */}
           <div className="absolute left-1/2 top-10 -translate-x-1/2  z-20">
             <Image
@@ -441,7 +448,6 @@ function AIStackSection() {
 
         {/* Mobile Layout */}
         <div className="grid gap-6 lg:hidden mt-10">
-
           <div className="flex justify-center mb-4">
             <Image
               src="/services/robot.webp"
@@ -452,10 +458,7 @@ function AIStackSection() {
           </div>
 
           {aiStackData.cards.map((card) => (
-            <FeatureCard
-              key={card.id}
-              feature={card}
-            />
+            <FeatureCard key={card.id} feature={card} />
           ))}
         </div>
 
@@ -479,10 +482,7 @@ interface CardProps {
   className?: string;
 }
 
-function FeatureCard({
-  feature,
-  className = "",
-}: CardProps) {
+function FeatureCard({ feature, className = "" }: CardProps) {
   return (
     <div
       className={`${className} w-[380px] h-[12rem] rounded-[28px] border border-[#F2A285] p-6 `}
@@ -491,84 +491,67 @@ function FeatureCard({
       }}
     >
       <div className="flex gap-4">
-
         <div className="h-10 w-10 absolute -top-4 -left-4 rounded-full bg-white shadow-md flex items-center justify-center flex-shrink-0">
-
-          <Image
-            src={feature.icon}
-            alt={'img'}
-            width={22}
-            height={22}
-          />
-
+          <Image src={feature.icon} alt={"img"} width={22} height={22} />
         </div>
 
         <div>
-
-          <h3 className="font-bold text-lg text-[#303030]">
-            {feature.title}
-          </h3>
+          <h3 className="font-bold text-lg text-[#303030]">{feature.title}</h3>
 
           <p className="mt-3 text-[15px] leading-6 text-[#5D5D5D]">
             {feature.description}
           </p>
-
         </div>
-
       </div>
     </div>
   );
 }
 
-
-
 const environments = [
   {
     title: "Premium Classroom Centers",
-    image: "/services/classroom.webp",
+    image: "/services/img/1.webp",
     large: true,
   },
   {
     title: "Digital Live Classrooms",
-    image: "/services/live-class.webp",
+    image: "/services/img/2.webp",
   },
   {
     title: "1-on-1 Mentor Sessions",
-    image: "/services/mentor.webp",
+    image: "/services/img/3.webp",
   },
   {
     title: "Private Study Rooms",
-    image: "/services/study-room.webp",
+    image: "/services/img/4.webp",
   },
   {
     title: "AI Learning Hub",
-    image: "/services/ai-hub.webp",
+    image: "/services/img/5.webp",
   },
 ];
 
- function EnvironmentSection() {
+function EnvironmentSection() {
   return (
     <section className="bg-[#FFDDD3] py-12">
       <div className="max-w-7xl mx-auto px-6">
-
         {/* Heading */}
         <div className="max-w-3xl mb-12">
           <h2 className="text-3xl md:text-5xl font-bold leading-tight text-[#333333]">
             An Environment That Breeds
             <br />
-            <span className="text-[#F2643D]">Champions.</span>
+            <span className="text-[#f26e46]">Champions.</span>
           </h2>
 
           <p className="mt-4 text-lg leading-8 text-[#5B5B5B]">
-            From our premium study centers to our online classrooms—
-            every environment is built to keep you focused,
-            motivated, and surrounded by students as driven as you are.
+            From our premium study centers to our online classrooms— every
+            environment is built to keep you focused, motivated, and surrounded
+            by students as driven as you are.
           </p>
         </div>
 
         {/* Image Grid */}
         <div className="grid lg:grid-cols-3 gap-5">
-
           {/* Left Large Card */}
           <Card
             title={environments[0].title}
@@ -578,7 +561,6 @@ const environments = [
 
           {/* Right Grid */}
           <div className="lg:col-span-2 grid sm:grid-cols-2 gap-5">
-
             {environments.slice(1).map((item) => (
               <Card
                 key={item.title}
@@ -587,9 +569,7 @@ const environments = [
                 className="h-[250px]"
               />
             ))}
-
           </div>
-
         </div>
 
         {/* Button */}
@@ -598,7 +578,6 @@ const environments = [
             Visit All Centers
           </button>
         </div>
-
       </div>
     </section>
   );
@@ -627,69 +606,56 @@ function Card({ title, image, className }: CardProps) {
 
       {/* Title */}
       <div className="absolute bottom-5 left-0 right-0 text-center">
-        <h3 className="text-white text-xl font-semibold">
-          {title}
-        </h3>
+        <h3 className="text-white text-xl font-semibold">{title}</h3>
       </div>
     </div>
   );
 }
 
-
-
 export default function page() {
   return (
     <div className="min-h-screen ">
-
-      
       <section className="relative overflow-hidden bg-[#FDF4EF] min-h-auto py-10 flex items-center">
-  {/* Background Curve */}
-  <img
-    // src="/services/hero-line.svg"
-    src="/services/h.webp"
-    alt=""
-    className="absolute -right-16 -bottom-3 h-full w-[56%] object-contain pointer-events-none select-none"
-  />
+        {/* Background Curve */}
+        <img
+          // src="/services/hero-line.svg"
+          src="/services/h.webp"
+          alt=""
+          className="absolute -right-16 -bottom-3 h-full w-[56%] object-contain pointer-events-none select-none"
+        />
 
-  <div className="max-w-7xl mx-auto w-full px-6 lg:px-12">
-    <div className=" items-center">
+        <div className="max-w-7xl mx-auto w-full px-6 lg:px-12">
+          <div className=" items-center">
+            {/* LEFT */}
+            <motion.div
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8 }}
+              className="z-20 py-10"
+            >
+              {/* Heading */}
 
-      {/* LEFT */}
-      <motion.div
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: .8 }}
-        className="z-20"
-      >
+              <h1 className="leading-none ">
+                <span className="block text-3xl md:text-5xl font-bold text-[#f26e46]">
+                  Score Higher.
+                </span>
 
-    
-    
+                <span className="block mt-3 text-3xl md:text-5xl font-semibold text-[#3B3B3B]">
+                  Dream Further.
+                  <span className="text-[#f26e46] font-bold">
+                    Study Abroad.
+                  </span>
+                </span>
+              </h1>
 
-        {/* Heading */}
+              <p className="mt-4 max-w-xl text-lg leading-8 text-[#4D4D4D]">
+                Our comprehensive service ecosystem bridges the gap between
+                effort and outcomes-combining flexible formats, AI-powered
+                analytics, and certified mentors to ensure your peak performance
+                on exam day.
+              </p>
 
-        <h1 className="leading-none pt-30">
-
-          <span className="block text-3xl md:text-5xl font-bold text-[#F2643D]">
-            Score Higher.
-          </span>
-
-          <span className="block mt-3 text-3xl md:text-5xl font-semibold text-[#3B3B3B]">
-            Dream Further.
-            <span className="text-[#F2643D] font-bold">
-              Study Abroad.
-            </span>
-          </span>
-
-        </h1>
-
-        <p className="mt-4 max-w-xl text-lg leading-8 text-[#4D4D4D]">
-          Our comprehensive service ecosystem bridges the gap between
-          effort and outcomes-combining flexible formats,
-          AI-powered analytics, and certified mentors to ensure your
-          peak performance on exam day.
-        </p>
-
-        {/* <div className="flex gap-5 mt-10">
+              {/* <div className="flex gap-5 mt-10">
 
           <button className="rounded-full bg-[#F2643D] hover:bg-[#e45b33] transition px-8 py-4 text-white font-semibold">
             Get Started
@@ -700,14 +666,10 @@ export default function page() {
           </button>
 
         </div> */}
-
-      </motion.div>
-
-
-
-    </div>
-  </div>
-</section>
+            </motion.div>
+          </div>
+        </div>
+      </section>
 
       {/* Exam Pills */}
       <section className="px-4 md:px-8 py-6 mx-auto bg-[#FFDDD3]">
@@ -717,13 +679,12 @@ export default function page() {
               key={exam.title}
               className="bg-white border border-gray-200 hover:border-orange-300 hover:shadow-md text-gray-700 text-sm font-medium px-5 py-2 rounded transition cursor-pointer"
             >
-                <img
-    // src="/services/hero-line.svg"
-    src={exam.image}
-    alt="img"
-    className="h-14"
-    
-  />
+              <img
+                // src="/services/hero-line.svg"
+                src={exam.image}
+                alt="img"
+                className="h-14"
+              />
             </span>
           ))}
         </div>
@@ -733,10 +694,10 @@ export default function page() {
       <section className="px-4 md:px-8 py-16 max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
-            <span className="text-[#ED7553] mx-2">
+            <span className="text-[#f26e46] mx-2">
               Every Type of Practice Your
             </span>
-             Exam Demands
+            Exam Demands
           </h2>
           <p className="text-gray-600 mt-3 max-w-2xl mx-auto">
             From full-length simulations to 5-minute topic drills—our mock test
@@ -744,10 +705,10 @@ export default function page() {
           </p>
         </div>
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {practiceCards.map((card,idx) => (
+          {practiceCards.map((card, idx) => (
             <div
               key={card.title}
-              className={`${idx%2 === 0 ? 'bg-[#FEF6F3]' : 'bg-[#FEFBEA]'} border-2 border-[#ED7553] rounded-3xl p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}
+              className={`${idx % 2 === 0 ? "bg-[#FEF6F3]" : "bg-[#FEFBEA]"} border-2 border-[#ED7553] rounded-3xl p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}
             >
               <div className="bg-orange-50 w-12 h-12 rounded-2xl flex items-center justify-center mb-4">
                 {card.icon}
@@ -756,91 +717,78 @@ export default function page() {
               <p className="text-gray-600 text-sm mt-2 leading-relaxed">
                 {card.description}
               </p>
-              
             </div>
           ))}
         </div>
       </section>
-   
-       <section className="bg-white  px-4 lg:px-8">
 
-      {/* Top Button */}
-      <div className="flex justify-center mb-4">
-        <button className="flex items-center gap-2 rounded-full bg-[#F36C45] px-8 py-3 text-white font-semibold text-lg shadow-md hover:bg-[#e85f35] transition">
-          Take a Free Full-Length Mock Test
-          <ArrowRight size={18} />
-        </button>
-      </div>
-
-      {/* Card */}
-      <div className="max-w-7xl mx-auto rounded-[40px] border border-[#E8DDD7] bg-[#FDF4EF] px-8 md:px-12 py-2">
-
-        <div className="grid lg:grid-cols-2 items-center ">
-
-          {/* Left */}
-          <div>
-
-            <h2 className="text-3xl md:text-5xl font-bold leading-tight text-[#303030]">
-              Built for One Thing:
-            </h2>
-
-            <h2 className="text-3xl md:text-5xl font-bold leading-tight text-[#F2643D] ">
-              Your highest score.
-            </h2>
-
-            <p className="mt-8 text-[#4B4B4B] text-xl leading-8 ">
-              Our purpose-built exam portal is trusted by 50,000+ students.
-              <br />
-              Clean interface, real exam feel, instant results.
-              <br />
-              Everything engineered for performance.
-            </p>
-
-          </div>
-
-          {/* Right */}
-          <div className="flex justify-center lg:justify-end">
-
-            <Image
-              src="/services/ai333.webp"
-              alt="Exam Portal"
-              width={420}
-              height={220}
-              className="w-full max-w-[460px] object-contain"
-            />
-
-          </div>
-
+      <section className="bg-white  px-4 lg:px-8">
+        {/* Top Button */}
+        <div className="flex justify-center mb-4">
+          <button className="flex items-center gap-2 rounded-full bg-[#F36C45] px-8 py-3 text-white font-semibold text-lg shadow-md hover:bg-[#e85f35] transition">
+            Take a Free Full-Length Mock Test
+            <ArrowRight size={18} />
+          </button>
         </div>
 
+        {/* Card */}
+        <div className="max-w-7xl mx-auto rounded-[40px] border border-[#E8DDD7] bg-[#FDF4EF] px-8  py-2">
+          <div className="grid lg:grid-cols-2 items-center ">
+            {/* Left */}
+            <div>
+              <h2 className="text-3xl md:text-5xl font-bold leading-tight text-[#303030]">
+                Built for One Thing:
+              </h2>
+
+              <h2 className="text-3xl md:text-5xl font-bold leading-tight text-[#f26e46] ">
+                Your highest score.
+              </h2>
+
+              <p className="mt-8 text-[#4B4B4B] text-xl leading-8 ">
+                Our purpose-built exam portal is trusted by 50,000+ students.
+                <br />
+                Clean interface, real exam feel, instant results.
+                <br />
+                Everything engineered for performance.
+              </p>
+            </div>
+
+            {/* Right */}
+            <div className="flex justify-center lg:justify-end">
+              <Image
+                src="/services/ai333.webp"
+                alt="Exam Portal"
+                width={420}
+                height={220}
+                className="w-full max-w-[460px] object-contain"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="relative max-w-7xl mx-auto m-12 h-[260px] sm:h-[380px] md:h-[500px] lg:h-[620px]">
+        {/* Left Dashboard */}
+        <div className="absolute left-30 top-0 w-[48%] z-10">
+          <img
+            src="/services/dashboard 01.webp"
+            alt="Dashboard Results"
+            className="w-full rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-transform duration-300 ease-in-out hover:scale-105"
+          />
+        </div>
+
+        {/* Right Dashboard */}
+        <div className="absolute right-50 top-[12%] w-[38%] z-20">
+          <img
+            src="/services/dashboard 02.webp"
+            alt="Mock Test"
+            className="w-full rounded-[24px] shadow-[0_20px_60px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-in-out hover:scale-105"
+          />
+        </div>
       </div>
 
-    </section>
-
-<div className="relative max-w-7xl mx-auto m-12 h-[260px] sm:h-[380px] md:h-[500px] lg:h-[620px]">
-
-  {/* Left Dashboard */}
-  <div className="absolute left-30 top-0 w-[48%] z-10">
-    <img
-      src="/services/dashboard 01.webp"
-      alt="Dashboard Results"
-      className="w-full rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.08)]"
-    />
-  </div>
-
-  {/* Right Dashboard */}
-  <div className="absolute right-50 top-[12%] w-[38%] z-20">
-    <img
-      src="/services/dashboard 02.webp"
-      alt="Mock Test"
-      className="w-full rounded-[24px] shadow-[0_20px_60px_rgba(0,0,0,0.12)]"
-    />
-  </div>
-
-</div>
-     
-     <AIStackSection />
-    <EnvironmentSection />
+      <AIStackSection />
+      <EnvironmentSection />
 
       {/* Resources Section */}
       <section className="py-12">
@@ -849,13 +797,14 @@ export default function page() {
             <h3 className="leading-none ">
               <span className="block mt-3 text-3xl md:text-5xl font-semibold text-[#3B3B3B] flex flex-col">
                 Every Resouece You Need,
-                <span className="text-[#F2643D] font-bold">
+                <span className="text-[#f26e46] font-bold">
                   One Click Away.
                 </span>
               </span>
-
             </h3>
-            <p className="text-gray-600 text-lg mt-4">{resourcesData.heading}</p>
+            <p className="text-gray-600 text-lg mt-4">
+              {resourcesData.heading}
+            </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mt-8">
             {resourcesData.cards.map((card) => (
@@ -864,16 +813,16 @@ export default function page() {
                 className="bg-white rounded-2xl p-5 shadow-sm border flex flex-col items-center jsutify-center gap-2 text-center"
               >
                 <div className="h-12 w-12 rounded bg-[#FFF6ED] hover:bg-[#FA8227] p-2 rounded-xl">
-                   <img src={card.icon} alt="icon" className="" />
+                  <img src={card.icon} alt="icon" className="" />
                 </div>
-                 
-                
-                  <h4 className="font-bold text-gray-900 text-lg">
-                    {card.title}
-                  </h4>
-                  <p className="text-gray-500 text-sm">{card.description}</p>
-                  <p className="text-orange-500 font-bold text-sm">{card.metric}</p>
-                
+
+                <h4 className="font-bold text-gray-900 text-lg">
+                  {card.title}
+                </h4>
+                <p className="text-gray-500 text-sm">{card.description}</p>
+                <p className="text-orange-500 font-bold text-sm">
+                  {card.metric}
+                </p>
               </div>
             ))}
           </div>
@@ -888,272 +837,242 @@ export default function page() {
       {/* Support Section */}
       <section className="px-4 md:px-8 py-16  mx-auto bg-[#FFDDD3]">
         <div className="text-center mb-10 max-w-6xl mx-auto">
-             <h2 className="text-3xl md:text-4xl text-[#ED7553] font-bold">
-            <span className="mx-2 text-gray-900">
-              You're Never Alone in
-            </span>
-              This Journey.
+          <h2 className="text-3xl md:text-4xl text-[#f26e46] font-bold">
+            <span className="mx-2 text-gray-900">You're Never Alone in</span>
+            This Journey.
           </h2>
           <p className="text-gray-600 text-lg mt-2">{supportData.subheading}</p>
         </div>
 
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
-  {supportData.cards.map((card) => (
-    <div
-      key={card.title}
-      className="bg-white rounded-[32px] px-7 py-8 text-center border border-[#F3F3F3] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
-    >
-      {/* Icon */}
-      <div className="relative flex justify-center mb-6">
-        <div className="absolute w-20 h-20 rounded-full bg-orange-100 blur-2xl opacity-40"></div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto">
+          {supportData.cards.map((card) => (
+            <div
+              key={card.title}
+              className="bg-white rounded-[32px] px-7 py-8 text-center border border-[#F3F3F3] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+            >
+              {/* Icon */}
+              <div className="relative flex justify-center mb-6">
+                <div className="absolute w-20 h-20 rounded-full bg-orange-100 blur-2xl opacity-40"></div>
 
-        <div className="relative w-20 h-20 rounded-full bg-[#FFF8F3] flex items-center justify-center shadow-sm">
-          <div className="text-[#FE6610] text-4xl">
-            {card.icon}
-          </div>
-        </div>
-      </div>
+                <div className="relative w-20 h-20 rounded-full bg-[#FFF8F3] flex items-center justify-center shadow-sm">
+                  <div className="text-[#FE6610] text-4xl">{card.icon}</div>
+                </div>
+              </div>
 
-      {/* Title */}
-      <h3 className="text-[28px] font-semibold text-[#1F2937] leading-tight">
-        {card.title}
-      </h3>
+              {/* Title */}
+              <h3 className="text-[28px] font-semibold text-[#1F2937] leading-tight">
+                {card.title}
+              </h3>
 
-      {/* Divider */}
-      <div className="w-12 h-[3px] rounded-full bg-[#FE6610] mx-auto my-5"></div>
+              {/* Divider */}
+              <div className="w-12 h-[3px] rounded-full bg-[#FE6610] mx-auto my-5"></div>
 
-      {/* Description */}
-      <p className="text-[#667085] text-[15px] leading-7 flex-grow">
-        {card.description}
-      </p>
+              {/* Description */}
+              <p className="text-[#667085] text-[15px] leading-7 flex-grow">
+                {card.description}
+              </p>
 
-      {/* Contact Info */}
-      {card.contact_info && (
-        <p className="mt-6 text-[#FE6610] font-semibold text-[24px]">
-          {card.contact_info}
-        </p>
-      )}
+              {/* Contact Info */}
+              {card.contact_info && (
+                <p className="mt-6 text-[#FE6610] font-semibold text-[24px]">
+                  {card.contact_info}
+                </p>
+              )}
 
-      {/* Button */}
-      <button
-        className={`mt-8 h-14 rounded-2xl text-[17px] font-semibold transition-all duration-300 flex items-center justify-center gap-2
+              {/* Button */}
+              <button
+                className={`mt-8 h-14 rounded-2xl text-[17px] font-semibold transition-all duration-300 flex items-center justify-center gap-2
           ${
             card.primary
               ? "bg-[#FE6610] text-white hover:bg-[#e95a08]"
               : "border-2 border-[#FE6610] text-[#FE6610] hover:bg-[#FE6610] hover:text-white"
           }`}
-      >
-        {card.button_text}
+              >
+                {card.button_text}
 
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-5 h-5"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M5 12h14m-6-6 6 6-6 6"
-          />
-        </svg>
-      </button>
-    </div>
-  ))}
-</div>
-
-      </section>
-
-    
-    {/* Testimonials Section */}
-<section className="bg-[#FAFAFA] py-12 px-4 md:px-8">
-  <div className="max-w-7xl mx-auto">
-
-    {/* Heading */}
-    <div className="max-w-4xl mb-10 px-12">
-      <h2 className="text-3xl md:text-5xl font-bold text-[#222] leading-tight">
-        Real Students.
-      </h2>
-
-      <h2 className="text-3xl md:text-5xl font-bold text-[#FE6610] leading-tight ">
-        Real Scores.Real Dreams.
-      </h2>
-
-      <p className="mt-4 text-lg text-[#555] leading-6 max-w-5xl">
-        Over 50,000 students have trusted PrepElite to get them to their
-        target scores and into the world's best universities.
-      </p>
-    </div>
-
-    {/* Cards */}
-    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2">
-      {testimonialsData.cards.map((item) => (
-        <div
-          key={item.name}
-          className="bg-white rounded-[30px] border border-[#ECECEC] p-7 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
-        >
-          {/* Student */}
-          <div className="flex items-center gap-4 ">
-            <img
-              src={item.image}
-              alt={item.name}
-              className="w-14 h-14 rounded-full object-cover bg-gray-800"
-            />
-
-            <div>
-              <h3 className="text-xl font-semibold text-[#222]">
-                {item.name}
-              </h3>
-
-              <p className="text-[#777] text-sm">
-                {item.country}
-              </p>
-            </div>
-          </div>
-
-          {/* Rating */}
-          <div className="flex items-center gap-1 mb-5">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className="w-4 h-4 fill-[#FE6610] text-[#FE6610]"
-              />
-            ))}
-
-            <span className="ml-2 text-[#666] font-medium">
-              {item.rating}.0
-            </span>
-          </div>
-
-          {/* Review */}
-          <p className="text-sm leading-6 text-[#555] flex-grow">
-            {item.review}
-          </p>
-
-          {/* Bottom */}
-          <div className="mt-8">
-
-            <div className="inline-flex px-2 py-1 rounded-full bg-[#FFF3EB] text-[#FE6610] font-semibold text-lg">
-              {item.score}
-            </div>
-
-            <div className="flex justify-between items-center mt-2">
-              <p className="text-[#777] text-sm">
-                {item.university}
-              </p>
-
-              <p className="font-bold text-[#22C55E]">
-                {item.improvement}
-              </p>
-            </div>
-
-          </div>
-        </div>
-      ))}
-    </div>
-
-  </div>
-</section>
-
-
-{/* Countries / Universities Section */}
-<section className="py-12 px-4 md:px-8 bg-white">
-  <div className="max-w-7xl mx-auto">
-
-    {/* Heading */}
-    <div className="text-center max-w-5xl mx-auto mb-14">
-      <h2 className="text-3xl md:text-5xl font-bold leading-tight">
-        <span className="text-[#FE6610]">
-          Your Score is the Passport.
-        </span>{" "}
-        <span className="text-[#222]">
-          The World is the Destination.
-        </span>
-      </h2>
-
-      <p className="mt-6 text-lg md:text-xl text-[#555] leading-9 max-w-4xl mx-auto">
-        Every exam we teach is a direct gateway to the world's greatest
-        universities. We don't just prepare you for a test - we prepare you
-        for the life that follows it.
-      </p>
-    </div>
-
-    {/* Countries */}
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-5">
-      {universitiesData.cards.map((country) => (
-        <div
-          key={country.name}
-          className={`rounded-[26px] p-8 flex flex-col items-center justify-center
-          border border-[#EFEFEF] hover:-translate-y-2 hover:shadow-lg
-          transition-all duration-300 ${country.bg}`}
-        >
-          <div className="text-6xl mb-5">
-            {country.logo}
-          </div>
-
-          <h3 className="text-2xl font-semibold text-[#1F2937]">
-            {country.name}
-          </h3>
-        </div>
-      ))}
-    </div>
-
-  </div>
-</section>
-
-      {/* Final CTA Banner */}
-      <section className="px-4 md:px-8 py-16">
-        <div className="max-w-5xl mx-auto bg-gradient-to-br from-orange-500 to-orange-600 rounded-3xl p-8 md:p-12 text-center text-white shadow-xl">
-          <h2 className="text-3xl md:text-5xl font-bold leading-tight">
-            {ctaBannerData.title}
-          </h2>
-          <p className="text-orange-100 max-w-2xl mx-auto mt-3 text-lg">
-            {ctaBannerData.subtitle}
-          </p>
-          <button className="mt-6 bg-white text-orange-600 hover:bg-orange-50 px-8 py-3 rounded-full font-bold text-sm shadow-lg transition">
-            {ctaBannerData.cta} →
-          </button>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-gray-300 px-4 md:px-8 py-12">
-        <div className="max-w-7xl mx-auto grid sm:grid-cols-2 md:grid-cols-4 gap-8">
-          {footerData.columns.map((col) => (
-            <div key={col.title}>
-              <h5 className="text-white font-bold text-sm uppercase tracking-wider mb-4">
-                {col.title}
-              </h5>
-              <ul className="space-y-2 text-sm">
-                {col.links.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="hover:text-orange-400 transition">
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 12h14m-6-6 6 6-6 6"
+                  />
+                </svg>
+              </button>
             </div>
           ))}
         </div>
-        <div className="max-w-7xl mx-auto mt-10 pt-6 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4 text-sm">
-          <span>{footerData.copyright}</span>
-          <div className="flex gap-4">
-            {footerData.social.map((s) => (
-              <a
-                key={s.label}
-                href="#"
-                className="hover:text-orange-400 transition"
-                aria-label={s.label}
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="bg-[#FAFAFA] py-12 px-4 md:px-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Heading */}
+          <div className="max-w-4xl mb-10 px-12">
+            <h2 className="text-3xl md:text-5xl font-bold text-[#222] leading-tight">
+              Real Students.
+            </h2>
+
+            <h2 className="text-3xl md:text-5xl font-bold text-[#f26e46] leading-tight ">
+              Real Scores.Real Dreams.
+            </h2>
+
+            <p className="mt-4 text-lg text-[#555] leading-6 max-w-5xl">
+              Over 50,000 students have trusted PrepElite to get them to their
+              target scores and into the world's best universities.
+            </p>
+          </div>
+
+          {/* Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2">
+            {testimonialsData.cards.map((item) => (
+              <div
+                key={item.name}
+                className="bg-white rounded-[30px] border border-[#ECECEC] p-7 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
               >
-                {s.icon}
-              </a>
+                {/* Student */}
+                <div className="flex items-center gap-4 ">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="w-14 h-14 rounded-full object-cover bg-gray-800"
+                  />
+
+                  <div>
+                    <h3 className="text-xl font-semibold text-[#222]">
+                      {item.name}
+                    </h3>
+
+                    <p className="text-[#777] text-sm">{item.country}</p>
+                  </div>
+                </div>
+
+                {/* Rating */}
+                <div className="flex items-center gap-1 mb-5">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className="w-4 h-4 fill-[#FE6610] text-[#FE6610]"
+                    />
+                  ))}
+
+                  <span className="ml-2 text-[#666] font-medium">
+                    {item.rating}.0
+                  </span>
+                </div>
+
+                {/* Review */}
+                <p className="text-sm leading-6 text-[#555] flex-grow">
+                  {item.review}
+                </p>
+
+                {/* Bottom */}
+                <div className="mt-8">
+                  <div className="inline-flex px-2 py-1 rounded-full bg-[#FFF3EB] text-[#FE6610] font-semibold text-lg">
+                    {item.score}
+                  </div>
+
+                  <div className="flex justify-between items-center mt-2">
+                    <p className="text-[#777] text-sm">{item.university}</p>
+
+                    <p className="font-bold text-[#22C55E]">
+                      {item.improvement}
+                    </p>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
-      </footer>
+      </section>
+
+      {/* Countries / Universities Section */}
+      <section className="py-12 px-4 md:px-8 bg-white">
+        <div className="">
+          {/* Heading */}
+          <div className="text-center max-w-5xl mx-auto mb-14">
+            <h2 className="text-3xl md:text-5xl font-bold leading-tight">
+              <span className="text-[#f26e46]">
+                Your Score is the Passport.
+              </span>{" "}
+              <span className="text-[#222]">The World is the Destination.</span>
+            </h2>
+
+            <p className="mt-6 text-lg md:text-xl text-[#555] leading-9 max-w-4xl mx-auto">
+              Every exam we teach is a direct gateway to the world's greatest
+              universities. We don't just prepare you for a test - we prepare
+              you for the life that follows it.
+            </p>
+          </div>
+
+          {/* Countries */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-5 max-w-6xl mx-auto">
+            {universitiesData.cards.map((country) => (
+              <div
+                key={country.name}
+                className={`rounded-[26px] p-8 flex flex-col items-center justify-center
+          border border-[#EFEFEF] hover:-translate-y-2 hover:shadow-lg
+          transition-all duration-300 ${country.bg}`}
+              >
+                <img src={country.logo} className="h-14 w-14 rounded-lg" />
+
+                <h3 className="text-2xl font-semibold text-[#1F2937]">
+                  {country.name}
+                </h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="bg-white">
+        {/* Top Search Bar */}
+        <div className="max-w-5xl mx-auto px-4 -mb-12 relative z-10">
+          <div className="bg-[#FFF5F1] rounded-2xl px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm border border-[#FCE8DE]">
+            <p className="text-[#222] text-base md:text-lg font-medium">
+              Not Sure where to start
+            </p>
+
+            <button className="bg-[#FE6610] hover:bg-[#F25A00] text-white px-8 py-3 rounded-xl font-semibold transition-all duration-300">
+              Find My Destination
+            </button>
+          </div>
+        </div>
+
+        {/* Main CTA */}
+        <div className="bg-[#FE6A3A] pt-20 pb-20 px-4">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight">
+              Your Dream University is
+              <br />
+              One Score Away.
+            </h2>
+
+            <p className="mt-6 text-white/90 text-lg  max-w-3xl mx-auto leading-6">
+              Join 50,000+ students who chose Ooshas Prep to transform their
+              preparation into admission letters from the world's best
+              universities.
+            </p>
+
+            <div className="mt-10 flex flex-col sm:flex-row justify-center gap-5">
+              <button className="bg-white text-[#222] px-8 py-4 rounded-full font-semibold text-lg hover:scale-105 transition-all duration-300">
+                Start Free - Claim Demo + Diagnostic
+              </button>
+
+              <button className="bg-[#3D1E16] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#2B140F] transition-all duration-300">
+                Explore the Portal First
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
