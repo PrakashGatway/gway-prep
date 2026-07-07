@@ -90,7 +90,7 @@ export function Consultants({ data }: any) {
             damping: 15,
             duration: 1 
           }}
-          className="flex-shrink-0 z-50 w-[180px] md:w-[220px] md:absolute md:left-8 md:bottom-0"
+          className="flex-shrink-0 z-10 w-[180px] md:w-[220px] md:absolute md:left-8 md:bottom-0"
         >
           <img 
             src="/footer.png" 
