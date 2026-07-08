@@ -9,11 +9,11 @@ import { getPageInfo } from "@/app/services/api"
 
 
 export async function generateMetadata() {
-  const  data  = await getPageInfo("contactUs");
+  const  data  = await getPageInfo("contectus");
   const seo = data.seoMeta || [];
 
   return {
-    title: seo?.title?.trim() || "contectUs",
+    title: seo?.title?.trim() || "contectus",
     description: seo?.description,
     keywords: seo?.keywords,
     alternates: {
@@ -29,7 +29,7 @@ export async function generateMetadata() {
 }
 
 export default async function ContactPage() {
-  const pageData = await getPageInfo("contactUs");
+  const pageData = await getPageInfo("contectus");
   console.log(pageData.sections)
   return (
     <main className="min-h-screen bg-white">
