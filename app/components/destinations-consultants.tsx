@@ -4,8 +4,8 @@ import { useState } from "react"
 import { Plus, Minus } from "lucide-react"
 import { motion } from 'framer-motion';
 
-export function Consultants({ data }: any) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
+export function Consultants({ data, finalCtaSection }: any) {
+  const [openIndex, setOpenIndex] = useState<number | null>( null )
 
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)
@@ -47,7 +47,7 @@ export function Consultants({ data }: any) {
               )}
             </button>
 
-            {openIndex === index && (
+            {openIndex !== index && (
               <div className="pb-4 text-gray-600 leading-relaxed text-sm">
                 {item.answer}
               </div>
@@ -56,13 +56,13 @@ export function Consultants({ data }: any) {
         ))}
       </div>
 
-        <CallToActionSection />
+        <CallToActionSection finalCtaSection={finalCtaSection}/>
     </div>
   )
 }
 
 
- function CallToActionSection() {
+ function CallToActionSection({finalCtaSection}:any) {
   return (
     <section className="relative overflow-hidden flex items-center py-6 mt-8 ">
       {/* Main Orange Banner Container */}
@@ -110,16 +110,16 @@ export function Consultants({ data }: any) {
           {/* Text Content */}
           <div className="text-white max-w-xl">
             <h6 className="text-2xl md:text-4xl font-bold tracking-tight mb-2">
-              Ready to Achieve Your Dreams?
+              {finalCtaSection?.title || 'Ready to Achieve Your Dreams?'}
             </h6>
             <p className="text-sm md:text-base opacity-90 font-medium">
-              Join thousands of successful students and start your journey today.
+              {finalCtaSection?.subtitle || "Join thousands of successful students and start your journey today."}
             </p>
           </div>
 
           {/* Call to Action Button */}
           <button className="flex-shrink-0 flex items-center gap-2 bg-white text-[#FF6A13] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap">
-            Enroll Now
+            {finalCtaSection?.buttonText || 'Enroll Now'}
             <svg 
               xmlns="http://w3.org" 
               fill="none" 

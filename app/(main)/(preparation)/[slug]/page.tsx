@@ -54,7 +54,7 @@ export default async function PreparationPage({ params }: PageProps) {
     Object.keys(pageData).length > 0;
 
   if (hasValidData) {
-    return <Gre pageInfo={pageData} />;
+    return <Gre pageInfo={pageData} slug={slug}/>;
   }
 
   return <NoDataFoundUI />;
@@ -105,6 +105,8 @@ function NoDataFoundUI() {
     </div>
   );
 }
+
+
 
 
 // // app\(main)\preparation\[slug]\page.tsx

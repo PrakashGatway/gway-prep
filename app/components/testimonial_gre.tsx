@@ -3,9 +3,10 @@ import { Star } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 
-export function TextTestimonials() {
+export function TextTestimonials({testimonialsSection}:any) {
   const containerRef = useRef(null);
   
+  console.log("testimonialsSection",testimonialsSection)
   // Track scroll progress of this specific section
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -20,11 +21,11 @@ export function TextTestimonials() {
   const x4 = useTransform(scrollYProgress, [0.3, 0.6], ["50%", "330%"]); // Moves further right
   const x5 = useTransform(scrollYProgress, [0.3, 0.6], ["20%", "140%"]); // Moves further right
 
-  const testimonials = [
-    { name: "Khushal", score: 80, verbal:169, text: "My journey with Gateway Abroad Jaipur went beyond my expectations. The mock tests provided by my trainers gave an accurate simulation of the real exam...", rating: 5 },
-    { name: "Mayank", score: 80, verbal:169, text: "Gateway Abroad Jaipur made studying PTE seamless. I still can't believe that I scored 80. This is all because of the efforts of my trainers...", rating: 5 },
-    { name: "Sandeep", score: 85, verbal:169, text: "The personalized attention and the quality of study material are unmatched. Highly recommend for anyone looking to clear PTE on the first go.", rating: 5 },
-    { name: "Sandeep", score: 85, verbal:169, text: "The personalized attention and the quality of study material are unmatched. Highly recommend for anyone looking to clear PTE on the first go.", rating: 5 },
+  const testimonials =testimonialsSection?.testimonials || [
+    { studentName: "Khushal", score: 80, verbal:169, quote: "My journey with Gateway Abroad Jaipur went beyond my expectations. The mock tests provided by my trainers gave an accurate simulation of the real exam...", rating: 5 },
+    { studentName: "Mayank", score: 80, verbal:169, quote: "Gateway Abroad Jaipur made studying PTE seamless. I still can't believe that I scored 80. This is all because of the efforts of my trainers...", rating: 5 },
+    { studentName: "Sandeep", score: 85, verbal:169, quote: "The personalized attention and the quality of study material are unmatched. Highly recommend for anyone looking to clear PTE on the first go.", rating: 5 },
+    { studentName: "Sandeep", score: 85, verbal:169, quote: "The personalized attention and the quality of study material are unmatched. Highly recommend for anyone looking to clear PTE on the first go.", rating: 5 },
   ];
 
   return (
@@ -32,7 +33,7 @@ export function TextTestimonials() {
       <div className="max-w-7xl m-auto">
         <div className="text-center mt-10">
           <h1 className="text-xl md:text-2xl text-left text-gray-600">
-            Purchased by 500,000+ GRE students
+            {testimonialsSection?.sectionSubtitle || "Purchased by 500,000+ GRE students"}
           </h1>
         </div>
 
@@ -49,7 +50,7 @@ export function TextTestimonials() {
         </div>
 
         {/* Desktop: Animated Stack | Mobile: Vertical List */}
-        <div className="hidden lg:block relative h-[500px] md:h-[350px]">
+        <div className="hidden lg:block relative h-[500px] md:h-[350px] flex items-center justify-cneter">
           <div className="flex flex-col md:relative md:block mt-20">
             
             {/* Card 1 (Bottom/Left) */}
@@ -116,10 +117,10 @@ function CardContent({ data }: { data: any }) {
   return (
     <>
       <div className="flex justify-between items-start flex-col ">
-        <h3 className="text-xl font-bold text-[#555]">{data.name}</h3>
+        <h3 className="text-xl font-bold text-[#555]">{data.studentName}</h3>
         <span className="flex justify-between w-full">
-          <div className="flex">Math <p className="w-10 ml-1 bg-orange-600 font-bold rounded text-center text-white">{data.score}</p></div>
-          <div className="flex">Verbal <p className="w-10 ml-1 bg-gray-600 font-bold rounded text-center text-white">{data.verbal}</p></div>
+          <div className="flex">Math <p className="w-10 ml-1 bg-orange-600 font-bold rounded text-center text-white">{data.mathScore}</p></div>
+          <div className="flex">Verbal <p className="w-10 ml-1 bg-gray-600 font-bold rounded text-center text-white">{data.verbalScore}</p></div>
         </span>
         {/* <div className="flex gap-1">
           {[...Array(5)].map((_, i) => (
@@ -127,7 +128,7 @@ function CardContent({ data }: { data: any }) {
           ))}
         </div> */}
       </div>
-      <p className="text-gray-700 text-sm leading-relaxed">{data.text}</p>
+      <p className="text-gray-700 text-sm leading-relaxed">{data?.quote}</p>
     </>
   );
 }
