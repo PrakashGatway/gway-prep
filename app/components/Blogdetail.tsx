@@ -33,7 +33,7 @@ export default function BlogDetailPage({ blog, loading }: any) {
           {/* Main Blog Content */}
           <div className="lg:col-span-8">
             {/* Hero Image */}
-            <div className="relative w-full h-64 md:h-80 rounded-2xl overflow-hidden mb-8 shadow-sm">
+            <div className="relative w-full h-64 md:h-108 rounded-2xl overflow-hidden mb-8 shadow-sm">
               <img
                 src={data.image}
                 alt={data.title}

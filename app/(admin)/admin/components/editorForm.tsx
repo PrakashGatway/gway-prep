@@ -460,7 +460,19 @@ const EditorForm = ({ slug }: PageProps) => {
             placeholder={field.placeholder}
           />
         );
+      case  "color":
+        return (
+          <div className="">
+            {field.type}
+            <input 
+  type="color" 
+  value={value} 
+  className="w-12 h-10 p-0 bg-transparent border border-gray-300 rounded cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch]:rounded [&::-moz-color-swatch]:border-none [&::-moz-color-swatch]:rounded"
+  onChange={(e) => handleGroupFieldChange(sectionName, groupFieldName, field.name, e.target.value)} 
+/>
 
+          </div>
+        )
       case "editor":
         return (
           <CKEditorComponent
@@ -599,6 +611,18 @@ const EditorForm = ({ slug }: PageProps) => {
           />
         );
 
+      case  "color":
+        return (
+          <div className="">
+            {/* {field.type} */}
+            <input 
+              type="color" 
+              value={value} 
+              className="w-12 h-10 p-0 bg-transparent border border-gray-300 rounded cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch]:rounded [&::-moz-color-swatch]:border-none [&::-moz-color-swatch]:rounded"
+              onChange={(e) => handleInputChange(sectionName, field.name, e.target.value)} 
+            />
+          </div>
+        )
       case "editor":
         return (
           <CKEditorComponent

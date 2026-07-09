@@ -7,10 +7,9 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-// 1. Helper function to fetch data securely on the server
+
 async function getBlogData(slug: string) {
   try {
-    
     const response = await axiosInstance(`/admin/blogs/${slug}`);
     return response.data;
   } catch (error) {
@@ -19,8 +18,8 @@ async function getBlogData(slug: string) {
   }
 }
 
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+
   const { slug } = await params;
   const blog = await getBlogData(slug);
 
@@ -29,23 +28,21 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: blog.title || "Blog Details",
-    description: blog.excerpt || blog.summary || "Read our latest blog post.",
+    title: blog?.metaTitle || blog.title || "Blog Details",
+    description: blog?.metaDescription || blog.summary || "Read our latest blog post.",
   };
 }
 
-// 3. The Server Page Component
+
 export default async function BlogDetailsPage({ params }: PageProps) {
-  
-  const { slug } = await params; 
-  
+  const { slug } = await params;
+
   // Fetch data during server rendering
   const blog = await getBlogData(slug);
 
-  
   if (!blog) {
     notFound();
   }
 
-  return <BlogDetails blog={blog} loading={false} />; 
+  return <BlogDetails blog={blog} loading={false} />;
 }

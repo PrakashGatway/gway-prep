@@ -51,7 +51,7 @@ const PEOPLE = [
 const BIO =
   "as a prominent figure. She holds certification as a UK Counsellor from the British Council. Additionally, she is accredited as an IELTS trainer by both the British Council and IDP, along with expertise in training for PTE, TOEFL, SELT, GRE, GMAT and SAT exams. Ms. Sakshi's passion for travel has led her to explore over 20 countries, enriching her understanding of diverse cultures and educational systems. Every day, she commits herself to counseling numerous students, empowering them to pursue their academic and career goals with confidence and clarity.";
 
-export default function Home() {
+export default function About() {
   return (
     <main className="min-h-screen bg-white text-gray-800" id="main-content">
       {/* ---------------- HERO ---------------- */}
@@ -219,6 +219,8 @@ export default function Home() {
       </section>
 
       <LearningSection />
+      <CallToActionSection />
+
 
       {/* ---------------- TEACHERS ---------------- */}
       <section className="bg-neutral-100 py-12 md:py-16 lg:py-20" aria-labelledby="meet-teachers">
@@ -248,7 +250,6 @@ export default function Home() {
         </div>
       </section>
 
-      <CallToActionSection />
 
       {/* ---------------- SECONDARY CTA ---------------- */}
       <section className="bg-[#f26e46] py-12 md:py-16 lg:py-20" aria-labelledby="dream-university">
