@@ -66,9 +66,9 @@ const BlogFormContent = () => {
 
       // Auto-generate slug if title changes AND we are not editing
       let updatedSection = { ...sectionValues, [fieldName]: value };
-      if (fieldName === "title" && sectionName === "basic-info" && !editSlug) {
-        updatedSection.slug = slugify(value);
-      }
+      // if (fieldName === "title" && sectionName === "basic-info" && !editSlug) {
+      //   updatedSection.slug = slugify(value);
+      // }
 
       return {
         ...prev,
