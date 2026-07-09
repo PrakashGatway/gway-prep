@@ -43,14 +43,14 @@ export function Aboutresult({ data }: { data: any }) {
                 duration: 0.5,
                 delay: (idx % data.data.length) * 0.08,
               }}
-              className="flex-shrink-0 w-[200px] sm:w-[240px] mx-3 sm:mx-4"
+              className="flex-shrink-0 w-[200px] sm:w-[220px] mx-1 sm:mx-2"
             >
               <div className="shadow-md hover:shadow-xl transition-shadow duration-300 p-4 bg-white rounded-lg group cursor-pointer">
                 {/* Image */}
                 <div className="relative overflow-hidden rounded">
                   <img
                     src={ele?.image}
-                    className="h-48 w-full object-cover mx-auto bg-[#FEFBEA] group-hover:scale-105 transition-transform duration-500"
+                    className="h-44 w-full object-cover mx-auto bg-[#FEFBEA] group-hover:scale-105 transition-transform duration-500"
                     alt={ele?.name}
                   />
                   {/* Exam Type Badge */}
@@ -60,7 +60,7 @@ export function Aboutresult({ data }: { data: any }) {
                 </div>
 
                 {/* Info */}
-                <div className="text-left mt-3 capitalize px-1">
+                <div className="text-left mt-2 capitalize px-1">
                   <h2 className="font-bold text-base sm:text-lg break-words text-gray-800 leading-tight">
                     {ele?.name}
                   </h2>
@@ -71,7 +71,7 @@ export function Aboutresult({ data }: { data: any }) {
                     <span className="font-medium text-xs sm:text-sm text-gray-500 truncate">
                       Score
                     </span>
-                    <span className="text-[#f26e46] m-0 p-0 font-bold text-2xl sm:text-3xl md:text-4xl transition-colors duration-200">
+                    <span className="text-[#f26e46] m-0 p-0 font-bold text-2xl  md:text-3xl transition-colors duration-200">
                       {ele?.score}
                     </span>
                   </div>

@@ -287,6 +287,31 @@ const universitiesData = {
   ],
 };
 
+const environments = [
+  {
+    title: "Premium Classroom Centers",
+    image: "/services/img/1.webp",
+    large: true,
+  },
+  {
+    title: "Digital Live Classrooms",
+    image: "/services/img/2.webp",
+  },
+  {
+    title: "1-on-1 Mentor Sessions",
+    image: "/services/img/3.webp",
+  },
+  {
+    title: "Private Study Rooms",
+    image: "/services/img/4.webp",
+  },
+  {
+    title: "AI Learning Hub",
+    image: "/services/img/5.webp",
+  },
+];
+
+
 function AIStackSection() {
   return (
     <section className="bg-[#FDF4EF] py-12 md:py-16 lg:py-20 overflow-hidden">
@@ -418,29 +443,6 @@ function FeatureCard({ feature, className = "" }: FeatureCardProps) {
   );
 }
 
-const environments = [
-  {
-    title: "Premium Classroom Centers",
-    image: "/services/img/1.webp",
-    large: true,
-  },
-  {
-    title: "Digital Live Classrooms",
-    image: "/services/img/2.webp",
-  },
-  {
-    title: "1-on-1 Mentor Sessions",
-    image: "/services/img/3.webp",
-  },
-  {
-    title: "Private Study Rooms",
-    image: "/services/img/4.webp",
-  },
-  {
-    title: "AI Learning Hub",
-    image: "/services/img/5.webp",
-  },
-];
 
 function EnvironmentSection() {
   return (
@@ -492,7 +494,6 @@ function EnvironmentSection() {
     </section>
   );
 }
-
 interface EnvironmentCardProps {
   title: string;
   image: string;
@@ -853,10 +854,24 @@ export default function Page() {
             ))}
           </div>
         </div>
+
+         {/* Top Search Bar */}
+        <div className="max-w-5xl mx-auto px-4 -mb-10 md:mt-12 relative z-10">
+          <div className="bg-[#FFF5F1] rounded-xl md:rounded-2xl px-4 md:px-6 py-3 md:py-4 flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-4 shadow-sm border border-[#FCE8DE]">
+            <p className="text-[#222] text-sm md:text-lg font-medium text-center sm:text-left">
+              Not Sure where to start?
+            </p>
+            <button className="bg-[#FE6610] hover:bg-[#F25A00] text-white px-6 md:px-8 py-2.5 md:py-3 rounded-xl font-semibold text-sm md:text-base transition-all duration-300 w-full sm:w-auto">
+              Find My Destination
+            </button>
+          </div>
+        </div>
+        
       </section>
 
       {/* Countries / Universities Section */}
-      <section className="py-12 md:py-16 lg:py-20 px-4 md:px-8 bg-white">
+      <section className="py-6 md:py-8 px-4 md:px-8 bg-white">
+        
         <div>
           {/* Heading */}
           <div className="text-center max-w-5xl mx-auto mb-8 md:mb-14">
@@ -892,18 +907,7 @@ export default function Page() {
 
       {/* CTA Section */}
       <section className="bg-white">
-        {/* Top Search Bar */}
-        <div className="max-w-5xl mx-auto px-4 -mb-10 md:-mb-12 relative z-10">
-          <div className="bg-[#FFF5F1] rounded-xl md:rounded-2xl px-4 md:px-6 py-3 md:py-4 flex flex-col sm:flex-row items-center justify-between gap-3 md:gap-4 shadow-sm border border-[#FCE8DE]">
-            <p className="text-[#222] text-sm md:text-lg font-medium text-center sm:text-left">
-              Not Sure where to start?
-            </p>
-            <button className="bg-[#FE6610] hover:bg-[#F25A00] text-white px-6 md:px-8 py-2.5 md:py-3 rounded-xl font-semibold text-sm md:text-base transition-all duration-300 w-full sm:w-auto">
-              Find My Destination
-            </button>
-          </div>
-        </div>
-
+       
         {/* Main CTA */}
         <div className="bg-[#FE6A3A] pt-16 md:pt-20 pb-16 md:pb-20 px-4">
           <div className="max-w-4xl mx-auto text-center">

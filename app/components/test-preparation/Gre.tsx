@@ -327,7 +327,7 @@ function GrePatternTable({ examPatternData }: { examPatternData: any }) {
   );
 }
 
-export default function Gre({ pageInfo, slug }: { pageInfo: any ,slug:any}) {
+export default function Gre({ pageInfo, slug }: { pageInfo: any, slug:any}) {
   const [currentSlide, setCurrentSlide] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [showTestDates, setShowTestDates] = useState(false);

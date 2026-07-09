@@ -1199,4 +1199,476 @@ export const pageData: any = {
       },
     ],
   },
+
+  services: {
+  name: "Services",
+  require: true,
+  description: "Services Page",
+  sections: [
+    {
+      name: "Services-Hero",
+      label: "Hero Section",
+      fields: [
+        {
+          name: "title",
+          label: "Hero Title",
+          type: "text",
+          required: true,
+        },
+        {
+          name: "subtitle",
+          label: "Hero Subtitle",
+          type: "textarea",
+        },
+        
+      ],
+    },
+
+    {
+      name: "Services-Exam-Pills",
+      label: "Exam Pills",
+      fields: [
+        {
+          name: "items",
+          label: "Exam List",
+          type: "repeater",
+          fields: [
+            {
+              name: "title",
+              label: "Exam Name",
+              type: "text",
+            },
+            {
+              name: "image",
+              label: "Exam Icon",
+              type: "file",
+            },
+          ],
+        },
+      ],
+    },
+
+    {
+      name: "Services-Practice",
+      label: "Practice Cards",
+      fields: [
+        {
+          name: "title",
+          label: "Section Title",
+          type: "text",
+        },
+        {
+          name: "subtitle",
+          label: "Section Subtitle",
+          type: "textarea",
+        },
+        {
+          name: "button",
+          label: "Button Text",
+          type: "text",
+        },
+        {
+          name: "items",
+          label: "Cards",
+          type: "repeater",
+          fields: [
+            {
+              name: "title",
+              label: "Title",
+              type: "text",
+            },
+            {
+              name: "description",
+              label: "Description",
+              type: "textarea",
+            },
+            {
+              name: "icon",
+              label: "Icon",
+              type: "file",
+            },
+          ],
+        },
+      ],
+    },
+
+    {
+      name: "Services-Portal",
+      label: "Exam Portal",
+      fields: [
+        {
+          name: "title",
+          label: "Title",
+          type: "text",
+        },
+        {
+          name: "subtitle",
+          label: "Subtitle",
+          type: "textarea",
+        },
+        {
+          name: "image",
+          label: "Portal Image",
+          type: "file",
+        },
+        {
+          name: "button",
+          label: "Button Text",
+          type: "text",
+        },
+      ],
+    },
+
+    {
+      name: "Services-Dashboard",
+      label: "Dashboard Images",
+      fields: [
+        {
+          name: "leftImage",
+          label: "Left Dashboard",
+          type: "file",
+        },
+        {
+          name: "rightImage",
+          label: "Right Dashboard",
+          type: "file",
+        },
+      ],
+    },
+
+    {
+      name: "Services-AI",
+      label: "AI Stack",
+      fields: [
+        {
+          name: "title",
+          label: "Heading",
+          type: "text",
+        },
+        {
+          name: "subtitle",
+          label: "Description",
+          type: "textarea",
+        },
+        
+        {
+          name: "button",
+          label: "Button",
+          type: "text",
+        },
+        {
+          name: "items",
+          label: "AI Features",
+          type: "repeater",
+          fields: [
+            {
+              name: "title",
+              label: "Title",
+              type: "text",
+            },
+            {
+              name: "description",
+              label: "Description",
+              type: "textarea",
+            },
+            {
+              name: "icon",
+              label: "Icon",
+              type: "file",
+            },
+            {
+              name: "background",
+              label: "Background Color",
+              type: "color",
+            },
+          ],
+        },
+      ],
+    },
+
+    {
+      name: "Services-Environment",
+      label: "Learning Environment",
+      fields: [
+        {
+          name: "title",
+          label: "Title",
+          type: "text",
+        },
+        {
+          name: "subtitle",
+          label: "Subtitle",
+          type: "textarea",
+        },
+        {
+          name: "button",
+          label: "Button Text",
+          type: "text",
+        },
+        {
+          name: "items",
+          label: "Environment Cards",
+          type: "repeater",
+          fields: [
+            {
+              name: "title",
+              label: "Title",
+              type: "text",
+            },
+            {
+              name: "image",
+              label: "Image",
+              type: "file",
+            },
+            
+          ],
+        },
+      ],
+    },
+
+    {
+      name: "Services-Resources",
+      label: "Resources",
+      fields: [
+        {
+          name: "title",
+          label: "Heading",
+          type: "text",
+        },
+        {
+          name: "subtitle",
+          label: "Description",
+          type: "textarea",
+        },
+        {
+          name: "button",
+          label: "Button",
+          type: "text",
+        },
+        {
+          name: "items",
+          label: "Resources",
+          type: "repeater",
+          fields: [
+            {
+              name: "title",
+              label: "Title",
+              type: "text",
+            },
+            {
+              name: "description",
+              label: "Description",
+              type: "textarea",
+            },
+            {
+              name: "metric",
+              label: "Metric",
+              type: "text",
+            },
+            {
+              name: "icon",
+              label: "Icon",
+              type: "file",
+            },
+          ],
+        },
+      ],
+    },
+
+    {
+      name: "Services-Support",
+      label: "Support Section",
+      fields: [
+        {
+          name: "title",
+          label: "Heading",
+          type: "text",
+        },
+        {
+          name: "subtitle",
+          label: "Description",
+          type: "textarea",
+        },
+        {
+          name: "items",
+          label: "Support Cards",
+          type: "repeater",
+          fields: [
+            {
+              name: "title",
+              label: "Title",
+              type: "text",
+            },
+            {
+              name: "description",
+              label: "Description",
+              type: "textarea",
+            },
+            {
+              name: "contact",
+              label: "Contact",
+              type: "text",
+            },
+            {
+              name: "button",
+              label: "Button",
+              type: "text",
+            },
+            {
+              name: "icon",
+              label: "Icon",
+              type: "file",
+            },
+            {
+              name: "primary",
+              label: "Primary Button",
+              type: "checkbox",
+            },
+          ],
+        },
+      ],
+    },
+
+    // {
+    //   name: "Services-Testimonials",
+    //   label: "Testimonials",
+    //   fields: [
+    //     {
+    //       name: "title",
+    //       label: "Heading",
+    //       type: "text",
+    //     },
+    //     {
+    //       name: "subtitle",
+    //       label: "Description",
+    //       type: "textarea",
+    //     },
+    //     {
+    //       name: "items",
+    //       label: "Testimonials",
+    //       type: "repeater",
+    //       fields: [
+    //         {
+    //           name: "image",
+    //           label: "Student Image",
+    //           type: "file",
+    //         },
+    //         {
+    //           name: "name",
+    //           label: "Student Name",
+    //           type: "text",
+    //         },
+    //         {
+    //           name: "country",
+    //           label: "Country",
+    //           type: "text",
+    //         },
+    //         {
+    //           name: "rating",
+    //           label: "Rating",
+    //           type: "number",
+    //         },
+    //         {
+    //           name: "review",
+    //           label: "Review",
+    //           type: "textarea",
+    //         },
+    //         {
+    //           name: "score",
+    //           label: "Score",
+    //           type: "text",
+    //         },
+    //         {
+    //           name: "university",
+    //           label: "University",
+    //           type: "text",
+    //         },
+    //         {
+    //           name: "improvement",
+    //           label: "Improvement",
+    //           type: "text",
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // },
+
+    {
+      name: "Services-Countries",
+      label: "Study Destinations",
+      fields: [
+        {
+          name: "title",
+          label: "Heading",
+          type: "text",
+        },
+        {
+          name: "subtitle",
+          label: "Description",
+          type: "textarea",
+        },
+        {
+          name: "items",
+          label: "Countries",
+          type: "repeater",
+          fields: [
+            {
+              name: "name",
+              label: "Country Name",
+              type: "text",
+            },
+            {
+              name: "image",
+              label: "Country Icon",
+              type: "file",
+            },
+            {
+              name: "background",
+              label: "Background Color",
+              type: "color",
+            },
+          ],
+        },
+      ],
+    },
+
+    {
+      name: "Services-CTA",
+      label: "Call To Action",
+      fields: [
+        {
+          name: "title",
+          label: "Heading",
+          type: "text",
+        },
+        {
+          name: "subtitle",
+          label: "Description",
+          type: "textarea",
+        },
+        {
+          name: "topText",
+          label: "Top Banner Text",
+          type: "text",
+        },
+        {
+          name: "topButton",
+          label: "Top Button",
+          type: "text",
+        },
+        {
+          name: "primaryButton",
+          label: "Primary Button",
+          type: "text",
+        },
+        {
+          name: "secondaryButton",
+          label: "Secondary Button",
+          type: "text",
+        },
+      ],
+    },
+  ],
+},
+
 };
