@@ -138,7 +138,7 @@ export default function Home() {
         backgroundImage: "url('/about/76.webp')",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
-        backgroundSize: "cover"
+        // backgroundSize: "cover"
       }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-8 md:gap-14 items-start">
           <div className="relative flex justify-center lg:justify-start">

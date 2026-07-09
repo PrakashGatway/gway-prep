@@ -176,7 +176,7 @@ const supportData = {
         "Academic questions, technical issues, or just need guidance — our support team is live 24 hours a day, 7 days a week.",
       contact_info: "1800-000-0000",
       button_text: "Call Now",
-      icon: "📞",
+      icon: "/services/icons/contact 0.webp",
       primary: true,
     },
     {
@@ -184,21 +184,21 @@ const supportData = {
       description:
         "Personalized career & exam counseling sessions to align your exam strategy with your target universities and career goals.",
       button_text: "Book Session",
-      icon: "👥",
+      icon: "/services/icons/contact 01.webp",
     },
     {
       title: "WhatsApp Support",
       description:
         "Get instant answers from our academic team directly on WhatsApp — doubt resolution within 15 minutes, guaranteed during study hours.",
       button_text: "Chat on WhatsApp",
-      icon: "💬",
+      icon: "/services/icons/contact 02.webp",
     },
     {
       title: "Motivational Check-ins",
       description:
         "Weekly mentor-led motivational calls to keep you on track, accountable, and energized — especially during the tough stretches of preparation.",
       button_text: "Learn More",
-      icon: "🎯",
+      icon: "/services/icons/contact 03.webp",
     },
   ],
 };
@@ -404,7 +404,7 @@ function FeatureCard({ feature, className = "" }: FeatureCardProps) {
       }}
     >
       <div className="flex gap-3 md:gap-4 relative">
-        <div className="h-8 w-8 md:h-10 md:w-10 absolute -top-2 -left-2 md:-top-4 md:-left-4 rounded-full bg-white shadow-md flex items-center justify-center flex-shrink-0">
+        <div className="h-8 w-8 md:h-10 md:w-10 absolute -top-6 -left-6 md:-top-10 md:-left-10 rounded-full bg-white shadow-md flex items-center justify-center flex-shrink-0">
           <Image src={feature.icon} alt={"img"} width={18} height={18} className="md:w-[22px] md:h-[22px]" />
         </div>
         <div className="ml-6 md:ml-0">
@@ -724,18 +724,19 @@ export default function Page() {
           {supportData.cards.map((card) => (
             <div
               key={card.title}
-              className="bg-white rounded-[24px] md:rounded-[32px] px-5 md:px-7 py-6 md:py-8 text-center border border-[#F3F3F3] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
+              className="bg-white rounded-xl md:rounded-2xl px-2 md:px-5 py-2 md:py-4 text-center border border-[#F3F3F3] shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col h-full"
             >
               {/* Icon */}
               <div className="relative flex justify-center mb-4 md:mb-6">
-                <div className="absolute w-16 md:w-20 h-16 md:h-20 rounded-full bg-orange-100 blur-2xl opacity-40"></div>
-                <div className="relative w-16 md:w-20 h-16 md:h-20 rounded-full bg-[#FFF8F3] flex items-center justify-center shadow-sm">
-                  <div className="text-3xl md:text-4xl">{card.icon}</div>
+                <div className="absolute w-10 md:w-14 h-10 md:h-14 rounded-full bg-orange-100 blur-2xl opacity-40"></div>
+                <div className="relative w-10 md:w-14 h-10 md:h-14 rounded-full bg-[#FFF8F3] flex items-center justify-center shadow-sm">
+                  {/* <div className="text-3xl md:text-4xl">{card.icon}</div> */}
+                  <img src={card.icon} alt="icon" />
                 </div>
               </div>
 
               {/* Title */}
-              <h3 className="text-xl md:text-[28px] font-semibold text-[#1F2937] leading-tight">
+              <h3 className="text-lg md:text-xl font-semibold text-[#1F2937] leading-tight">
                 {card.title}
               </h3>
 
@@ -749,14 +750,14 @@ export default function Page() {
 
               {/* Contact Info */}
               {card.contact_info && (
-                <p className="mt-4 md:mt-6 text-[#FE6610] font-semibold text-lg md:text-[24px]">
+                <p className="mt-1 md:mt-2 text-[#FE6610] font-semibold text-lg md:text-[24px]">
                   {card.contact_info}
                 </p>
               )}
 
               {/* Button */}
               <button
-                className={`mt-6 md:mt-8 h-12 md:h-14 rounded-2xl text-sm md:text-[17px] font-semibold transition-all duration-300 flex items-center justify-center gap-2
+                className={`mt-2 md:mt-4 h-12 md:h-14 rounded-2xl text-sm md:text-[17px] font-semibold transition-all duration-300 flex items-center justify-center gap-2
                   ${card.primary
                     ? "bg-[#FE6610] text-white hover:bg-[#e95a08]"
                     : "border-2 border-[#FE6610] text-[#FE6610] hover:bg-[#FE6610] hover:text-white"

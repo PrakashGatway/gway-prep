@@ -7,16 +7,7 @@ import {
   ChevronDown,
   Menu,
   X,
-  GraduationCap,
-  MessageSquare,
-  Target,
-  FileText,
-  Briefcase,
-  Phone,
-  HeadsetIcon,
-  User,
-  Settings,
-  LogOut,
+  HeadsetIcon
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGlobal } from "@/hooks/AppStateContext";
@@ -100,11 +91,11 @@ export function Navbar({ Data }: any) {
   return (
     <>
       <nav
-        className={`md:sticky top-0 z-50 transition-all duration-300 ${
+        className={`md:sticky top-0 z-50 transition-all duration-300${
           scrolled ? "bg-white/60 backdrop-blur-md shadow-md" : "bg-white"
         }`}
       >
-        <div className="max-w-[100%] mx-auto px-4 sm:px-6 lg:px-14">
+        <div className="  max-w-7xl mx-auto ">
           <div className="flex h-20 items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex-shrink-0">

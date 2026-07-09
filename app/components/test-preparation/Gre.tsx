@@ -447,7 +447,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any ,slug:any}) {
                 }}
               />
               <p className="mt-4 md:mt-6 text-[#555] text-sm sm:text-base leading-7 md:leading-8">
-                {heroSection.subtitle}
+                {heroSection.paragraph}
               </p>
               <button className="mt-6 md:mt-10 rounded-full bg-[#F86C43] hover:bg-[#ef5a2f] transition px-6 md:px-8 py-3 md:py-4 text-white text-sm md:text-base font-semibold shadow-lg w-full sm:w-auto">
                 {heroSection.ctaButtonText || "Full Courses starts at $99"}
