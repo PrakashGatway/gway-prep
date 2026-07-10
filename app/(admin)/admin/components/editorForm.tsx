@@ -1004,9 +1004,9 @@ const EditorForm = ({ slug }: PageProps) => {
     }
 
     setLoading(true);
-
     try {
       const payload: any = {
+        name :formData?.name || generalInfo.navTitle,
         seoMeta: {
           ...generalInfo,
           template: formData?.name || generalInfo.template,
@@ -1035,6 +1035,7 @@ const EditorForm = ({ slug }: PageProps) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

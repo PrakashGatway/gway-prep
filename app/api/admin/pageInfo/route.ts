@@ -44,7 +44,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     await connectDB();
 
-    const existing = await PageData.findOne({ name: name.toLowerCase() });
+    const existing = await PageData.findOne({ name: name?.toLowerCase() });
     if (existing) {
       return NextResponse.json(
         { error: `Page "${name}" already exists. Use PUT to update.` },
@@ -53,7 +53,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
 
     const page = await PageData.create({
-      name: name.toLowerCase(),
+      name: name?.toLowerCase() || "undifined",
       slug : slugify(name),
       description,
       seoMeta,
