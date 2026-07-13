@@ -1010,6 +1010,7 @@ const EditorForm = ({ slug }: PageProps) => {
         seoMeta: {
           ...generalInfo,
           template: formData?.name || generalInfo.template,
+          name: formData?.name || generalInfo.template,
         },
         sections: {},
       };
@@ -1023,6 +1024,7 @@ const EditorForm = ({ slug }: PageProps) => {
           };
         });
       }
+      console.log(payload,"payload")
 
       const endpoint = slug === "new"
         ? `/api/admin/pageInfo`

@@ -23,28 +23,33 @@ export async function GET(): Promise<NextResponse> {
     );
   } catch (error) {
     console.error("[PAGES GET]", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ error: `Server ${error}` }, { status: 500 });
   }
 }
+
 
 // ─── POST /api/pages ──────────────────────────────────────────────────────────
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const body = await req.json();
-    // const result = PageDataSchema.safeParse(body);
 
-    // if (!result.success) {
-    //   return NextResponse.json(
-    //     { error: result.error.flatten().fieldErrors },
-    //     { status: 400 }
-    //   );
-    // }
+    const { name, description, seoMeta, sections, extraDetails } = body;
 
-    const { name, description, seoMeta, sections, extraDetails } = body // result.data;
+      console.log( name ,"name")
+    // 1. Add validation fallback since schema validation is commented out
+    if (!name || typeof name !== 'string') {
+      return NextResponse.json(
+        { error: "Required field 'name' is missing or invalid in the request body." },
+        { status: 400 }
+      );
+    }
 
     await connectDB();
 
-    const existing = await PageData.findOne({ name: name?.toLowerCase() });
+    // 2. Safe to use .toLowerCase() now
+    const lowerName = name.toLowerCase();
+
+    const existing = await PageData.findOne({ name: lowerName });
     if (existing) {
       return NextResponse.json(
         { error: `Page "${name}" already exists. Use PUT to update.` },
@@ -53,8 +58,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
 
     const page = await PageData.create({
-      name: name?.toLowerCase() || "undifined",
-      slug : slugify(name),
+      name: lowerName,
+      slug : slugify(name), 
       description,
       seoMeta,
       sections,
@@ -67,6 +72,51 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
   } catch (error) {
     console.error("[PAGES POST]", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ error: `Server error: ${error instanceof Error ? error.message : error}` }, { status: 500 });
   }
 }
+
+
+// // ─── POST /api/pages ──────────────────────────────────────────────────────────
+// export async function POST(req: NextRequest): Promise<NextResponse> {
+//   try {
+//     const body = await req.json();
+//     // const result = PageDataSchema.safeParse(body);
+
+//     // if (!result.success) {
+//     //   return NextResponse.json(
+//     //     { error: result.error.flatten().fieldErrors },
+//     //     { status: 400 }
+//     //   );
+//     // }
+
+//     const { name, description, seoMeta, sections, extraDetails } = body // result.data;
+
+//     await connectDB();
+
+//     const existing = await PageData.findOne({ name: name.toLowerCase() });
+//     if (existing) {
+//       return NextResponse.json(
+//         { error: `Page "${name}" already exists. Use PUT to update.` },
+//         { status: 409 }
+//       );
+//     }
+
+//     const page = await PageData.create({
+//       name: name.toLowerCase(),
+//       slug : slugify(name),
+//       description,
+//       seoMeta,
+//       sections,
+//       extraDetails,
+//     });
+
+//     return NextResponse.json(
+//       { message: "Page created.", data: page },
+//       { status: 201 }
+//     );
+//   } catch (error) {
+//     console.error("[PAGES POST]", error);
+//     return NextResponse.json({ error: `Server ${error}` }, { status: 500 });
+//   }
+// }

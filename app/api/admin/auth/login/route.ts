@@ -56,7 +56,7 @@ export async function POST(req: NextRequest): Promise<NextResponse>{
     } catch (error) {
         console.error("[LOGIN]",error);
         return NextResponse.json(
-            {error : "Server error"},
+            {error : `Server error: ${error}`},
             {status : 500}
         )
     }

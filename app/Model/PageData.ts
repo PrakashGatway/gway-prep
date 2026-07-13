@@ -16,14 +16,14 @@ const PageDataSchema = new Schema<IPageData>(
   {
     name: {
       type: String,
-      required: true,
+      required: false,
       unique: true,
       trim: true,
       lowercase: true,
     },
     slug: {
       type : String,
-      required: true,
+      required: false,
       unique: true, 
     },
     description: {
