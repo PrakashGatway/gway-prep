@@ -204,20 +204,26 @@ function GreSection({ examFormatSection, whatIsGreSection, cta_banner, slug }: a
         {/* Use dynamic patternTable data if available, otherwise use default */}
         {(patternTable.length > 0 ? patternTable : greData.sections).map((item: any, index: number) => (
           <div
-            key={index}
-            className={`${index % 2 === 0 ? "bg-[#fef6f0]" : "bg-[#FEFBEA]"} border border-[#fbe9dc] rounded-xl md:rounded-2xl p-4 md:p-6 lg:p-8 grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4 md:gap-8 items-center transition-all duration-300 hover:shadow-md`}
-          >
-            <h3 className="text-lg md:text-xl font-bold text-[#444] md:text-center pr-4 border-b md:border-b-0 md:border-r border-orange-100 pb-2 md:pb-0">
-              {item.title?.split("||")[0] || item.title || ""} <br />
-              {item.title?.split("||")[1] || ""}
-            </h3>
-            <div 
-              className="text-gray-600 text-sm md:text-base leading-relaxed text-justify"
-              dangerouslySetInnerHTML={{
-                __html: item.description || ""
-              }}
-            />
-          </div>
+  key={index}
+  className={`${index % 2 === 0 ? "bg-[#fef6f0]" : "bg-[#FEFBEA]"} border border-[#fbe9dc]
+    rounded-xl md:rounded-2xl p-4 md:p-6 lg:p-8 grid grid-cols-1 ${item?.title?.trim() ? "md:grid-cols-[1fr_3fr]" : "grid-cols-1"}
+    gap-4 md:gap-8 items-center transition-all duration-300 hover:shadow-md`}
+>
+  {item?.title?.trim() && (
+    <h3 className="text-lg md:text-xl font-bold text-[#444] md:text-center pr-4 border-b md:border-b-0 md:border-r border-orange-100 pb-2 md:pb-0">
+      {item.title.split("||")[0]} <br />
+      {item.title.split("||")[1] || ""}
+    </h3>
+  )}
+
+  <div 
+    className={`text-gray-600 text-sm md:text-base leading-relaxed text-justify ${!item?.title?.trim() ? "col-span-full" : ""}`}
+    dangerouslySetInnerHTML={{
+      __html: item?.description || ""
+    }}
+  />
+</div>
+
         ))}
       </div>
     </section>
@@ -266,7 +272,7 @@ function GrePatternTable({ examPatternData }: { examPatternData: any }) {
 
             {/* Responsive Table Wrapper */}
             {patternTableRows.length > 0 ? (
-              <div className="w-full overflow-x-auto rounded-xl border border-gray-200 shadow-sm bg-white">
+              <div className="w-full overflow-x-auto bg-white">
                 <table className="w-full min-w-[800px] border-collapse text-left">
                   <thead>
                     <tr className="bg-[#f06437] text-white">

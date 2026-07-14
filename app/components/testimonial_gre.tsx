@@ -117,10 +117,10 @@ function CardContent({ data }: { data: any }) {
   return (
     <>
       <div className="flex justify-between items-start flex-col ">
-        <h3 className="text-xl font-bold text-[#555]">{data.studentName}</h3>
+        <h3 className="text-xl font-bold text-[#555]">{data?.studentName}</h3>
         <span className="flex justify-between w-full">
-          <div className="flex">Math <p className="w-10 ml-1 bg-orange-600 font-bold rounded text-center text-white">{data.mathScore}</p></div>
-          <div className="flex">Verbal <p className="w-10 ml-1 bg-gray-600 font-bold rounded text-center text-white">{data.verbalScore}</p></div>
+          <div className="flex">Math <p className="w-10 ml-1 bg-orange-600 font-bold rounded text-center text-white">{data?.mathScore}</p></div>
+          <div className="flex">Verbal <p className="w-10 ml-1 bg-gray-600 font-bold rounded text-center text-white">{data?.verbalScore}</p></div>
         </span>
         {/* <div className="flex gap-1">
           {[...Array(5)].map((_, i) => (
