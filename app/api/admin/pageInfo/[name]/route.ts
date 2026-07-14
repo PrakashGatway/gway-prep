@@ -109,8 +109,9 @@ export async function PUT(
       { status: 200 }
     );
   } catch (error) {
-    console.error("[PAGES PUT]", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    
+    console.error("[PAGES POST]", error);
+    return NextResponse.json({ error: `Server error: ${error instanceof Error ? error.message : error}` }, { status: 500 });
   }
 }
 
