@@ -11,7 +11,7 @@ export const pageData: any = {
           {
             name: "title",
             label: "Hero Title",
-            type: "editor",
+            type: "text",
             required: false,
             placeholder: "Welcome to Our Platform",
           },

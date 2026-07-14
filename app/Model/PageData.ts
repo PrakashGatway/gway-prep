@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IPageData extends Document {
   name: string;
+  template: string;
   slug: string;
   description: string;
   published: boolean;
@@ -16,14 +17,20 @@ const PageDataSchema = new Schema<IPageData>(
   {
     name: {
       type: String,
-      required: false,
+      required: true,
       unique: true,
       trim: true,
       lowercase: true,
     },
+    template: {
+      type : String,
+      required: true,
+      trim: true,
+      lowercase: true
+    },
     slug: {
       type : String,
-      required: false,
+      required: true,
       unique: true, 
     },
     description: {

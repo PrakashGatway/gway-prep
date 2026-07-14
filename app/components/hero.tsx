@@ -222,10 +222,16 @@ export function Hero({ data, student }: HeroProps) {
 
               {/* Title */}
               <div className="text-black font-bold leading-[1.08] tracking-tight">
-                <h1 
+                {/* <h1 
                   className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl" 
                   dangerouslySetInnerHTML={{ __html: data.fields.title }} 
-                />
+                /> */}
+
+                <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl">
+                    {data.fields.title?.split("||")[0]}
+                    <span className="text-primary">{data.fields.title?.split("||")[1]}</span>
+                    {data.fields.title?.split("||")[2]}
+                </h1>
 
                 <br />
                 <span className="relative">

@@ -1,8 +1,17 @@
-"use client"
+"use client";
 
 import React, { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { Plus, Trash2, Save, Settings, Layout, Edit, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Save,
+  Settings,
+  Layout,
+  Edit,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 import { pageData } from "@/app/lib/pageData";
 import { getPageInfo, getStudent } from "@/app/services/api";
 import { slugify } from "@/app/lib/slug";
@@ -20,6 +29,7 @@ interface PageProps {
 }
 
 interface GeneralInfo {
+  slug: string;
   title: string;
   description: string;
   keywords: string;
@@ -39,6 +49,7 @@ const EditorForm = ({ slug }: PageProps) => {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [values, setValues] = useState<Record<string, any>>({});
   const [generalInfo, setGeneralInfo] = useState<GeneralInfo>({
+    slug: "",
     title: "",
     description: "",
     keywords: "",
@@ -80,7 +91,7 @@ const EditorForm = ({ slug }: PageProps) => {
         if (data?.sections?.length > 0) {
           setActiveSection(data.sections[0].name);
         }
-        setGeneralInfo(prev => ({ ...prev, template: data.name }));
+        setGeneralInfo((prev) => ({ ...prev, template: data.name }));
       }
       return;
     }
@@ -89,18 +100,20 @@ const EditorForm = ({ slug }: PageProps) => {
       try {
         const res = await getPageInfo(slug);
         console.log("Fetched page data:", res);
-        
+
         if (res.seoMeta) {
           setGeneralInfo(res.seoMeta);
           setTemp(res.seoMeta.template);
         }
 
-        const key = Object.keys(pageData).find(k => pageData[k].name === res.seoMeta?.template);
+        const key = Object.keys(pageData).find(
+          (k) => pageData[k].name === res.seoMeta?.template,
+        );
         if (key) {
           setFormData(pageData[key]);
         } else {
-          const fallbackKey = Object.keys(pageData).find(k => 
-            pageData[k].name.toLowerCase() === slug.toLowerCase()
+          const fallbackKey = Object.keys(pageData).find(
+            (k) => pageData[k].name.toLowerCase() === slug.toLowerCase(),
           );
           if (fallbackKey) {
             setFormData(pageData[fallbackKey]);
@@ -109,11 +122,11 @@ const EditorForm = ({ slug }: PageProps) => {
 
         if (res.sections) {
           const sectionValues: Record<string, any> = {};
-          Object.keys(res.sections).forEach(key => {
+          Object.keys(res.sections).forEach((key) => {
             sectionValues[key] = res.sections[key].fields || {};
           });
           setValues(sectionValues);
-          
+
           if (Object.keys(res.sections).length > 0) {
             setActiveSection(Object.keys(res.sections)[0]);
           }
@@ -129,7 +142,7 @@ const EditorForm = ({ slug }: PageProps) => {
 
   // General Info Handlers
   const handleGeneralInfoChange = (field: keyof GeneralInfo, value: any) => {
-    setGeneralInfo(prev => ({ ...prev, [field]: value }));
+    setGeneralInfo((prev) => ({ ...prev, [field]: value }));
   };
 
   // Section Input Handler
@@ -138,7 +151,7 @@ const EditorForm = ({ slug }: PageProps) => {
     fieldName: string,
     value: any,
     repeaterIndex?: number,
-    parentField?: string
+    parentField?: string,
   ) => {
     setValues((prev) => {
       const sectionValues = prev[sectionName] || {};
@@ -150,17 +163,17 @@ const EditorForm = ({ slug }: PageProps) => {
         }
         existing[repeaterIndex] = {
           ...existing[repeaterIndex],
-          [fieldName]: value
+          [fieldName]: value,
         };
         return {
           ...prev,
-          [sectionName]: { ...sectionValues, [parentField]: existing }
+          [sectionName]: { ...sectionValues, [parentField]: existing },
         };
       }
 
       return {
         ...prev,
-        [sectionName]: { ...sectionValues, [fieldName]: value }
+        [sectionName]: { ...sectionValues, [fieldName]: value },
       };
     });
   };
@@ -173,37 +186,39 @@ const EditorForm = ({ slug }: PageProps) => {
     nestedFieldName: string,
     nestedIndex: number,
     fieldName: string,
-    value: any
+    value: any,
   ) => {
     setValues((prev) => {
       const sectionValues = prev[sectionName] || {};
       const parentItems = [...(sectionValues[parentFieldName] || [])];
-      
+
       if (!parentItems[parentIndex]) {
         parentItems[parentIndex] = {};
       }
-      
-      const nestedItems = [...(parentItems[parentIndex][nestedFieldName] || [])];
+
+      const nestedItems = [
+        ...(parentItems[parentIndex][nestedFieldName] || []),
+      ];
       if (!nestedItems[nestedIndex]) {
         nestedItems[nestedIndex] = {};
       }
-      
+
       nestedItems[nestedIndex] = {
         ...nestedItems[nestedIndex],
-        [fieldName]: value
+        [fieldName]: value,
       };
-      
+
       parentItems[parentIndex] = {
         ...parentItems[parentIndex],
-        [nestedFieldName]: nestedItems
+        [nestedFieldName]: nestedItems,
       };
-      
+
       return {
         ...prev,
         [sectionName]: {
           ...sectionValues,
-          [parentFieldName]: parentItems
-        }
+          [parentFieldName]: parentItems,
+        },
       };
     });
   };
@@ -213,21 +228,21 @@ const EditorForm = ({ slug }: PageProps) => {
     sectionName: string,
     groupFieldName: string,
     fieldName: string,
-    value: any
+    value: any,
   ) => {
     setValues((prev) => {
       const sectionValues = prev[sectionName] || {};
       const groupData = sectionValues[groupFieldName] || {};
-      
+
       return {
         ...prev,
         [sectionName]: {
           ...sectionValues,
           [groupFieldName]: {
             ...groupData,
-            [fieldName]: value
-          }
-        }
+            [fieldName]: value,
+          },
+        },
       };
     });
   };
@@ -237,10 +252,12 @@ const EditorForm = ({ slug }: PageProps) => {
     setValues((prev) => {
       const sectionValues = prev[sectionName] || {};
       const currentItems = sectionValues[fieldName] || [];
-      
-      const section = formData?.sections?.find((s: any) => s.name === sectionName);
+
+      const section = formData?.sections?.find(
+        (s: any) => s.name === sectionName,
+      );
       const fieldDef = section?.fields?.find((f: any) => f.name === fieldName);
-      
+
       let newItem = {};
       if (fieldDef?.fields) {
         fieldDef.fields.forEach((f: any) => {
@@ -251,13 +268,13 @@ const EditorForm = ({ slug }: PageProps) => {
           }
         });
       }
-      
+
       return {
         ...prev,
         [sectionName]: {
           ...sectionValues,
-          [fieldName]: [...currentItems, newItem]
-        }
+          [fieldName]: [...currentItems, newItem],
+        },
       };
     });
   };
@@ -268,34 +285,35 @@ const EditorForm = ({ slug }: PageProps) => {
     parentFieldName: string,
     parentIndex: number,
     nestedFieldName: string,
-    nestedFields: any[]
+    nestedFields: any[],
   ) => {
     setValues((prev) => {
       const sectionValues = prev[sectionName] || {};
       const parentItems = [...(sectionValues[parentFieldName] || [])];
-      
+
       if (!parentItems[parentIndex]) {
         parentItems[parentIndex] = {};
       }
-      
-      const currentNestedItems = parentItems[parentIndex][nestedFieldName] || [];
-      
+
+      const currentNestedItems =
+        parentItems[parentIndex][nestedFieldName] || [];
+
       let newItem = {};
       nestedFields.forEach((f: any) => {
         newItem = { ...newItem, [f.name]: "" };
       });
-      
+
       parentItems[parentIndex] = {
         ...parentItems[parentIndex],
-        [nestedFieldName]: [...currentNestedItems, newItem]
+        [nestedFieldName]: [...currentNestedItems, newItem],
       };
-      
+
       return {
         ...prev,
         [sectionName]: {
           ...sectionValues,
-          [parentFieldName]: parentItems
-        }
+          [parentFieldName]: parentItems,
+        },
       };
     });
   };
@@ -306,45 +324,51 @@ const EditorForm = ({ slug }: PageProps) => {
     parentFieldName: string,
     parentIndex: number,
     nestedFieldName: string,
-    nestedIndex: number
+    nestedIndex: number,
   ) => {
     setValues((prev) => {
       const sectionValues = prev[sectionName] || {};
       const parentItems = [...(sectionValues[parentFieldName] || [])];
-      
+
       if (!parentItems[parentIndex]) {
         return prev;
       }
-      
-      const nestedItems = [...(parentItems[parentIndex][nestedFieldName] || [])];
+
+      const nestedItems = [
+        ...(parentItems[parentIndex][nestedFieldName] || []),
+      ];
       nestedItems.splice(nestedIndex, 1);
-      
+
       parentItems[parentIndex] = {
         ...parentItems[parentIndex],
-        [nestedFieldName]: nestedItems
+        [nestedFieldName]: nestedItems,
       };
-      
+
       return {
         ...prev,
         [sectionName]: {
           ...sectionValues,
-          [parentFieldName]: parentItems
-        }
+          [parentFieldName]: parentItems,
+        },
       };
     });
   };
 
-  const removeRepeaterItem = (sectionName: string, fieldName: string, index: number) => {
+  const removeRepeaterItem = (
+    sectionName: string,
+    fieldName: string,
+    index: number,
+  ) => {
     setValues((prev) => {
       const sectionValues = prev[sectionName] || {};
       const currentItems = sectionValues[fieldName] || [];
-      
+
       return {
         ...prev,
         [sectionName]: {
           ...sectionValues,
-          [fieldName]: currentItems.filter((_: any, i: number) => i !== index)
-        }
+          [fieldName]: currentItems.filter((_: any, i: number) => i !== index),
+        },
       };
     });
   };
@@ -355,7 +379,7 @@ const EditorForm = ({ slug }: PageProps) => {
     sectionName: string,
     fieldName: string,
     repeaterIndex?: number,
-    parentField?: string
+    parentField?: string,
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -372,7 +396,13 @@ const EditorForm = ({ slug }: PageProps) => {
       const res = await response.json();
 
       if (res.url) {
-        handleInputChange(sectionName, fieldName, res.url, repeaterIndex, parentField);
+        handleInputChange(
+          sectionName,
+          fieldName,
+          res.url,
+          repeaterIndex,
+          parentField,
+        );
       }
     } catch (error) {
       console.error("Error uploading file:", error);
@@ -417,8 +447,13 @@ const EditorForm = ({ slug }: PageProps) => {
           for (const field of section.fields) {
             if (field.required) {
               const value = sectionValues[field.name];
-              if (!value || (typeof value === 'string' && value.trim() === '')) {
-                setError(`Please fill in "${field.label}" in section "${section.label}"`);
+              if (
+                !value ||
+                (typeof value === "string" && value.trim() === "")
+              ) {
+                setError(
+                  `Please fill in "${field.label}" in section "${section.label}"`,
+                );
                 return false;
               }
             }
@@ -434,10 +469,11 @@ const EditorForm = ({ slug }: PageProps) => {
     field: any,
     sectionName: string,
     groupFieldName: string,
-    groupValue: any
+    groupValue: any,
   ) => {
     const value = groupValue[field.name] || "";
-    const baseInputClasses = "w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all";
+    const baseInputClasses =
+      "w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all";
 
     switch (field.type) {
       case "text":
@@ -448,7 +484,14 @@ const EditorForm = ({ slug }: PageProps) => {
             value={value}
             className={baseInputClasses}
             rows={4}
-            onChange={(e) => handleGroupFieldChange(sectionName, groupFieldName, field.name, e.target.value)}
+            onChange={(e) =>
+              handleGroupFieldChange(
+                sectionName,
+                groupFieldName,
+                field.name,
+                e.target.value,
+              )
+            }
             placeholder={field.placeholder}
           />
         ) : (
@@ -456,28 +499,48 @@ const EditorForm = ({ slug }: PageProps) => {
             type={field.type}
             value={value}
             className={baseInputClasses}
-            onChange={(e) => handleGroupFieldChange(sectionName, groupFieldName, field.name, e.target.value)}
+            onChange={(e) =>
+              handleGroupFieldChange(
+                sectionName,
+                groupFieldName,
+                field.name,
+                e.target.value,
+              )
+            }
             placeholder={field.placeholder}
           />
         );
-      case  "color":
+      case "color":
         return (
           <div className="">
             {field.type}
-            <input 
-  type="color" 
-  value={value} 
-  className="w-12 h-10 p-0 bg-transparent border border-gray-300 rounded cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch]:rounded [&::-moz-color-swatch]:border-none [&::-moz-color-swatch]:rounded"
-  onChange={(e) => handleGroupFieldChange(sectionName, groupFieldName, field.name, e.target.value)} 
-/>
-
+            <input
+              type="color"
+              value={value}
+              className="w-12 h-10 p-0 bg-transparent border border-gray-300 rounded cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch]:rounded [&::-moz-color-swatch]:border-none [&::-moz-color-swatch]:rounded"
+              onChange={(e) =>
+                handleGroupFieldChange(
+                  sectionName,
+                  groupFieldName,
+                  field.name,
+                  e.target.value,
+                )
+              }
+            />
           </div>
-        )
+        );
       case "editor":
         return (
           <CKEditorComponent
             value={value}
-            onChange={(data: string) => handleGroupFieldChange(sectionName, groupFieldName, field.name, data)}
+            onChange={(data: string) =>
+              handleGroupFieldChange(
+                sectionName,
+                groupFieldName,
+                field.name,
+                data,
+              )
+            }
           />
         );
 
@@ -496,18 +559,27 @@ const EditorForm = ({ slug }: PageProps) => {
                   method: "POST",
                   body: data,
                 })
-                  .then(res => res.json())
-                  .then(res => {
+                  .then((res) => res.json())
+                  .then((res) => {
                     if (res.url) {
-                      handleGroupFieldChange(sectionName, groupFieldName, field.name, res.url);
+                      handleGroupFieldChange(
+                        sectionName,
+                        groupFieldName,
+                        field.name,
+                        res.url,
+                      );
                     }
                   })
-                  .catch(err => console.error("Error uploading file:", err));
+                  .catch((err) => console.error("Error uploading file:", err));
               }}
               className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
             />
             {value && (
-              <img src={value} className="h-20 rounded-lg border" alt="Preview" />
+              <img
+                src={value}
+                className="h-20 rounded-lg border"
+                alt="Preview"
+              />
             )}
           </div>
         );
@@ -518,7 +590,14 @@ const EditorForm = ({ slug }: PageProps) => {
           <select
             value={value}
             className={baseInputClasses}
-            onChange={(e) => handleGroupFieldChange(sectionName, groupFieldName, field.name, e.target.value)}
+            onChange={(e) =>
+              handleGroupFieldChange(
+                sectionName,
+                groupFieldName,
+                field.name,
+                e.target.value,
+              )
+            }
           >
             <option value="">Select {field.label}</option>
             {options.map((opt: any, i: number) => (
@@ -539,7 +618,12 @@ const EditorForm = ({ slug }: PageProps) => {
               className="sr-only peer"
               onChange={(e) => {
                 const newValue = e.target.checked ? "true" : "false";
-                handleGroupFieldChange(sectionName, groupFieldName, field.name, newValue);
+                handleGroupFieldChange(
+                  sectionName,
+                  groupFieldName,
+                  field.name,
+                  newValue,
+                );
               }}
             />
             <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -559,7 +643,7 @@ const EditorForm = ({ slug }: PageProps) => {
     parent?: any,
   ) => {
     const sectionValues = values[sectionName] || {};
-    
+
     let value = "";
     if (index !== undefined && parent) {
       const repeaterItems = sectionValues[parent] || [];
@@ -569,7 +653,8 @@ const EditorForm = ({ slug }: PageProps) => {
       value = sectionValues[field.name] || "";
     }
 
-    const baseInputClasses = "w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all";
+    const baseInputClasses =
+      "w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all";
 
     switch (field.type) {
       case "text":
@@ -583,7 +668,10 @@ const EditorForm = ({ slug }: PageProps) => {
             onChange={(e) => {
               if (index !== undefined && parent) {
                 const repeaterItems = [...(sectionValues[parent] || [])];
-                const item = { ...(repeaterItems[index] || {}), [field.name]: e.target.value };
+                const item = {
+                  ...(repeaterItems[index] || {}),
+                  [field.name]: e.target.value,
+                };
                 repeaterItems[index] = item;
                 handleInputChange(sectionName, parent, repeaterItems);
               } else {
@@ -600,7 +688,10 @@ const EditorForm = ({ slug }: PageProps) => {
             onChange={(e) => {
               if (index !== undefined && parent) {
                 const repeaterItems = [...(sectionValues[parent] || [])];
-                const item = { ...(repeaterItems[index] || {}), [field.name]: e.target.value };
+                const item = {
+                  ...(repeaterItems[index] || {}),
+                  [field.name]: e.target.value,
+                };
                 repeaterItems[index] = item;
                 handleInputChange(sectionName, parent, repeaterItems);
               } else {
@@ -611,18 +702,20 @@ const EditorForm = ({ slug }: PageProps) => {
           />
         );
 
-      case  "color":
+      case "color":
         return (
           <div className="">
             {/* {field.type} */}
-            <input 
-              type="color" 
-              value={value} 
+            <input
+              type="color"
+              value={value}
               className="w-12 h-10 p-0 bg-transparent border border-gray-300 rounded cursor-pointer [&::-webkit-color-swatch-wrapper]:p-0 [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch]:rounded [&::-moz-color-swatch]:border-none [&::-moz-color-swatch]:rounded"
-              onChange={(e) => handleInputChange(sectionName, field.name, e.target.value)} 
+              onChange={(e) =>
+                handleInputChange(sectionName, field.name, e.target.value)
+              }
             />
           </div>
-        )
+        );
       case "editor":
         return (
           <CKEditorComponent
@@ -630,7 +723,10 @@ const EditorForm = ({ slug }: PageProps) => {
             onChange={(data: string) => {
               if (index !== undefined && parent) {
                 const repeaterItems = [...(sectionValues[parent] || [])];
-                const item = { ...(repeaterItems[index] || {}), [field.name]: data };
+                const item = {
+                  ...(repeaterItems[index] || {}),
+                  [field.name]: data,
+                };
                 repeaterItems[index] = item;
                 handleInputChange(sectionName, parent, repeaterItems);
               } else {
@@ -652,7 +748,11 @@ const EditorForm = ({ slug }: PageProps) => {
               className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
             />
             {value && (
-              <img src={value} className="h-20 rounded-lg border" alt="Preview" />
+              <img
+                src={value}
+                className="h-20 rounded-lg border"
+                alt="Preview"
+              />
             )}
           </div>
         );
@@ -666,7 +766,10 @@ const EditorForm = ({ slug }: PageProps) => {
             onChange={(e) => {
               if (index !== undefined && parent) {
                 const repeaterItems = [...(sectionValues[parent] || [])];
-                const item = { ...(repeaterItems[index] || {}), [field.name]: e.target.value };
+                const item = {
+                  ...(repeaterItems[index] || {}),
+                  [field.name]: e.target.value,
+                };
                 repeaterItems[index] = item;
                 handleInputChange(sectionName, parent, repeaterItems);
               } else {
@@ -695,7 +798,10 @@ const EditorForm = ({ slug }: PageProps) => {
                 const newValue = e.target.checked ? "true" : "false";
                 if (index !== undefined && parent) {
                   const repeaterItems = [...(sectionValues[parent] || [])];
-                  const item = { ...(repeaterItems[index] || {}), [field.name]: newValue };
+                  const item = {
+                    ...(repeaterItems[index] || {}),
+                    [field.name]: newValue,
+                  };
                   repeaterItems[index] = item;
                   handleInputChange(sectionName, parent, repeaterItems);
                 } else {
@@ -712,7 +818,10 @@ const EditorForm = ({ slug }: PageProps) => {
         return (
           <div className="space-y-4">
             {items.map((item: any, i: number) => (
-              <div key={i} className="p-4 border rounded-xl bg-gray-50 relative">
+              <div
+                key={i}
+                className="p-4 border rounded-xl bg-gray-50 relative"
+              >
                 <button
                   type="button"
                   onClick={() => removeRepeaterItem(sectionName, field.name, i)}
@@ -732,49 +841,58 @@ const EditorForm = ({ slug }: PageProps) => {
                             {f.label}
                           </label>
                           <div className="space-y-4">
-                            {nestedItems.map((nestedItem: any, nestedIndex: number) => (
-                              <div key={nestedIndex} className="p-4 border rounded-xl bg-white relative">
-                                <button
-                                  type="button"
-                                  onClick={() => removeNestedRepeaterItem(
-                                    sectionName,
-                                    field.name,
-                                    i,
-                                    f.name,
-                                    nestedIndex
-                                  )}
-                                  className="absolute top-2 right-2 p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            {nestedItems.map(
+                              (nestedItem: any, nestedIndex: number) => (
+                                <div
+                                  key={nestedIndex}
+                                  className="p-4 border rounded-xl bg-white relative"
                                 >
-                                  <Trash2 size={16} />
-                                </button>
-                                <div className="space-y-3 mt-4">
-                                  {f.fields.map((nestedField: any) => (
-                                    <div key={nestedField.name}>
-                                      <label className="block text-sm font-medium mb-1">
-                                        {nestedField.label}
-                                      </label>
-                                      {renderNestedField(
-                                        nestedField,
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      removeNestedRepeaterItem(
                                         sectionName,
                                         field.name,
                                         i,
                                         f.name,
-                                        nestedIndex
-                                      )}
-                                    </div>
-                                  ))}
+                                        nestedIndex,
+                                      )
+                                    }
+                                    className="absolute top-2 right-2 p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                  >
+                                    <Trash2 size={16} />
+                                  </button>
+                                  <div className="space-y-3 mt-4">
+                                    {f.fields.map((nestedField: any) => (
+                                      <div key={nestedField.name}>
+                                        <label className="block text-sm font-medium mb-1">
+                                          {nestedField.label}
+                                        </label>
+                                        {renderNestedField(
+                                          nestedField,
+                                          sectionName,
+                                          field.name,
+                                          i,
+                                          f.name,
+                                          nestedIndex,
+                                        )}
+                                      </div>
+                                    ))}
+                                  </div>
                                 </div>
-                              </div>
-                            ))}
+                              ),
+                            )}
                             <button
                               type="button"
-                              onClick={() => addNestedRepeaterItem(
-                                sectionName,
-                                field.name,
-                                i,
-                                f.name,
-                                f.fields
-                              )}
+                              onClick={() =>
+                                addNestedRepeaterItem(
+                                  sectionName,
+                                  field.name,
+                                  i,
+                                  f.name,
+                                  f.fields,
+                                )
+                              }
                               className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium"
                             >
                               <Plus size={16} /> Add {f.label} Item
@@ -783,7 +901,7 @@ const EditorForm = ({ slug }: PageProps) => {
                         </div>
                       );
                     }
-                    
+
                     // Regular field inside repeater
                     return (
                       <div key={f.name}>
@@ -835,7 +953,7 @@ const EditorForm = ({ slug }: PageProps) => {
     parentFieldName: string,
     parentIndex: number,
     nestedFieldName: string,
-    nestedIndex: number
+    nestedIndex: number,
   ) => {
     const sectionValues = values[sectionName] || {};
     const parentItems = sectionValues[parentFieldName] || [];
@@ -844,7 +962,8 @@ const EditorForm = ({ slug }: PageProps) => {
     const nestedItem = nestedItems[nestedIndex] || {};
     const value = nestedItem[field.name] || "";
 
-    const baseInputClasses = "w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all";
+    const baseInputClasses =
+      "w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all";
 
     switch (field.type) {
       case "text":
@@ -855,15 +974,17 @@ const EditorForm = ({ slug }: PageProps) => {
             value={value}
             className={baseInputClasses}
             rows={4}
-            onChange={(e) => handleNestedRepeaterChange(
-              sectionName,
-              parentFieldName,
-              parentIndex,
-              nestedFieldName,
-              nestedIndex,
-              field.name,
-              e.target.value
-            )}
+            onChange={(e) =>
+              handleNestedRepeaterChange(
+                sectionName,
+                parentFieldName,
+                parentIndex,
+                nestedFieldName,
+                nestedIndex,
+                field.name,
+                e.target.value,
+              )
+            }
             placeholder={field.placeholder}
           />
         ) : (
@@ -871,15 +992,17 @@ const EditorForm = ({ slug }: PageProps) => {
             type={field.type}
             value={value}
             className={baseInputClasses}
-            onChange={(e) => handleNestedRepeaterChange(
-              sectionName,
-              parentFieldName,
-              parentIndex,
-              nestedFieldName,
-              nestedIndex,
-              field.name,
-              e.target.value
-            )}
+            onChange={(e) =>
+              handleNestedRepeaterChange(
+                sectionName,
+                parentFieldName,
+                parentIndex,
+                nestedFieldName,
+                nestedIndex,
+                field.name,
+                e.target.value,
+              )
+            }
             placeholder={field.placeholder}
           />
         );
@@ -888,15 +1011,17 @@ const EditorForm = ({ slug }: PageProps) => {
         return (
           <CKEditorComponent
             value={value}
-            onChange={(data: string) => handleNestedRepeaterChange(
-              sectionName,
-              parentFieldName,
-              parentIndex,
-              nestedFieldName,
-              nestedIndex,
-              field.name,
-              data
-            )}
+            onChange={(data: string) =>
+              handleNestedRepeaterChange(
+                sectionName,
+                parentFieldName,
+                parentIndex,
+                nestedFieldName,
+                nestedIndex,
+                field.name,
+                data,
+              )
+            }
           />
         );
 
@@ -915,8 +1040,8 @@ const EditorForm = ({ slug }: PageProps) => {
                   method: "POST",
                   body: data,
                 })
-                  .then(res => res.json())
-                  .then(res => {
+                  .then((res) => res.json())
+                  .then((res) => {
                     if (res.url) {
                       handleNestedRepeaterChange(
                         sectionName,
@@ -925,16 +1050,20 @@ const EditorForm = ({ slug }: PageProps) => {
                         nestedFieldName,
                         nestedIndex,
                         field.name,
-                        res.url
+                        res.url,
                       );
                     }
                   })
-                  .catch(err => console.error("Error uploading file:", err));
+                  .catch((err) => console.error("Error uploading file:", err));
               }}
               className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
             />
             {value && (
-              <img src={value} className="h-20 rounded-lg border" alt="Preview" />
+              <img
+                src={value}
+                className="h-20 rounded-lg border"
+                alt="Preview"
+              />
             )}
           </div>
         );
@@ -945,15 +1074,17 @@ const EditorForm = ({ slug }: PageProps) => {
           <select
             value={value}
             className={baseInputClasses}
-            onChange={(e) => handleNestedRepeaterChange(
-              sectionName,
-              parentFieldName,
-              parentIndex,
-              nestedFieldName,
-              nestedIndex,
-              field.name,
-              e.target.value
-            )}
+            onChange={(e) =>
+              handleNestedRepeaterChange(
+                sectionName,
+                parentFieldName,
+                parentIndex,
+                nestedFieldName,
+                nestedIndex,
+                field.name,
+                e.target.value,
+              )
+            }
           >
             <option value="">Select {field.label}</option>
             {options.map((opt: any, i: number) => (
@@ -981,7 +1112,7 @@ const EditorForm = ({ slug }: PageProps) => {
                   nestedFieldName,
                   nestedIndex,
                   field.name,
-                  newValue
+                  newValue,
                 );
               }}
             />
@@ -1006,7 +1137,7 @@ const EditorForm = ({ slug }: PageProps) => {
     setLoading(true);
     try {
       const payload: any = {
-        name :formData?.name || generalInfo.navTitle,
+        name: formData?.slug || generalInfo.navTitle,
         seoMeta: {
           ...generalInfo,
           template: formData?.name || generalInfo.template,
@@ -1024,11 +1155,12 @@ const EditorForm = ({ slug }: PageProps) => {
           };
         });
       }
-      console.log(payload,"payload")
+      console.log(payload, "payload");
 
-      const endpoint = slug === "new"
-        ? `/api/admin/pageInfo`
-        : `/api/admin/pageInfo/${slug.toLowerCase()}`;
+      const endpoint =
+        slug === "new"
+          ? `/api/admin/pageInfo`
+          : `/api/admin/pageInfo/${slug.toLowerCase()}`;
 
       const method = slug === "new" ? "POST" : "PUT";
 
@@ -1038,18 +1170,17 @@ const EditorForm = ({ slug }: PageProps) => {
         body: JSON.stringify(payload),
       });
 
-
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const result = await response.json();
       console.log("Save response:", result);
-      
+
       alert("Page saved successfully!");
-      
+
       if (slug === "new" && result?.data?.slug) {
-        window.location.href = `/admin/pages/${result.data.slug}`;
+        window.location.href = `/admin/pages/editor/${result.data.slug}`;
       }
     } catch (error) {
       console.error("Error saving page:", error);
@@ -1072,10 +1203,10 @@ const EditorForm = ({ slug }: PageProps) => {
                 key={key}
                 onClick={() => {
                   setSelectedKey(key);
-                  setGeneralInfo(prev => ({ 
-                    ...prev, 
+                  setGeneralInfo((prev) => ({
+                    ...prev,
                     template: data.name,
-                    canonicalUrl: key
+                    canonicalUrl: key,
                   }));
                 }}
                 className="p-6 border rounded-xl hover:border-blue-500 hover:shadow-lg transition-all text-left"
@@ -1100,14 +1231,17 @@ const EditorForm = ({ slug }: PageProps) => {
 
   const processSectionFields = (section: any) => {
     const fieldNames = section.fields.map((f: any) => f.name);
-    const duplicates = fieldNames.filter((name: string, index: number) => 
-      fieldNames.indexOf(name) !== index
+    const duplicates = fieldNames.filter(
+      (name: string, index: number) => fieldNames.indexOf(name) !== index,
     );
-    
+
     if (duplicates.length > 0) {
-      console.warn(`Duplicate field names found in section "${section.label}":`, duplicates);
+      console.warn(
+        `Duplicate field names found in section "${section.label}":`,
+        duplicates,
+      );
     }
-    
+
     return section.fields;
   };
 
@@ -1117,7 +1251,7 @@ const EditorForm = ({ slug }: PageProps) => {
         {error && (
           <div className="border-b border-red-200 bg-red-50 px-6 py-4">
             <p className="text-red-600">{error}</p>
-            <button 
+            <button
               onClick={() => setError(null)}
               className="text-sm text-red-500 hover:text-red-700"
             >
@@ -1130,7 +1264,9 @@ const EditorForm = ({ slug }: PageProps) => {
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div>
               <h1 className="text-2xl font-bold">
-                {slug === "new" ? `Create New ${formData.name} Page` : `Edit ${formData.name} Page`}
+                {slug === "new"
+                  ? `Create New ${formData.name} Page`
+                  : `Edit ${formData.name} Page`}
               </h1>
               <p className="text-gray-600 mt-1">{formData.description}</p>
               {formData.is_dynamic && (
@@ -1154,20 +1290,22 @@ const EditorForm = ({ slug }: PageProps) => {
           <div className="flex gap-6">
             <button
               onClick={() => setActiveTab("general")}
-              className={`py-3 px-1 border-b-2 font-medium transition-colors ${activeTab === "general"
+              className={`py-3 px-1 border-b-2 font-medium transition-colors ${
+                activeTab === "general"
                   ? "border-blue-600 text-blue-600"
                   : "border-transparent text-gray-600 hover:text-gray-900"
-                }`}
+              }`}
             >
               <Settings size={18} className="inline mr-2" />
               General Information
             </button>
             <button
               onClick={() => setActiveTab("sections")}
-              className={`py-3 px-1 border-b-2 font-medium transition-colors ${activeTab === "sections"
+              className={`py-3 px-1 border-b-2 font-medium transition-colors ${
+                activeTab === "sections"
                   ? "border-blue-600 text-blue-600"
                   : "border-transparent text-gray-600 hover:text-gray-900"
-                }`}
+              }`}
             >
               <Layout size={18} className="inline mr-2" />
               Page Sections
@@ -1179,6 +1317,8 @@ const EditorForm = ({ slug }: PageProps) => {
           {activeTab === "general" ? (
             <div className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* {slug === "new" ? } */}
+
                 <div>
                   <label className="block text-sm font-medium mb-2">
                     Page Title (SEO)
@@ -1186,11 +1326,32 @@ const EditorForm = ({ slug }: PageProps) => {
                   <input
                     type="text"
                     value={generalInfo.title}
-                    onChange={(e) => handleGeneralInfoChange("title", e.target.value)}
+                    onChange={(e) =>
+                      handleGeneralInfoChange("title", e.target.value)
+                    }
                     className="w-full p-3 border rounded-xl"
                     placeholder="Enter page title"
                   />
                 </div>
+
+                {slug === "new" ? (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Page Slug
+                    </label>
+                    <input
+                      type="text"
+                      value={generalInfo.slug}
+                      onChange={(e) =>
+                        handleGeneralInfoChange("slug", e.target.value)
+                      }
+                      className="w-full p-3 border rounded-xl"
+                      placeholder="Enter page slug"
+                    />
+                  </div>
+                ) : (
+                  ""
+                )}
 
                 <div>
                   <label className="block text-sm font-medium mb-2">
@@ -1210,7 +1371,9 @@ const EditorForm = ({ slug }: PageProps) => {
                   </label>
                   <textarea
                     value={generalInfo.description}
-                    onChange={(e) => handleGeneralInfoChange("description", e.target.value)}
+                    onChange={(e) =>
+                      handleGeneralInfoChange("description", e.target.value)
+                    }
                     className="w-full p-3 border rounded-xl"
                     rows={3}
                     placeholder="Enter meta description"
@@ -1224,7 +1387,9 @@ const EditorForm = ({ slug }: PageProps) => {
                   <input
                     type="text"
                     value={generalInfo.keywords}
-                    onChange={(e) => handleGeneralInfoChange("keywords", e.target.value)}
+                    onChange={(e) =>
+                      handleGeneralInfoChange("keywords", e.target.value)
+                    }
                     className="w-full p-3 border rounded-xl"
                     placeholder="keyword1, keyword2, keyword3"
                   />
@@ -1237,7 +1402,9 @@ const EditorForm = ({ slug }: PageProps) => {
                   <input
                     type="text"
                     value={generalInfo.navTitle}
-                    onChange={(e) => handleGeneralInfoChange("navTitle", e.target.value)}
+                    onChange={(e) =>
+                      handleGeneralInfoChange("navTitle", e.target.value)
+                    }
                     className="w-full p-3 border rounded-xl"
                     placeholder="Nav title"
                   />
@@ -1250,7 +1417,9 @@ const EditorForm = ({ slug }: PageProps) => {
                   <input
                     type="text"
                     value={generalInfo.navSubtitle}
-                    onChange={(e) => handleGeneralInfoChange("navSubtitle", e.target.value)}
+                    onChange={(e) =>
+                      handleGeneralInfoChange("navSubtitle", e.target.value)
+                    }
                     className="w-full p-3 border rounded-xl"
                     placeholder="Nav subtitle"
                   />
@@ -1263,7 +1432,9 @@ const EditorForm = ({ slug }: PageProps) => {
                   <input
                     type="text"
                     value={generalInfo.ogTitle}
-                    onChange={(e) => handleGeneralInfoChange("ogTitle", e.target.value)}
+                    onChange={(e) =>
+                      handleGeneralInfoChange("ogTitle", e.target.value)
+                    }
                     className="w-full p-3 border rounded-xl"
                     placeholder="Open Graph title"
                   />
@@ -1291,7 +1462,9 @@ const EditorForm = ({ slug }: PageProps) => {
                   </label>
                   <textarea
                     value={generalInfo.ogDescription}
-                    onChange={(e) => handleGeneralInfoChange("ogDescription", e.target.value)}
+                    onChange={(e) =>
+                      handleGeneralInfoChange("ogDescription", e.target.value)
+                    }
                     className="w-full p-3 border rounded-xl"
                     rows={2}
                     placeholder="Open Graph description"
@@ -1309,7 +1482,11 @@ const EditorForm = ({ slug }: PageProps) => {
                     className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                   />
                   {generalInfo.ogImage && (
-                    <img src={generalInfo.ogImage} className="mt-3 h-20 rounded-lg" alt="OG Preview" />
+                    <img
+                      src={generalInfo.ogImage}
+                      className="mt-3 h-20 rounded-lg"
+                      alt="OG Preview"
+                    />
                   )}
                 </div>
 
@@ -1322,7 +1499,12 @@ const EditorForm = ({ slug }: PageProps) => {
                       <input
                         type="checkbox"
                         checked={generalInfo.isPublished}
-                        onChange={(e) => handleGeneralInfoChange("isPublished", e.target.checked)}
+                        onChange={(e) =>
+                          handleGeneralInfoChange(
+                            "isPublished",
+                            e.target.checked,
+                          )
+                        }
                         className="w-5 h-5 text-blue-600 rounded"
                       />
                       <span>Published</span>
@@ -1331,7 +1513,9 @@ const EditorForm = ({ slug }: PageProps) => {
                     <input
                       type="datetime-local"
                       value={generalInfo.publishedAt}
-                      onChange={(e) => handleGeneralInfoChange("publishedAt", e.target.value)}
+                      onChange={(e) =>
+                        handleGeneralInfoChange("publishedAt", e.target.value)
+                      }
                       className="w-full p-3 border rounded-xl"
                     />
                   </div>
@@ -1342,13 +1526,18 @@ const EditorForm = ({ slug }: PageProps) => {
             <div className="mt-6 space-y-4">
               {formData?.sections?.map((section: any, idx: number) => {
                 const fields = processSectionFields(section);
-                
+
                 return (
-                  <div key={idx} className="bg-white rounded-2xl shadow-sm border">
+                  <div
+                    key={idx}
+                    className="bg-white rounded-2xl shadow-sm border"
+                  >
                     <div
                       onClick={() =>
                         setActiveSection(
-                          activeSection === section?.name ? null : section?.name
+                          activeSection === section?.name
+                            ? null
+                            : section?.name,
                         )
                       }
                       className="flex justify-between items-center p-5 cursor-pointer hover:bg-gray-50 rounded-2xl transition"
@@ -1384,21 +1573,29 @@ const EditorForm = ({ slug }: PageProps) => {
                       <div className="border-t p-5">
                         <div className="space-y-5">
                           {fields.map((field: any) => {
-                            const fieldIndex = fields.findIndex((f: any) => f.name === field.name);
+                            const fieldIndex = fields.findIndex(
+                              (f: any) => f.name === field.name,
+                            );
                             if (fieldIndex !== fields.indexOf(field)) {
-                              console.warn(`Skipping duplicate field: ${field.name}`);
+                              console.warn(
+                                `Skipping duplicate field: ${field.name}`,
+                              );
                               return null;
                             }
-                            
+
                             return (
                               <div key={field.name}>
                                 <label className="block text-sm font-medium mb-2">
                                   {field.label}
-                                  {field.required && <span className="text-red-500 ml-1">*</span>}
+                                  {field.required && (
+                                    <span className="text-red-500 ml-1">*</span>
+                                  )}
                                 </label>
                                 {renderField(field, section.name)}
                                 {field.placeholder && (
-                                  <p className="text-sm text-gray-500 mt-1">{field.placeholder}</p>
+                                  <p className="text-sm text-gray-500 mt-1">
+                                    {field.placeholder}
+                                  </p>
                                 )}
                               </div>
                             );
@@ -1418,9 +1615,6 @@ const EditorForm = ({ slug }: PageProps) => {
 };
 
 export default EditorForm;
-
-
-
 
 // "use client"
 
@@ -1514,7 +1708,7 @@ export default EditorForm;
 //       try {
 //         const res = await getPageInfo(slug);
 //         console.log("Fetched page data:", res);
-        
+
 //         // Set general info
 //         if (res.seoMeta) {
 //           setGeneralInfo(res.seoMeta);
@@ -1527,7 +1721,7 @@ export default EditorForm;
 //           setFormData(pageData[key]);
 //         } else {
 //           // If no matching template found, try to find by name
-//           const fallbackKey = Object.keys(pageData).find(k => 
+//           const fallbackKey = Object.keys(pageData).find(k =>
 //             pageData[k].name.toLowerCase() === slug.toLowerCase()
 //           );
 //           if (fallbackKey) {
@@ -1542,7 +1736,7 @@ export default EditorForm;
 //             sectionValues[key] = res.sections[key].fields || {};
 //           });
 //           setValues(sectionValues);
-          
+
 //           // Set first section as active
 //           if (Object.keys(res.sections).length > 0) {
 //             setActiveSection(Object.keys(res.sections)[0]);
@@ -1565,13 +1759,13 @@ export default EditorForm;
 //   // Get field value helper
 //   const getFieldValue = (sectionName: string, fieldName: string, repeaterIndex?: number, parentField?: string) => {
 //     const sectionValues = values[sectionName] || {};
-    
+
 //     if (repeaterIndex !== undefined && parentField) {
 //       const repeaterItems = sectionValues[parentField] || [];
 //       const item = repeaterItems[repeaterIndex] || {};
 //       return item[fieldName] || "";
 //     }
-    
+
 //     return sectionValues[fieldName] || "";
 //   };
 
@@ -1618,7 +1812,7 @@ export default EditorForm;
 //     setValues((prev) => {
 //       const sectionValues = prev[sectionName] || {};
 //       const groupData = sectionValues[groupFieldName] || {};
-      
+
 //       return {
 //         ...prev,
 //         [sectionName]: {
@@ -1637,18 +1831,18 @@ export default EditorForm;
 //     setValues((prev) => {
 //       const sectionValues = prev[sectionName] || {};
 //       const currentItems = sectionValues[fieldName] || [];
-      
+
 //       // Get field definitions for the repeater to create default structure
 //       const section = formData?.sections?.find((s: any) => s.name === sectionName);
 //       const fieldDef = section?.fields?.find((f: any) => f.name === fieldName);
-      
+
 //       let newItem = {};
 //       if (fieldDef?.fields) {
 //         fieldDef.fields.forEach((f: any) => {
 //           newItem = { ...newItem, [f.name]: "" };
 //         });
 //       }
-      
+
 //       return {
 //         ...prev,
 //         [sectionName]: {
@@ -1663,7 +1857,7 @@ export default EditorForm;
 //     setValues((prev) => {
 //       const sectionValues = prev[sectionName] || {};
 //       const currentItems = sectionValues[fieldName] || [];
-      
+
 //       return {
 //         ...prev,
 //         [sectionName]: {
@@ -1874,7 +2068,7 @@ export default EditorForm;
 //     parent?: any,
 //   ) => {
 //     const sectionValues = values[sectionName] || {};
-    
+
 //     // Get the current value
 //     let value = "";
 //     if (index !== undefined && parent) {
@@ -1966,7 +2160,7 @@ export default EditorForm;
 //       case "select":
 //         // Determine options source
 //         const options = field.option?.length ? field.option : students;
-        
+
 //         return (
 //           <select
 //             value={value}
@@ -1994,7 +2188,7 @@ export default EditorForm;
 //       case "toggle":
 //         // Convert string to boolean for checkbox
 //         const isChecked = value === "true" || value === true;
-        
+
 //         return (
 //           <label className="relative inline-flex items-center cursor-pointer">
 //             <input
@@ -2123,10 +2317,10 @@ export default EditorForm;
 
 //       const result = await response.json();
 //       console.log("Save response:", result);
-      
+
 //       // Show success message
 //       alert("Page saved successfully!");
-      
+
 //       // If this was a new page, redirect to the edit page
 //       if (slug === "new" && result?.data?.slug) {
 //         window.location.href = `/admin/pages/${result.data.slug}`;
@@ -2152,8 +2346,8 @@ export default EditorForm;
 //                 key={key}
 //                 onClick={() => {
 //                   setSelectedKey(key);
-//                   setGeneralInfo(prev => ({ 
-//                     ...prev, 
+//                   setGeneralInfo(prev => ({
+//                     ...prev,
 //                     template: data.name,
 //                     canonicalUrl: key // Set canonical URL to the page key
 //                   }));
@@ -2182,14 +2376,14 @@ export default EditorForm;
 //   const processSectionFields = (section: any) => {
 //     // Check for duplicate field names
 //     const fieldNames = section.fields.map((f: any) => f.name);
-//     const duplicates = fieldNames.filter((name: string, index: number) => 
+//     const duplicates = fieldNames.filter((name: string, index: number) =>
 //       fieldNames.indexOf(name) !== index
 //     );
-    
+
 //     if (duplicates.length > 0) {
 //       console.warn(`Duplicate field names found in section "${section.label}":`, duplicates);
 //     }
-    
+
 //     return section.fields;
 //   };
 
@@ -2200,7 +2394,7 @@ export default EditorForm;
 //         {error && (
 //           <div className="border-b border-red-200 bg-red-50 px-6 py-4">
 //             <p className="text-red-600">{error}</p>
-//             <button 
+//             <button
 //               onClick={() => setError(null)}
 //               className="text-sm text-red-500 hover:text-red-700"
 //             >
@@ -2431,7 +2625,7 @@ export default EditorForm;
 //               {formData?.sections?.map((section: any, idx: number) => {
 //                 // Process fields to handle duplicates
 //                 const fields = processSectionFields(section);
-                
+
 //                 return (
 //                   <div key={idx} className="bg-white rounded-2xl shadow-sm border">
 //                     <div
@@ -2479,7 +2673,7 @@ export default EditorForm;
 //                               console.warn(`Skipping duplicate field: ${field.name}`);
 //                               return null;
 //                             }
-                            
+
 //                             return (
 //                               <div key={field.name}>
 //                                 <label className="block text-sm font-medium mb-2">
@@ -2508,16 +2702,6 @@ export default EditorForm;
 // };
 
 // export default EditorForm;
-
-
-
-
-
-
-
-
-
-
 
 // "use client"
 
@@ -2611,7 +2795,7 @@ export default EditorForm;
 //       try {
 //         const res = await getPageInfo(slug);
 //         console.log("Fetched page data:", res);
-        
+
 //         // Set general info
 //         if (res.seoMeta) {
 //           setGeneralInfo(res.seoMeta);
@@ -2624,7 +2808,7 @@ export default EditorForm;
 //           setFormData(pageData[key]);
 //         } else {
 //           // If no matching template found, try to find by name
-//           const fallbackKey = Object.keys(pageData).find(k => 
+//           const fallbackKey = Object.keys(pageData).find(k =>
 //             pageData[k].name.toLowerCase() === slug.toLowerCase()
 //           );
 //           if (fallbackKey) {
@@ -2639,7 +2823,7 @@ export default EditorForm;
 //             sectionValues[key] = res.sections[key].fields || {};
 //           });
 //           setValues(sectionValues);
-          
+
 //           // Set first section as active
 //           if (Object.keys(res.sections).length > 0) {
 //             setActiveSection(Object.keys(res.sections)[0]);
@@ -2662,13 +2846,13 @@ export default EditorForm;
 //   // Get field value helper
 //   const getFieldValue = (sectionName: string, fieldName: string, repeaterIndex?: number, parentField?: string) => {
 //     const sectionValues = values[sectionName] || {};
-    
+
 //     if (repeaterIndex !== undefined && parentField) {
 //       const repeaterItems = sectionValues[parentField] || [];
 //       const item = repeaterItems[repeaterIndex] || {};
 //       return item[fieldName] || "";
 //     }
-    
+
 //     return sectionValues[fieldName] || "";
 //   };
 
@@ -2710,19 +2894,19 @@ export default EditorForm;
 //     setValues((prev) => {
 //       const sectionValues = prev[sectionName] || {};
 //       const currentItems = sectionValues[fieldName] || [];
-      
+
 //       // Get field definitions for the repeater to create default structure
 //       const section = formData?.sections?.find((s: any) => s.name === sectionName);
 //       const fieldDef = section?.fields?.find((f: any) => f.name === fieldName);
-      
+
 //       let newItem = {};
 //       if (fieldDef?.fields) {
-        
+
 //         fieldDef.fields.forEach((f: any) => {
 //           newItem = { ...newItem, [f.name]: "" };
 //         });
 //       }
-      
+
 //       return {
 //         ...prev,
 //         [sectionName]: {
@@ -2737,7 +2921,7 @@ export default EditorForm;
 //     setValues((prev) => {
 //       const sectionValues = prev[sectionName] || {};
 //       const currentItems = sectionValues[fieldName] || [];
-      
+
 //       return {
 //         ...prev,
 //         [sectionName]: {
@@ -2837,7 +3021,7 @@ export default EditorForm;
 //     parent?: any,
 //   ) => {
 //     const sectionValues = values[sectionName] || {};
-    
+
 //     // Get the current value - FIXED for nested objects in repeaters
 //     let value = "";
 //     if (index !== undefined && parent) {
@@ -2929,7 +3113,7 @@ export default EditorForm;
 //       case "select":
 //         // Determine options source
 //         const options = field.option?.length ? field.option : students;
-        
+
 //         return (
 //           <select
 //             value={value}
@@ -2957,7 +3141,7 @@ export default EditorForm;
 //       case "toggle":
 //         // Convert string to boolean for checkbox
 //         const isChecked = value === "true" || value === true;
-        
+
 //         return (
 //           <label className="relative inline-flex items-center cursor-pointer">
 //             <input
@@ -3085,10 +3269,10 @@ export default EditorForm;
 
 //       const result = await response.json();
 //       console.log("Save response:", result);
-      
+
 //       // Show success message
 //       alert("Page saved successfully!");
-      
+
 //       // If this was a new page, redirect to the edit page
 //       if (slug === "new" && result?.data?.slug) {
 //         window.location.href = `/admin/pages/${result.data.slug}`;
@@ -3100,7 +3284,6 @@ export default EditorForm;
 //       setLoading(false);
 //     }
 //   };
-
 
 //   // New Page Template Selection
 //   if (slug === "new" && !selectedKey) {
@@ -3115,8 +3298,8 @@ export default EditorForm;
 //                 key={key}
 //                 onClick={() => {
 //                   setSelectedKey(key);
-//                   setGeneralInfo(prev => ({ 
-//                     ...prev, 
+//                   setGeneralInfo(prev => ({
+//                     ...prev,
 //                     template: data.name,
 //                     canonicalUrl: key // Set canonical URL to the page key
 //                   }));
@@ -3145,14 +3328,14 @@ export default EditorForm;
 //   const processSectionFields = (section: any) => {
 //     // Check for duplicate field names
 //     const fieldNames = section.fields.map((f: any) => f.name);
-//     const duplicates = fieldNames.filter((name: string, index: number) => 
+//     const duplicates = fieldNames.filter((name: string, index: number) =>
 //       fieldNames.indexOf(name) !== index
 //     );
-    
+
 //     if (duplicates.length > 0) {
 //       console.warn(`Duplicate field names found in section "${section.label}":`, duplicates);
 //     }
-    
+
 //     return section.fields;
 //   };
 
@@ -3163,7 +3346,7 @@ export default EditorForm;
 //         {error && (
 //           <div className="border-b border-red-200 bg-red-50 px-6 py-4">
 //             <p className="text-red-600">{error}</p>
-//             <button 
+//             <button
 //               onClick={() => setError(null)}
 //               className="text-sm text-red-500 hover:text-red-700"
 //             >
@@ -3394,7 +3577,7 @@ export default EditorForm;
 //               {formData?.sections?.map((section: any, idx: number) => {
 //                 // Process fields to handle duplicates
 //                 const fields = processSectionFields(section);
-                
+
 //                 return (
 //                   <div key={idx} className="bg-white rounded-2xl shadow-sm border">
 //                     <div
@@ -3442,7 +3625,7 @@ export default EditorForm;
 //                               console.warn(`Skipping duplicate field: ${field.name}`);
 //                               return null;
 //                             }
-                            
+
 //                             return (
 //                               <div key={field.name}>
 //                                 <label className="block text-sm font-medium mb-2">
@@ -3471,21 +3654,6 @@ export default EditorForm;
 // };
 
 // export default EditorForm;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // // "use client";
 
@@ -3745,7 +3913,7 @@ export default EditorForm;
 // //     parent?: any
 // //   ) => {
 // //     const sectionValues = values[sectionName] || {};
-    
+
 // //     // Get the current value - FIXED for nested objects in repeaters
 // //     let value = "";
 // //     if (index !== undefined && parent) {
@@ -3837,7 +4005,7 @@ export default EditorForm;
 // //       case "select":
 // //         // Determine options source
 // //         const options = field.option?.length ? field.option : students;
-        
+
 // //         return (
 // //           <select
 // //             value={value}
@@ -3865,7 +4033,7 @@ export default EditorForm;
 // //       case "toggle":
 // //         // Convert string to boolean for checkbox
 // //         const isChecked = value === "true" || value === true;
-        
+
 // //         return (
 // //           <label className="relative inline-flex items-center cursor-pointer">
 // //             <input
@@ -4296,8 +4464,3 @@ export default EditorForm;
 // // };
 
 // // export default EditorForm;
-
-
-
-
-
