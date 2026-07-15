@@ -1137,7 +1137,7 @@ const EditorForm = ({ slug }: PageProps) => {
     setLoading(true);
     try {
       const payload: any = {
-        name: formData?.slug || generalInfo.navTitle,
+        name: formData?.slug || generalInfo.canonicalUrl,
         seoMeta: {
           ...generalInfo,
           template: formData?.name || generalInfo.template,
@@ -1149,9 +1149,9 @@ const EditorForm = ({ slug }: PageProps) => {
       if (formData?.sections) {
         formData.sections.forEach((section: any) => {
           payload.sections[section.name] = {
-            // name: section.name,
+            name: section.name,
             template: formData?.name || generalInfo.template,
-            name: formData?.name || generalInfo.template,
+            // name: formData?.name || generalInfo.template,
             label: section.label,
             fields: values[section.name] || {},
           };
