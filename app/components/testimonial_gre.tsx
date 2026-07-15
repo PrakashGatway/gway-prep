@@ -32,9 +32,9 @@ export function TextTestimonials({testimonialsSection}:any) {
     <div ref={containerRef} className="min-h-[80vh]  py-4 px-4 overflow-hidden">
       <div className="max-w-7xl m-auto">
         <div className="text-center mt-10">
-          <h1 className="text-xl md:text-2xl text-left text-gray-600">
+          <h2 className="text-xl md:text-2xl text-left text-gray-600">
             {testimonialsSection?.sectionSubtitle || "Purchased by 500,000+ GRE students"}
-          </h1>
+          </h2>
         </div>
 
         {/* Mobile Layout */}
@@ -117,7 +117,7 @@ function CardContent({ data }: { data: any }) {
   return (
     <>
       <div className="flex justify-between items-start flex-col ">
-        <h3 className="text-xl font-bold text-[#555]">{data?.studentName}</h3>
+        <p className="text-xl font-bold text-[#555]">{data?.studentName}</p>
         <span className="flex justify-between w-full">
           <div className="flex">Math <p className="w-10 ml-1 bg-orange-600 font-bold rounded text-center text-white">{data?.mathScore}</p></div>
           <div className="flex">Verbal <p className="w-10 ml-1 bg-gray-600 font-bold rounded text-center text-white">{data?.verbalScore}</p></div>

@@ -14,10 +14,10 @@ export function Aboutresult({ data }: { data: any }) {
     <section className="py-10 md:py-12  bg-[#fff] overflow-hidden font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]" id="about">
       {/* Heading */}
       <div className="text-center mb-8 px-4">
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 flex items-center justify-center gap-3">
+        <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 flex items-center justify-center gap-3">
           Meet our stars{" "}
           <Stars className="w-8 h-8 md:w-10 md:h-10 text-[#f26e46] fill-[#f26e46]" />
-        </h1>
+        </h2>
         <p className="text-gray-500 mt-3 text-base md:text-lg">
           Our students who made us proud
         </p>
@@ -61,9 +61,9 @@ export function Aboutresult({ data }: { data: any }) {
 
                 {/* Info */}
                 <div className="text-left mt-2 capitalize px-1">
-                  <h2 className="font-bold text-base sm:text-lg break-words text-gray-800 leading-tight">
+                  <p className="font-bold text-base sm:text-lg break-words text-gray-800 leading-tight">
                     {ele?.name}
-                  </h2>
+                  </p>
                   <div className="flex flex-col items-start justify-between mt-1">
                     <span className="font-medium text-xs sm:text-sm text-gray-500 truncate">
                       Standardized Test Results

@@ -32,10 +32,10 @@ function AIStudySection({ aiStudySection }: { aiStudySection: any }) {
               __html: aiStudySection.sectionTitle || "",
             }}
           /> */}
-          <h4 className="text-2xl md:text-3xl font-extrabold m-4 flex gap-2 items-center justify-center">
+          <p className="text-2xl md:text-3xl font-extrabold m-4 flex gap-2 items-center justify-center">
             {aiStudySection?.sectionTitle?.split("||")[0] || "What is"} 
-            <p className="text-[#f06437]">{aiStudySection?.sectionTitle?.split("||")[1] || "GRE?"}</p>
-          </h4>
+            <span className="text-[#f06437]">{aiStudySection?.sectionTitle?.split("||")[1] || "GRE?"}</span>
+          </p>
           <p className="text-sm md:text-base text-gray-600">
             {aiStudySection.sectionSubtitle}
           </p>
@@ -103,9 +103,9 @@ function FeatureCard({ feature, index }: { feature: any; index: number }) {
           <span className="text-orange-500 font-semibold uppercase tracking-widest text-xs md:text-sm">
             AI Feature {index + 1}
           </span>
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mt-2 md:mt-4 mb-3 md:mb-6">
+          <p className="text-2xl md:text-3xl lg:text-4xl font-bold mt-2 md:mt-4 mb-3 md:mb-6">
             {feature.heading}
-          </h2>
+          </p>
           <p className="text-gray-600 text-sm md:text-base leading-relaxed">
             {feature.content}
           </p>
@@ -174,15 +174,15 @@ function GreSection({ examFormatSection, whatIsGreSection, cta_banner, slug }: a
         {/* Left Side Logo Graphic Header */}
         <div className="flex items-center gap-1 text-[#541e5c] justify-center md:justify-start">
           <span className="text-3xl md:text-4xl font-extrabold -mt-2 animate-pulse">*</span>
-          <h1 className="text-5xl md:text-6xl lg:text-9xl font-black tracking-tight lowercase">{slug|| "gre"}</h1>
+          <h3 className="text-5xl md:text-6xl lg:text-9xl font-black tracking-tight lowercase">{slug|| "gre"}</h3>
           <span className="text-lg font-bold self-start mt-2">®</span>
         </div>
 
         {/* Right Side Introduction */}
         <div className="px-0 md:px-6">
-          <h3 className="text-2xl md:text-3xl font-extrabold mb-4 flex gap-2">
+          <h4 className="text-2xl md:text-3xl font-extrabold mb-4 flex gap-2">
            {whatIsGreSection?.sectionTitle?.split("||")[0] || "What is"} <p className="text-[#f06437]">{whatIsGreSection?.sectionTitle?.split("||")[1] || "GRE?"}</p>
-          </h3>
+          </h4>
           <p className="text-gray-600 text-sm md:text-base leading-relaxed text-justify">
             {whatIsGreSection?.description || greData.main_content.introduction}
           </p>
@@ -191,7 +191,7 @@ function GreSection({ examFormatSection, whatIsGreSection, cta_banner, slug }: a
 
       {/* Lower Cards Stack */}
       <div className="space-y-4">
-        <h3 className="text-2xl md:text-3xl font-extrabold m-4 flex gap-2">
+        <h5 className="text-2xl md:text-3xl font-extrabold m-4 flex gap-2">
           {/* <div
             dangerouslySetInnerHTML={{
               __html: title
@@ -199,7 +199,7 @@ function GreSection({ examFormatSection, whatIsGreSection, cta_banner, slug }: a
           /> */}
            <p className="text-[#f06437]">{examFormatSection?.title?.split("||")[0] || "What is"}</p> {examFormatSection?.title?.split("||")[1] || "GRE?"}
 
-        </h3>
+        </h5>
         
         {/* Use dynamic patternTable data if available, otherwise use default */}
         {(patternTable.length > 0 ? patternTable : greData.sections).map((item: any, index: number) => (
@@ -257,11 +257,11 @@ function GrePatternTable({ examPatternData }: { examPatternData: any }) {
                   __html: patternItem?.title || ""
                 }}
               /> */}
-              <h3 className="text-xl sm:text-2xl font-bold text-[#333333] mb-3 flex gap-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-[#333333] mb-3 flex gap-2">
                   {patternItem?.title?.split("||")[0] || "GRE Exam Pattern 2026 -"} 
                   <p className="text-[#f06437]">{patternItem?.title?.split("||")[1] || " New Format at a Glance"}</p>
 
-              </h3>
+              </h2>
               <div 
                 className="text-gray-600 text-sm sm:text-base leading-relaxed max-w-5xl"
                 dangerouslySetInnerHTML={{
@@ -463,9 +463,9 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any, slug:any}) {
             {/* Right Form */}
             <div className="flex justify-center lg:justify-end">
               <div className="bg-white rounded-xl md:rounded-md shadow-xl w-full max-w-md p-4 md:p-6">
-                <h3 className="text-center text-lg md:text-xl font-semibold mb-6 md:mb-8">
+                <p className="text-center text-lg md:text-xl font-semibold mb-6 md:mb-8">
                   Speak to an Expert
-                </h3>
+                </p>
                 <form className="space-y-3 md:space-y-4">
                   <input
                     type="text"
@@ -558,9 +558,9 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any, slug:any}) {
             <span className="text-[#FF6A39] text-sm md:text-base font-medium tracking-wide block">
               {boostProfileSection.tagline || "Test Prep & Profile Building"}
             </span>
-            <h1 className="text-[#333333] text-2xl md:text-3xl lg:text-5xl font-extrabold leading-tight">
+            <h2 className="text-[#333333] text-2xl md:text-3xl lg:text-5xl font-extrabold leading-tight">
               {boostProfileSection.title || "Boost Your <br className='hidden md:inline' /> Study Abroad Profile!"}
-            </h1>
+            </h2>
             <div className="pt-2">
               <button className="bg-[#FF6A39] hover:bg-[#e05626] text-white font-bold px-8 py-3 rounded-xl shadow-md transition text-sm md:text-base">
                 {boostProfileSection.buttonText || "Enroll Now"}
@@ -588,10 +588,10 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any, slug:any}) {
             className="text-center text-2xl md:text-3xl lg:text-4xl font-bold"
           /> */}
 
-          <h5 className="text-2xl md:text-3xl font-extrabold  text-center ">
+          <h2 className="text-2xl md:text-3xl font-extrabold  text-center ">
             {scoreGuaranteeSection?.title?.split("||")[0] || "What is"}  <br />
             <p className="text-[#f06437]">{scoreGuaranteeSection?.title?.split("||")[1] || "GRE?"}</p>
-          </h5>
+          </h2>
 
           <p className="my-4 md:my-6 text-sm md:text-base text-center">{scoreGuaranteeSection.subtitle}</p>
         </div>

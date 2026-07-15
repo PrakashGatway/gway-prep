@@ -8,36 +8,155 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+
+const SITE_URL = "https://www.ooshasprep.com"; 
+
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  
+
   if (!slug) {
     return {
       title: "No Data Found",
       description: "Preparation material not found",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
   const data = await getPageInfo(slug);
-  const seo = data?.seoMeta;
+  const seo = data?.seoMeta || {};
+
+  const canonical =
+    seo?.canonicalUrl?.replace(/^\/+|\/+$/g, "") || `preparation/${slug}`;
+
+  const title = seo?.title?.trim() || `${slug.toUpperCase()} Preparation`;
+
+  const description =
+    seo?.description ||
+    `Prepare for ${slug.toUpperCase()} with Ooshas Prep.`;
 
   return {
-    title: seo?.title?.trim() || "GRE Preparation",
-    description: seo?.description,
+    metadataBase: new URL(SITE_URL),
+
+    title,
+    description,
     keywords: seo?.keywords,
+
     alternates: {
-      canonical: seo?.canonicalUrl ? `/${seo.canonicalUrl}` : undefined,
+      canonical: `/${canonical}`,
     },
+
+    robots: {
+      index: true,
+      follow: true,
+      nocache: false,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
+
     openGraph: {
-      title: seo?.title || "GRE Preparation",
-      description: seo?.description,
-      url: seo?.canonicalUrl 
-        ? `https://ooshasprap.com/${seo.canonicalUrl}` 
-        : "https://ooshasprap.com/gre",
+      title: seo?.ogTitle || title,
+      description: seo?.ogDescription || description,
+      url: `${SITE_URL}/${canonical}`,
+      siteName: "Ooshas Prep",
       type: "website",
+      locale: "en_US",
+      images: [
+        {
+          url: seo?.ogImage || "/image/logo.png",
+          width: 1200,
+          height: 630,
+          alt: seo?.ogTitle || title,
+        },
+      ],
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: seo?.ogTitle || title,
+      description: seo?.ogDescription || description,
+      images: [seo?.ogImage || "/image/logo.png"],
     },
   };
 }
+
+// export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+//   const { slug } = await params;
+  
+//   if (!slug) {
+//     return {
+//       title: "No Data Found",
+//       description: "Preparation material not found",
+//     };
+//   }
+
+//   const data = await getPageInfo(slug);
+//   const seo = data?.seoMeta;
+
+//   return {
+//     title: seo?.title?.trim() || "GRE Preparation",
+//     description: seo?.description,
+//     keywords: seo?.keywords,
+//     alternates: {
+//       canonical: seo?.canonicalUrl ? `/${seo.canonicalUrl}` : undefined,
+//     },
+//     openGraph: {
+//       title: seo?.title || "GRE Preparation",
+//       description: seo?.description,
+//       url: seo?.canonicalUrl 
+//         ? `https://ooshasprap.com/${seo.canonicalUrl}` 
+//         : "https://ooshasprap.com/gre",
+//       type: "website",
+//     },
+    
+//     robots: {
+//       index: true,
+//       follow: true,
+//       nocache: false,
+//       googleBot: {
+//         index: true,
+//         follow: true,
+//         "max-image-preview": "large",
+//         "max-snippet": -1,
+//         "max-video-preview": -1,
+//       },
+//     },
+
+//     openGraph: {
+//       title: seo?.ogTitle || title,
+//       description: seo?.ogDescription || description,
+//       url: `${SITE_URL}/${canonical}`,
+//       siteName: "Ooshas Prep",
+//       type: "website",
+//       locale: "en_US",
+//       images: [
+//         {
+//           url: seo?.ogImage || "/image/logo.png",
+//           width: 1200,
+//           height: 630,
+//           alt: seo?.ogTitle || title,
+//         },
+//       ],
+//     },
+
+//     twitter: {
+//       card: "summary_large_image",
+//       title: seo?.ogTitle || title,
+//       description: seo?.ogDescription || description,
+//       images: [seo?.ogImage || "/image/logo.png"],
+//     },
+    
+//   };
+// }
 
 export default async function PreparationPage({ params }: PageProps) {
   const { slug } = await params;

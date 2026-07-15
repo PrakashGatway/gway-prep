@@ -12,7 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "duolingo",
     "about",
     "contact",
-    "blogs",
+    "blog",
     "privacy-policy",
     "terms-and-conditions",
   ];

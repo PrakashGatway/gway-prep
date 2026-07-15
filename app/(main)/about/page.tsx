@@ -2,56 +2,66 @@ import About from "@/app/components/About";
 import { getPageInfo } from "@/app/services/api";
 import { Metadata } from "next";
 
+const SITE_URL = "https://ooshasprep.com"; 
+
 export async function generateMetadata(): Promise<Metadata> {
-  const pageData = await getPageInfo("about");
-
-  const seo = pageData?.seoMeta || {};
-
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://ooshasprep.com";
+  const data = await getPageInfo("about");
+  const seo = data?.seoMeta || {};
 
   const canonical =
-    seo.canonicalUrl && seo.canonicalUrl !== ""
-      ? `${siteUrl}/${seo.canonicalUrl.replace(/^\/+/, "")}`
-      : `${siteUrl}/about`;
+    seo?.canonicalUrl?.replace(/^\/+|\/+$/g, "") || "about";
+
+  const title = seo?.title?.trim() || "About Us";
+  const description =
+    seo?.description ||
+    "Learn more about Ooshas Prep and our mission to help students achieve their study abroad goals.";
 
   return {
-    title: seo.title,
-    description: seo.description,
-    keywords: seo.keywords
-      ? seo.keywords.split(",").map((item: string) => item.trim())
-      : [],
+    metadataBase: new URL(SITE_URL),
+
+    title,
+    description,
+    keywords: seo?.keywords,
 
     alternates: {
-      canonical,
+      canonical: `/${canonical}`,
+    },
+
+    robots: {
+      index: true,
+      follow: true,
+      nocache: false,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
     },
 
     openGraph: {
-      title: seo.ogTitle || seo.title,
-      description: seo.ogDescription || seo.description,
-      url: canonical,
+      title: seo?.ogTitle || title,
+      description: seo?.ogDescription || description,
+      url: `${SITE_URL}/${canonical}`,
+      siteName: "Ooshas Prep",
       type: "website",
-      images: seo.ogImage
-        ? [
-            {
-              url: seo.ogImage,
-              width: 1200,
-              height: 630,
-              alt: seo.ogTitle || seo.title,
-            },
-          ]
-        : [],
+      locale: "en_US",
+      images: [
+        {
+          url: seo?.ogImage || "/og-image.jpg",
+          width: 1200,
+          height: 630,
+          alt: seo?.ogTitle || title,
+        },
+      ],
     },
 
     twitter: {
       card: "summary_large_image",
-      title: seo.ogTitle || seo.title,
-      description: seo.ogDescription || seo.description,
-      images: seo.ogImage ? [seo.ogImage] : [],
-    },
-
-    robots: {
-      index: seo.isPublished ?? true,
-      follow: seo.isPublished ?? true,
+      title: seo?.ogTitle || title,
+      description: seo?.ogDescription || description,
+      images: [seo?.ogImage || "/og-image.jpg"],
     },
   };
 }
