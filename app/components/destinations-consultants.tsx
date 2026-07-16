@@ -10,6 +10,7 @@ export function Consultants({ data, finalCtaSection }: any) {
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index)
   }
+  console.log('data faq', data)
 
   // 1. ADD THIS GUARD: Prevents the "reading fields of undefined" crash
   if (!data || !data.fields) {
@@ -19,6 +20,7 @@ export function Consultants({ data, finalCtaSection }: any) {
   return (
     <div className="bg-white max-w-7xl mx-auto rounded-xl p-6 my-10">
       <div 
+      className="text-3xl md:text-5xl mb-6"
         dangerouslySetInnerHTML={{
           __html: data.fields.title || `Frequently <span className="text-[#F36C45]">Asked Questions</span>`
         }} 

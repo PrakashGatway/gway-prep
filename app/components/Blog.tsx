@@ -256,7 +256,7 @@ export default function BlogPage({ pageInfo, categories }: any) {
                   </h2>
                   <div 
                     className="mb-12 grid grid-cols-1 gap-6 rounded-lg border border-gray-100 p-2 sm:grid-cols-[320px_1fr] cursor-pointer hover:shadow-lg transition-shadow"
-                    onClick={() => navigateToBlog(featuredBlog._id)}
+                    onClick={() => navigateToBlog(featuredBlog.slug)}
                   >
                     <div className="relative h-56 w-full overflow-hidden rounded-md sm:h-full">
                       <span className="absolute left-3 top-3 z-10 rounded bg-[#F0642C] px-2 py-1 text-[11px] font-semibold text-white">

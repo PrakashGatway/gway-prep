@@ -426,7 +426,6 @@ export const pageData: any = {
     ],
   },
 
-
   student: {
     name: "Student",
     description: "Add student by this page ",
@@ -616,735 +615,731 @@ export const pageData: any = {
   },
 
   services: {
-  name: "Services",
-  require: true,
-  description: "Services Page",
-  sections: [
-    {
-      name: "Services-Hero",
-      label: "Hero Section",
-      fields: [
-        {
-          name: "title",
-          label: "Hero Title",
-          type: "text",
-          required: true,
-        },
-        {
-          name: "subtitle",
-          label: "Hero Subtitle",
-          type: "textarea",
-        },
-        
-      ],
-    },
+    name: "Services",
+    require: true,
+    description: "Services Page",
+    sections: [
+      {
+        name: "Services-Hero",
+        label: "Hero Section",
+        fields: [
+          {
+            name: "title",
+            label: "Hero Title",
+            type: "text",
+            required: true,
+          },
+          {
+            name: "subtitle",
+            label: "Hero Subtitle",
+            type: "textarea",
+          },
+        ],
+      },
 
-    {
-      name: "Services-Exam-Pills",
-      label: "Exam Pills",
-      fields: [
-        {
-          name: "items",
-          label: "Exam List",
-          type: "repeater",
-          fields: [
-            {
-              name: "title",
-              label: "Exam Name",
-              type: "text",
-            },
-            {
-              name: "image",
-              label: "Exam Icon",
-              type: "file",
-            },
-          ],
-        },
-      ],
-    },
+      {
+        name: "Services-Exam-Pills",
+        label: "Exam Pills",
+        fields: [
+          {
+            name: "items",
+            label: "Exam List",
+            type: "repeater",
+            fields: [
+              {
+                name: "title",
+                label: "Exam Name",
+                type: "text",
+              },
+              {
+                name: "image",
+                label: "Exam Icon",
+                type: "file",
+              },
+            ],
+          },
+        ],
+      },
 
-    {
-      name: "Services-Practice",
-      label: "Practice Cards",
-      fields: [
-        {
-          name: "title",
-          label: "Section Title",
-          type: "text",
-        },
-        {
-          name: "subtitle",
-          label: "Section Subtitle",
-          type: "textarea",
-        },
-        {
-          name: "button",
-          label: "Button Text",
-          type: "text",
-        },
-        {
-          name: "items",
-          label: "Cards",
-          type: "repeater",
-          fields: [
-            {
-              name: "title",
-              label: "Title",
-              type: "text",
-            },
-            {
-              name: "description",
-              label: "Description",
-              type: "textarea",
-            },
-            {
-              name: "icon",
-              label: "Icon",
-              type: "file",
-            },
-          ],
-        },
-      ],
-    },
+      {
+        name: "Services-Practice",
+        label: "Practice Cards",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+          },
+          {
+            name: "subtitle",
+            label: "Section Subtitle",
+            type: "textarea",
+          },
+          {
+            name: "button",
+            label: "Button Text",
+            type: "text",
+          },
+          {
+            name: "items",
+            label: "Cards",
+            type: "repeater",
+            fields: [
+              {
+                name: "title",
+                label: "Title",
+                type: "text",
+              },
+              {
+                name: "description",
+                label: "Description",
+                type: "textarea",
+              },
+              {
+                name: "icon",
+                label: "Icon",
+                type: "file",
+              },
+            ],
+          },
+        ],
+      },
 
-    {
-      name: "Services-Portal",
-      label: "Exam Portal",
-      fields: [
-        {
-          name: "title",
-          label: "Title",
-          type: "text",
-        },
-        {
-          name: "subtitle",
-          label: "Subtitle",
-          type: "textarea",
-        },
-        {
-          name: "image",
-          label: "Portal Image",
-          type: "file",
-        },
-        {
-          name: "button",
-          label: "Button Text",
-          type: "text",
-        },
-      ],
-    },
+      {
+        name: "Services-Portal",
+        label: "Exam Portal",
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+          },
+          {
+            name: "subtitle",
+            label: "Subtitle",
+            type: "textarea",
+          },
+          {
+            name: "image",
+            label: "Portal Image",
+            type: "file",
+          },
+          {
+            name: "button",
+            label: "Button Text",
+            type: "text",
+          },
+        ],
+      },
 
-    {
-      name: "Services-Dashboard",
-      label: "Dashboard Images",
-      fields: [
-        {
-          name: "leftImage",
-          label: "Left Dashboard",
-          type: "file",
-        },
-        {
-          name: "rightImage",
-          label: "Right Dashboard",
-          type: "file",
-        },
-      ],
-    },
+      {
+        name: "Services-Dashboard",
+        label: "Dashboard Images",
+        fields: [
+          {
+            name: "leftImage",
+            label: "Left Dashboard",
+            type: "file",
+          },
+          {
+            name: "rightImage",
+            label: "Right Dashboard",
+            type: "file",
+          },
+        ],
+      },
 
-    {
-      name: "Services-AI",
-      label: "AI Stack",
-      fields: [
-        {
-          name: "title",
-          label: "Heading",
-          type: "text",
-        },
-        {
-          name: "subtitle",
-          label: "Description",
-          type: "textarea",
-        },
-        
-        {
-          name: "button",
-          label: "Button",
-          type: "text",
-        },
-        {
-          name: "items",
-          label: "AI Features",
-          type: "repeater",
-          fields: [
-            {
-              name: "title",
-              label: "Title",
-              type: "text",
-            },
-            {
-              name: "description",
-              label: "Description",
-              type: "textarea",
-            },
-            {
-              name: "icon",
-              label: "Icon",
-              type: "file",
-            },
-            {
-              name: "background",
-              label: "Background Color",
-              type: "color",
-            },
-          ],
-        },
-      ],
-    },
+      {
+        name: "Services-AI",
+        label: "AI Stack",
+        fields: [
+          {
+            name: "title",
+            label: "Heading",
+            type: "text",
+          },
+          {
+            name: "subtitle",
+            label: "Description",
+            type: "textarea",
+          },
 
-    {
-      name: "Services-Environment",
-      label: "Learning Environment",
-      fields: [
-        {
-          name: "title",
-          label: "Title",
-          type: "text",
-        },
-        {
-          name: "subtitle",
-          label: "Subtitle",
-          type: "textarea",
-        },
-        {
-          name: "button",
-          label: "Button Text",
-          type: "text",
-        },
-        {
-          name: "items",
-          label: "Environment Cards",
-          type: "repeater",
-          fields: [
-            {
-              name: "title",
-              label: "Title",
-              type: "text",
-            },
-            {
-              name: "image",
-              label: "Image",
-              type: "file",
-            },
-            
-          ],
-        },
-      ],
-    },
+          {
+            name: "button",
+            label: "Button",
+            type: "text",
+          },
+          {
+            name: "items",
+            label: "AI Features",
+            type: "repeater",
+            fields: [
+              {
+                name: "title",
+                label: "Title",
+                type: "text",
+              },
+              {
+                name: "description",
+                label: "Description",
+                type: "textarea",
+              },
+              {
+                name: "icon",
+                label: "Icon",
+                type: "file",
+              },
+              {
+                name: "background",
+                label: "Background Color",
+                type: "color",
+              },
+            ],
+          },
+        ],
+      },
 
-    {
-      name: "Services-Resources",
-      label: "Resources",
-      fields: [
-        {
-          name: "title",
-          label: "Heading",
-          type: "text",
-        },
-        {
-          name: "subtitle",
-          label: "Description",
-          type: "textarea",
-        },
-        {
-          name: "button",
-          label: "Button",
-          type: "text",
-        },
-        {
-          name: "items",
-          label: "Resources",
-          type: "repeater",
-          fields: [
-            {
-              name: "title",
-              label: "Title",
-              type: "text",
-            },
-            {
-              name: "description",
-              label: "Description",
-              type: "textarea",
-            },
-            {
-              name: "metric",
-              label: "Metric",
-              type: "text",
-            },
-            {
-              name: "icon",
-              label: "Icon",
-              type: "file",
-            },
-          ],
-        },
-      ],
-    },
+      {
+        name: "Services-Environment",
+        label: "Learning Environment",
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+          },
+          {
+            name: "subtitle",
+            label: "Subtitle",
+            type: "textarea",
+          },
+          {
+            name: "button",
+            label: "Button Text",
+            type: "text",
+          },
+          {
+            name: "items",
+            label: "Environment Cards",
+            type: "repeater",
+            fields: [
+              {
+                name: "title",
+                label: "Title",
+                type: "text",
+              },
+              {
+                name: "image",
+                label: "Image",
+                type: "file",
+              },
+            ],
+          },
+        ],
+      },
 
-    {
-      name: "Services-Support",
-      label: "Support Section",
-      fields: [
-        {
-          name: "title",
-          label: "Heading",
-          type: "text",
-        },
-        {
-          name: "subtitle",
-          label: "Description",
-          type: "textarea",
-        },
-        {
-          name: "items",
-          label: "Support Cards",
-          type: "repeater",
-          fields: [
-            {
-              name: "title",
-              label: "Title",
-              type: "text",
-            },
-            {
-              name: "description",
-              label: "Description",
-              type: "textarea",
-            },
-            {
-              name: "contact",
-              label: "Contact",
-              type: "text",
-            },
-            {
-              name: "button",
-              label: "Button",
-              type: "text",
-            },
-            {
-              name: "icon",
-              label: "Icon",
-              type: "file",
-            },
-            {
-              name: "primary",
-              label: "Primary Button",
-              type: "checkbox",
-            },
-          ],
-        },
-      ],
-    },
+      {
+        name: "Services-Resources",
+        label: "Resources",
+        fields: [
+          {
+            name: "title",
+            label: "Heading",
+            type: "text",
+          },
+          {
+            name: "subtitle",
+            label: "Description",
+            type: "textarea",
+          },
+          {
+            name: "button",
+            label: "Button",
+            type: "text",
+          },
+          {
+            name: "items",
+            label: "Resources",
+            type: "repeater",
+            fields: [
+              {
+                name: "title",
+                label: "Title",
+                type: "text",
+              },
+              {
+                name: "description",
+                label: "Description",
+                type: "textarea",
+              },
+              {
+                name: "metric",
+                label: "Metric",
+                type: "text",
+              },
+              {
+                name: "icon",
+                label: "Icon",
+                type: "file",
+              },
+            ],
+          },
+        ],
+      },
 
-    // {
-    //   name: "Services-Testimonials",
-    //   label: "Testimonials",
-    //   fields: [
-    //     {
-    //       name: "title",
-    //       label: "Heading",
-    //       type: "text",
-    //     },
-    //     {
-    //       name: "subtitle",
-    //       label: "Description",
-    //       type: "textarea",
-    //     },
-    //     {
-    //       name: "items",
-    //       label: "Testimonials",
-    //       type: "repeater",
-    //       fields: [
-    //         {
-    //           name: "image",
-    //           label: "Student Image",
-    //           type: "file",
-    //         },
-    //         {
-    //           name: "name",
-    //           label: "Student Name",
-    //           type: "text",
-    //         },
-    //         {
-    //           name: "country",
-    //           label: "Country",
-    //           type: "text",
-    //         },
-    //         {
-    //           name: "rating",
-    //           label: "Rating",
-    //           type: "number",
-    //         },
-    //         {
-    //           name: "review",
-    //           label: "Review",
-    //           type: "textarea",
-    //         },
-    //         {
-    //           name: "score",
-    //           label: "Score",
-    //           type: "text",
-    //         },
-    //         {
-    //           name: "university",
-    //           label: "University",
-    //           type: "text",
-    //         },
-    //         {
-    //           name: "improvement",
-    //           label: "Improvement",
-    //           type: "text",
-    //         },
-    //       ],
-    //     },
-    //   ],
-    // },
+      {
+        name: "Services-Support",
+        label: "Support Section",
+        fields: [
+          {
+            name: "title",
+            label: "Heading",
+            type: "text",
+          },
+          {
+            name: "subtitle",
+            label: "Description",
+            type: "textarea",
+          },
+          {
+            name: "items",
+            label: "Support Cards",
+            type: "repeater",
+            fields: [
+              {
+                name: "title",
+                label: "Title",
+                type: "text",
+              },
+              {
+                name: "description",
+                label: "Description",
+                type: "textarea",
+              },
+              {
+                name: "contact",
+                label: "Contact",
+                type: "text",
+              },
+              {
+                name: "button",
+                label: "Button",
+                type: "text",
+              },
+              {
+                name: "icon",
+                label: "Icon",
+                type: "file",
+              },
+              {
+                name: "primary",
+                label: "Primary Button",
+                type: "checkbox",
+              },
+            ],
+          },
+        ],
+      },
 
-    {
-      name: "Services-Countries",
-      label: "Study Destinations",
-      fields: [
-        {
-          name: "title",
-          label: "Heading",
-          type: "text",
-        },
-        {
-          name: "subtitle",
-          label: "Description",
-          type: "textarea",
-        },
-        {
-          name: "items",
-          label: "Countries",
-          type: "repeater",
-          fields: [
-            {
-              name: "name",
-              label: "Country Name",
-              type: "text",
-            },
-            {
-              name: "image",
-              label: "Country Icon",
-              type: "file",
-            },
-            {
-              name: "background",
-              label: "Background Color",
-              type: "color",
-            },
-          ],
-        },
-      ],
-    },
+      // {
+      //   name: "Services-Testimonials",
+      //   label: "Testimonials",
+      //   fields: [
+      //     {
+      //       name: "title",
+      //       label: "Heading",
+      //       type: "text",
+      //     },
+      //     {
+      //       name: "subtitle",
+      //       label: "Description",
+      //       type: "textarea",
+      //     },
+      //     {
+      //       name: "items",
+      //       label: "Testimonials",
+      //       type: "repeater",
+      //       fields: [
+      //         {
+      //           name: "image",
+      //           label: "Student Image",
+      //           type: "file",
+      //         },
+      //         {
+      //           name: "name",
+      //           label: "Student Name",
+      //           type: "text",
+      //         },
+      //         {
+      //           name: "country",
+      //           label: "Country",
+      //           type: "text",
+      //         },
+      //         {
+      //           name: "rating",
+      //           label: "Rating",
+      //           type: "number",
+      //         },
+      //         {
+      //           name: "review",
+      //           label: "Review",
+      //           type: "textarea",
+      //         },
+      //         {
+      //           name: "score",
+      //           label: "Score",
+      //           type: "text",
+      //         },
+      //         {
+      //           name: "university",
+      //           label: "University",
+      //           type: "text",
+      //         },
+      //         {
+      //           name: "improvement",
+      //           label: "Improvement",
+      //           type: "text",
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // },
 
-    {
-      name: "Services-CTA",
-      label: "Call To Action",
-      fields: [
-        {
-          name: "title",
-          label: "Heading",
-          type: "text",
-        },
-        {
-          name: "subtitle",
-          label: "Description",
-          type: "textarea",
-        },
-        {
-          name: "topText",
-          label: "Top Banner Text",
-          type: "text",
-        },
-        {
-          name: "topButton",
-          label: "Top Button",
-          type: "text",
-        },
-        {
-          name: "primaryButton",
-          label: "Primary Button",
-          type: "text",
-        },
-        {
-          name: "secondaryButton",
-          label: "Secondary Button",
-          type: "text",
-        },
-      ],
-    },
-  ],
-},
+      {
+        name: "Services-Countries",
+        label: "Study Destinations",
+        fields: [
+          {
+            name: "title",
+            label: "Heading",
+            type: "text",
+          },
+          {
+            name: "subtitle",
+            label: "Description",
+            type: "textarea",
+          },
+          {
+            name: "items",
+            label: "Countries",
+            type: "repeater",
+            fields: [
+              {
+                name: "name",
+                label: "Country Name",
+                type: "text",
+              },
+              {
+                name: "image",
+                label: "Country Icon",
+                type: "file",
+              },
+              {
+                name: "background",
+                label: "Background Color",
+                type: "color",
+              },
+            ],
+          },
+        ],
+      },
 
-about: {
-  name: "About",
-  require: true,
-  description: "About Page",
-  sections: [
-    {
-      name: "About-Hero",
-      label: "Hero Section",
-      fields: [
-        {
-          name: "title",
-          label: "Hero Title",
-          type: "text",
-          required: true,
-        },
-        {
-          name: "subtitle",
-          label: "Hero Subtitle",
-          type: "text",
-        },
-        {
-          name: "primaryButton",
-          label: "Primary Button",
-          type: "text",
-        },
-        {
-          name: "secondaryButton",
-          label: "Secondary Button",
-          type: "text",
-        },
-        
-      ],
-    },
+      {
+        name: "Services-CTA",
+        label: "Call To Action",
+        fields: [
+          {
+            name: "title",
+            label: "Heading",
+            type: "text",
+          },
+          {
+            name: "subtitle",
+            label: "Description",
+            type: "textarea",
+          },
+          {
+            name: "topText",
+            label: "Top Banner Text",
+            type: "text",
+          },
+          {
+            name: "topButton",
+            label: "Top Button",
+            type: "text",
+          },
+          {
+            name: "primaryButton",
+            label: "Primary Button",
+            type: "text",
+          },
+          {
+            name: "secondaryButton",
+            label: "Secondary Button",
+            type: "text",
+          },
+        ],
+      },
+    ],
+  },
 
-    {
-      name: "About-Who-We-Are",
-      label: "Who We Are",
-      fields: [
-        {
-          name: "title",
-          label: "Title",
-          type: "text",
-        },
-        {
-          name: "description",
-          label: "Description",
-          type: "editor",
-        },
-        {
-          name: "imageOne",
-          label: "Top Image",
-          type: "file",
-        },
-        {
-          name: "imageTwo",
-          label: "Bottom Image",
-          type: "file",
-        },
-      ],
-    },
+  about: {
+    name: "About",
+    require: true,
+    description: "About Page",
+    sections: [
+      {
+        name: "About-Hero",
+        label: "Hero Section",
+        fields: [
+          {
+            name: "title",
+            label: "Hero Title",
+            type: "text",
+            required: true,
+          },
+          {
+            name: "subtitle",
+            label: "Hero Subtitle",
+            type: "text",
+          },
+          {
+            name: "primaryButton",
+            label: "Primary Button",
+            type: "text",
+          },
+          {
+            name: "secondaryButton",
+            label: "Secondary Button",
+            type: "text",
+          },
+        ],
+      },
 
-    {
-      name: "About-Features",
-      label: "What We Do",
-      fields: [
-        {
-          name: "title",
-          label: "Section Title",
-          type: "text",
-        },
-        
-        {
-          name: "description",
-          label: "Section description",
-          type: "editor",
-        },
-        
-        {
-          name: "items",
-          label: "Features",
-          type: "repeater",
-          fields: [
-            {
-              name: "title",
-              label: "Title",
-              type: "text",
-            },
-            {
-              name: "description",
-              label: "Description",
-              type: "textarea",
-            },
-          ],
-        },
-        
-      ],
-    },
+      {
+        name: "About-Who-We-Are",
+        label: "Who We Are",
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+          },
+          {
+            name: "description",
+            label: "Description",
+            type: "editor",
+          },
+          {
+            name: "imageOne",
+            label: "Top Image",
+            type: "file",
+          },
+          {
+            name: "imageTwo",
+            label: "Bottom Image",
+            type: "file",
+          },
+        ],
+      },
 
-    {
-      name: "About-Leaders",
-      label: "People Behind",
-      fields: [
-        {
-          name: "title",
-          label: "Section Title",
-          type: "text",
-        },
-        {
-          name: "items",
-          label: "People",
-          type: "repeater",
-          fields: [
-            {
-              name: "name",
-              label: "Name",
-              type: "text",
-            },
-            {
-              name: "designation",
-              label: "Designation",
-              type: "editor",
-            },
-            {
-              name: "image",
-              label: "Profile Image",
-              type: "file",
-            }
-          ],
-        },
-      ],
-    },
+      {
+        name: "About-Features",
+        label: "What We Do",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+          },
 
-    {
-      name: "About-Statistics",
-      label: "Statistics",
-      fields: [
-        {
-          name: "items",
-          label: "Statistics",
-          type: "repeater",
-          max: 6,
-          fields: [
-            {
-              name: "value",
-              label: "Value",
-              type: "text",
-            },
-            {
-              name: "label",
-              label: "Label",
-              type: "text",
-            },
-          ],
-        },
-      ],
-    },
+          {
+            name: "description",
+            label: "Section description",
+            type: "editor",
+          },
 
-    {
-      name: "About-Learning",
-      label: "Learning Section",
-      fields: [
-        {
-          name: "title",
-          label: "Section Title",
-          type: "text",
-        },
-        {
-          name: "subtitle",
-          label: "Section Description",
-          type: "textarea",
-        },
-        {
-          name: "items",
-          label: "Cards",
-          type: "repeater",
-          max : 5,
-          fields: [
-            {
-              name: "title",
-              label: "Card Title",
-              type: "text",
-            },
-            {
-              name: "description",
-              label: "Card Description",
-              type: "textarea",
-            },
-            {
-              name: "background",
-              label: "Card Background",
-              type: "color",
-            },
-          ],
-        },
-      ],
-    },
+          {
+            name: "items",
+            label: "Features",
+            type: "repeater",
+            fields: [
+              {
+                name: "title",
+                label: "Title",
+                type: "text",
+              },
+              {
+                name: "description",
+                label: "Description",
+                type: "textarea",
+              },
+            ],
+          },
+        ],
+      },
 
-    {
-      name: "About-Teachers",
-      label: "Teachers",
-      fields: [
-        {
-          name: "title",
-          label: "Section Title",
-          type: "text",
-        },
-        {
-          name: "items",
-          label: "Teachers",
-          type: "repeater",
-          fields: [
-            {
-              name: "name",
-              label: "Teacher Name",
-              type: "text",
-            },
-            {
-              name: "designation",
-              label: "Designation",
-              type: "text",
-            },
-            {
-              name: "image",
-              label: "Teacher Image",
-              type: "file",
-            },
-          ],
-        },
-      ],
-    },
+      {
+        name: "About-Leaders",
+        label: "People Behind",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+          },
+          {
+            name: "items",
+            label: "People",
+            type: "repeater",
+            fields: [
+              {
+                name: "name",
+                label: "Name",
+                type: "text",
+              },
+              {
+                name: "designation",
+                label: "Designation",
+                type: "editor",
+              },
+              {
+                name: "image",
+                label: "Profile Image",
+                type: "file",
+              },
+            ],
+          },
+        ],
+      },
 
-    {
-      name: "About-Final-CTA",
-      label: "Bottom CTA",
-      fields: [
-        {
-          name: "title",
-          label: "Heading",
-          type: "text",
-        },
-        {
-          name: "subtitle",
-          label: "Description",
-          type: "textarea",
-        },
-        {
-          name: "primaryButton",
-          label: "Primary Button",
-          type: "text",
-        },
-        {
-          name: "secondaryButton",
-          label: "Secondary Button",
-          type: "text",
-        },
-      ],
-    },
-  ],
-},
+      {
+        name: "About-Statistics",
+        label: "Statistics",
+        fields: [
+          {
+            name: "items",
+            label: "Statistics",
+            type: "repeater",
+            max: 6,
+            fields: [
+              {
+                name: "value",
+                label: "Value",
+                type: "text",
+              },
+              {
+                name: "label",
+                label: "Label",
+                type: "text",
+              },
+            ],
+          },
+        ],
+      },
+
+      {
+        name: "About-Learning",
+        label: "Learning Section",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+          },
+          {
+            name: "subtitle",
+            label: "Section Description",
+            type: "textarea",
+          },
+          {
+            name: "items",
+            label: "Cards",
+            type: "repeater",
+            max: 5,
+            fields: [
+              {
+                name: "title",
+                label: "Card Title",
+                type: "text",
+              },
+              {
+                name: "description",
+                label: "Card Description",
+                type: "textarea",
+              },
+              {
+                name: "background",
+                label: "Card Background",
+                type: "color",
+              },
+            ],
+          },
+        ],
+      },
+
+      {
+        name: "About-Teachers",
+        label: "Teachers",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+          },
+          {
+            name: "items",
+            label: "Teachers",
+            type: "repeater",
+            fields: [
+              {
+                name: "name",
+                label: "Teacher Name",
+                type: "text",
+              },
+              {
+                name: "designation",
+                label: "Designation",
+                type: "text",
+              },
+              {
+                name: "image",
+                label: "Teacher Image",
+                type: "file",
+              },
+            ],
+          },
+        ],
+      },
+
+      {
+        name: "About-Final-CTA",
+        label: "Bottom CTA",
+        fields: [
+          {
+            name: "title",
+            label: "Heading",
+            type: "text",
+          },
+          {
+            name: "subtitle",
+            label: "Description",
+            type: "textarea",
+          },
+          {
+            name: "primaryButton",
+            label: "Primary Button",
+            type: "text",
+          },
+          {
+            name: "secondaryButton",
+            label: "Secondary Button",
+            type: "text",
+          },
+        ],
+      },
+    ],
+  },
 
   preparation: {
     name: "Preparation",
@@ -1484,7 +1479,8 @@ about: {
                 name: "subtitle",
                 label: "Subtitle",
                 type: "editor",
-                value: "The GRE General Test uses the shorter format administered by the [ETS official portal](https://ets.org). The test takes exactly 1 hour and 58 minutes. It features 5 sections, is fully section-level adaptive, and drops the unscored experimental section entirely.",
+                value:
+                  "The GRE General Test uses the shorter format administered by the [ETS official portal](https://ets.org). The test takes exactly 1 hour and 58 minutes. It features 5 sections, is fully section-level adaptive, and drops the unscored experimental section entirely.",
               },
               {
                 name: "patternTable",
@@ -1932,4 +1928,417 @@ about: {
     ],
   },
 
+  career: {
+    name: "Career",
+    require: true,
+    description: "Career Page",
+    sections: [
+      
+      {
+        name: "Career-Hero",
+        label: "Hero Section",
+        fields: [
+          {
+            name: "title",
+            label: "Hero Title",
+            type: "text",
+            required: true,
+          },
+          // {
+          //   name: "subtitle",
+          //   label: "Hero Subtitle",
+          //   type: "text",
+          // },
+          {
+            name: "description",
+            label: "Description",
+            type: "editor",
+          },
+          {
+            name: "image",
+            label: "Hero Image",
+            type: "file",
+          },
+          {
+            name: "primaryButton",
+            label: "Primary Button",
+            type: "text",
+          },
+          {
+            name: "secondaryButton",
+            label: "Secondary Button",
+            type: "text",
+          },
+        ],
+      },
+      
+      {
+        name: "Career-Why-Join",
+        label: "Why Join Us",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+          },
+          {
+            name: "description",
+            label: "Section Description",
+            type: "editor",
+          },
+          {
+            name: "items",
+            label: "Benefits",
+            type: "repeater",
+            fields: [
+              {
+                name: "icon",
+                label: "Lucide Icon",
+                type: "text",
+              },
+              {
+                name: "background",
+                label: "Background Color",
+                type: "color",
+              },
+              {
+                name: "title",
+                label: "Title",
+                type: "text",
+              },
+              {
+                name: "description",
+                label: "Description",
+                type: "textarea",
+              },
+            ],
+          },
+        ],
+      },
+
+      
+      {
+        name: "Career-Stats",
+        label: "Company Statistics",
+        fields: [
+          {
+            name: "items",
+            label: "Statistics",
+            type: "repeater",
+            max: 8,
+            fields: [
+              {
+                name: "icon",
+                label: "Emoji/Icon",
+                type: "text",
+              },
+              {
+                name: "value",
+                label: "Value",
+                type: "text",
+              },
+              {
+                name: "label",
+                label: "Label",
+                type: "text",
+              },
+            ],
+          },
+        ],
+      },
+
+      
+      {
+        name: "Career-Departments",
+        label: "Departments",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+          },
+          {
+            name: "items",
+            label: "Departments",
+            type: "repeater",
+            fields: [
+              {
+                name: "icon",
+                label: "Lucide Icon",
+                type: "text",
+              },
+              {
+                name: 'title',
+                label: 'Title',
+                type : "text"
+              },
+              {
+                name: "points",
+                label: "Points",
+                type: "editor",
+              },
+            ],
+          },
+        ],
+      },
+
+      
+      {
+        name: "Career-Life",
+        label: "Life at Ooshas",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+          },
+          {
+            name: "description",
+            label: "Description",
+            type: "editor",
+          },
+          {
+            name: "items",
+            label: "Gallery",
+            type: "repeater",
+            fields: [
+              {
+                name: "label",
+                label: "Image Label",
+                type: "text",
+              },
+              {
+                name: "image",
+                label: "Image",
+                type: "file",
+              },
+            ],
+          },
+        ],
+      },
+
+      
+      {
+        name: "Career-Benefits",
+        label: "Employee Benefits",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+          },
+          {
+            name: "items",
+            label: "Benefits",
+            type: "repeater",
+            fields: [
+              {
+                name: "icon",
+                label: "Lucide Icon",
+                type: "text",
+              },
+              {
+                name: "title",
+                label: "Benefit Title",
+                type: "text",
+              },
+              {
+                name: "description",
+                label: "Description",
+                type: "textarea",
+              },
+            ],
+          },
+        ],
+      },
+
+      
+      {
+        name: "Career-Hiring-Process",
+        label: "Hiring Process",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+          },
+          {
+            name: "items",
+            label: "Hiring Steps",
+            type: "repeater",
+            fields: [
+              {
+                name: "icon",
+                label: "Lucide Icon",
+                type: "text",
+              },
+              {
+                name: "title",
+                label: "Title",
+                type: "text",
+              },
+              {
+                name: "description",
+                label: "Description",
+                type: "textarea",
+              },
+            ],
+          },
+        ],
+      },
+
+      
+      {
+        name: "Career-Open-Positions",
+        label: "Open Positions",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+          },
+          {
+            name: "items",
+            label: "Jobs",
+            type: "repeater",
+            fields: [
+              {
+                name: "icon",
+                label: "Lucide Icon",
+                type: "text",
+              },
+              {
+                name: "title",
+                label: "Job Title",
+                type: "text",
+              },
+              {
+                name: "experience",
+                label: "Experience",
+                type: "text",
+              },
+              {
+                name: "location",
+                label: "Location",
+                type: "text",
+              },
+              {
+                name: "type",
+                label: "Employment Type",
+                type: "text",
+              },
+            ],
+          },
+        ],
+      },
+
+      
+      {
+        name: "Career-Testimonials",
+        label: "Employee Testimonials",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+          },
+          {
+            name: "items",
+            label: "Testimonials",
+            type: "repeater",
+            fields: [
+              {
+                name: "name",
+                label: "Employee Name",
+                type: "text",
+              },
+              {
+                name: "role",
+                label: "Designation",
+                type: "text",
+              },
+              {
+                name: "quote",
+                label: "Quote",
+                type: "textarea",
+              },
+              {
+                name: "image",
+                label: "Profile Image",
+                type: "file",
+              },
+              {
+                name: "rating",
+                label: "Rating",
+                type: "number",
+              },
+            ],
+          },
+        ],
+      },
+
+      
+      {
+        name: "Career-FAQ",
+        label: "FAQs",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "editor",
+          },
+          {
+            name: "items",
+            label: "Questions",
+            type: "repeater",
+            fields: [
+              {
+                name: "question",
+                label: "Question",
+                type: "text",
+              },
+              {
+                name: "answer",
+                label: "Answer",
+                type: "text",
+              },
+            ],
+          },
+        ],
+      },
+
+      
+      {
+        name: "Career-CTA",
+        label: "Bottom CTA",
+        fields: [
+          {
+            name: "title",
+            label: "Heading",
+            type: "text",
+          },
+          {
+            name: "description",
+            label: "Description",
+            type: "editor",
+          },
+          {
+            name: "image",
+            label: "CTA Image",
+            type: "file",
+          },
+          {
+            name: "primaryButton",
+            label: "Primary Button",
+            type: "text",
+          },
+          {
+            name: "secondaryButton",
+            label: "Secondary Button",
+            type: "text",
+          },
+        ],
+      },
+    ],
+  },
 };

@@ -1,7 +1,9 @@
 "use client";
+
 import {
   ArrowRight,
   ChevronDown,
+  ChevronRight,
   CircleCheckBig,
   CircleX,
   Play,
@@ -11,7 +13,7 @@ import {
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
 import { useState, useEffect, useRef } from "react";
-
+import GreForm from "./greForm";
 // Import shared components
 import { Aboutresult } from "../about_result";
 import { TextTestimonials } from "../testimonial_gre";
@@ -333,294 +335,6 @@ function GrePatternTable({ examPatternData }: { examPatternData: any }) {
   );
 }
 
-export default function Gre({ pageInfo, slug }: { pageInfo: any, slug:any}) {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const [showTestDates, setShowTestDates] = useState(false);
-  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
-
-  const heroSection = pageInfo?.sections?.["hero-section"]?.fields || {};
-  const Registrations = pageInfo?.sections?.["Registrations"]?.fields || {};
-  const cta_banner = pageInfo?.sections?.["cta-banner-section"]?.fields || {};
-  const aiStudySection = pageInfo?.sections?.["ai-study-section"]?.fields || {};
-  const testDatesSection = pageInfo?.sections?.["test-dates-section"]?.fields || {};
-  const scoreGuaranteeSection = pageInfo?.sections?.["score-guarantee-section"]?.fields || {};
-  const pricingSection = pageInfo?.sections?.["pricing-section"]?.fields || {};
-  const mobileAppsSection = pageInfo?.sections?.["mobile-apps-section"]?.fields || {};
-  const testimonialsSection = pageInfo?.sections?.["testimonials-section"]?.fields || {};
-  const faqSection = pageInfo?.sections?.["f&q"] || {};
-  const registrationSection = pageInfo?.sections?.["Registrations"]?.fields || {};
-  const examFormatSection = pageInfo?.sections?.["exam-Format-section"]?.fields || {};
-  const examPatternSection = pageInfo?.sections?.["exam-pattern-section"]?.fields || {};
-  const boostProfileSection = pageInfo?.sections?.["boost-profile-section"]?.fields || {};
-  const finalCtaSection = pageInfo?.sections?.["final-cta-section"]?.fields || {};
-  const freeResourcesSection = pageInfo?.sections?.["free-resources-section"]?.fields || {};
-  const officialQuestionsSection = pageInfo?.sections?.["official-questions-section"]?.fields || {};
-  const studentDashboard = pageInfo?.sections?.["student-dashboard"]?.fields || {};
-  const studentVideo = pageInfo?.sections?.["student-video"]?.fields || {};
-  const whatIsGreSection = pageInfo?.sections?.["what-is-gre-section"]?.fields || {};
-
-  const [studentsData, setstudentsData] = useState<any[]>([]);
-
-  useEffect(() => {
-    let mounted = true;
-    const displayStudents = async () => {
-      try {
-        const data = await getStudent("", 1, 8);
-        if (mounted) setstudentsData(data || []);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    displayStudents();
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  const pricingData = {
-    testimonial: pricingSection.testimonial || "",
-    pricing_plans: pricingSection || [],
-  };
-
-  const testimonials = testimonialsSection.testimonials || [];
-  const featuredTestimonial = {
-    quote: testimonialsSection.quote || "",
-    name: testimonialsSection.name || "",
-    meta: testimonialsSection.meta || "",
-    ratingImage: testimonialsSection.ratingImage || "",
-  };
-
-  const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
-    initial: 0,
-    loop: true,
-    mode: "snap",
-    slides: {
-      origin: "center",
-      perView: 1.2,
-      spacing: 16,
-    },
-    breakpoints: {
-      "(min-width: 640px)": {
-        slides: {
-          origin: "center",
-          perView: 2,
-          spacing: 20,
-        },
-      },
-      "(min-width: 1024px)": {
-        slides: {
-          origin: "center",
-          perView: 3,
-        },
-      },
-    },
-    slideChanged(slider) {
-      setCurrentSlide(slider.track.details.rel);
-    },
-  });
-
-  useEffect(() => {
-    const startAutoPlay = () => {
-      timerRef.current = setInterval(() => {
-        instanceRef.current?.next();
-      }, 4000);
-    };
-
-    if (testimonials.length > 3) {
-      startAutoPlay();
-    }
-
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
-  }, [instanceRef, testimonials.length]);
-
-  return (
-    <>
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-[#FDF4EF]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-8 md:py-10 lg:py-14">
-          <div className="grid lg:grid-cols-2 gap-8 md:gap-10 lg:gap-14 items-center">
-            {/* Left Content */}
-            <div className="max-w-xl mx-auto lg:mx-0 text-center lg:text-left">
-              <div
-                className="hero-title text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
-                dangerouslySetInnerHTML={{
-                  __html: heroSection.title || "",
-                }}
-              />
-              <p className="mt-4 md:mt-6 text-[#555] text-sm sm:text-base leading-7 md:leading-8">
-                {heroSection.paragraph}
-              </p>
-              <button className="mt-6 md:mt-10 rounded-full bg-[#F86C43] hover:bg-[#ef5a2f] transition px-6 md:px-8 py-3 md:py-4 text-white text-sm md:text-base font-semibold shadow-lg w-full sm:w-auto">
-                {heroSection.ctaButtonText || "Full Courses starts at $99"}
-              </button>
-            </div>
-
-            {/* Right Form */}
-            <div className="flex justify-center lg:justify-end">
-              <div className="bg-white rounded-xl md:rounded-md shadow-xl w-full max-w-md p-4 md:p-6">
-                <p className="text-center text-lg md:text-xl font-semibold mb-6 md:mb-8">
-                  Speak to an Expert
-                </p>
-                <form className="space-y-3 md:space-y-4">
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    className="w-full border border-gray-300 rounded-md px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] text-sm"
-                  />
-                  <div className="flex">
-                    <div className="w-20 md:w-24 border border-gray-300 rounded-l-md flex items-center justify-center gap-1 md:gap-2 bg-white text-sm">
-                      🇮🇳 +91
-                    </div>
-                    <input
-                      type="tel"
-                      placeholder="Mobile Number"
-                      className="flex-1 border border-l-0 border-gray-300 rounded-r-md px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] text-sm"
-                    />
-                  </div>
-                  <input
-                    type="email"
-                    placeholder="Email Id"
-                    className="w-full border border-gray-300 rounded-md px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] text-sm"
-                  />
-                  <select className="w-full border border-gray-300 rounded-md px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] bg-white text-sm">
-                    <option>Interested in?</option>
-                    <option>GRE</option>
-                    <option>IELTS</option>
-                    <option>GMAT</option>
-                    <option>TOEFL</option>
-                  </select>
-                  <select className="w-full border border-gray-300 rounded-md px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] bg-white text-sm">
-                    <option>Your City</option>
-                  </select>
-                  <select className="w-full border border-gray-300 rounded-md px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] bg-white text-sm">
-                    <option>Nearest Center</option>
-                  </select>
-                  <label className="flex items-center gap-2 text-xs text-gray-600">
-                    <input type="checkbox" defaultChecked className="accent-[#F86C43]" />
-                    Stay informed via SMS & WhatsApp
-                  </label>
-                  <button
-                    type="submit"
-                    className="w-full bg-[#F86C43] hover:bg-[#ef5a2f] transition text-white font-semibold py-2.5 md:py-3 rounded-md text-sm md:text-base"
-                  >
-                    Schedule a Call
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <Aboutresult data={studentsData || []} />
-      <GreSection examFormatSection={examFormatSection} whatIsGreSection={whatIsGreSection} cta_banner={cta_banner} slug={slug}/>
-
-      {/* Exam Pattern Section - Dynamic */}
-      <section className="py-8 md:py-12 bg-[#F8F9FD]">
-        <div className="max-w-7xl mx-auto">
-          <GrePatternTable examPatternData={examPatternSection} />
-        </div>
-      </section>
-
-      {/* Official Questions Section */}
-      <section className="md:min-h-150 relative lg:overflow-hidden h-150 flex items-center justify-center mb-10">
-        <div className="flex p-10 pl-0 flex justify-center items-center mx-auto lg:h-[60vh] bg-gradient-to-r from-[#F1AA94] to-[#EE653C] pt-20 bg-cover bg-center bg-no-repeat">
-          <div className="hidden lg:block lg:w-[40%] z-10 rounded-full">
-            <img src="/Gre/laptop.png" alt="img" />
-          </div>
-          <div className="w-full lg:w-[45%] relative text-white pl-20">
-            <span className="text-3xl md:text-5xl font-bold">
-              {officialQuestionsSection.title || "Official GRE Questions - only with Ooshas"}
-            </span>
-            <p className="my-6">
-              {officialQuestionsSection.description || "We're the only GRE prep course licensed to use official ETS practice questions, so you know you're studying exactly what you'll see on test day."}
-            </p>
-            <div className="flex justify-end">
-              <button className="bg-gray-700 text-white px-6 py-3 rounded-xl flex gap-2">
-                <Play /> {officialQuestionsSection.buttonText || "Preview Dashboard"}
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <AIStudySection aiStudySection={aiStudySection} />
-
-      {/* Boost Profile Section */}
-      <div className="w-full max-w-6xl mx-auto my-14 relative">
-        <div className="bg-[#FDF0EB] rounded md:rounded-[40px] p-4 md:p-8 grid md:grid-cols-[800px_100px] items-center justify-between min-h-[300px] z-1">
-          <div className="flex-1 z-10 text-center md:text-left space-y-4 max-w-5xl pl-0 md:pl-20">
-            <span className="text-[#FF6A39] text-sm md:text-base font-medium tracking-wide block">
-              {boostProfileSection.tagline || "Test Prep & Profile Building"}
-            </span>
-            <h2 className="text-[#333333] text-2xl md:text-3xl lg:text-5xl font-extrabold leading-tight">
-              {boostProfileSection.title || "Boost Your <br className='hidden md:inline' /> Study Abroad Profile!"}
-            </h2>
-            <div className="pt-2">
-              <button className="bg-[#FF6A39] hover:bg-[#e05626] text-white font-bold px-8 py-3 rounded-xl shadow-md transition text-sm md:text-base">
-                {boostProfileSection.buttonText || "Enroll Now"}
-              </button>
-            </div>
-          </div>
-
-          <div className="hidden md:block">
-            <img
-              src="/girl-preparation.webp"
-              alt="Graduate Student"
-              className="object-contain md:w-80 md:absolute md:-top-[134px] md:right-25 z-10"
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Score Guarantee Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#fdf0eb] to-white py-12 md:py-16 px-4">
-        <div className="flex justify-center items-center flex-col w-full">
-          {/* <div
-            dangerouslySetInnerHTML={{
-              __html: scoreGuaranteeSection.title || "",
-            }}
-            className="text-center text-2xl md:text-3xl lg:text-4xl font-bold"
-          /> */}
-
-          <h2 className="text-2xl md:text-3xl font-extrabold  text-center ">
-            {scoreGuaranteeSection?.title?.split("||")[0] || "What is"}  <br />
-            <p className="text-[#f06437]">{scoreGuaranteeSection?.title?.split("||")[1] || "GRE?"}</p>
-          </h2>
-
-          <p className="my-4 md:my-6 text-sm md:text-base text-center">{scoreGuaranteeSection.subtitle}</p>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-7xl gap-4 md:gap-6 mx-auto mt-8 md:mt-10">
-          {scoreGuaranteeSection.features?.map((ele: any, idx: number) => (
-            <div key={idx} className="text-black/80 flex flex-col relative isolate">
-              <span className="absolute top-0 -left-2 h-14 md:h-18 w-10 md:w-12 bg-orange-600 rounded-2xl z-[-1]" />
-              <div className="p-6 md:p-8 bg-white border rounded-xl">
-                <h3 className="font-bold text-lg md:text-xl mb-2">{ele.title}</h3>
-                <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-                  {ele.description}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
-        <PricingSection plans={pricingData.pricing_plans} />
-      </section>
-
-      <DashboardSection dashboardData={studentDashboard} />
-      <VideoExplanationSection videoData={studentVideo} />
-      <TextTestimonials testimonialsSection={testimonialsSection}/>
-      <FreeResources resourcesData={freeResourcesSection} />
-      <Consultants data={faqSection} finalCtaSection={finalCtaSection} />
-      {/* <Consultants /> */}
-    </>
-  );
-}
-
 function VideoExplanationSection({ videoData }: { videoData: any }) {
   return (
     <section className="relative overflow-hidden bg-white pt-12 md:pt-16 lg:pt-20 px-4 sm:px-6">
@@ -800,6 +514,358 @@ function DashboardSection({ dashboardData }: { dashboardData: any }) {
   );
 }
 
+
+export default function Gre({ pageInfo, slug }: { pageInfo: any, slug:any}) {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const [showTestDates, setShowTestDates] = useState(false);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+
+  const heroSection = pageInfo?.sections?.["hero-section"]?.fields || {};
+  const Registrations = pageInfo?.sections?.["Registrations"]?.fields || {};
+  const cta_banner = pageInfo?.sections?.["cta-banner-section"]?.fields || {};
+  const aiStudySection = pageInfo?.sections?.["ai-study-section"]?.fields || {};
+  const testDatesSection = pageInfo?.sections?.["test-dates-section"]?.fields || {};
+  const scoreGuaranteeSection = pageInfo?.sections?.["score-guarantee-section"]?.fields || {};
+  const pricingSection = pageInfo?.sections?.["pricing-section"]?.fields || {};
+  const mobileAppsSection = pageInfo?.sections?.["mobile-apps-section"]?.fields || {};
+  const testimonialsSection = pageInfo?.sections?.["testimonials-section"]?.fields || {};
+  const faqSection = pageInfo?.sections?.["f&q"] || {};
+  const registrationSection = pageInfo?.sections?.["Registrations"]?.fields || {};
+  const examFormatSection = pageInfo?.sections?.["exam-Format-section"]?.fields || {};
+  const examPatternSection = pageInfo?.sections?.["exam-pattern-section"]?.fields || {};
+  const boostProfileSection = pageInfo?.sections?.["boost-profile-section"]?.fields || {};
+  const finalCtaSection = pageInfo?.sections?.["final-cta-section"]?.fields || {};
+  const freeResourcesSection = pageInfo?.sections?.["free-resources-section"]?.fields || {};
+  const officialQuestionsSection = pageInfo?.sections?.["official-questions-section"]?.fields || {};
+  const studentDashboard = pageInfo?.sections?.["student-dashboard"]?.fields || {};
+  const studentVideo = pageInfo?.sections?.["student-video"]?.fields || {};
+  const whatIsGreSection = pageInfo?.sections?.["what-is-gre-section"]?.fields || {};
+
+  const [studentsData, setstudentsData] = useState<any[]>([]);
+
+  useEffect(() => {
+    let mounted = true;
+    const displayStudents = async () => {
+      try {
+        const data = await getStudent("", 1, 8);
+        if (mounted) setstudentsData(data || []);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    displayStudents();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const pricingData = {
+    testimonial: pricingSection.testimonial || "",
+    pricing_plans: pricingSection || [],
+  };
+
+  const testimonials = testimonialsSection.testimonials || [];
+  const featuredTestimonial = {
+    quote: testimonialsSection.quote || "",
+    name: testimonialsSection.name || "",
+    meta: testimonialsSection.meta || "",
+    ratingImage: testimonialsSection.ratingImage || "",
+  };
+
+  const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
+    initial: 0,
+    loop: true,
+    mode: "snap",
+    slides: {
+      origin: "center",
+      perView: 1.2,
+      spacing: 16,
+    },
+    breakpoints: {
+      "(min-width: 640px)": {
+        slides: {
+          origin: "center",
+          perView: 2,
+          spacing: 20,
+        },
+      },
+      "(min-width: 1024px)": {
+        slides: {
+          origin: "center",
+          perView: 3,
+        },
+      },
+    },
+    slideChanged(slider) {
+      setCurrentSlide(slider.track.details.rel);
+    },
+  });
+
+  useEffect(() => {
+    const startAutoPlay = () => {
+      timerRef.current = setInterval(() => {
+        instanceRef.current?.next();
+      }, 4000);
+    };
+
+    if (testimonials.length > 3) {
+      startAutoPlay();
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [instanceRef, testimonials.length]);
+
+  return (
+    <>
+      {/* Hero Section */}
+      
+      <section className="relative bg-[#FDF4EF]  overflow-visible">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10 lg:py-14">
+    {/* Heading */}
+    <div className="max-w-5xl mx-auto text-center">
+      <div
+        className="
+          hero-title
+          [&>h1]:text-4xl
+          sm:[&>h1]:text-5xl
+          lg:[&>h1]:text-6xl
+          [&>h1]:font-bold
+          [&>h1]:leading-tight
+          [&>h1]:tracking-tight
+        "
+        dangerouslySetInnerHTML={{
+          __html: heroSection.title || "",
+        }}
+      />
+
+      <p className="mt-4 max-w-4xl mx-auto text-[#555] text-base md:text-lg leading-8">
+        {heroSection.paragraph}
+      </p>
+    </div>
+
+
+      <Aboutresult data={studentsData || []} />
+    
+  </div>
+
+  <div className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 w-full max-w-5xl px-4 z-20">
+    <div className="bg-[#F86C43] rounded-full  flex items-center justify-between px-2 py-2">
+      {/* Left */}
+      <div className="flex items-center gap-5">
+        <div className="w-12 h-12 rounded-full bg-[#2A0A3A] flex items-center justify-center flex-shrink-0">
+          <span className="text-white text-lg font-bold uppercase">
+            {slug}
+          </span>
+        </div>
+
+        <h3 className="text-white font-bold text-lg md:text-2xl">
+          Full Courses starts at $99
+        </h3>
+      </div>
+
+      {/* Right */}
+      <button className="bg-[#424242] hover:bg-[#323232] rounded-full pl-6 pr-2 py-2 flex items-center gap-4 transition-all">
+        <span className="text-white font-semibold text-lg">
+          Explore Courses
+        </span>
+
+        <span className="w-9 h-9 rounded-full bg-white flex items-center justify-center">
+          <ChevronRight className="text-[#424242]" size={20} />
+        </span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<GreForm studentsData={studentsData} />
+
+
+      {/* <section className="relative overflow-hidden bg-[#FDF4EF]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-8 md:py-10 lg:py-14">
+          <div className="grid lg:grid-cols-2 gap-8 md:gap-10 lg:gap-14 items-center">
+          
+            <div className="max-w-xl mx-auto lg:mx-0 text-center lg:text-left">
+              <div
+                className="hero-title text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight"
+                dangerouslySetInnerHTML={{
+                  __html: heroSection.title || "",
+                }}
+              />
+              <p className="mt-4 md:mt-6 text-[#555] text-sm sm:text-base leading-7 md:leading-8">
+                {heroSection.paragraph}
+              </p>
+              <button className="mt-6 md:mt-10 rounded-full bg-[#F86C43] hover:bg-[#ef5a2f] transition px-6 md:px-8 py-3 md:py-4 text-white text-sm md:text-base font-semibold shadow-lg w-full sm:w-auto">
+                {heroSection.ctaButtonText || "Full Courses starts at $99"}
+              </button>
+            </div>
+
+            
+            <div className="flex justify-center lg:justify-end">
+              <div className="bg-white rounded-xl md:rounded-md shadow-xl w-full max-w-md p-4 md:p-6">
+                <p className="text-center text-lg md:text-xl font-semibold mb-6 md:mb-8">
+                  Speak to an Expert
+                </p>
+                <form className="space-y-3 md:space-y-4">
+                  <input
+                    type="text"
+                    placeholder="Name"
+                    className="w-full border border-gray-300 rounded-md px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] text-sm"
+                  />
+                  <div className="flex">
+                    <div className="w-20 md:w-24 border border-gray-300 rounded-l-md flex items-center justify-center gap-1 md:gap-2 bg-white text-sm">
+                      🇮🇳 +91
+                    </div>
+                    <input
+                      type="tel"
+                      placeholder="Mobile Number"
+                      className="flex-1 border border-l-0 border-gray-300 rounded-r-md px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] text-sm"
+                    />
+                  </div>
+                  <input
+                    type="email"
+                    placeholder="Email Id"
+                    className="w-full border border-gray-300 rounded-md px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] text-sm"
+                  />
+                  <select className="w-full border border-gray-300 rounded-md px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] bg-white text-sm">
+                    <option>Interested in?</option>
+                    <option>GRE</option>
+                    <option>IELTS</option>
+                    <option>GMAT</option>
+                    <option>TOEFL</option>
+                  </select>
+                  <select className="w-full border border-gray-300 rounded-md px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] bg-white text-sm">
+                    <option>Your City</option>
+                  </select>
+                  <select className="w-full border border-gray-300 rounded-md px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] bg-white text-sm">
+                    <option>Nearest Center</option>
+                  </select>
+                  <label className="flex items-center gap-2 text-xs text-gray-600">
+                    <input type="checkbox" defaultChecked className="accent-[#F86C43]" />
+                    Stay informed via SMS & WhatsApp
+                  </label>
+                  <button
+                    type="submit"
+                    className="w-full bg-[#F86C43] hover:bg-[#ef5a2f] transition text-white font-semibold py-2.5 md:py-3 rounded-md text-sm md:text-base"
+                  >
+                    Schedule a Call
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section> */}
+
+      
+
+      {/* <Aboutresult data={studentsData || []} /> */}
+      <GreSection examFormatSection={examFormatSection} whatIsGreSection={whatIsGreSection} cta_banner={cta_banner} slug={slug}/>
+
+      {/* Exam Pattern Section - Dynamic */}
+      <section className="py-8 md:py-12 bg-[#F8F9FD]">
+        <div className="max-w-7xl mx-auto">
+          <GrePatternTable examPatternData={examPatternSection} />
+        </div>
+      </section>
+
+      {/* Official Questions Section */}
+      <section className="md:min-h-150 relative lg:overflow-hidden h-150 flex items-center justify-center mb-10">
+        <div className="flex p-10 pl-0 flex justify-center items-center mx-auto lg:h-[60vh] bg-gradient-to-r from-[#F1AA94] to-[#EE653C] pt-20 bg-cover bg-center bg-no-repeat">
+          <div className="hidden lg:block lg:w-[40%] z-10 rounded-full">
+            <img src="/Gre/laptop.png" alt="img" />
+          </div>
+          <div className="w-full lg:w-[45%] relative text-white pl-20">
+            <span className="text-3xl md:text-5xl font-bold">
+              {officialQuestionsSection.title || "Official GRE Questions - only with Ooshas"}
+            </span>
+            <p className="my-6">
+              {officialQuestionsSection.description || "We're the only GRE prep course licensed to use official ETS practice questions, so you know you're studying exactly what you'll see on test day."}
+            </p>
+            <div className="flex justify-end">
+              <button className="bg-gray-700 text-white px-6 py-3 rounded-xl flex gap-2">
+                <Play /> {officialQuestionsSection.buttonText || "Preview Dashboard"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <AIStudySection aiStudySection={aiStudySection} />
+
+      {/* Boost Profile Section */}
+      <div className="w-full max-w-6xl mx-auto my-14 relative">
+        <div className="bg-[#FDF0EB] rounded md:rounded-[40px] p-4 md:p-8 grid md:grid-cols-[800px_100px] items-center justify-between min-h-[300px] z-1">
+          <div className="flex-1 z-10 text-center md:text-left space-y-4 max-w-5xl pl-0 md:pl-20">
+            <span className="text-[#FF6A39] text-sm md:text-base font-medium tracking-wide block">
+              {boostProfileSection.tagline || "Test Prep & Profile Building"}
+            </span>
+            <h2 className="text-[#333333] text-2xl md:text-3xl lg:text-5xl font-extrabold leading-tight">
+              {boostProfileSection.title || "Boost Your <br className='hidden md:inline' /> Study Abroad Profile!"}
+            </h2>
+            <div className="pt-2">
+              <button className="bg-[#FF6A39] hover:bg-[#e05626] text-white font-bold px-8 py-3 rounded-xl shadow-md transition text-sm md:text-base">
+                {boostProfileSection.buttonText || "Enroll Now"}
+              </button>
+            </div>
+          </div>
+
+          <div className="hidden md:block">
+            <img
+              src="/girl-preparation.webp"
+              alt="Graduate Student"
+              className="object-contain md:w-80 md:absolute md:-top-[134px] md:right-25 z-10"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Score Guarantee Section */}
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#fdf0eb] to-white py-12 md:py-16 px-4">
+        <div className="flex justify-center items-center flex-col w-full">
+          {/* <div
+            dangerouslySetInnerHTML={{
+              __html: scoreGuaranteeSection.title || "",
+            }}
+            className="text-center text-2xl md:text-3xl lg:text-4xl font-bold"
+          /> */}
+
+          <h2 className="text-2xl md:text-3xl font-extrabold  text-center ">
+            {scoreGuaranteeSection?.title?.split("||")[0] || "What is"}  <br />
+            <p className="text-[#f06437]">{scoreGuaranteeSection?.title?.split("||")[1] || "GRE?"}</p>
+          </h2>
+
+          <p className="my-4 md:my-6 text-sm md:text-base text-center">{scoreGuaranteeSection.subtitle}</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-7xl gap-4 md:gap-6 mx-auto mt-8 md:mt-10">
+          {scoreGuaranteeSection.features?.map((ele: any, idx: number) => (
+            <div key={idx} className="text-black/80 flex flex-col relative isolate">
+              <span className="absolute top-0 -left-2 h-14 md:h-18 w-10 md:w-12 bg-orange-600 rounded-2xl z-[-1]" />
+              <div className="p-6 md:p-8 bg-white border rounded-xl">
+                <h3 className="font-bold text-lg md:text-xl mb-2">{ele.title}</h3>
+                <p className="text-gray-600 text-sm md:text-base leading-relaxed">
+                  {ele.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <PricingSection plans={pricingData.pricing_plans} />
+      </section>
+
+      <DashboardSection dashboardData={studentDashboard} />
+      <VideoExplanationSection videoData={studentVideo} />
+      <TextTestimonials testimonialsSection={testimonialsSection}/>
+      <FreeResources resourcesData={freeResourcesSection} />
+      <Consultants data={faqSection} finalCtaSection={finalCtaSection} />
+      {/* <Consultants /> */}
+    </>
+  );
+}
 
 
 
