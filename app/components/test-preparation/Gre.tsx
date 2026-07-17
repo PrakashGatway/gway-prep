@@ -23,6 +23,7 @@ import { Consultants } from "../destinations-consultants";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { getStudent } from "@/app/services/api";
 import Image from "next/image";
+import { StudentsSlider } from "../3dslider";
 
 function AIStudySection({ aiStudySection }: { aiStudySection: any }) {
   return (
@@ -634,9 +635,9 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any, slug:any}) {
       {/* Hero Section */}
       
       <section className="relative bg-[#FDF4EF]  overflow-visible">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10 lg:py-14">
+  <div className="max-w-7xl mx-auto  py-10 lg:py-14">
     {/* Heading */}
-    <div className="max-w-7xl mx-auto text-center">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 text-center">
       <div
         className="
           flex items-center  flex-col
@@ -656,9 +657,9 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any, slug:any}) {
         {heroSection.paragraph}
       </p>
     </div>
+<StudentsSlider data={studentsData?.data || []} />
 
-
-      <Aboutresult data={studentsData || []} />
+      {/* <Aboutresult data={studentsData || []} /> */}
     
   </div>
 
@@ -775,7 +776,6 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any, slug:any}) {
       {/* <Aboutresult data={studentsData || []} /> */}
       <GreSection examFormatSection={examFormatSection} whatIsGreSection={whatIsGreSection} cta_banner={cta_banner} slug={slug}/>
 
-      {/* Exam Pattern Section - Dynamic */}
       <section className="py-8 md:py-12 bg-[#F8F9FD]">
         <div className="max-w-7xl mx-auto">
           <GrePatternTable examPatternData={examPatternSection} />
