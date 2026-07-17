@@ -262,16 +262,16 @@ export default function CareersPage({ sections }: any) {
             </div>
           </div>
           <div className="relative">
-            <div
+            {/* <div
               className="absolute -top-4 left-8 w-10 h-10 rounded-full flex items-center justify-center"
               style={{ backgroundColor: orange }}
             >
               <MapPin size={20} className="text-white" />
-            </div>
+            </div> */}
             <img
-              src={data.hero.image || "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&q=80&auto=format&fit=crop"}
+              src={data.hero.image || "/herom image.webp"}
               alt="Team collaborating"
-              className="rounded w-full h-[360px] object-cover "
+              className="rounded w-full h-[460px] object-contain "
             />
           </div>
         </div>
@@ -302,31 +302,46 @@ export default function CareersPage({ sections }: any) {
         </div>
       </section>
 
-      {/* ---------------- Built for career ---------------- */}
-      <section className="bg-[#FCEEE5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-0 py-12 grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <h2 className="text-[36px] md:text-[42px] font-bold text-black">
-              Built For <span style={{ color: orange }}>Your Career.</span>
-            </h2>
-            <p className="mt-5 text-black/80 text-lg max-w-md leading-relaxed">
-              Whether you're a counselor, developer, designer, marketer or content creator, you'll
-              find opportunities to learn, grow and make an impact.
-            </p>
-            <button
-              className="mt-8 px-8 py-4 rounded-lg text-white text-base font-semibold hover:opacity-90 transition"
-              style={{ backgroundColor: orange }}
-            >
-              Explore Careers
-            </button>
-          </div>
+    
+    {/* ---------------- Built For Career ---------------- */}
+<section className="bg-[#FCEEE5]  ">
+  <div className="max-w-7xl mx-auto px-4">
+    <div className="rounded-sm overflow-hidden">
+      <div className="grid lg:grid-cols-2 items-center gap-10 lg:gap-16 px-8 md:px-14 py-6">
+
+        {/* Left Content */}
+        <div className="max-w-xl">
+          <h2 className="text-4xl md:text-6xl font-bold leading-tight text-[#2F2F2F]">
+            Built For{" "}
+            <span className="text-[#F26E46]">
+              Your Career.
+            </span>
+          </h2>
+
+          <p className="mt-6 text-lg md:text-[20px] leading-9 text-[#444]">
+            Whether you're a counselor, developer, designer,
+            marketer or content creator, you'll find
+            opportunities to learn, grow and make an impact.
+          </p>
+
+          <button className="mt-10 bg-[#F26E46] hover:bg-[#e65f35] text-white font-semibold text-xl px-8 py-4 rounded-xl transition-all duration-300">
+            Explore Careers
+          </button>
+        </div>
+
+        {/* Right Image */}
+        <div className="flex justify-center lg:justify-end">
           <img
-            src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=800&q=80&auto=format&fit=crop"
-            alt="Team meeting room"
-            className="rounded-2xl w-full h-[300px] object-cover shadow-xl"
+            src="/herom image 22.webp"
+            alt="Career Illustration"
+            className="w-full max-w-[500px] h-auto object-contain"
           />
         </div>
-      </section>
+
+      </div>
+    </div>
+  </div>
+</section>
 
       {/* ---------------- Stats + Growth path ---------------- */}
       <section className="max-w-7xl mx-auto px-6 md:px-0 py-12 gap-8">

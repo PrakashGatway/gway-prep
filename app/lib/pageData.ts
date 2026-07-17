@@ -530,10 +530,10 @@ export const pageData: any = {
     ],
   },
 
-  contectus: {
-    name: "ContectUs",
+  contactus : {
+    name: "ContactUs",
     require: true,
-    description: "Contectus page",
+    description: "ContactUs page",
     sections: [
       {
         name: "hero-section",
@@ -544,40 +544,198 @@ export const pageData: any = {
             label: "Hero Title",
             type: "text",
             required: false,
-            placeholder: "Welcome to Our Platform",
+            placeholder: "We're Here to Help.",
+            defaultValue: "We're Here to Help."
           },
           {
             name: "subtitle",
             label: "Hero Subtitle",
             type: "text",
             required: false,
-            placeholder: "Your journey to success starts here",
+            placeholder: "Let's Connect!",
+            defaultValue: "Let's Connect!"
           },
-        ],
-      },
-      {
-        name: "Contectus-Details",
-        label: "Contectus Details",
-        fields: [
-          { name: "title", label: "Title", type: "editor" },
-          { name: "subtitle", label: "Subtitle", type: "text" },
           {
-            name: "contect-details",
-            label: "Contect Details",
+            name: "description",
+            label: "Hero Description",
+            type: "textarea",
+            required: false,
+            placeholder: "Have questions about studying abroad...",
+            defaultValue: "Have questions about studying abroad, exams, applications or anything else? Our team is ready to assist you at every step of your journey."
+          },
+          {
+            name: "contactInfo",
+            label: "Contact Info",
             type: "repeater",
             fields: [
               { name: "title", label: "Title", type: "text" },
-              {
-                name: "icon",
-                label: "Icon",
-                type: "text",
-                placeholder: "Add the lucide icon name like Mail",
-              },
-              { name: "value", label: "Value", type: "text" },
-            ],
-          },
-        ],
+              { name: "icon", label: "Icon Name", type: "text", placeholder: "Phone, Mail, Clock, MessageCircle" },
+              { name: "value", label: "Value", type: "text" }
+            ]
+          }
+        ]
       },
+      {
+        name: "social-connect",
+        label: "Social Connect",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+            defaultValue: "Connect With Us"
+          },
+          {
+            name: "social-items",
+            label: "Social Items",
+            type: "repeater",
+            fields: [
+              { name: "name", label: "Name", type: "text" },
+              { name: "icon", label: "Icon Name", type: "text", placeholder: "MessageCircle, Instagram, Facebook, Youtube" },
+              { name: "description", label: "Description", type: "text" },
+              { name: "button-text", label: "Button Text", type: "text" },
+              { name: "link", label: "Link", type: "text" },
+              { name: "contact", label: "Contact", type: "text", placeholder: "+91 88704 42190" }
+            ],
+            defaultValue: [
+              { name: "WhatsApp", icon: "MessageCircle", description: "Chat with our experts", "button-text": "Chat Now", link: "#", contact: "+91 88704 42190" },
+              { name: "Instagram", icon: "Instagram", description: "Follow us for updates", "button-text": "Follow Us", link: "#", contact: "+91 88704 42190" },
+              { name: "Facebook", icon: "Facebook", description: "Like our page", "button-text": "Like Page", link: "#", contact: "+91 88704 42190" },
+              { name: "YouTube", icon: "Youtube", description: "Watch tips & guidance", "button-text": "Subscribe", link: "#", contact: "+91 88704 42190" }
+            ]
+          }
+        ]
+      },
+      {
+        name: "offices",
+        label: "Offices",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+            defaultValue: "Our Offices"
+          },
+          {
+            name: "office-items",
+            label: "Office Items",
+            type: "repeater",
+            fields: [
+              { name: "city", label: "City", type: "text" },
+              { name: "address", label: "Address", type: "text" },
+              { name: "pin", label: "PIN Code", type: "text" },
+              { name: "phone", label: "Phone", type: "text" },
+              { name: "image", label: "Image URL", type: "text" }
+            ],
+            defaultValue: [
+              { city: "Mohali (Head Office)", address: "SCO 103-104, 2nd Floor, Sector 34A, Chandigarh", pin: "160022", phone: "+91 88704 42190", image: "" },
+              { city: "Chandigarh", address: "SCO 8-9, 2nd Floor, Sector 17-G, Chandigarh", pin: "160017", phone: "+91 88704 42190", image: "" },
+              { city: "Jalandhar", address: "BMC Chowk, Near Bus Stand, Jalandhar, Punjab", pin: "144001", phone: "+91 88704 42190", image: "" },
+              { city: "Amritsar", address: "SCO 12, 1st Floor, Ranjit Avenue, near Golden Temple, Amritsar", pin: "143001", phone: "+91 88704 42190", image: "" }
+            ]
+          }
+        ]
+      },
+      {
+        name: "map-section",
+        label: "Map Section",
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+            defaultValue: "Find Us Across"
+          },
+          {
+            name: "subtitle",
+            label: "Subtitle",
+            type: "text",
+            defaultValue: "North India"
+          },
+          {
+            name: "description",
+            label: "Description",
+            type: "textarea",
+            defaultValue: "Visit our nearest office for personalized counseling and expert guidance on your study abroad journey."
+          },
+          {
+            name: "button-text",
+            label: "Button Text",
+            type: "text",
+            defaultValue: "Get Directions"
+          }
+        ]
+      },
+      {
+        name: "faq-section",
+        label: "FAQ Section",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+            defaultValue: "Frequently Asked Questions"
+          },
+          {
+            name: "faq-items",
+            label: "FAQ Items",
+            type: "repeater",
+            fields: [
+              { name: "question", label: "Question", type: "text" },
+              { name: "answer", label: "Answer", type: "textarea" }
+            ],
+            defaultValue: [
+              { question: "How can I contact Ooshas?", answer: "You can contact us via phone, email, WhatsApp, or by visiting our office." },
+              { question: "Can I visit your office without an appointment?", answer: "Yes, but we recommend scheduling an appointment for personalized attention." },
+              { question: "What are your working hours?", answer: "We are open Monday to Saturday from 10:00 AM to 7:00 PM." },
+              { question: "How soon will I get a response?", answer: "We typically respond within a few hours during business hours." },
+              { question: "Do you offer online counselling?", answer: "Yes, we offer online counselling sessions via video calls." },
+              { question: "Which documents do I need for counselling?", answer: "Bring your academic transcripts, test scores, and any relevant documents." }
+            ]
+          }
+        ]
+      },
+      {
+        name: "cta-section",
+        label: "CTA Section",
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+            defaultValue: "Your Dream University"
+          },
+          {
+            name: "subtitle",
+            label: "Subtitle",
+            type: "text",
+            defaultValue: "is Just a Conversation Away."
+          },
+          {
+            name: "description",
+            label: "Description",
+            type: "textarea",
+            defaultValue: "Reach out to our experts today and take the first step towards your global education journey."
+          },
+          {
+            name: "primary-button",
+            label: "Primary Button Text",
+            type: "text",
+            defaultValue: "Talk to an Expert"
+          },
+          {
+            name: "secondary-button",
+            label: "Secondary Button Text",
+            type: "text",
+            defaultValue: "Book Free Counselling"
+          },
+          {
+            name: "image",
+            label: "Image URL",
+            type: "file"
+          }
+        ]
+      }
     ],
   },
 
@@ -1341,593 +1499,6 @@ export const pageData: any = {
     ],
   },
 
-  preparation: {
-    name: "Preparation",
-    require: true,
-    description: "All preparation category pages (IELTS, GMAT, PTE, GRE, etc.)",
-    is_dynamic: true,
-    slug_field: "slug",
-    sections: [
-      {
-        name: "hero-section",
-        label: "Hero",
-        fields: [
-          {
-            name: "category_name",
-            label: "Category Name",
-            type: "text",
-            required: true,
-            placeholder: "GRE Preparation",
-            value: "GRE Preparation",
-          },
-          {
-            name: "title",
-            label: "Hero Title",
-            type: "editor",
-            required: false,
-            placeholder: "Welcome to Our Platform",
-            value: "The smartest way to master the GRE®",
-          },
-          {
-            name: "paragraph",
-            label: "Hero Paragraph",
-            type: "textarea",
-            required: false,
-            placeholder: "",
-            value:
-              'The original self-paced GRE course. Get Official GRE questions, an AI tutor, video lessons, and top-rated mobile apps at a third of the price of other "premium" options.',
-          },
-          {
-            name: "buttontext",
-            label: "Hero button text",
-            type: "text",
-            required: false,
-            placeholder: "",
-            value: "Full Courses starts at $99",
-          },
-          {
-            name: "heroImage",
-            label: "Hero Image",
-            type: "file",
-            accept: "image/*",
-          },
-          {
-            name: "ctaButtonText",
-            label: "CTA Button Text",
-            type: "text",
-            placeholder: "Full courses starts at $99",
-            value: "Full Courses starts at $99",
-          },
-        ],
-      },
-
-      {
-        name: "cta-banner-section",
-        label: "CTA Banner",
-        fields: [
-          {
-            name: "title",
-            label: "Banner Title",
-            type: "text",
-            value: "Achieve your target GRE score with expert guidance",
-          },
-          {
-            name: "buttonText",
-            label: "Button Text",
-            type: "text",
-            value: "Get Started Today",
-          },
-        ],
-      },
-      {
-        name: "what-is-gre-section",
-        label: "What is GRE",
-        fields: [
-          {
-            name: "sectionTitle",
-            label: "Section Title",
-            type: "text",
-            value: "What is GRE?",
-          },
-          {
-            name: "description",
-            label: "Description",
-            type: "editor",
-            value:
-              "The GRE, your gateway to prestigious universities and diverse programs, assesses your verbal, quantitative, and analytical writing skills – crucial for graduate study worldwide.",
-          },
-        ],
-      },
-      {
-        name: "exam-Format-section",
-        label: "GRE Exam Format",
-        fields: [
-          {
-            name: "title",
-            label: "Section Title",
-            type: "text",
-            value: "GRE Exam Format 2026 - New Format at a Glance",
-          },
-          {
-            name: "patternTable",
-            label: "Pattern Table Data",
-            type: "repeater",
-            fields: [
-              { name: "title", label: "title", type: "text" },
-              { name: "description", label: "description", type: "editor" },
-            ],
-          },
-        ],
-      },
-
-      {
-        name: "exam-pattern-section",
-        label: "GRE Exam Pattern",
-        fields: [
-          {
-            name: "exam-patternTable",
-            label: "exam Pattern Data",
-            type: "repeater",
-            fields: [
-              {
-                name: "title",
-                label: "Section Title",
-                type: "text",
-                value: "GRE Exam Pattern 2026 - New Format at a Glance",
-              },
-              {
-                name: "subtitle",
-                label: "Subtitle",
-                type: "editor",
-                value:
-                  "The GRE General Test uses the shorter format administered by the [ETS official portal](https://ets.org). The test takes exactly 1 hour and 58 minutes. It features 5 sections, is fully section-level adaptive, and drops the unscored experimental section entirely.",
-              },
-              {
-                name: "patternTable",
-                label: "Pattern Table Data",
-                type: "repeater",
-                fields: [
-                  {
-                    name: "section",
-                    label: "Section",
-                    type: "editor",
-                  },
-                  {
-                    name: "questions",
-                    label: "Questions",
-                    type: "text",
-                  },
-                  {
-                    name: "time",
-                    label: "Time",
-                    type: "text",
-                  },
-                  {
-                    name: "scoreRange",
-                    label: "Score Range",
-                    type: "text",
-                  },
-                  {
-                    name: "format",
-                    label: "Format",
-                    type: "text",
-                  },
-                ],
-              },
-              {
-                name: "other_data",
-                label: "Other Data",
-                type: "editor",
-                value:
-                  "### Important Test Regulations\n* No negative marking applies to incorrect answers.\n* Questions within an active section can be skipped or marked for review.\n* Official scoring reports become ready in 8 to 10 days.\n* Test takers can find upcoming windows on the [ETS GRE Test Dates Page](https://ets.org).",
-              },
-            ],
-          },
-        ],
-      },
-
-      {
-        name: "official-questions-section",
-        label: "Official GRE Questions",
-        fields: [
-          {
-            name: "title",
-            label: "Section Title",
-            type: "text",
-            value: "Official GRE Questions — only with Ooshas",
-          },
-          {
-            name: "description",
-            label: "Description",
-            type: "textarea",
-            value:
-              "We're the only GRE prep course licensed to use official ETS practice questions, so you know you're studying exactly what you'll see on test day.",
-          },
-          {
-            name: "buttonText",
-            label: "Button Text",
-            type: "text",
-            value: "Preview Dashboard",
-          },
-        ],
-      },
-      {
-        name: "ai-study-section",
-        label: "AI Study Section",
-        fields: [
-          {
-            name: "sectionTitle",
-            label: "Section Title",
-            type: "text",
-            required: false,
-            placeholder: "Study smarter with || AI",
-          },
-          {
-            name: "sectionSubtitle",
-            label: "Section Subtitle",
-            type: "textarea",
-            required: false,
-            value:
-              "Artificial Intelligence (AI) is transforming GRE coaching and study abroad test prep. By using AI‑powered tools, adaptive learning platforms, and smart analytics, students can prepare more efficiently and achieve better scores.",
-          },
-          {
-            name: "aiFeatures",
-            label: "AI Feature Cards",
-            type: "repeater",
-            fields: [
-              {
-                name: "heading",
-                label: "Heading",
-                type: "text",
-                placeholder: "AI Feature Title",
-              },
-              {
-                name: "content",
-                label: "Content",
-                type: "editor",
-              },
-              {
-                name: "image",
-                label: "Feature Image",
-                type: "file",
-                accept: "image/*",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        name: "boost-profile-section",
-        label: "Boost Profile CTA",
-        fields: [
-          {
-            name: "tagline",
-            label: "Tagline",
-            type: "text",
-            value: "Test Prep & Profile Building",
-          },
-          {
-            name: "title",
-            label: "Title",
-            type: "text",
-            value: "Boost Your Study Abroad Profile!",
-          },
-          {
-            name: "buttonText",
-            label: "Button Text",
-            type: "text",
-            value: "Enroll Now",
-          },
-        ],
-      },
-      {
-        name: "score-guarantee-section",
-        label: "Score Guarantee",
-        fields: [
-          {
-            name: "title",
-            label: "Section Title",
-            type: "text",
-            required: false,
-            value: "Improve Your GRE® Score, Guaranteed!",
-          },
-          {
-            name: "subtitle",
-            label: "Section Subtitle",
-            type: "text",
-            required: false,
-            value:
-              "How We Prepare You: Our Stress-Free Method for Cracking the Shorter GRE",
-          },
-          {
-            name: "features",
-            label: "Feature Cards",
-            type: "repeater",
-            max: 6,
-            fields: [
-              {
-                name: "title",
-                label: "Title",
-                type: "text",
-                placeholder: "Feature Title",
-              },
-              {
-                name: "description",
-                label: "Description",
-                type: "text",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        name: "pricing-section",
-        label: "Pricing Plans",
-        fields: [
-          {
-            name: "testimonial",
-            label: "Testimonial Quote",
-            type: "editor",
-            required: false,
-          },
-          {
-            name: "pricing_plans",
-            label: "Pricing Plans",
-            type: "repeater",
-            max: 3,
-            fields: [
-              {
-                name: "plan_name",
-                label: "Plan Name",
-                type: "text",
-                placeholder: "Plan Name",
-              },
-              {
-                name: "subtitle",
-                label: "Plan Subtitle",
-                type: "text",
-              },
-              {
-                name: "badge",
-                label: "Badge",
-                type: "text",
-              },
-              {
-                name: "is_highlighted",
-                label: "Highlighted (featured)",
-                type: "select",
-                option: ["true", "false"],
-              },
-              {
-                name: "bundle_offer",
-                label: "Bundle Offer Badge",
-                type: "text",
-                placeholder: "Bundle and save $854 ($1073 value)",
-              },
-              {
-                name: "content_features",
-                label: "Content Features",
-                type: "repeater",
-                fields: [
-                  {
-                    name: "feature",
-                    label: "Feature",
-                    type: "text",
-                  },
-                ],
-              },
-              {
-                name: "access_features",
-                label: "Access Features",
-                type: "repeater",
-                fields: [
-                  {
-                    name: "feature",
-                    label: "Feature",
-                    type: "text",
-                  },
-                ],
-              },
-              {
-                name: "price",
-                label: "Price",
-                type: "text",
-                placeholder: "$99 USD",
-              },
-            ],
-          },
-        ],
-      },
-
-      {
-        name: "student-dashboard",
-        label: "Student Dashbaord Info",
-        fields: [
-          {
-            name: "title",
-            label: "Title",
-            type: "text",
-            value: "Purchased by 500,000+ GRE students",
-          },
-          {
-            name: "Subtitle",
-            label: "Subtitle",
-            type: "text",
-            value: "Purchased by 500,000+ GRE students",
-          },
-          {
-            name: "Points",
-            label: "Dashboard Points",
-            type: "repeater",
-            max: 5,
-            fields: [
-              {
-                name: "Points",
-                label: "Points ",
-                type: "text",
-                placeholder: "",
-              },
-            ],
-          },
-        ],
-      },
-
-      {
-        name: "student-video",
-        label: "Student video Info",
-        fields: [
-          {
-            name: "title",
-            label: "Title",
-            type: "text",
-            value: "for split the taxt use this (||) for ex. : text1 || text2",
-          },
-          {
-            name: "Subtitle",
-            label: "Subtitle",
-            type: "text",
-            value: "Purchased by 500,000+ GRE students",
-          },
-          {
-            name: "button-text",
-            label: "Button Text",
-            type: "text",
-            value: "watch solution",
-          },
-
-          {
-            name: "video-url",
-            label: "Video Url",
-            type: "text",
-            value: "Enter the you",
-          },
-        ],
-      },
-      {
-        name: "testimonials-section",
-        label: "Testimonials",
-        fields: [
-          {
-            name: "sectionSubtitle",
-            label: "Section Subtitle",
-            type: "text",
-            required: false,
-          },
-          {
-            name: "testimonials",
-            label: "Testimonial Cards",
-            type: "repeater",
-            fields: [
-              {
-                name: "studentName",
-                label: "Student Name",
-                type: "text",
-              },
-              {
-                name: "mathScore",
-                label: "Math Score",
-                type: "text",
-              },
-              {
-                name: "verbalScore",
-                label: "Verbal Score",
-                type: "text",
-              },
-              {
-                name: "quote",
-                label: "Quote",
-                type: "textarea",
-              },
-              {
-                name: "ratingImage",
-                label: "Rating Image",
-                type: "file",
-                accept: "image/*",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        name: "free-resources-section",
-        label: "Free Resources",
-        fields: [
-          {
-            name: "title",
-            label: "Section Title",
-            type: "text",
-            value: "Free GRE Prep Resources",
-          },
-          {
-            name: "resources",
-            label: "Resource Cards",
-            type: "repeater",
-            fields: [
-              { name: "title", label: "Title", type: "text" },
-              { name: "description", label: "Description", type: "text" },
-              { name: "buttonText", label: "Button Text", type: "text" },
-            ],
-          },
-        ],
-      },
-      {
-        name: "f&q",
-        label: "FAQ",
-        fields: [
-          {
-            name: "title",
-            label: "FAQ Title",
-            type: "editor",
-            required: true,
-            value: "Frequently Asked Questions",
-          },
-          {
-            name: "items",
-            label: "Items",
-            type: "repeater",
-            fields: [
-              {
-                name: "question",
-                label: "Question",
-                type: "text",
-              },
-              {
-                name: "answer",
-                label: "Answer",
-                type: "textarea",
-              },
-            ],
-          },
-        ],
-      },
-      {
-        name: "final-cta-section",
-        label: "Final CTA",
-        fields: [
-          {
-            name: "title",
-            label: "Title",
-            type: "text",
-            value: "Ready to Achieve Your Dreams?",
-          },
-          {
-            name: "subtitle",
-            label: "Subtitle",
-            type: "text",
-            value:
-              "Join thousands of successful students and start your journey today.",
-          },
-          {
-            name: "buttonText",
-            label: "Button Text",
-            type: "text",
-            value: "Enroll Now",
-          },
-        ],
-      },
-    ],
-  },
-
   career: {
     name: "Career",
     require: true,
@@ -2341,4 +1912,592 @@ export const pageData: any = {
       },
     ],
   },
+
+  preparation: {
+    name: "Preparation",
+    require: true,
+    description: "All preparation category pages (IELTS, GMAT, PTE, GRE, etc.)",
+    is_dynamic: true,
+    slug_field: "slug",
+    sections: [
+      {
+        name: "hero-section",
+        label: "Hero",
+        fields: [
+          {
+            name: "category_name",
+            label: "Category Name",
+            type: "text",
+            required: true,
+            placeholder: "GRE Preparation",
+            value: "GRE Preparation",
+          },
+          {
+            name: "title",
+            label: "Hero Title",
+            type: "editor",
+            required: false,
+            placeholder: "Welcome to Our Platform",
+            value: "The smartest way to master the GRE®",
+          },
+          {
+            name: "paragraph",
+            label: "Hero Paragraph",
+            type: "textarea",
+            required: false,
+            placeholder: "",
+            value:
+              'The original self-paced GRE course. Get Official GRE questions, an AI tutor, video lessons, and top-rated mobile apps at a third of the price of other "premium" options.',
+          },
+          {
+            name: "buttontext",
+            label: "Hero button text",
+            type: "text",
+            required: false,
+            placeholder: "",
+            value: "Full Courses starts at $99",
+          },
+          {
+            name: "heroImage",
+            label: "Hero Image",
+            type: "file",
+            accept: "image/*",
+          },
+          {
+            name: "ctaButtonText",
+            label: "CTA Button Text",
+            type: "text",
+            placeholder: "Full courses starts at $99",
+            value: "Full Courses starts at $99",
+          },
+        ],
+      },
+
+      {
+        name: "cta-banner-section",
+        label: "CTA Banner",
+        fields: [
+          {
+            name: "title",
+            label: "Banner Title",
+            type: "text",
+            value: "Achieve your target GRE score with expert guidance",
+          },
+          {
+            name: "buttonText",
+            label: "Button Text",
+            type: "text",
+            value: "Get Started Today",
+          },
+        ],
+      },
+      {
+        name: "what-is-gre-section",
+        label: "What is GRE",
+        fields: [
+          {
+            name: "sectionTitle",
+            label: "Section Title",
+            type: "text",
+            value: "What is GRE?",
+          },
+          {
+            name: "description",
+            label: "Description",
+            type: "editor",
+            value:
+              "The GRE, your gateway to prestigious universities and diverse programs, assesses your verbal, quantitative, and analytical writing skills – crucial for graduate study worldwide.",
+          },
+        ],
+      },
+      {
+        name: "exam-Format-section",
+        label: "GRE Exam Format",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+            value: "GRE Exam Format 2026 - New Format at a Glance",
+          },
+          {
+            name: "patternTable",
+            label: "Pattern Table Data",
+            type: "repeater",
+            fields: [
+              { name: "title", label: "title", type: "text" },
+              { name: "description", label: "description", type: "editor" },
+            ],
+          },
+        ],
+      },
+
+      {
+        name: "exam-pattern-section",
+        label: "GRE Exam Pattern",
+        fields: [
+          {
+            name: "exam-patternTable",
+            label: "exam Pattern Data",
+            type: "repeater",
+            fields: [
+              {
+                name: "title",
+                label: "Section Title",
+                type: "text",
+                value: "GRE Exam Pattern 2026 - New Format at a Glance",
+              },
+              {
+                name: "subtitle",
+                label: "Subtitle",
+                type: "editor",
+                value:
+                  "The GRE General Test uses the shorter format administered by the [ETS official portal](https://ets.org). The test takes exactly 1 hour and 58 minutes. It features 5 sections, is fully section-level adaptive, and drops the unscored experimental section entirely.",
+              },
+              {
+                name: "patternTable",
+                label: "Pattern Table Data",
+                type: "repeater",
+                fields: [
+                  {
+                    name: "section",
+                    label: "Section",
+                    type: "editor",
+                  },
+                  {
+                    name: "questions",
+                    label: "Questions",
+                    type: "text",
+                  },
+                  {
+                    name: "time",
+                    label: "Time",
+                    type: "text",
+                  },
+                  {
+                    name: "scoreRange",
+                    label: "Score Range",
+                    type: "text",
+                  },
+                  {
+                    name: "format",
+                    label: "Format",
+                    type: "text",
+                  },
+                ],
+              },
+              {
+                name: "other_data",
+                label: "Other Data",
+                type: "editor",
+                value:
+                  "### Important Test Regulations\n* No negative marking applies to incorrect answers.\n* Questions within an active section can be skipped or marked for review.\n* Official scoring reports become ready in 8 to 10 days.\n* Test takers can find upcoming windows on the [ETS GRE Test Dates Page](https://ets.org).",
+              },
+            ],
+          },
+        ],
+      },
+
+      {
+        name: "official-questions-section",
+        label: "Official GRE Questions",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+            value: "Official GRE Questions — only with Ooshas",
+          },
+          {
+            name: "description",
+            label: "Description",
+            type: "textarea",
+            value:
+              "We're the only GRE prep course licensed to use official ETS practice questions, so you know you're studying exactly what you'll see on test day.",
+          },
+          {
+            name: "buttonText",
+            label: "Button Text",
+            type: "text",
+            value: "Preview Dashboard",
+          },
+        ],
+      },
+      {
+        name: "ai-study-section",
+        label: "AI Study Section",
+        fields: [
+          {
+            name: "sectionTitle",
+            label: "Section Title",
+            type: "text",
+            required: false,
+            placeholder: "Study smarter with || AI",
+          },
+          {
+            name: "sectionSubtitle",
+            label: "Section Subtitle",
+            type: "textarea",
+            required: false,
+            value:
+              "Artificial Intelligence (AI) is transforming GRE coaching and study abroad test prep. By using AI‑powered tools, adaptive learning platforms, and smart analytics, students can prepare more efficiently and achieve better scores.",
+          },
+          {
+            name: "aiFeatures",
+            label: "AI Feature Cards",
+            type: "repeater",
+            fields: [
+              {
+                name: "heading",
+                label: "Heading",
+                type: "text",
+                placeholder: "AI Feature Title",
+              },
+              {
+                name: "content",
+                label: "Content",
+                type: "editor",
+              },
+              {
+                name: "image",
+                label: "Feature Image",
+                type: "file",
+                accept: "image/*",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: "boost-profile-section",
+        label: "Boost Profile CTA",
+        fields: [
+          {
+            name: "tagline",
+            label: "Tagline",
+            type: "text",
+            value: "Test Prep & Profile Building",
+          },
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+            value: "Boost Your Study Abroad Profile!",
+          },
+          {
+            name: "buttonText",
+            label: "Button Text",
+            type: "text",
+            value: "Enroll Now",
+          },
+        ],
+      },
+      {
+        name: "score-guarantee-section",
+        label: "Score Guarantee",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+            required: false,
+            value: "Improve Your GRE® Score, Guaranteed!",
+          },
+          {
+            name: "subtitle",
+            label: "Section Subtitle",
+            type: "text",
+            required: false,
+            value:
+              "How We Prepare You: Our Stress-Free Method for Cracking the Shorter GRE",
+          },
+          {
+            name: "features",
+            label: "Feature Cards",
+            type: "repeater",
+            max: 6,
+            fields: [
+              {
+                name: "title",
+                label: "Title",
+                type: "text",
+                placeholder: "Feature Title",
+              },
+              {
+                name: "description",
+                label: "Description",
+                type: "text",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: "pricing-section",
+        label: "Pricing Plans",
+        fields: [
+          {
+            name: "testimonial",
+            label: "Testimonial Quote",
+            type: "editor",
+            required: false,
+          },
+          {
+            name: "pricing_plans",
+            label: "Pricing Plans",
+            type: "repeater",
+            max: 3,
+            fields: [
+              {
+                name: "plan_name",
+                label: "Plan Name",
+                type: "text",
+                placeholder: "Plan Name",
+              },
+              {
+                name: "subtitle",
+                label: "Plan Subtitle",
+                type: "text",
+              },
+              {
+                name: "badge",
+                label: "Badge",
+                type: "text",
+              },
+              {
+                name: "is_highlighted",
+                label: "Highlighted (featured)",
+                type: "select",
+                option: ["true", "false"],
+              },
+              {
+                name: "bundle_offer",
+                label: "Bundle Offer Badge",
+                type: "text",
+                placeholder: "Bundle and save $854 ($1073 value)",
+              },
+              {
+                name: "content_features",
+                label: "Content Features",
+                type: "repeater",
+                fields: [
+                  {
+                    name: "feature",
+                    label: "Feature",
+                    type: "text",
+                  },
+                ],
+              },
+              {
+                name: "access_features",
+                label: "Access Features",
+                type: "repeater",
+                fields: [
+                  {
+                    name: "feature",
+                    label: "Feature",
+                    type: "text",
+                  },
+                ],
+              },
+              {
+                name: "price",
+                label: "Price",
+                type: "text",
+                placeholder: "$99 USD",
+              },
+            ],
+          },
+        ],
+      },
+
+      {
+        name: "student-dashboard",
+        label: "Student Dashbaord Info",
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+            value: "Purchased by 500,000+ GRE students",
+          },
+          {
+            name: "Subtitle",
+            label: "Subtitle",
+            type: "editor",
+            value: "Purchased by 500,000+ GRE students",
+          },
+          {
+            name: "Points",
+            label: "Dashboard Points",
+            type: "repeater",
+            max: 5,
+            fields: [
+              {
+                name: "Points",
+                label: "Points ",
+                type: "text",
+                placeholder: "",
+              },
+            ],
+          },
+        ],
+      },
+
+      {
+        name: "student-video",
+        label: "Student video Info",
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+            value: "for split the taxt use this (||) for ex. : text1 || text2",
+          },
+          {
+            name: "Subtitle",
+            label: "Subtitle",
+            type: "text",
+            value: "Purchased by 500,000+ GRE students",
+          },
+          {
+            name: "button-text",
+            label: "Button Text",
+            type: "text",
+            value: "watch solution",
+          },
+
+          {
+            name: "video-url",
+            label: "Video Url",
+            type: "text",
+            value: "Enter the you",
+          },
+        ],
+      },
+      {
+        name: "testimonials-section",
+        label: "Testimonials",
+        fields: [
+          {
+            name: "sectionSubtitle",
+            label: "Section Subtitle",
+            type: "text",
+            required: false,
+          },
+          {
+            name: "testimonials",
+            label: "Testimonial Cards",
+            type: "repeater",
+            fields: [
+              {
+                name: "studentName",
+                label: "Student Name",
+                type: "text",
+              },
+              {
+                name: "mathScore",
+                label: "Math Score",
+                type: "text",
+              },
+              {
+                name: "verbalScore",
+                label: "Verbal Score",
+                type: "text",
+              },
+              {
+                name: "quote",
+                label: "Quote",
+                type: "textarea",
+              },
+              {
+                name: "ratingImage",
+                label: "Rating Image",
+                type: "file",
+                accept: "image/*",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: "free-resources-section",
+        label: "Free Resources",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+            value: "Free GRE Prep Resources",
+          },
+          {
+            name: "resources",
+            label: "Resource Cards",
+            type: "repeater",
+            fields: [
+              { name: "title", label: "Title", type: "text" },
+              { name: "description", label: "Description", type: "text" },
+              { name: "buttonText", label: "Button Text", type: "text" },
+            ],
+          },
+        ],
+      },
+      {
+        name: "f&q",
+        label: "FAQ",
+        fields: [
+          {
+            name: "title",
+            label: "FAQ Title",
+            type: "editor",
+            required: true,
+            value: "Frequently Asked Questions",
+          },
+          {
+            name: "items",
+            label: "Items",
+            type: "repeater",
+            fields: [
+              {
+                name: "question",
+                label: "Question",
+                type: "text",
+              },
+              {
+                name: "answer",
+                label: "Answer",
+                type: "textarea",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        name: "final-cta-section",
+        label: "Final CTA",
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+            value: "Ready to Achieve Your Dreams?",
+          },
+          {
+            name: "subtitle",
+            label: "Subtitle",
+            type: "text",
+            value:
+              "Join thousands of successful students and start your journey today.",
+          },
+          {
+            name: "buttonText",
+            label: "Button Text",
+            type: "text",
+            value: "Enroll Now",
+          },
+        ],
+      },
+    ],
+  },
+
 };

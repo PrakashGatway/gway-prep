@@ -164,18 +164,22 @@ function CardContent({ data }: { data: any }) {
       <div className="flex justify-between items-start flex-col">
         <p className="text-xl font-bold text-[#555]">{data?.studentName}</p>
         <span className="flex justify-between w-full gap-2">
+          
           <div className="flex items-center">
-            Math 
-            <p className="w-10 ml-1 bg-orange-600 font-bold rounded text-center text-white">
-              {data?.mathScore || data?.score || "N/A"}
-            </p>
-          </div>
-          <div className="flex items-center">
-            Verbal 
-            <p className="w-10 ml-1 bg-gray-600 font-bold rounded text-center text-white">
-              {data?.verbalScore || data?.verbal || "N/A"}
-            </p>
-          </div>
+  {data?.mathScore?.split("||")?.[0] || data?.score || ""}
+
+  <p className="w-10 ml-1 bg-orange-600 font-bold rounded text-center text-white">
+    {data?.mathScore?.split("||")?.[1] || data?.score || ""}
+  </p>
+</div>
+
+<div className="flex items-center">
+  {data?.verbalScore?.split("||")?.[0] || data?.verbal || ""}
+
+  <p className="w-10 ml-1 bg-gray-600 font-bold rounded text-center text-white">
+    {data?.verbalScore?.split("||")?.[1] || data?.verbal || ""}
+  </p>
+</div>
         </span>
         <div className="flex gap-1">
           {[...Array(data?.rating || 5)].map((_, i) => (

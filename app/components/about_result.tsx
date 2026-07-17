@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import React, {
@@ -37,12 +35,12 @@ interface AboutResultProps {
 // Color gradients for each card based on test type
 const getGradientColors = (course: string) => {
   const gradients: Record<string, string> = {
-    "IELTS": "from-orange-500 to-amber-400",
-    "GMAT": "from-orange-600 to-amber-500",
-    "GRE": "from-orange-600 to-amber-500",
-    "SAT": "from-orange-500 to-amber-400",
+    IELTS: "from-orange-500 to-amber-400",
+    GMAT: "from-orange-600 to-amber-500",
+    GRE: "from-orange-600 to-amber-500",
+    SAT: "from-orange-500 to-amber-400",
   };
-  
+
   // Find matching gradient or return default
   for (const [key, value] of Object.entries(gradients)) {
     if (course.toLowerCase().includes(key.toLowerCase())) {
@@ -67,7 +65,9 @@ export const Aboutresult = ({
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Ensure data exists and has items
-  const items = data?.data?.length ? [...data.data, ...data.data, ...data.data] : [];
+  const items = data?.data?.length
+    ? [...data.data, ...data.data, ...data.data]
+    : [];
   const totalItems = items.length;
   const minSwipeDistance = 50;
 
@@ -93,13 +93,13 @@ export const Aboutresult = ({
       setActive(index);
       setTimeout(() => setIsTransitioning(false), 500);
     },
-    [active, isTransitioning]
+    [active, isTransitioning],
   );
 
   // Auto-rotate effect
   useEffect(() => {
     if (totalItems === 0) return;
-    
+
     if (autoRotate && isInView && !isHovering) {
       const interval = setInterval(() => {
         goToNext();
@@ -111,12 +111,12 @@ export const Aboutresult = ({
   // Intersection Observer
   useEffect(() => {
     if (!carouselRef.current) return;
-    
+
     const observer = new IntersectionObserver(
       ([entry]) => setIsInView(entry.isIntersecting),
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
-    
+
     observer.observe(carouselRef.current);
     return () => observer.disconnect();
   }, []);
@@ -161,10 +161,10 @@ export const Aboutresult = ({
   // Get card position classes based on active index
   const getCardAnimationClass = (index: number) => {
     if (totalItems === 0) return "opacity-0";
-    
+
     // Calculate relative position (cyclic)
-    const diff = ((index - active) % totalItems + totalItems) % totalItems;
-    
+    const diff = (((index - active) % totalItems) + totalItems) % totalItems;
+
     if (diff === 0) {
       return "scale-100 opacity-100 z-20 translate-x-0";
     } else if (diff === 1) {
@@ -224,54 +224,45 @@ export const Aboutresult = ({
           <div className="absolute inset-0 flex items-center justify-center">
             {items.map((item, index) => {
               const gradientClass = getGradientColors(item.course);
-              
-              
+
               return (
                 <div
                   key={`${item._id}-${index}`}
                   className={`absolute top-0 w-[280px] max-w-[90%] transform transition-all duration-500 ease-in-out ${getCardAnimationClass(
-                    index
+                    index,
                   )}`}
                   style={{ height: `${cardHeight}px` }}
                 >
-                  <div
-                    className="overflow-hidden bg-white shadow-lg hover:shadow-xl flex flex-col h-full rounded-2xl transition-shadow duration-300"
-                  >
-                    {/* Top Section - Image with Gradient Overlay and Test Name */}
+                  <div className="overflow-hidden bg-white shadow-lg hover:shadow-xl flex flex-col h-full  transition-shadow duration-300">
                     <div
-                      className={`relative bg-gradient-to-br ${gradientClass} flex flex-col items-center justify-center h-[85%] p-6 overflow-hidden`}
+                      className={`relative bg-[#FE8E6D] flex flex-col items-center justify-center h-[85%] m-3 overflow-hidden`}
                     >
-                      
-                      {item.image && (
-                        <div 
-                          className="absolute inset-0 bg-cover bg-center "
-                          style={{ backgroundImage: `url(${item.image})`, backgroundSize: 'cover',
-                           backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }}
-                        />
-                      )}
-                      
+                      <img
+                        src={item?.image}
+                        className="h-full w-full object-cover mx-auto bg-[#FE8E6D] group-hover:scale-105 transition-transform duration-500"
+                        alt={item?.name}
+                      />
+                      {/* Exam Type Badge */}
+                      <span className="absolute bottom-0 left-0 w-full text-sm text-center font-bold bg-[#000] text-white px-2.5 py-1.5">
+                        {item?.course || "NEET - UG '25"}
+                      </span>
                     </div>
 
-                    {/* Bottom Section - Content */}
-                    <div className="p-5 flex flex-col flex-grow bg-white">
-                      {/* Name */}
-                      <h3 className="text-lg font-semibold text-gray-800 line-clamp-1 flex items-center justify-between gap-2">
-                        {item.name}
-                          <span className="inline-block px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-medium">
-                          {item.course}
+                    <div className="text-left mt-2 capitalize px-6 pb-2">
+                      <p className="font-bold text-base sm:text-lg break-words text-gray-800 leading-tight">
+                        {item?.name}
+                      </p>
+                      <div className="flex flex-col items-start justify-between mt-1">
+                        <span className="font-medium text-xs sm:text-sm text-gray-500 truncate">
+                          Standardized Test Results
                         </span>
-                      </h3>
-                      
-                      {/* Score */}
-                      <div className="mt-1 flex items-center gap-2">
-                        <span className="text-sm text-gray-500">Score</span>
-                        <span className="text-xl font-bold text-gray-900">{item.score}</span>
+                        <span className="font-medium text-xs sm:text-sm text-gray-500 truncate">
+                          Score
+                        </span>
+                        <span className="text-[#f26e46] m-0 p-0 font-bold text-2xl  md:text-3xl transition-colors duration-200">
+                          {item?.score}
+                        </span>
                       </div>
-
-                      {/* Course/Test type as badge */}
-                      {/* <div className="mt-3">
-                       
-                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -297,21 +288,11 @@ export const Aboutresult = ({
               <span className="text-xs text-gray-400">+{totalItems - 10}</span>
             )}
           </div>
-          
         </div>
       </div>
     </section>
   );
 };
-
-
-
-
-
-
-
-
-
 
 // // Aboutresult.tsx
 // "use client";
@@ -351,7 +332,7 @@ export const Aboutresult = ({
 //         <div className="flex w-max animate-marquee bg-[#FFB399] p-10">
 //           {duplicatedData.map((ele: any, idx: number) => (
 //             <motion.div
-//               key={`${ele._id || ele.id || 'slide'}-${idx}`} 
+//               key={`${ele._id || ele.id || 'slide'}-${idx}`}
 //               initial={{ opacity: 0, y: 20 }}
 //               whileInView={{ opacity: 1, y: 0 }}
 //               viewport={{ amount: 0.1 }}
@@ -399,7 +380,7 @@ export const Aboutresult = ({
 //       </div>
 
 //       {/* <ExploreCourses /> */}
-          
+
 //       <style jsx>{`
 //         @keyframes marquee {
 //           0% {

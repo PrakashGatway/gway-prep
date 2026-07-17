@@ -471,21 +471,30 @@ function DashboardSection({ dashboardData }: { dashboardData: any }) {
         <div className="grid items-center gap-8 lg:grid-cols-2">
           {/* Left Content */}
           <div className="text-white text-center lg:text-left">
-            <h2 className="max-w-xl mx-auto lg:mx-0 text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">
+            <h2 className="max-w-xl mx-auto lg:mx-0 text-2xl sm:text-3xl md:text-4xl mb-4 font-bold leading-tight">
               {dashboardData?.title || "An All-in-One Dashboard for Smarter Prep"}
             </h2>
-            <p className="max-w-xl mx-auto lg:mx-0 mt-4 text-sm md:text-base text-white/90">
+            {/* <p className="max-w-xl mx-auto lg:mx-0 mt-4 text-sm md:text-base text-white/90">
               {dashboardData?.Subtitle || "Live classes, mock tests, progress graphs, AI tutor, study plans and revision tools all in one place."}
-            </p>
-            <ul className="mt-6 md:mt-10 space-y-3 md:space-y-4 max-w-xl mx-auto lg:mx-0">
+            </p> */}
+            
+            <div
+              className="[&_ul]:list-disc [&_ul]:ml-6 [&_ol]:list-decimal [&_ol]:ml-6 [&_li]:mb-2 "
+              dangerouslySetInnerHTML={{
+                __html: dashboardData?.Subtitle || ""
+              }}
+            />
+            
+            {/* <ul className="mt-6 md:mt-10 space-y-3 md:space-y-4 max-w-xl mx-auto lg:mx-0">
               {features.map((item: string, index: number) => (
                 <li key={index} className="flex items-center text-sm md:text-lg text-white">
                   <span className="mr-3 md:mr-4 h-2 w-2 md:h-2.5 md:w-2.5 rounded-full bg-white flex-shrink-0"></span>
                   {item}
                 </li>
               ))}
-            </ul>
-            <div className="mt-8 md:mt-12 flex flex-col sm:flex-row gap-3 md:gap-5 justify-center lg:justify-start">
+            </ul> */}
+
+            <div className="mt-8 md:mt-8 flex flex-col sm:flex-row gap-3 md:gap-5 justify-center lg:justify-start">
               <button className="rounded-xl bg-white px-6 md:px-8 py-3 md:py-4 font-semibold text-[#FF5B36] transition hover:scale-105 hover:shadow-xl text-sm md:text-base">
                 Try Free for 3 Days →
               </button>
@@ -630,7 +639,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any, slug:any}) {
     <div className="max-w-5xl mx-auto text-center">
       <div
         className="
-          hero-title
+          flex items-center  flex-col
           [&>h1]:text-4xl
           sm:[&>h1]:text-5xl
           lg:[&>h1]:text-6xl

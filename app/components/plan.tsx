@@ -186,7 +186,13 @@ export default function PricingSection({ plans }: { plans: any }) {
           <div className="max-w-4xl mx-auto text-center mb-18">
             <h2 className="text-xl md:text-2xl font-bold leading-relaxed text-[#333]">
               {testimonial ? (
-                testimonial
+                // testimonial
+                <div
+            dangerouslySetInnerHTML={{
+              __html: testimonial || "",
+            }}
+            className="text-center  font-bold"
+          />
               ) : (
                 <>
                   <span className="text-[#FF6B45]">"Ooshash Prep</span> gets

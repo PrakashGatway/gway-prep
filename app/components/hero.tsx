@@ -200,7 +200,7 @@ export function Hero({ data, student }: HeroProps) {
               className="order-2 lg:order-1"
             >
               {/* Badge */}
-              <motion.div
+              {/* <motion.div
                 initial={{ opacity: 0, y: 20, scale: 0.9 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
@@ -218,7 +218,7 @@ export function Hero({ data, student }: HeroProps) {
                 <span className="text-[#F36C45] text-sm font-semibold tracking-wide">
                   Trusted by 10,000+ Students
                 </span>
-              </motion.div>
+              </motion.div> */}
 
               {/* Title */}
               <div className="text-black font-bold leading-[1.08] tracking-tight">
@@ -294,7 +294,7 @@ export function Hero({ data, student }: HeroProps) {
               </motion.div>
 
               {/* Trust Indicators */}
-              <motion.div
+              {/* <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1, duration: 0.8 }}
@@ -329,7 +329,7 @@ export function Hero({ data, student }: HeroProps) {
                   </div>
                   <p className="text-gray-400 text-sm mt-0.5 font-light">4.9/5 from 2,000+ reviews</p>
                 </div>
-              </motion.div>
+              </motion.div> */}
             </motion.div>
 
 
@@ -366,13 +366,13 @@ export function Hero({ data, student }: HeroProps) {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.6, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-                    className="relative w-[120%] h-[130%] m-auto  overflow-hidden "
+                    className="relative w-[120%] h-[100%] m-auto  overflow-hidden "
                   >
                     
                     <img
-                      src={"/image/heroimg.png"}
+                      src={"/home page hero image.webp"}
                       alt="Graduate celebrating success"
-                      className="w-full h-full object-cover object-top"
+                      className="w-full h-[90%] object-contain object-end mt-6"
                     />
                     {/* Gradient overlays */}
                     {/* <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f1e]/80 via-transparent to-[#0f0f1e]/20" />
@@ -394,13 +394,13 @@ export function Hero({ data, student }: HeroProps) {
                     position="top-left"
                     delay={1.2}
                   /> */}
-                  <FloatingBadge
+                  {/* <FloatingBadge
                     icon={Trophy}
                     label="Top Scores"
                     value="95%+"
                     position="top-right"
                     delay={1.5}
-                  />
+                  /> */}
                   {/* <FloatingBadge
                     icon={Award}
                     label="Success Rate"

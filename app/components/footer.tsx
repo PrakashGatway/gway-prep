@@ -100,16 +100,20 @@ export function Footer() {
                   <div className="flex flex-col">
                     <p className="font-bold text-base md:text-lg mb-3 md:mb-4">Connect</p>
                     <ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm">
-                      <li className="flex items-center gap-2 cursor-pointer hover:text-gray-200 transition-colors" onClick={() => window.open('https://www.instagram.com/ooshasprep', '_blank')}>
+                      <li className="flex items-center gap-2 cursor-pointer hover:text-gray-200 transition-colors"
+                       onClick={() => window.open('https://www.instagram.com/ooshasprep', '_blank')}>
                         <Instagram className="w-3.5 h-3.5 md:w-4 md:h-4" /> Instagram
                       </li>
-                      <li className="flex items-center gap-2 cursor-pointer hover:text-gray-200 transition-colors" onClick={() => window.open('https://www.facebook.com/share/18aH5VifRr/?mibextid=wwXIfr', '_blank')}>
+                      <li className="flex items-center gap-2 cursor-pointer hover:text-gray-200 transition-colors"
+                       onClick={() => window.open('https://www.facebook.com/share/18aH5VifRr/?mibextid=wwXIfr', '_blank')}>
                         <Facebook className="w-3.5 h-3.5 md:w-4 md:h-4" /> Facebook
                       </li>
-                      <li className="flex items-center gap-2 cursor-pointer hover:text-gray-200 transition-colors" onClick={() => window.open('#', '_blank')}>
+                      <li className="flex items-center gap-2 cursor-pointer hover:text-gray-200 transition-colors"
+                       onClick={() => window.open('#', '_blank')}>
                         <Linkedin className="w-3.5 h-3.5 md:w-4 md:h-4" /> LinkedIn
                       </li>
-                      <li className="flex items-center gap-2 cursor-pointer hover:text-gray-200 transition-colors" onClick={() => window.open('https://youtube.com/@ooshasprep', '_blank')}>
+                      <li className="flex items-center gap-2 cursor-pointer hover:text-gray-200 transition-colors" 
+                      onClick={() => window.open('https://youtube.com/@ooshasprep', '_blank')}>
                         <Youtube className="w-3.5 h-3.5 md:w-4 md:h-4" /> YouTube
                       </li>
                     </ul>
