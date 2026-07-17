@@ -58,11 +58,12 @@ export const Aboutresult = ({
 }: AboutResultProps) => {
   const [active, setActive] = useState(0);
   const carouselRef = useRef<HTMLDivElement>(null);
-  const [isInView, setIsInView] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [cardWidth, setCardWidth] = useState(220);
+  const autoRotateTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   // Ensure data exists and has items
   const originalItems = data?.data || [];
@@ -71,13 +72,38 @@ export const Aboutresult = ({
   const items = originalItems.length > 0 ? [...originalItems] : [];
   const totalItems = items.length;
   const minSwipeDistance = 50;
-  
-  // Number of visible cards (always 5)
-  const VISIBLE_CARDS = 5;
+
+  // Calculate responsive card width
+  useEffect(() => {
+    const calculateCardWidth = () => {
+      const windowWidth = window.innerWidth;
+      if (windowWidth >= 1280) { // xl screens
+        return 220;
+      } else if (windowWidth >= 1024) { // lg screens
+        return 200;
+      } else if (windowWidth >= 768) { // md screens
+        return 180;
+      } else if (windowWidth >= 640) { // sm screens
+        return 160;
+      } else {
+        return 140;
+      }
+    };
+
+    setCardWidth(calculateCardWidth());
+
+    const handleResize = () => {
+      setCardWidth(calculateCardWidth());
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Navigation functions
   const goToNext = useCallback(() => {
     if (isTransitioning || totalItems === 0) return;
+    console.log("Going to next slide"); // Debug log
     setIsTransitioning(true);
     setActive((prev) => (prev + 1) % totalItems);
     setTimeout(() => setIsTransitioning(false), 500);
@@ -100,35 +126,42 @@ export const Aboutresult = ({
     [active, isTransitioning, totalItems],
   );
 
-  // Auto-rotate effect
+  // Auto-rotate effect - simplified
   useEffect(() => {
-    if (totalItems === 0) return;
+    // Clear any existing timer
+    if (autoRotateTimerRef.current) {
+      clearInterval(autoRotateTimerRef.current);
+      autoRotateTimerRef.current = null;
+    }
 
-    if (autoRotate && isInView && !isHovering) {
-      const interval = setInterval(() => {
+    // Only start auto-rotation if:
+    // 1. autoRotate is true
+    // 2. Not hovering
+    // 3. There are items to rotate
+    if (autoRotate && !isHovering && totalItems > 0) {
+      console.log("Starting auto-rotation"); // Debug log
+      autoRotateTimerRef.current = setInterval(() => {
         goToNext();
       }, rotateInterval);
-      return () => clearInterval(interval);
+    } else {
+      console.log("Auto-rotation paused"); // Debug log
     }
-  }, [isInView, isHovering, autoRotate, rotateInterval, totalItems, goToNext]);
 
-  // Intersection Observer
-  useEffect(() => {
-    if (!carouselRef.current) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsInView(entry.isIntersecting),
-      { threshold: 0.2 },
-    );
-
-    observer.observe(carouselRef.current);
-    return () => observer.disconnect();
-  }, []);
+    // Cleanup function
+    return () => {
+      if (autoRotateTimerRef.current) {
+        clearInterval(autoRotateTimerRef.current);
+        autoRotateTimerRef.current = null;
+      }
+    };
+  }, [autoRotate, isHovering, rotateInterval, goToNext, totalItems]);
 
   // Touch handlers
   const onTouchStart = (e: TouchEvent) => {
     setTouchStart(e.targetTouches[0].clientX);
     setTouchEnd(null);
+    // Pause auto-rotation on touch
+    setIsHovering(true);
   };
 
   const onTouchMove = (e: TouchEvent) => {
@@ -136,19 +169,23 @@ export const Aboutresult = ({
   };
 
   const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
+    if (!touchStart || !touchEnd) {
+      setIsHovering(false);
+      return;
+    }
     const distance = touchStart - touchEnd;
     if (distance > minSwipeDistance) {
       goToNext();
     } else if (distance < -minSwipeDistance) {
       goToPrev();
     }
+    // Resume auto-rotation after touch
+    setTimeout(() => setIsHovering(false), 3000);
   };
 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (!isInView) return;
       if (e.key === "ArrowRight") {
         e.preventDefault();
         goToNext();
@@ -160,7 +197,7 @@ export const Aboutresult = ({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isInView, goToNext, goToPrev]);
+  }, [goToNext, goToPrev]);
 
   // Get card position based on active index (shows 5 cards)
   const getCardPosition = (index: number) => {
@@ -169,9 +206,8 @@ export const Aboutresult = ({
     // Calculate relative position (cyclic)
     let diff = (((index - active) % totalItems) + totalItems) % totalItems;
     
-    // Calculate position for 5 cards (2 on left, 1 center, 2 on right)
-    const cardWidth = 210;
-    const gap = 2;
+    // Fixed gap between cards - no extra gap
+    const gap = 0;
     const totalWidth = cardWidth + gap;
     
     let translateX = 0;
@@ -189,33 +225,33 @@ export const Aboutresult = ({
     // Right side cards
     else if (diff === 1) {
       translateX = totalWidth;
-      scale = 0.85;
+      scale = 0.9;
       opacity = 1;
       zIndex = 15;
     }
     else if (diff === 2) {
       translateX = totalWidth * 2;
-      scale = 0.7;
+      scale = 0.8;
       opacity = 1;
       zIndex = 5;
     }
     // Left side cards
     else if (diff === totalItems - 1) {
       translateX = -totalWidth;
-      scale = 0.85;
+      scale = 0.9;
       opacity = 1;
       zIndex = 15;
     }
     else if (diff === totalItems - 2) {
       translateX = -totalWidth * 2;
-      scale = 0.7;
+      scale = 0.8;
       opacity = 1;
       zIndex = 5;
     }
     // Hidden cards
     else {
       translateX = 0;
-      scale = 0.6;
+      scale = 0.7;
       opacity = 0;
       zIndex = 0;
     }
@@ -239,12 +275,18 @@ export const Aboutresult = ({
       id="ThreeDCarousel"
       className="bg-transparent w-full flex items-center justify-center py-8"
     >
-      <div className="w-full px-4 sm:px-6 lg:px-8 max-w-7xl">
+      <div className="w-full px-4 max-w-7xl mx-auto">
         <div
           className="relative overflow-hidden"
           style={{ height: `${cardHeight + 80}px` }}
-          onMouseEnter={() => setIsHovering(true)}
-          onMouseLeave={() => setIsHovering(false)}
+          onMouseEnter={() => {
+            console.log("Mouse enter - pausing");
+            setIsHovering(true);
+          }}
+          onMouseLeave={() => {
+            console.log("Mouse leave - resuming");
+            setIsHovering(false);
+          }}
           onTouchStart={onTouchStart}
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
@@ -276,19 +318,20 @@ export const Aboutresult = ({
               return (
                 <div
                   key={`${item._id}-${index}`}
-                  className={`absolute top-0 w-[210px] max-w-[90%] transform transition-all duration-500 ease-in-out`}
+                  className={`absolute top-0 transform transition-all duration-500 ease-in-out`}
                   style={{
                     height: `${cardHeight}px`,
+                    width: `${cardWidth}px`,
                     transform: `translateX(${position.translateX}px) scale(${position.scale})`,
                     opacity: position.opacity,
                     zIndex: position.zIndex,
                     left: '50%',
-                    marginLeft: '-140px',
+                    marginLeft: `-${cardWidth / 2}px`,
                   }}
                 >
-                  <div className="overflow-hidden bg-white shadow-lg hover:shadow-xl flex flex-col h-full transition-shadow duration-300">
+                  <div className="overflow-hidden bg-white shadow-lg hover:shadow-xl flex flex-col h-full transition-shadow duration-300 rounded-lg">
                     <div
-                      className={`relative bg-[#FE8E6D] flex flex-col items-center justify-center h-[85%] m-3 overflow-hidden`}
+                      className={`relative bg-[#FE8E6D] flex flex-col items-center justify-center h-[80%] m-2 overflow-hidden rounded-lg`}
                     >
                       <img
                         src={item?.image}
@@ -296,23 +339,23 @@ export const Aboutresult = ({
                         alt={item?.name}
                       />
                       {/* Exam Type Badge */}
-                      <span className="absolute bottom-0 left-0 w-full text-sm text-center font-bold bg-[#000] text-white px-2.5 py-1.5">
+                      <span className="absolute bottom-0 left-0 w-full text-xs text-center font-bold bg-[#000] text-white px-2 py-1.5">
                         {item?.course || "NEET - UG '25"}
                       </span>
                     </div>
 
-                    <div className="text-left mt-2 capitalize px-6 pb-2">
-                      <p className="font-bold text-base sm:text-lg break-words text-gray-800 leading-tight">
+                    <div className="text-left mt-1 capitalize px-4 pb-2 flex-1">
+                      <p className="font-bold text-sm sm:text-base break-words text-gray-800 leading-tight">
                         {item?.name}
                       </p>
-                      <div className="flex flex-col items-start justify-between mt-1">
-                        <span className="font-medium text-xs sm:text-sm text-gray-500 truncate">
+                      <div className="flex flex-col items-start justify-between mt-0.5">
+                        <span className="font-medium text-[10px] sm:text-xs text-gray-500 truncate w-full">
                           Standardized Test Results
                         </span>
-                        <span className="font-medium text-xs sm:text-sm text-gray-500 truncate">
+                        <span className="font-medium text-[10px] sm:text-xs text-gray-500 truncate w-full">
                           Score
                         </span>
-                        <span className="text-[#f26e46] m-0 p-0 font-bold text-2xl md:text-3xl transition-colors duration-200">
+                        <span className="text-[#f26e46] m-0 p-0 font-bold text-xl sm:text-2xl transition-colors duration-200">
                           {item?.score}
                         </span>
                       </div>
@@ -324,14 +367,14 @@ export const Aboutresult = ({
           </div>
 
           {/* Dots Indicator */}
-          <div className="absolute bottom-0 left-0 right-0 flex justify-center items-center space-x-3 z-30 py-4">
+          <div className="absolute bottom-0 left-0 right-0 flex justify-center items-center space-x-2 z-30 py-3">
             {items.slice(0, Math.min(totalItems, 10)).map((_, idx) => (
               <button
                 key={idx}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                className={`h-1.5 rounded-full transition-all duration-300 ${
                   active === idx
-                    ? "bg-gray-700 w-6"
-                    : "bg-gray-300 hover:bg-gray-400"
+                    ? "bg-gray-700 w-4"
+                    : "bg-gray-300 w-1.5 hover:bg-gray-400"
                 }`}
                 onClick={() => goToSlide(idx)}
                 aria-label={`Go to item ${idx + 1}`}
@@ -346,13 +389,6 @@ export const Aboutresult = ({
     </section>
   );
 };
-
-
-
-
-
-
-
 
 
 
