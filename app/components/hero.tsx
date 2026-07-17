@@ -190,14 +190,14 @@ export function Hero({ data, student }: HeroProps) {
       {/* ─── Main Content ─── */}
       <div className="relative z-10 flex-1 flex flex-col justify-center px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 py-16 lg:py-0">
         <div className="max-w-7xl mx-auto w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2  items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2  items-center mt-2">
 
             {/* ─── Left Content ─── */}
             <motion.div
               initial={{ opacity: 0, x: -60 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="order-2 lg:order-1"
+              className="order-2 lg:order-1 "
             >
               {/* Badge */}
               {/* <motion.div
@@ -372,7 +372,7 @@ export function Hero({ data, student }: HeroProps) {
                     <img
                       src={"/home page hero image.webp"}
                       alt="Graduate celebrating success"
-                      className="w-full h-[90%] object-contain object-end mt-6"
+                      className="w-full h-[85%] object-contain object-end mt-16"
                     />
                     {/* Gradient overlays */}
                     {/* <div className="absolute inset-0 bg-gradient-to-t from-[#0f0f1e]/80 via-transparent to-[#0f0f1e]/20" />

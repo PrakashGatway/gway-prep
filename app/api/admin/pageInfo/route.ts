@@ -33,7 +33,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const body = await req.json();
 
-    const { name, description, seoMeta, sections, extraDetails } = body;
+    const { name, description,template, seoMeta, sections, extraDetails } = body;
 
       console.log( name ,"name")
     // 1. Add validation fallback since schema validation is commented out
@@ -60,6 +60,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const page = await PageData.create({
       name: lowerName,
       slug : slugify(name), 
+      template: template,
       description,
       seoMeta,
       sections,

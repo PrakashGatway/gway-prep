@@ -636,7 +636,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any, slug:any}) {
       <section className="relative bg-[#FDF4EF]  overflow-visible">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-10 lg:py-14">
     {/* Heading */}
-    <div className="max-w-5xl mx-auto text-center">
+    <div className="max-w-7xl mx-auto text-center">
       <div
         className="
           flex items-center  flex-col

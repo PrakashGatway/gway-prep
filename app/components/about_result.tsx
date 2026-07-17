@@ -65,22 +65,26 @@ export const Aboutresult = ({
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   // Ensure data exists and has items
-  const items = data?.data?.length
-    ? [...data.data, ...data.data, ...data.data]
-    : [];
+  const originalItems = data?.data || [];
+  
+  // Create a circular array with enough items for 5-card view
+  const items = originalItems.length > 0 ? [...originalItems] : [];
   const totalItems = items.length;
   const minSwipeDistance = 50;
+  
+  // Number of visible cards (always 5)
+  const VISIBLE_CARDS = 5;
 
   // Navigation functions
   const goToNext = useCallback(() => {
-    if (isTransitioning) return;
+    if (isTransitioning || totalItems === 0) return;
     setIsTransitioning(true);
     setActive((prev) => (prev + 1) % totalItems);
     setTimeout(() => setIsTransitioning(false), 500);
   }, [totalItems, isTransitioning]);
 
   const goToPrev = useCallback(() => {
-    if (isTransitioning) return;
+    if (isTransitioning || totalItems === 0) return;
     setIsTransitioning(true);
     setActive((prev) => (prev - 1 + totalItems) % totalItems);
     setTimeout(() => setIsTransitioning(false), 500);
@@ -88,12 +92,12 @@ export const Aboutresult = ({
 
   const goToSlide = useCallback(
     (index: number) => {
-      if (isTransitioning || index === active) return;
+      if (isTransitioning || index === active || totalItems === 0) return;
       setIsTransitioning(true);
       setActive(index);
       setTimeout(() => setIsTransitioning(false), 500);
     },
-    [active, isTransitioning],
+    [active, isTransitioning, totalItems],
   );
 
   // Auto-rotate effect
@@ -158,22 +162,65 @@ export const Aboutresult = ({
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isInView, goToNext, goToPrev]);
 
-  // Get card position classes based on active index
-  const getCardAnimationClass = (index: number) => {
-    if (totalItems === 0) return "opacity-0";
+  // Get card position based on active index (shows 5 cards)
+  const getCardPosition = (index: number) => {
+    if (totalItems === 0) return { transform: 'translateX(0px)', opacity: 0, zIndex: 0, scale: 0.9 };
 
     // Calculate relative position (cyclic)
-    const diff = (((index - active) % totalItems) + totalItems) % totalItems;
-
+    let diff = (((index - active) % totalItems) + totalItems) % totalItems;
+    
+    // Calculate position for 5 cards (2 on left, 1 center, 2 on right)
+    const cardWidth = 210;
+    const gap = 2;
+    const totalWidth = cardWidth + gap;
+    
+    let translateX = 0;
+    let scale = 1;
+    let opacity = 1;
+    let zIndex = 10;
+    
+    // Center card
     if (diff === 0) {
-      return "scale-100 opacity-100 z-20 translate-x-0";
-    } else if (diff === 1) {
-      return "translate-x-[100%] scale-90 opacity-60 z-10";
-    } else if (diff === totalItems - 1) {
-      return "translate-x-[-100%] scale-90 opacity-60 z-10";
-    } else {
-      return "scale-90 opacity-0 pointer-events-none";
+      translateX = 0;
+      scale = 1;
+      opacity = 1;
+      zIndex = 20;
     }
+    // Right side cards
+    else if (diff === 1) {
+      translateX = totalWidth;
+      scale = 0.85;
+      opacity = 1;
+      zIndex = 15;
+    }
+    else if (diff === 2) {
+      translateX = totalWidth * 2;
+      scale = 0.7;
+      opacity = 1;
+      zIndex = 5;
+    }
+    // Left side cards
+    else if (diff === totalItems - 1) {
+      translateX = -totalWidth;
+      scale = 0.85;
+      opacity = 1;
+      zIndex = 15;
+    }
+    else if (diff === totalItems - 2) {
+      translateX = -totalWidth * 2;
+      scale = 0.7;
+      opacity = 1;
+      zIndex = 5;
+    }
+    // Hidden cards
+    else {
+      translateX = 0;
+      scale = 0.6;
+      opacity = 0;
+      zIndex = 0;
+    }
+    
+    return { translateX, scale, opacity, zIndex };
   };
 
   // Early return if no items
@@ -224,16 +271,22 @@ export const Aboutresult = ({
           <div className="absolute inset-0 flex items-center justify-center">
             {items.map((item, index) => {
               const gradientClass = getGradientColors(item.course);
+              const position = getCardPosition(index);
 
               return (
                 <div
                   key={`${item._id}-${index}`}
-                  className={`absolute top-0 w-[280px] max-w-[90%] transform transition-all duration-500 ease-in-out ${getCardAnimationClass(
-                    index,
-                  )}`}
-                  style={{ height: `${cardHeight}px` }}
+                  className={`absolute top-0 w-[210px] max-w-[90%] transform transition-all duration-500 ease-in-out`}
+                  style={{
+                    height: `${cardHeight}px`,
+                    transform: `translateX(${position.translateX}px) scale(${position.scale})`,
+                    opacity: position.opacity,
+                    zIndex: position.zIndex,
+                    left: '50%',
+                    marginLeft: '-140px',
+                  }}
                 >
-                  <div className="overflow-hidden bg-white shadow-lg hover:shadow-xl flex flex-col h-full  transition-shadow duration-300">
+                  <div className="overflow-hidden bg-white shadow-lg hover:shadow-xl flex flex-col h-full transition-shadow duration-300">
                     <div
                       className={`relative bg-[#FE8E6D] flex flex-col items-center justify-center h-[85%] m-3 overflow-hidden`}
                     >
@@ -259,7 +312,7 @@ export const Aboutresult = ({
                         <span className="font-medium text-xs sm:text-sm text-gray-500 truncate">
                           Score
                         </span>
-                        <span className="text-[#f26e46] m-0 p-0 font-bold text-2xl  md:text-3xl transition-colors duration-200">
+                        <span className="text-[#f26e46] m-0 p-0 font-bold text-2xl md:text-3xl transition-colors duration-200">
                           {item?.score}
                         </span>
                       </div>
@@ -293,6 +346,19 @@ export const Aboutresult = ({
     </section>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // // Aboutresult.tsx
 // "use client";
