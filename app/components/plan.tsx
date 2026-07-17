@@ -188,11 +188,11 @@ export default function PricingSection({ plans }: { plans: any }) {
               {testimonial ? (
                 // testimonial
                 <div
-            dangerouslySetInnerHTML={{
-              __html: testimonial || "",
-            }}
-            className="text-center  font-bold"
-          />
+                  dangerouslySetInnerHTML={{
+                    __html: testimonial || "",
+                  }}
+                  className="text-center  font-bold"
+                />
               ) : (
                 <>
                   <span className="text-[#FF6B45]">"Ooshash Prep</span> gets
@@ -213,13 +213,13 @@ export default function PricingSection({ plans }: { plans: any }) {
                 <div
                   key={index}
                   className={`relative rounded-[24px] bg-white transition-all duration-300
-        ${
-          isHighlighted
-            ? "border-2 border-[#FF6B45] shadow-2xl lg:-translate-y-8"
-            : index === 2
-              ? "border-2 border-[#CFE2FF]"
-              : "border-2 border-[#DCE7DF]"
-        }`}
+                ${
+                  isHighlighted
+                    ? "border-2 border-[#FF6B45] shadow-2xl lg:-translate-y-8"
+                    : index === 2
+                      ? "border-2 border-[#CFE2FF]"
+                      : "border-2 border-[#DCE7DF]"
+                }`}
                 >
                   {/* Bundle Offer */}
                   {plan.bundle_offer && (
@@ -229,7 +229,6 @@ export default function PricingSection({ plans }: { plans: any }) {
                   )}
 
                   <div className="p-4">
-                    {/* Header */}
                     <div
                       className={`rounded-2xl border p-5 ${
                         isHighlighted
@@ -247,7 +246,15 @@ export default function PricingSection({ plans }: { plans: any }) {
                     </div>
 
                     {/* Features */}
-                    <ul className="mt-6 space-y-2">
+
+                       <div
+            dangerouslySetInnerHTML={{
+              __html: plan.content_data || "",
+            }}
+            className="text-center text-2xl md:text-3xl lg:text-4xl font-bold"
+          /> 
+
+                    {/* <ul className="mt-6 space-y-2">
                       {features.map((item: string, i: number) => (
                         <li
                           key={i}
@@ -262,7 +269,7 @@ export default function PricingSection({ plans }: { plans: any }) {
                           <span>{item}</span>
                         </li>
                       ))}
-                    </ul>
+                    </ul> */}
 
                     {/* Price */}
                     <div className="mt-4 text-center">

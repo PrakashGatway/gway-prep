@@ -2277,29 +2277,34 @@ export const pageData: any = {
                 placeholder: "Bundle and save $854 ($1073 value)",
               },
               {
-                name: "content_features",
-                label: "Content Features",
-                type: "repeater",
-                fields: [
-                  {
-                    name: "feature",
-                    label: "Feature",
-                    type: "text",
-                  },
-                ],
+                name: "content_data",
+                label: "Content Data",
+                type: "editor"
               },
-              {
-                name: "access_features",
-                label: "Access Features",
-                type: "repeater",
-                fields: [
-                  {
-                    name: "feature",
-                    label: "Feature",
-                    type: "text",
-                  },
-                ],
-              },
+              // {
+              //   name: "content_features",
+              //   label: "Content Features",
+              //   type: "repeater",
+              //   fields: [
+              //     {
+              //       name: "feature",
+              //       label: "Feature",
+              //       type: "text",
+              //     },
+              //   ],
+              // },
+              // {
+              //   name: "access_features",
+              //   label: "Access Features",
+              //   type: "repeater",
+              //   fields: [
+              //     {
+              //       name: "feature",
+              //       label: "Feature",
+              //       type: "text",
+              //     },
+              //   ],
+              // },
               {
                 name: "price",
                 label: "Price",

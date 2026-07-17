@@ -1,29 +1,62 @@
-/**
- * GET  /api/pages        → get all pages
- * POST /api/pages        → create a page
- *
- * app/api/pages/route.ts
- */
-
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/app/lib/db";
 import PageData from "@/app/Model/PageData";
-import { PageDataSchema } from "@/app/type";
-import { slugify } from "@/app/lib/slug";
 
-// ─── GET /api/pages ───────────────────────────────────────────────────────────
-export async function GET(): Promise<NextResponse> {
+// ─── GET /api/pages?page=1&limit=10&search=about ──────────────────────────────
+export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     await connectDB();
-    const pages = await PageData.find({}).select("name seoMeta").lean();
+
+    const { searchParams } = new URL(req.url);
+
+    const page = Math.max(Number(searchParams.get("page")) || 1, 1);
+    const limit = Math.max(Number(searchParams.get("limit")) || 10, 1);
+    const search = searchParams.get("search")?.trim() || "";
+
+    const skip = (page - 1) * limit;
+
+    const filter = search
+      ? {
+          name: {
+            $regex: search,
+            $options: "i",
+          },
+        }
+      : {};
+
+    const [pages, total] = await Promise.all([
+      PageData.find(filter)
+        .select("name seoMeta")
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      PageData.countDocuments(filter),
+    ]);
 
     return NextResponse.json(
-      { message: "Pages fetched.", data: pages },
+      {
+        message: "Pages fetched.",
+        data: pages,
+        pagination: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+          hasNextPage: page * limit < total,
+          hasPrevPage: page > 1,
+        },
+      },
       { status: 200 }
     );
   } catch (error) {
     console.error("[PAGES GET]", error);
-    return NextResponse.json({ error: `Server ${error}` }, { status: 500 });
+
+    return NextResponse.json(
+      {
+        error: `Server ${error}`,
+      },
+      { status: 500 }
+    );
   }
 }
 

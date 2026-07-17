@@ -116,13 +116,8 @@ export default async function Home() {
   const studentsData =  await getStudent("",1,8);
 
   const sections = pageData?.sections || {};
-  // console.log(sections,'sections')
-  const banner = [
-    '/home/banner/1.jpeg',
-    '/home/banner/4.jpeg',
-    '/home/banner/2.jpeg',
-    '/home/banner/3.jpeg',
-  ]
+
+  
   const serviceData = [
   {
     "id": 1,

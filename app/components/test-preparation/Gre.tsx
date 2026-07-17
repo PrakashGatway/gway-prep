@@ -641,9 +641,9 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any, slug:any}) {
       <div
         className="
           flex items-center  flex-col
-          [&>h1]:text-4xl
-          sm:[&>h1]:text-5xl
-          lg:[&>h1]:text-6xl
+          [&>h1]:text-3xl
+          sm:[&>h1]:text-3xl
+          lg:[&>h1]:text-5xl
           [&>h1]:font-bold
           [&>h1]:leading-tight
           [&>h1]:tracking-tight
