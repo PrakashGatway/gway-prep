@@ -1,10 +1,103 @@
 // PartnerSection.tsx
+"use client";
+
 import Image from "next/image"
-import { Phone, MessageCircle, Mail, MapPin, Facebook, Twitter, Instagram, Youtube } from "lucide-react"
+import { Phone, MessageCircle, Mail, MapPin, Facebook, Twitter, Instagram, Youtube, User, Send, CheckCircle } from "lucide-react"
+import { useState } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import FormSection from "./formSection"
+
+// ─── Form Configuration ───
+const FORM_CONFIG: any = {
+  steps: [
+    {
+      step: 1,
+      title: "Get Started ",
+      icon: User,
+      fields: ["fullName", "email", "phone", "city", "programs"],
+      button: "submit"
+    }
+  ],
+  fields: [
+    {
+      name: "fullName",
+      label: "Student's Name",
+      type: "text",
+      required: true,
+      placeholder: "Student's Name",
+      step: 1,
+      grid: "full",
+      icon: User
+    },
+    {
+      name: "email",
+      label: "Email Address",
+      type: "email",
+      required: true,
+      placeholder: "Email",
+      step: 1,
+      grid: "half",
+      icon: Mail
+    },
+    {
+      name: "phone",
+      label: "Contact Number",
+      type: "tel",
+      required: true,
+      placeholder: "081234 56789",
+      step: 1,
+      grid: "half",
+      icon: Phone
+    },
+    {
+      name: "city",
+      label: "City",
+      type: "text",
+      required: true,
+      placeholder: "City",
+      step: 1,
+      grid: "half",
+      icon: MapPin
+    },
+    {
+      name: "programs",
+      label: "Which Program are you looking for?",
+      type: "checkbox-group",
+      required: true,
+      step: 1,
+      grid: "full",
+      options: [
+        { value: "Gre", label: "Gre" },
+        { value: "Gmate", label: "Gmate" },
+        { value: "Act", label: "Act" },
+        { value: "Ielts", label: "Ielts" },
+        { value: "Toefl", label: "Toefl" },
+        { value: "Pte", label: "Pte" },
+        // { value: "Others", label: "Others" }
+      ]
+    }
+  ],
+  submit: {
+    label: "Send Message",
+    icon: Send,
+    variant: "primary",
+    size: "large",
+    position: "bottom",
+    onSuccess: {
+      message: "Thank you! Our team will get back to you shortly.",
+      redirect: "/thank-you"
+    }
+  }
+};
 
 export function PartnerSection() {
+  const [formSubmitted, setFormSubmitted] = useState(false);
+
   return (
     <section className="py-8 md:py-10 lg:py-12 bg-[url('/image/bg-contect.jpeg')] bg-cover bg-center relative overflow-hidden font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]" id="partner">
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/50 z-0"></div>
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="flex flex-col lg:flex-row justify-between items-start gap-12 text-white">
           
@@ -24,7 +117,7 @@ export function PartnerSection() {
                 <div className="bg-white p-3 rounded-lg"><MessageCircle className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">WhatsApp Us</p>
-                  <p className="text-xl">+91 8302092630</p>
+                  <p className="text-xl">+91 9166146538</p>
                 </div>
               </div>
 
@@ -33,7 +126,7 @@ export function PartnerSection() {
                 <div className="bg-white p-3 rounded-lg"><Phone className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">Call Us</p>
-                  <p className="text-xl">+91 8302092630</p>
+                  <p className="text-xl">+91 9166146538</p>
                 </div>
               </div>
 
@@ -59,77 +152,17 @@ export function PartnerSection() {
             {/* Social Media */}
             <div className="flex items-center gap-4 pt-6">
               <span className="text-2xl font-bold">Follow Us</span>
-              <Facebook className="w-6 h-6" />
-              <Twitter className="w-6 h-6" />
-              <Instagram className="w-6 h-6" />
-              <Youtube className="w-6 h-6" />
+              <Facebook className="w-6 h-6 cursor-pointer hover:text-[#f26e46] transition-colors" />
+              <Twitter className="w-6 h-6 cursor-pointer hover:text-[#f26e46] transition-colors" />
+              <Instagram className="w-6 h-6 cursor-pointer hover:text-[#f26e46] transition-colors" />
+              <Youtube className="w-6 h-6 cursor-pointer hover:text-[#f26e46] transition-colors" />
             </div>
           </div>
 
           {/* Right Column: Inquiry Form */}
           <div className="lg:w-1/2 w-full bg-white rounded-3xl p-8 text-gray-800 shadow-2xl">
-            <form className="space-y-2">
-              <div>
-                <label className="block text-sm font-semibold mb-1">Student's Name *</label>
-                <input type="text" placeholder="Student's Name" className="w-full p-2 bg-gray-50 border rounded-md" />
-              </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold mb-1">Email *</label>
-                  <input type="email" placeholder="Email" className="w-full p-2 bg-gray-50 border rounded-md" />
-                </div>
-                <div>
-                  <label className="block text-sm font-semibold mb-1">Contact No. *</label>
-                  <input type="tel" placeholder="081234 56789" className="w-full p-2 bg-gray-50 border rounded-md" />
-                </div>
-              </div>
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-semibold mb-1">City *</label>
-                <input type="text" placeholder="City" className="w-full p-2 bg-gray-50 border rounded-md" />
-              </div>
-              <div>
-                <label className="block text-sm font-semibold mb-1">School Name *</label>
-                <input type="text" placeholder="School Name" className="w-full p-2 bg-gray-50 border rounded-md" />
-              </div>
-              </div>
-              {/* <div>
-                <label className="block text-sm font-semibold mb-1">Student Grade *</label>
-                <select className="w-full p-2 bg-gray-50 border rounded-md">
-                  <option value="">Select Grade</option>
-                  <option value="1">Grade 1</option>
-                  <option value="2">Grade 2</option>
-                  <option value="3">Grade 3</option>
-                </select>
-              </div> */}
-              <div>
-                <label className="block text-sm font-semibold mb-1">Which Program are you looking for? *</label>
-                <div className="flex flex-wrap gap-3 text-xs">
-                  {['SAT', 'AP', 'IB-Tutoring', 'IGCSE', 'A LEVELS - Tutoring', 'Counselling', 'Others'].map(prog => (
-                    <label key={prog} className="flex items-center gap-1">
-                      <input type="checkbox" /> {prog}
-                    </label>
-                  ))}
-                </div>
-              </div>
-              {/* <div>
-                <label className="block text-sm font-semibold mb-1">Comment or Message *</label>
-                <textarea placeholder="Message" className="w-full p-2 bg-gray-50 border rounded-md h-24"></textarea>
-              </div> */}
-
-              <div>
-                <label className="block text-sm font-semibold mb-1">How did you come to know about us?</label>
-                <select id="2" className="w-full p-2 bg-gray-50 border rounded-md ">
-                  <option value="" hidden>Select an option</option>
-                  {['Google Search', 'Social Media', 'Advertisement', 'Other'].map(source => (
-                    <option key={source} value={source}>{source}</option>
-                  ))}
-                </select>
-              </div>
-              <button className="w-full py-4 bg-[#f26e46] text-white font-bold rounded-lg transition">
-                Send Message
-              </button>
-            </form>
+            
+            <FormSection FORM_CONFIG={FORM_CONFIG} />
           </div>
 
         </div>

@@ -483,15 +483,7 @@ export default function BlogPage({ pageInfo, categories }: any) {
                 </ul>
               </div>
 
-              {/* Stay updated card */}
-              <div className="rounded-lg bg-[#FBEAE2] p-6">
-                <Send className="mb-4 text-[#F0642C]" size={28} />
-                <h4 className="mb-1 text-lg font-bold text-[#1f2430]">{data.stayUpdatedCard.title}</h4>
-                <p className="mb-4 text-sm text-gray-500">{data.stayUpdatedCard.text}</p>
-                <button className="flex items-center gap-2 rounded-md bg-[#F0642C] px-4 py-2 text-xs font-semibold text-white hover:bg-[#d9551f]">
-                  Subscribe Now <ArrowRight size={14} />
-                </button>
-              </div>
+
             </aside>
           </div>
         )}

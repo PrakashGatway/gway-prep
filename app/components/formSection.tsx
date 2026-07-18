@@ -39,22 +39,37 @@ interface StepConfig {
   step: number;
   title: string;
   icon: any;
+  fields: string[];
+  button?: "next" | "submit"; // Add button type to step config
+}
+
+interface SubmitConfig {
+  label: string;
+  icon?: any;
+  variant?: "primary" | "secondary" | "success" | "danger" | "warning" | "info";
+  size?: "small" | "medium" | "large";
+  position?: "bottom" | "top" | "both";
+  onSuccess?: {
+    message: string;
+    redirect?: string;
+  };
 }
 
 interface FormConfig {
   steps: StepConfig[];
   fields: FieldConfig[];
+  submit?: SubmitConfig;
 }
 
 interface RegistrationSectionProps {
   FORM_CONFIG: FormConfig;
 }
 
- export default function formSection({ FORM_CONFIG }: RegistrationSectionProps) {
+export default function FormSection({ FORM_CONFIG }: RegistrationSectionProps) {
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
   
   // Initialize form data from config
   const initialFormData: FormData = {};
@@ -72,7 +87,7 @@ interface RegistrationSectionProps {
 
   const updateField = (field: string, value: string | string[]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // Clear error for this field when user updates
+    // Clear error when field is updated
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: "" }));
     }
@@ -84,52 +99,86 @@ interface RegistrationSectionProps {
       ? currentValues.filter((v) => v !== value)
       : [...currentValues, value];
     setFormData((prev) => ({ ...prev, [fieldName]: newValues }));
-    if (errors[fieldName]) {
-      setErrors(prev => ({ ...prev, [fieldName]: "" }));
-    }
   };
 
-  // Validate current step fields
   const validateStep = (stepNumber: number): boolean => {
-    const fields = getFieldsForStep(stepNumber);
+    const fieldsToValidate = FORM_CONFIG.fields.filter(
+      field => field.step === stepNumber && field.required
+    );
+    
     let isValid = true;
-    const newErrors: { [key: string]: string } = {};
+    const newErrors: Record<string, string> = {};
+    
+    fieldsToValidate.forEach(field => {
+      const value = formData[field.name];
+      if (!value || (Array.isArray(value) && value.length === 0)) {
+        newErrors[field.name] = `${field.label} is required`;
+        isValid = false;
+      }
+    });
+    
+    setErrors(newErrors);
+    return isValid;
+  };
 
-    fields.forEach(field => {
+  const handleSubmit = async (e?: FormEvent) => {
+    if (e) {
+      e.preventDefault();
+    }
+    
+    // Validate all steps before submission
+    let allValid = true;
+    const allErrors: Record<string, string> = {};
+    
+    FORM_CONFIG.fields.forEach(field => {
       if (field.required) {
         const value = formData[field.name];
-        if (field.type === "checkbox-group") {
-          if (!value || (value as string[]).length === 0) {
-            newErrors[field.name] = "Please select at least one option";
-            isValid = false;
-          }
-        } else if (!value || (value as string).trim() === "") {
-          newErrors[field.name] = "This field is required";
-          isValid = false;
-        }
-      }
-
-      // Email validation
-      if (field.type === "email" && formData[field.name]) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData[field.name] as string)) {
-          newErrors[field.name] = "Please enter a valid email address";
-          isValid = false;
-        }
-      }
-
-      // Phone validation (basic)
-      if (field.type === "tel" && formData[field.name]) {
-        const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,4}[-\s.]?[0-9]{1,9}$/;
-        if (!phoneRegex.test(formData[field.name] as string)) {
-          newErrors[field.name] = "Please enter a valid phone number";
-          isValid = false;
+        if (!value || (Array.isArray(value) && value.length === 0)) {
+          allErrors[field.name] = `${field.label} is required`;
+          allValid = false;
         }
       }
     });
+    
+    if (!allValid) {
+      setErrors(allErrors);
+      // Scroll to first error
+      const firstErrorField = Object.keys(allErrors)[0];
+      const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
+      if (errorElement) {
+        errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      return;
+    }
+    
+    setIsLoading(true);
 
-    setErrors(newErrors);
-    return isValid;
+    const jsonData = JSON.stringify(formData, null, 2);
+    console.log("Form JSON:", jsonData);
+
+    // Simulate API call
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    
+    setIsLoading(false);
+    setSubmitted(true);
+  };
+
+  const handleStepAction = async () => {
+    const currentStepConfig = FORM_CONFIG.steps.find(s => s.step === step);
+    
+    // Validate current step
+    if (!validateStep(step)) {
+      return;
+    }
+
+    // Check if current step has "submit" button or if it's the last step
+    if (currentStepConfig?.button === "submit" || step === FORM_CONFIG.steps.length) {
+      // Submit the form
+      await handleSubmit();
+    } else {
+      // Go to next step
+      setStep((s) => Math.min(s + 1, FORM_CONFIG.steps.length));
+    }
   };
 
   const nextStep = () => {
@@ -137,57 +186,12 @@ interface RegistrationSectionProps {
       setStep((s) => Math.min(s + 1, FORM_CONFIG.steps.length));
     }
   };
-
+  
   const prevStep = () => setStep((s) => Math.max(s - 1, 1));
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    
-    // Validate all fields before submission
-    const allStepsValid = FORM_CONFIG.steps.every(s => validateStep(s.step));
-    if (!allStepsValid) {
-      // Scroll to first error
-      const firstErrorField = Object.keys(errors)[0];
-      if (firstErrorField) {
-        const element = document.querySelector(`[name="${firstErrorField}"]`);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-      }
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      // Prepare data for submission
-      const jsonData = JSON.stringify(formData, null, 2);
-      console.log("Form JSON:", jsonData);
-      console.log("Form Data:", formData);
-
-      // If custom onSubmit handler is provided, use it
-      if (onSubmit) {
-        await onSubmit(formData);
-      } else {
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 1500));
-        console.log("Form submitted successfully!");
-      }
-      
-      setSubmitted(true);
-    } catch (error) {
-      console.error("Submission error:", error);
-      // You could set an error state here to show a user-friendly message
-      alert("There was an error submitting your enquiry. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const restart = () => {
     setStep(1);
     setSubmitted(false);
-    setErrors({});
     const resetData: FormData = {};
     FORM_CONFIG.fields.forEach(field => {
       if (field.type === "checkbox-group") {
@@ -197,6 +201,7 @@ interface RegistrationSectionProps {
       }
     });
     setFormData(resetData);
+    setErrors({});
   };
 
   const getFieldsForStep = (stepNumber: number) => {
@@ -210,8 +215,85 @@ interface RegistrationSectionProps {
   // Get total steps
   const totalSteps = FORM_CONFIG.steps.length;
 
-  // Get step progress percentage
-  const progressPercentage = ((step - 1) / (totalSteps - 1)) * 100;
+  // Calculate progress percentage
+  const progressPercentage = (step / totalSteps) * 100;
+
+  // Get submit configuration
+  const submitConfig = FORM_CONFIG.submit || {
+    label: "Submit Enquiry",
+    icon: Send,
+    variant: "primary",
+    size: "large",
+    position: "bottom"
+  };
+
+  const SubmitIcon = submitConfig.icon;
+
+  // Determine button text and icon based on step config
+  const getButtonConfig = () => {
+    const currentStepConfig = FORM_CONFIG.steps.find(s => s.step === step);
+    const isSubmit = currentStepConfig?.button === "submit" || step === totalSteps;
+    
+    return {
+      text: isSubmit ? (submitConfig.label || "Submit") : "Continue",
+      icon: isSubmit ? SubmitIcon : ArrowRight,
+      action: handleStepAction
+    };
+  };
+
+  const buttonConfig = getButtonConfig();
+
+  const renderSubmitButton = (position: string) => {
+    if (submitConfig.position !== position && submitConfig.position !== "both") {
+      return null;
+    }
+
+    const sizeClasses = {
+      small: "px-4 py-2 text-xs",
+      medium: "px-6 py-3 text-sm",
+      large: "px-8 py-4 text-base"
+    };
+
+    return (
+      <motion.button
+        type="submit"
+        disabled={isLoading}
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.97 }}
+        className={`${sizeClasses[submitConfig.size || "large"]} font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 w-full`}
+        style={{ 
+          background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
+        }}
+      >
+        {isLoading ? (
+          <span className="flex items-center gap-2">
+            <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+                fill="none"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+              />
+            </svg>
+            Submitting...
+          </span>
+        ) : (
+          <>
+            {submitConfig.label || "Submit"}
+            {SubmitIcon && <SubmitIcon className="w-4 h-4" />}
+          </>
+        )}
+      </motion.button>
+    );
+  };
 
   if (submitted) {
     return (
@@ -233,7 +315,7 @@ interface RegistrationSectionProps {
           </motion.div>
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Thank You!</h2>
           <p className="text-gray-600 mb-6 text-lg">
-            Our counsellor will contact you within 24 hours.
+            {submitConfig.onSuccess?.message || "Our counsellor will contact you within 24 hours."}
           </p>
           <div className="flex justify-center gap-3 mb-6">
             <motion.div
@@ -277,29 +359,11 @@ interface RegistrationSectionProps {
   }
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-lg">
-      {/* Progress Bar */}
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-medium text-gray-700">
-            Step {step} of {totalSteps}
-          </span>
-          <span className="text-sm font-medium text-gray-500">
-            {Math.round(progressPercentage)}%
-          </span>
-        </div>
-        <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-          <motion.div
-            className="h-full rounded-full"
-            style={{ background: `linear-gradient(90deg, ${primaryColor}, ${primaryColor}dd)` }}
-            initial={{ width: 0 }}
-            animate={{ width: `${progressPercentage}%` }}
-            transition={{ duration: 0.3 }}
-          />
-        </div>
-      </div>
+    <>
+      <form onSubmit={(e) => handleSubmit(e)} className="bg-white ">
+        {/* Top Submit Button */}
+        {renderSubmitButton("top")}
 
-      <form onSubmit={handleSubmit}>
         <AnimatePresence mode="wait">
           <motion.div
             key={step}
@@ -309,12 +373,14 @@ interface RegistrationSectionProps {
             transition={{ duration: 0.3 }}
           >
             {/* Step Header */}
+           {currentStep?.title &&
             <div className="flex items-center gap-3 mb-4">
               <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${primaryColor}15` }}>
                 {currentStep && <currentStep.icon className="w-4 h-4" style={{ color: primaryColor }} />}
               </div>
               <p className="text-xl font-bold text-gray-900">{currentStep?.title}</p>
             </div>
+            }
 
             {/* Dynamic Fields */}
             <div className="space-y-2 grid grid-cols-2 gap-2">
@@ -326,11 +392,15 @@ interface RegistrationSectionProps {
                   <div key={field.name} className={gridClass}>
                     {field.type === "select" && (
                       <>
-                        <label className="block text-sm text-gray-700 mb-1">
+                        {
+                        field.label &&
+                         <label className="block text-sm text-gray-700 mb-1">
                           {field.label}
                           {field.required && <span className="text-red-500 ml-1">*</span>}
-                        </label>
+                         </label>
+                        }
                         <select
+                          name={field.name}
                           value={formData[field.name] as string || ""}
                           onChange={(e) => updateField(field.name, e.target.value)}
                           className={`w-full border-2 rounded-xl px-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
@@ -362,13 +432,17 @@ interface RegistrationSectionProps {
 
                     {field.type === "text" && field.icon && (
                       <>
-                        <label className="block text-sm text-gray-700 mb-1">
+                        {
+                        field.label &&
+                         <label className="block text-sm text-gray-700 mb-1">
                           {field.label}
                           {field.required && <span className="text-red-500 ml-1">*</span>}
-                        </label>
+                         </label>
+                        }
                         <div className="relative">
                           <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                           <input
+                            name={field.name}
                             type="text"
                             value={formData[field.name] as string || ""}
                             onChange={(e) => updateField(field.name, e.target.value)}
@@ -396,13 +470,17 @@ interface RegistrationSectionProps {
 
                     {field.type === "email" && field.icon && (
                       <>
-                        <label className="block text-sm text-gray-700 mb-1">
+                        {
+                        field.label &&
+                         <label className="block text-sm text-gray-700 mb-1">
                           {field.label}
                           {field.required && <span className="text-red-500 ml-1">*</span>}
-                        </label>
+                         </label>
+                        }
                         <div className="relative">
                           <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                           <input
+                            name={field.name}
                             type="email"
                             value={formData[field.name] as string || ""}
                             onChange={(e) => updateField(field.name, e.target.value)}
@@ -430,13 +508,17 @@ interface RegistrationSectionProps {
 
                     {field.type === "tel" && field.icon && (
                       <>
-                        <label className="block text-sm text-gray-700 mb-1">
+                        {
+                        field.label &&
+                         <label className="block text-sm text-gray-700 mb-1">
                           {field.label}
                           {field.required && <span className="text-red-500 ml-1">*</span>}
-                        </label>
+                         </label>
+                        }
                         <div className="relative">
                           <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                           <input
+                            name={field.name}
                             type="tel"
                             value={formData[field.name] as string || ""}
                             onChange={(e) => updateField(field.name, e.target.value)}
@@ -464,13 +546,17 @@ interface RegistrationSectionProps {
 
                     {field.type === "number" && field.icon && (
                       <>
-                        <label className="block text-sm text-gray-700 mb-1">
+                        {
+                        field.label &&
+                         <label className="block text-sm text-gray-700 mb-1">
                           {field.label}
                           {field.required && <span className="text-red-500 ml-1">*</span>}
-                        </label>
+                         </label>
+                        }
                         <div className="relative">
                           <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                           <input
+                            name={field.name}
                             type="number"
                             value={formData[field.name] as string || ""}
                             onChange={(e) => updateField(field.name, e.target.value)}
@@ -498,13 +584,17 @@ interface RegistrationSectionProps {
 
                     {field.type === "date" && field.icon && (
                       <>
-                        <label className="block text-sm text-gray-700 mb-1">
+                        {
+                        field.label &&
+                         <label className="block text-sm text-gray-700 mb-1">
                           {field.label}
                           {field.required && <span className="text-red-500 ml-1">*</span>}
-                        </label>
+                         </label>
+                        }
                         <div className="relative">
                           <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                           <input
+                            name={field.name}
                             type="date"
                             value={formData[field.name] as string || ""}
                             onChange={(e) => updateField(field.name, e.target.value)}
@@ -531,11 +621,15 @@ interface RegistrationSectionProps {
 
                     {field.type === "textarea" && (
                       <>
-                        <label className="block text-sm text-gray-700 mb-1">
+                        {
+                        field.label &&
+                         <label className="block text-sm text-gray-700 mb-1">
                           {field.label}
                           {field.required && <span className="text-red-500 ml-1">*</span>}
-                        </label>
+                         </label>
+                        }
                         <textarea
+                          name={field.name}
                           value={formData[field.name] as string || ""}
                           onChange={(e) => updateField(field.name, e.target.value)}
                           rows={4}
@@ -562,10 +656,13 @@ interface RegistrationSectionProps {
 
                     {field.type === "button-group" && (
                       <>
-                        <label className="block text-sm text-gray-700 mb-1">
+                        {
+                        field.label &&
+                         <label className="block text-sm text-gray-700 mb-1">
                           {field.label}
                           {field.required && <span className="text-red-500 ml-1">*</span>}
-                        </label>
+                         </label>
+                        }
                         <div className="grid grid-cols-3 gap-3">
                           {field.options?.map((option) => {
                             const OptionIcon = option.icon;
@@ -665,61 +762,21 @@ interface RegistrationSectionProps {
             <div />
           )}
 
-          {step < totalSteps ? (
-            <motion.button
-              type="button"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={nextStep}
-              className="px-8 py-3 text-sm font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
-              style={{ 
-                background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
-              }}
-            >
-              Continue
-              <ArrowRight className="w-4 h-4" />
-            </motion.button>
-          ) : (
-            <motion.button
-              type="submit"
-              disabled={isLoading}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-3 text-sm font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
-              style={{ 
-                background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
-              }}
-            >
-              {isLoading ? (
-                <span className="flex items-center gap-2">
-                  <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      fill="none"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
-                  Submitting...
-                </span>
-              ) : (
-                <>
-                  Submit Enquiry
-                  <Send className="w-4 h-4" />
-                </>
-              )}
-            </motion.button>
-          )}
+          <motion.button
+            type="button"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={buttonConfig.action}
+            className="px-8 py-3 text-sm font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+            style={{ 
+              background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
+            }}
+          >
+            {buttonConfig.text}
+            {buttonConfig.icon && <buttonConfig.icon className="w-4 h-4" />}
+          </motion.button>
         </div>
       </form>
-    </div>
+    </>
   );
 }

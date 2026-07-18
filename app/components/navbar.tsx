@@ -341,7 +341,7 @@ export function Navbar({ Data }: any) {
                 <div className="flex flex-col">
                   <span className="text-[10px] text-gray-400 font-medium">Call us</span>
                   <span className="text-sm font-semibold text-gray-700 group-hover:text-[#F36C45] transition-colors">
-                    +91 9875863347
+                    +91 9166146538
                   </span>
                 </div>
               </motion.div>
@@ -561,7 +561,7 @@ export function Navbar({ Data }: any) {
                     >
                       <button className="flex items-center justify-center gap-3 w-full bg-gradient-to-r from-gray-50 to-gray-100 text-gray-700 py-3.5 rounded-xl hover:from-gray-100 hover:to-gray-200 transition-all duration-300 font-medium shadow-sm">
                         <Phone size={18} className="text-[#F36C45]" />
-                        <span>+91 9875863347</span>
+                        <span>+91 9166146538</span>
                       </button>
                     </motion.div>
 
@@ -790,7 +790,7 @@ export function Navbar({ Data }: any) {
 //             <div className="hidden lg:flex items-center gap-3">
 //               <button className="flex items-center gap-2 text-sm text-gray-700 hover:text-[#F36C45]">
 //                 <HeadsetIcon size={18} />
-//                 <p>+91 9875863347</p>
+//                 <p>+91 9166146538</p>
 //               </button>
 
 //               {!user?.email ? (
@@ -934,7 +934,7 @@ export function Navbar({ Data }: any) {
 //                   <div className="mt-8 space-y-4">
 //                     <button className="flex items-center justify-center gap-2 w-full bg-gray-100 text-gray-700 py-3 rounded-lg hover:bg-gray-200 transition-colors">
 //                       <HeadsetIcon size={18} />
-//                       <span>+91 9875863347</span>
+//                       <span>+91 9166146538</span>
 //                     </button>
 
 //                     {!user?.email ? (

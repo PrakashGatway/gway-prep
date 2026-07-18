@@ -37,7 +37,8 @@ function HeroSection({ data }: { data: any }) {
       <img
         src="/services/h.webp"
         alt=""
-        className="hidden lg:block absolute -right-20 bottom-0 h-full w-full md:w-[56%] object-cover md:object-contain pointer-events-none select-none opacity-30 md:opacity-100"
+        className="hidden lg:block absolute -right-20 bottom-20 h-[80%] w-full md:w-[56%] object-cover
+         md:object-contain pointer-events-none select-none opacity-30 md:opacity-100"
       />
       <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-12 relative z-10">
         <motion.div

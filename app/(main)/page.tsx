@@ -124,6 +124,7 @@ export default async function Home() {
     "title": "Online Live Classes",
     "description": "High-energy interactive sessions with real-time doubt clearing, live Q&A polls and peer discussion—from anywhere in the world.",
     "buttonText": "Book a Free Demo",
+    "link":"/auth",
     "image": "/images/online-class.png"
   },
   {
@@ -131,13 +132,15 @@ export default async function Home() {
     "title": "Offline Classroom",
     "description": "Distraction-free focused learning at our state-of-the-art centers with structured study plans and peer groups.",
     "buttonText": "Visit a Center",
+    // "link":"/auth",
     "image": "/images/offline-class.png"
   },
   {
     "id": 3,
     "title": "One-on-One Classes",
     "description": "Dedicated sessions with a certified mentor, customized to your weak areas and target scores.",
-    "buttonText": "Book 1:1 Session",
+    "buttonText": "Book Session",
+    "link":"/auth",
     "image": "/images/one-to-one.png"
   },
   {
@@ -145,6 +148,7 @@ export default async function Home() {
     "title": "AI Tutor (Self-Paced)",
     "description": "An intelligent AI tutor available 24/7 that adapts to your learning curve and explains every concept.",
     "buttonText": "Try AI Tutor Free",
+    "link":"/auth",
     "image": "/images/ai-tutor.png"
   }
 ]

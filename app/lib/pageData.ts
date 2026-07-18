@@ -451,6 +451,13 @@ export const pageData: any = {
             placeholder: "",
           },
           {
+            name: "colorCode",
+            label: "Color code",
+            type: "text",
+            required: false,
+            placeholder: "Enter the color code. ex : #fer673",
+          },
+          {
             name: "score",
             label: "student score",
             type: "number",

@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 export default function ServicesGrid({ data }: any) {
   return (
@@ -65,7 +66,10 @@ type CardProps = {
 };
 
 function Card({ item }: CardProps) {
+  const router = useRouter();
+
   if (!item) return null;
+  
   return (
     <div className="bg-white rounded-3xl p-2 shadow-md border border-orange-100 hover:-translate-y-2 transition-all duration-300">
      
@@ -73,7 +77,7 @@ function Card({ item }: CardProps) {
         {item.description}
       </p>
       <div className="mt-2 flex justify-center">
-        <button className="bg-orange-500 text-white px-5 py-2 rounded-full text-sm hover:bg-orange-600 transition">
+        <button className="bg-orange-500 text-white px-5 py-2 rounded-full text-sm hover:bg-orange-600 transition cursor-pointer" onClick={() => router.push(item.link)}>
           {item.buttonText}
         </button>
       </div>

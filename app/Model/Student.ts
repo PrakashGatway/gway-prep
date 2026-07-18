@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 export interface IStudent extends Document {
     name: string;
     course: string;
+    colorCode?: string;
     score?: string;
     image?: string;
     university: string;
@@ -21,7 +22,8 @@ export interface IStudent extends Document {
 const StudentSchema = new Schema<IStudent>(
     {
         name: { type: String, required: true, trim: true, maxlength: 40 },
-        course: { type: String, required: true, trim: true }, // Removed unique: true
+        course: { type: String, required: true, trim: true }, 
+        colorCode: String,
         score: String,
         image: String,
         university: { type: String, trim: true },

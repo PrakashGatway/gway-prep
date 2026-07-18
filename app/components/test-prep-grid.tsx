@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 const FALLBACK_ITEMS = [
-  { title: "GRE", image: "/home/subject icon/grre.png" },
+  { title: "GRE", image: "/home/subject icon/gre.png" },
   { title: "GMAT", image: "/home/subject icon/gmat.png" },
   { title: "ACT", image: "/home/subject icon/act.png" },
   { title: "IELTS", image: "/home/subject icon/ielts.png" },
@@ -66,32 +66,32 @@ export function TestPrepGrid({ data }: { data: any }) {
           </div>
 
           {/* Top Left */}
-          <div className="absolute left-[8%] top-[6%] rotate-10 cursor-pointer" onClick={() => {router.push(`/preparation/gre`)}}>
+          <div className="absolute left-[8%] top-[6%] rotate-10 cursor-pointer" onClick={() => {router.push(`/gre`)}}>
             <LogoCard item={items[0]} />
           </div>
 
           {/* Middle Left */}
-          <div className="absolute left-[2%] top-[35%] cursor-pointer" onClick={() => {router.push(`/preparation/gmat`)}}>
+          <div className="absolute left-[2%] top-[35%] cursor-pointer" onClick={() => {router.push(`/gmat`)}}>
             <LogoCard item={items[1]} />
           </div>
 
           {/* Bottom Left */}
-          <div className="absolute left-[10%] bottom-[28%] -rotate-10 cursor-pointer" onClick={() => {router.push(`/preparation/act`)}}>
+          <div className="absolute left-[10%] bottom-[28%] -rotate-10 cursor-pointer" onClick={() => {router.push(`/act`)}}>
             <LogoCard item={items[2]} />
           </div>
 
           {/* Top Right */}
-          <div className="absolute right-[8%] top-[6%] -rotate-10 cursor-pointer" onClick={() => {router.push(`/preparation/ielts`)}}>
+          <div className="absolute right-[8%] top-[6%] -rotate-10 cursor-pointer" onClick={() => {router.push(`/ielts`)}}>
             <LogoCard item={items[3]} />
           </div>
 
           {/* Middle Right */}
-          <div className="absolute right-[2%] top-[35%] cursor-pointer" onClick={() => {router.push(`/preparation/toefl`)}}>
+          <div className="absolute right-[2%] top-[35%] cursor-pointer" onClick={() => {router.push(`/toefl`)}}>
             <LogoCard item={items[4]} />
           </div>
 
           {/* Bottom Right */}
-          <div className="absolute right-[10%] bottom-[28%] rotate-10 cursor-pointer" onClick={() => {router.push(`/preparation/duoling`)}}>
+          <div className="absolute right-[10%] bottom-[28%] rotate-10 cursor-pointer" onClick={() => {router.push(`/duoling`)}}>
             <LogoCard item={items[5]} />
           </div>
         </div>
@@ -137,7 +137,7 @@ export function TestPrepGrid({ data }: { data: any }) {
                   item={item} 
                   onClick={() => {
                     const routes = ['gre', 'gmat', 'act', 'ielts', 'toefl', 'duoling'];
-                    router.push(`/preparation/${routes[index]}`);
+                    router.push(`/${routes[index]}`);
                   }}
                   isMobile={true}
                 />

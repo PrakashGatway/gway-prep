@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Plus, Minus } from "lucide-react"
 import { motion } from 'framer-motion';
+import { useRouter } from "next/navigation";
 
 export function Consultants({ data, finalCtaSection }: any) {
   const [openIndex, setOpenIndex] = useState<number | null>( null )
@@ -65,6 +66,8 @@ export function Consultants({ data, finalCtaSection }: any) {
 
 
  function CallToActionSection({finalCtaSection}:any) {
+  const router = useRouter();
+
   return (
     <section className="relative overflow-hidden flex items-center py-6 mt-8 ">
       {/* Main Orange Banner Container */}
@@ -101,8 +104,6 @@ export function Consultants({ data, finalCtaSection }: any) {
           />
         </motion.div>
 
-        {/* Right Side: Text content & Button */}
-        {/* The orchestrator delay ensures text appears AFTER the boy slides in */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -120,7 +121,8 @@ export function Consultants({ data, finalCtaSection }: any) {
           </div>
 
           {/* Call to Action Button */}
-          <button className="flex-shrink-0 flex items-center gap-2 bg-white text-[#FF6A13] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap">
+          <button onClick={() => router.push('/auth')}
+           className="flex-shrink-0 flex items-center gap-2 bg-white text-[#FF6A13] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap">
             {finalCtaSection?.buttonText || 'Enroll Now'}
             <svg 
               xmlns="http://w3.org" 

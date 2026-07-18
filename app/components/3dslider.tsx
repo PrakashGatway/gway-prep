@@ -5,28 +5,8 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/free-mode";
 import { useState } from "react";
 
-type Student = {
-    name: string;
-    exam: string;
-    score: number;
-    gradient: string;
-};
-
-const students: Student[] = [
-    { name: "Aanya Patel", exam: "SAT", score: 706, gradient: "from-[#ffc4a8] to-[#ff8a65]" },
-    { name: "Rahul Verma", exam: "IELTS", score: 700, gradient: "from-[#ffb59a] to-[#ff7043]" },
-    { name: "Nirmal Kumawat", exam: "GMAT", score: 300, gradient: "from-[#ffa585] to-[#ff5722]" },
-    { name: "Sneha Kapoor", exam: "GMAT", score: 652, gradient: "from-[#ffbfa3] to-[#ff8560]" },
-    { name: "Naveen Goswami", exam: "GRE", score: 408, gradient: "from-[#ffc9b0] to-[#ff9370]" },
-    { name: "Priya Sharma", exam: "SAT", score: 1480, gradient: "from-[#ffb098] to-[#ff6f4a]" },
-    { name: "Arjun Mehta", exam: "GRE", score: 332, gradient: "from-[#ffbea0] to-[#ff825c]" },
-    { name: "Kavya Iyer", exam: "IELTS", score: 810, gradient: "from-[#ffb89e] to-[#ff7852]" },
-];
 
 
-function initials(name: string) {
-    return name.split(" ").map((n) => n[0]).slice(0, 2).join("");
-}
 
 export function StudentsSlider({ data }) {
 const [activeIndex, setActiveIndex] = useState(0);
@@ -95,8 +75,8 @@ const [activeIndex, setActiveIndex] = useState(0);
                                             alt={item?.name}
                                         />
                                     </div>
-                                    <span className="flex justify-center w-full text-base text-center font-semibold bg-[#000] text-white px-2 py-1.5">
-                                        {item?.course || "nan"}
+                                    <span className={`flex justify-center w-full text-base text-center font-semibold bg-[${item?.colorCode || '#000'}] text-white px-2 py-1.5`}>
+                                        {item?.course || ""}
                                     </span>
 
                                     <div className="p-2 text-left">

@@ -87,6 +87,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
             { name: { $regex: query, $options: "i" } },
             { type: { $regex: query, $options: "i" } },
             { university: { $regex: query, $options: "i" } },
+            { course: {$regex: query, $options: "i"} }
           ],
         }
       : {};

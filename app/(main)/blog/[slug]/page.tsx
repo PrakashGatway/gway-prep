@@ -40,9 +40,12 @@ export default async function BlogDetailsPage({ params }: PageProps) {
   // Fetch data during server rendering
   const blog = await getBlogData(slug);
 
+      const api = await axiosInstance(`/admin/blogs?page=1&limit=4`);
+      const res = await api.data.data;
+    
   if (!blog) {
     notFound();
   }
 
-  return <BlogDetails blog={blog} loading={false} />;
+  return <BlogDetails blog={blog} loading={false} res={res} />;
 }

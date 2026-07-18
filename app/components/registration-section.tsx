@@ -60,7 +60,7 @@ type FieldConfig = {
   type: "text" | "email" | "tel" | "number" | "date" | "select" | "textarea" | "checkbox-group" | "button-group";
   required?: boolean;
   placeholder?: string;
-  options?: Array<{ value: string; label: string; icon?: any }>;
+  options?: Array<{ value: string; label: string; icon?: any; desc?: string }>;
   step: number;
   grid?: "full" | "half" | "third";
   icon?: any;
@@ -71,28 +71,49 @@ type StepConfig = {
   title: string;
   icon: any;
   fields: string[];
+  button : string;
 };
 
+type SubmitConfig = {
+  label: string;
+  icon?: any;
+  variant?: "primary" | "secondary" | "success" | "danger" | "warning" | "info";
+  size?: "small" | "medium" | "large";
+  position?: "bottom" | "top" | "both";
+  onSuccess?: {
+    message: string;
+    redirect?: string;
+  };
+};
 
-const FORM_CONFIG = {
+interface FormConfigType {
+  steps: StepConfig[];
+  fields: FieldConfig[];
+  submit?: SubmitConfig;
+}
+
+const FORM_CONFIG: FormConfigType = {
   steps: [
     {
       step: 1,
       title: "Share Your Info & Let Our Team Reach Out",
       icon: User,
-      fields: ["fullName", "email", "phone", "city", "age", "profile", "source"]
+      fields: ["fullName", "email", "phone", "city", "age", "profile", "source"],
+      button: "next"
     },
     {
       step: 2,
       title: "Exam Details",
       icon: BookOpen,
-      fields: ["exam", "purpose", "targetScore", "examDate", "attempts"]
+      fields: ["exam", "purpose", "targetScore", "examDate", "attempts"],
+      button: "next"
     },
     {
       step: 3,
       title: "Current Level & Preferences",
       icon: BarChart,
-      fields: ["englishLevel", "weakAreas", "batchType", "startTimeline", "notes"]
+      fields: ["englishLevel", "weakAreas", "batchType", "startTimeline", "notes"],
+      button: "submit"
     }
   ],
   fields: [
@@ -314,148 +335,25 @@ const FORM_CONFIG = {
       step: 3,
       grid: "full"
     }
-  ]
+  ],
+  submit: {
+    label: "Submit Application",
+    icon: Send,
+    variant: "primary",
+    size: "large",
+    position: "bottom",
+    onSuccess: {
+      message: "Thank you! Our team will reach out to you shortly.",
+      redirect: "/thank-you"
+    }
+  }
 };
 
-
 export function RegistrationSection({ data }: any) {
-  const [step, setStep] = useState(1);
-  const [submitted, setSubmitted] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  
-  // Initialize form data from config
-  const initialFormData: FormData = {};
-  FORM_CONFIG.fields.forEach(field => {
-    if (field.type === "checkbox-group") {
-      initialFormData[field.name] = [];
-    } else {
-      initialFormData[field.name] = "";
-    }
-  });
-  
-  const [formData, setFormData] = useState<FormData>(initialFormData);
-
   const primaryColor = "#f26e46";
 
-  const updateField = (field: string, value: string | string[]) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const toggleCheckboxGroup = (fieldName: string, value: string) => {
-    const currentValues = formData[fieldName] as string[];
-    const newValues = currentValues.includes(value)
-      ? currentValues.filter((v) => v !== value)
-      : [...currentValues, value];
-    setFormData((prev) => ({ ...prev, [fieldName]: newValues }));
-  };
-
-  const nextStep = () => setStep((s) => Math.min(s + 1, FORM_CONFIG.steps.length));
-  const prevStep = () => setStep((s) => Math.max(s - 1, 1));
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    const jsonData = JSON.stringify(formData, null, 2);
-    console.log("Form JSON:", jsonData);
-
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    setIsLoading(false);
-    setSubmitted(true);
-  };
-
-  const restart = () => {
-    setStep(1);
-    setSubmitted(false);
-    const resetData: FormData = {};
-    FORM_CONFIG.fields.forEach(field => {
-      if (field.type === "checkbox-group") {
-        resetData[field.name] = [];
-      } else {
-        resetData[field.name] = "";
-      }
-    });
-    setFormData(resetData);
-  };
-
-  const getFieldsForStep = (stepNumber: number) => {
-    return FORM_CONFIG.fields.filter(field => field.step === stepNumber);
-  };
-
-  // Get current step fields
-  const currentStepFields = getFieldsForStep(step);
-  const currentStep = FORM_CONFIG.steps.find(s => s.step === step);
-
-  // Get total steps
-  const totalSteps = FORM_CONFIG.steps.length;
-
-  if (submitted) {
-    return (
-      <section className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center"
-        >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
-            style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)` }}
-          >
-            <CheckCircle className="w-10 h-10 text-white" />
-          </motion.div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Thank You!</h2>
-          <p className="text-gray-600 mb-6 text-lg">
-            Our counsellor will contact you within 24 hours.
-          </p>
-          <div className="flex justify-center gap-3 mb-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="w-12 h-12 rounded-full flex items-center justify-center"
-              style={{ background: `${primaryColor}15` }}
-            >
-              <Phone className="w-5 h-5" style={{ color: primaryColor }} />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="w-12 h-12 rounded-full flex items-center justify-center"
-              style={{ background: `${primaryColor}15` }}
-            >
-              <Mail className="w-5 h-5" style={{ color: primaryColor }} />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="w-12 h-12 rounded-full flex items-center justify-center"
-              style={{ background: `${primaryColor}15` }}
-            >
-              <MessageSquare className="w-5 h-5" style={{ color: primaryColor }} />
-            </motion.div>
-          </div>
-          <button
-            onClick={restart}
-            className="px-6 py-2 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl"
-            style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)` }}
-          >
-            Submit Another Enquiry
-          </button>
-        </motion.div>
-      </section>
-    );
-  }
-
   return (
-    <section className="  py-12 px-4">
+    <section className="py-12 px-4">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-8 lg:gap-8">
         {/* Left Side - Image/Illustration */}
         <motion.div
@@ -464,42 +362,12 @@ export function RegistrationSection({ data }: any) {
           transition={{ duration: 0.6 }}
           className="hidden lg:block lg:w-1/2 bg-[#F8F8F8] rounded-2xl px-6 py-19 border border-gray-100"
         >
-          <div className="relative ">
+          <div className="relative">
             <img
               src={data?.fields?.Formsection ?? "/home/1.png"}
               alt="Registration"
-              className="relative w-full h-[60%] "
+              className="relative w-full h-[60%]"
             />
-            {/* <motion.div
-              animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-6 -right-6 bg-white rounded-2xl shadow-xl p-4"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: `${primaryColor}15` }}>
-                  <Target className="w-6 h-6" style={{ color: primaryColor }} />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">98% Success Rate</p>
-                  <p className="text-xs text-gray-600">In First Attempt</p>
-                </div>
-              </div>
-            </motion.div>
-            <motion.div
-              animate={{ y: [0, 10, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-              className="absolute -bottom-6 -left-6 bg-white rounded-2xl shadow-xl p-4"
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: `${primaryColor}15` }}>
-                  <Star className="w-6 h-6" style={{ color: primaryColor }} />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-gray-900">4.9 Rating</p>
-                  <p className="text-xs text-gray-600">By 10,000+ Students</p>
-                </div>
-              </div>
-            </motion.div> */}
           </div>
         </motion.div>
 
@@ -510,12 +378,18 @@ export function RegistrationSection({ data }: any) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            
-         
+            {/* Optional: Add a header above the form */}
+            {/* <div className="mb-6 text-center lg:text-left">
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                Register Now
+              </h2>
+              <p className="text-gray-600">
+                Fill in your details and our team will reach out to you
+              </p>
+            </div> */}
 
-
-            <div className="bg-white rounded-2xl shadow-xl p-7 border border-gray-100">
-              <FormSection  FORM_CONFIG={FORM_CONFIG}/>
+            <div className="bg-white border-2 rounded-lg  p-4">
+              <FormSection FORM_CONFIG={FORM_CONFIG} />
             </div>
           </motion.div>
         </div>
