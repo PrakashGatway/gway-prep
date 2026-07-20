@@ -537,214 +537,308 @@ export const pageData: any = {
     ],
   },
 
-  contactus : {
-    name: "ContactUs",
-    require: true,
-    description: "ContactUs page",
-    sections: [
-      {
-        name: "hero-section",
-        label: "Hero",
-        fields: [
-          {
-            name: "title",
-            label: "Hero Title",
-            type: "text",
-            required: false,
-            placeholder: "We're Here to Help.",
-            defaultValue: "We're Here to Help."
-          },
-          {
-            name: "subtitle",
-            label: "Hero Subtitle",
-            type: "text",
-            required: false,
-            placeholder: "Let's Connect!",
-            defaultValue: "Let's Connect!"
-          },
-          {
-            name: "description",
-            label: "Hero Description",
-            type: "textarea",
-            required: false,
-            placeholder: "Have questions about studying abroad...",
-            defaultValue: "Have questions about studying abroad, exams, applications or anything else? Our team is ready to assist you at every step of your journey."
-          },
-          {
-            name: "contactInfo",
-            label: "Contact Info",
-            type: "repeater",
-            fields: [
-              { name: "title", label: "Title", type: "text" },
-              { name: "icon", label: "Icon Name", type: "text", placeholder: "Phone, Mail, Clock, MessageCircle" },
-              { name: "value", label: "Value", type: "text" }
-            ]
-          }
-        ]
-      },
-      {
-        name: "social-connect",
-        label: "Social Connect",
-        fields: [
-          {
-            name: "title",
-            label: "Section Title",
-            type: "text",
-            defaultValue: "Connect With Us"
-          },
-          {
-            name: "social-items",
-            label: "Social Items",
-            type: "repeater",
-            fields: [
-              { name: "name", label: "Name", type: "text" },
-              { name: "icon", label: "Icon Name", type: "text", placeholder: "MessageCircle, Instagram, Facebook, Youtube" },
-              { name: "description", label: "Description", type: "text" },
-              { name: "button-text", label: "Button Text", type: "text" },
-              { name: "link", label: "Link", type: "text" },
-              { name: "contact", label: "Contact", type: "text", placeholder: "+91 88704 42190" }
-            ],
-            defaultValue: [
-              { name: "WhatsApp", icon: "MessageCircle", description: "Chat with our experts", "button-text": "Chat Now", link: "#", contact: "+91 88704 42190" },
-              { name: "Instagram", icon: "Instagram", description: "Follow us for updates", "button-text": "Follow Us", link: "#", contact: "+91 88704 42190" },
-              { name: "Facebook", icon: "Facebook", description: "Like our page", "button-text": "Like Page", link: "#", contact: "+91 88704 42190" },
-              { name: "YouTube", icon: "Youtube", description: "Watch tips & guidance", "button-text": "Subscribe", link: "#", contact: "+91 88704 42190" }
-            ]
-          }
-        ]
-      },
-      {
-        name: "offices",
-        label: "Offices",
-        fields: [
-          {
-            name: "title",
-            label: "Section Title",
-            type: "text",
-            defaultValue: "Our Offices"
-          },
-          {
-            name: "office-items",
-            label: "Office Items",
-            type: "repeater",
-            fields: [
-              { name: "city", label: "City", type: "text" },
-              { name: "address", label: "Address", type: "text" },
-              { name: "pin", label: "PIN Code", type: "text" },
-              { name: "phone", label: "Phone", type: "text" },
-              { name: "image", label: "Image URL", type: "text" }
-            ],
-            defaultValue: [
-              { city: "Mohali (Head Office)", address: "SCO 103-104, 2nd Floor, Sector 34A, Chandigarh", pin: "160022", phone: "+91 88704 42190", image: "" },
-              { city: "Chandigarh", address: "SCO 8-9, 2nd Floor, Sector 17-G, Chandigarh", pin: "160017", phone: "+91 88704 42190", image: "" },
-              { city: "Jalandhar", address: "BMC Chowk, Near Bus Stand, Jalandhar, Punjab", pin: "144001", phone: "+91 88704 42190", image: "" },
-              { city: "Amritsar", address: "SCO 12, 1st Floor, Ranjit Avenue, near Golden Temple, Amritsar", pin: "143001", phone: "+91 88704 42190", image: "" }
-            ]
-          }
-        ]
-      },
-      {
-        name: "map-section",
-        label: "Map Section",
-        fields: [
-          {
-            name: "title",
-            label: "Title",
-            type: "text",
-            defaultValue: "Find Us Across"
-          },
-          {
-            name: "subtitle",
-            label: "Subtitle",
-            type: "text",
-            defaultValue: "North India"
-          },
-          {
-            name: "description",
-            label: "Description",
-            type: "textarea",
-            defaultValue: "Visit our nearest office for personalized counseling and expert guidance on your study abroad journey."
-          },
-          {
-            name: "button-text",
-            label: "Button Text",
-            type: "text",
-            defaultValue: "Get Directions"
-          }
-        ]
-      },
-      {
-        name: "faq-section",
-        label: "FAQ Section",
-        fields: [
-          {
-            name: "title",
-            label: "Section Title",
-            type: "text",
-            defaultValue: "Frequently Asked Questions"
-          },
-          {
-            name: "faq-items",
-            label: "FAQ Items",
-            type: "repeater",
-            fields: [
-              { name: "question", label: "Question", type: "text" },
-              { name: "answer", label: "Answer", type: "textarea" }
-            ],
-            defaultValue: [
-              { question: "How can I contact Ooshas?", answer: "You can contact us via phone, email, WhatsApp, or by visiting our office." },
-              { question: "Can I visit your office without an appointment?", answer: "Yes, but we recommend scheduling an appointment for personalized attention." },
-              { question: "What are your working hours?", answer: "We are open Monday to Saturday from 10:00 AM to 7:00 PM." },
-              { question: "How soon will I get a response?", answer: "We typically respond within a few hours during business hours." },
-              { question: "Do you offer online counselling?", answer: "Yes, we offer online counselling sessions via video calls." },
-              { question: "Which documents do I need for counselling?", answer: "Bring your academic transcripts, test scores, and any relevant documents." }
-            ]
-          }
-        ]
-      },
-      {
-        name: "cta-section",
-        label: "CTA Section",
-        fields: [
-          {
-            name: "title",
-            label: "Title",
-            type: "text",
-            defaultValue: "Your Dream University"
-          },
-          {
-            name: "subtitle",
-            label: "Subtitle",
-            type: "text",
-            defaultValue: "is Just a Conversation Away."
-          },
-          {
-            name: "description",
-            label: "Description",
-            type: "textarea",
-            defaultValue: "Reach out to our experts today and take the first step towards your global education journey."
-          },
-          {
-            name: "primary-button",
-            label: "Primary Button Text",
-            type: "text",
-            defaultValue: "Talk to an Expert"
-          },
-          {
-            name: "secondary-button",
-            label: "Secondary Button Text",
-            type: "text",
-            defaultValue: "Book Free Counselling"
-          },
-          {
-            name: "image",
-            label: "Image URL",
-            type: "file"
-          }
-        ]
-      }
-    ],
-  },
+  contactus: {
+  name: "ContactUs",
+  require: true,
+  description: "ContactUs page",
+  sections: [
+    {
+      name: "hero-section",
+      label: "Hero Section",
+      fields: [
+        {
+          name: "title",
+          label: "Hero Title",
+          type: "text",
+          required: false,
+          placeholder: "We're Here to Help.",
+          defaultValue: "We're Here to Help."
+        },
+        {
+          name: "subtitle",
+          label: "Hero Subtitle",
+          type: "text",
+          required: false,
+          placeholder: "Let's Connect!",
+          defaultValue: "Let's Connect!"
+        },
+        {
+          name: "description",
+          label: "Hero Description",
+          type: "textarea",
+          required: false,
+          placeholder: "Have questions about studying abroad...",
+          defaultValue: "Have questions about studying abroad, exams, applications or anything else? Our team is ready to assist you at every step of your journey."
+        },
+        {
+          name: "heroImage",
+          label: "Hero Image",
+          type: "file",
+          required: false,
+          defaultValue: "/contactshero.webp"
+        },
+        {
+          name: "contactCards",
+          label: "Contact Information Cards",
+          type: "repeater",
+          fields: [
+            { name: "title", label: "Title", type: "text" },
+            { name: "icon", label: "Icon Name", type: "text", placeholder: "Phone, Mail, Clock, MessageCircle" },
+            { name: "value", label: "Value", type: "text" },
+            { name: "subtext", label: "Subtext", type: "text" }
+          ],
+          defaultValue: [
+            { title: "Call Us", icon: "Phone", value: "+91 9166146538", subtext: "Call Us" },
+            { title: "Email Us", icon: "Mail", value: "info@ooshasprep.com", subtext: "Email Us" },
+            { title: "Working Hours", icon: "Clock", value: "Mon - Sat 9:00 AM - 6:00 PM", subtext: "Working Hours" },
+            { title: "Chat on WhatsApp", icon: "MessageCircle", value: "+91 9166146538", subtext: "Chat on Whatsapp" }
+          ]
+        }
+      ]
+    },
+    {
+      name: "connect-section",
+      label: "Connect With Us",
+      fields: [
+        {
+          name: "title",
+          label: "Section Title",
+          type: "text",
+          required: false,
+          defaultValue: "Connect With Us"
+        },
+        {
+          name: "highlightText",
+          label: "Highlight Text",
+          type: "text",
+          required: false,
+          defaultValue: "With Us"
+        },
+        {
+          name: "socialItems",
+          label: "Social Connection Items",
+          type: "repeater",
+          fields: [
+            { name: "name", label: "Name", type: "text" },
+            { name: "icon", label: "Icon Name", type: "text", placeholder: "MessageCircle, Instagram, Facebook, Youtube" },
+            { name: "description", label: "Description", type: "text" },
+            { name: "buttonText", label: "Button Text", type: "text" },
+            { name: "link", label: "Link URL", type: "text" },
+            { name: "contact", label: "Contact Number", type: "text", placeholder: "+91 9166146538" },
+            { name: "color", label: "Brand Color", type: "text", placeholder: "#25D366" }
+          ],
+          defaultValue: [
+            { name: "WhatsApp", icon: "MessageCircle", description: "Chat with our experts", buttonText: "Chat Now", link: "https://wa.me/919166146538", contact: "+91 9166146538", color: "#25D366" },
+            { name: "Instagram", icon: "Instagram", description: "Follow us for updates", buttonText: "Follow Us", link: "https://www.instagram.com/ooshasprep", contact: "", color: "#E4405F" },
+            { name: "Facebook", icon: "Facebook", description: "Like our page", buttonText: "Like Page", link: "https://www.facebook.com/share/18aH5VifRr/?mibextid=wwXIfr", contact: "", color: "#1877F2" },
+            { name: "YouTube", icon: "Youtube", description: "Watch tips & guidance", buttonText: "Subscribe", link: "https://youtube.com/@ooshasprep", contact: "", color: "#FF0000" }
+          ]
+        }
+      ]
+    },
+    // {
+    //   name: "message-section",
+    //   label: "Send Us a Message",
+    //   fields: [
+    //     {
+    //       name: "title",
+    //       label: "Form Title",
+    //       type: "text",
+    //       required: false,
+    //       defaultValue: "Send Us a Message"
+    //     },
+    //     {
+    //       name: "formConfig",
+    //       label: "Form Configuration",
+    //       type: "object",
+    //       fields: [
+    //         {
+    //           name: "steps",
+    //           label: "Form Steps",
+    //           type: "repeater",
+    //           fields: [
+    //             { name: "step", label: "Step Number", type: "number" },
+    //             { name: "title", label: "Step Title", type: "text" },
+    //             { name: "icon", label: "Icon Name", type: "text" },
+    //             { name: "fields", label: "Field Names", type: "text" },
+    //             { name: "button", label: "Button Type", type: "text" }
+    //           ]
+    //         },
+    //         {
+    //           name: "fields",
+    //           label: "Form Fields",
+    //           type: "repeater",
+    //           fields: [
+    //             { name: "name", label: "Field Name", type: "text" },
+    //             { name: "label", label: "Label", type: "text" },
+    //             { name: "type", label: "Field Type", type: "text", placeholder: "text, email, tel, select, textarea" },
+    //             { name: "required", label: "Required", type: "boolean" },
+    //             { name: "placeholder", label: "Placeholder", type: "text" },
+    //             { name: "step", label: "Step Number", type: "number" },
+    //             { name: "grid", label: "Grid Size", type: "text", placeholder: "half, full" },
+    //             { name: "icon", label: "Icon Name", type: "text" },
+    //             { name: "options", label: "Options (for select)", type: "repeater", fields: [
+    //               { name: "value", label: "Value", type: "text" },
+    //               { name: "label", label: "Label", type: "text" }
+    //             ] },
+    //             { name: "rows", label: "Rows (for textarea)", type: "number" }
+    //           ]
+    //         },
+    //         {
+    //           name: "submit",
+    //           label: "Submit Configuration",
+    //           type: "object",
+    //           fields: [
+    //             { name: "label", label: "Button Label", type: "text" },
+    //             { name: "icon", label: "Icon Name", type: "text" },
+    //             { name: "variant", label: "Variant", type: "text" },
+    //             { name: "size", label: "Size", type: "text" },
+    //             { name: "position", label: "Position", type: "text" },
+    //             { 
+    //               name: "onSuccess", 
+    //               label: "Success Configuration",
+    //               type: "object",
+    //               fields: [
+    //                 { name: "message", label: "Success Message", type: "text" },
+    //                 { name: "redirect", label: "Redirect URL", type: "text" }
+    //               ]
+    //             }
+    //           ]
+    //         }
+    //       ]
+    //     }
+    //   ]
+    // },
+    {
+      name: "offices-section",
+      label: "Our Offices",
+      fields: [
+        {
+          name: "title",
+          label: "Section Title",
+          type: "text",
+          required: false,
+          defaultValue: "Our Offices"
+        },
+        {
+          name: "officeItems",
+          label: "Office Locations",
+          type: "repeater",
+          fields: [
+            { name: "city", label: "City", type: "text" },
+            { name: "address", label: "Address", type: "textarea" },
+            { name: "pin", label: "PIN Code", type: "text" },
+            { name: "phone", label: "Phone Number", type: "text" },
+            { name: "image", label: "Office Image URL", type: "file" },
+            { name: "isHeadOffice", label: "Is Head Office", type: "boolean" }
+          ],
+          defaultValue: [
+            { city: "Jaipur (Head Office)", address: "SCO 103-104, 2nd Floor, Sector 34A, Chandigarh", pin: "160022", phone: "+91 9166146538", image: "https://placehold.co/400x200/e2e8f0/475569?text=Jaipur+Office", isHeadOffice: true },
+            { city: "Delhi", address: "SCO 8-9, 2nd Floor, Sector 17-G, Chandigarh", pin: "160017", phone: "+91 9166146538", image: "https://placehold.co/400x200/e2e8f0/475569?text=Delhi+Office", isHeadOffice: false },
+            { city: "Kolkata", address: "BMC Chowk, Near Bus Stand, Jalandhar, Punjab", pin: "144001", phone: "+91 9166146538", image: "https://placehold.co/400x200/e2e8f0/475569?text=Kolkata+Office", isHeadOffice: false },
+            { city: "Bangalore", address: "SCO 12, 1st Floor, Ranjit Avenue, near Golden Temple, Amritsar", pin: "143001", phone: "+91 9166146538", image: "https://placehold.co/400x200/e2e8f0/475569?text=Bangalore+Office", isHeadOffice: false }
+          ]
+        }
+      ]
+    },
+    {
+      name: "map-section",
+      label: "Map & Location",
+      fields: [
+        {
+          name: "title",
+          label: "Title",
+          type: "text",
+          required: false,
+          defaultValue: "Find Us Across"
+        },
+        {
+          name: "highlightText",
+          label: "Highlight Text",
+          type: "text",
+          required: false,
+          defaultValue: "India"
+        },
+        {
+          name: "description",
+          label: "Description",
+          type: "textarea",
+          required: false,
+          defaultValue: "Visit our nearest office for personalized counseling and expert guidance on your study abroad journey."
+        },
+        {
+          name: "buttonText",
+          label: "Button Text",
+          type: "text",
+          required: false,
+          defaultValue: "Get Directions"
+        },
+        {
+          name: "mapEmbedUrl",
+          label: "Google Maps Embed URL",
+          type: "text",
+          required: false,
+          defaultValue: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13027.046312498469!2d75.76255926571812!3d26.907153148223077!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db40d51d0b52b%3A0x839fb9b5210e18c1!2sCivil%20Lines%2C%20Jaipur%2C%20Rajasthan!5e1!3m2!1sen!2sin!4v1784363697294!5m2!1sen!2sin"
+        }
+      ]
+    },
+    {
+      name: "cta-section",
+      label: "Call to Action",
+      fields: [
+        {
+          name: "title",
+          label: "Title",
+          type: "text",
+          required: false,
+          defaultValue: "Your Dream University"
+        },
+        {
+          name: "highlightText",
+          label: "Highlight Text",
+          type: "text",
+          required: false,
+          defaultValue: "is Just a Conversation Away."
+        },
+        {
+          name: "description",
+          label: "Description",
+          type: "textarea",
+          required: false,
+          defaultValue: "Reach out to our experts today and take the first step towards your global education journey."
+        },
+        {
+          name: "primaryButton",
+          label: "Primary Button Text",
+          type: "text",
+          required: false,
+          defaultValue: "Talk to an Expert"
+        },
+        {
+          name: "secondaryButton",
+          label: "Secondary Button Text",
+          type: "text",
+          required: false,
+          defaultValue: "Book Free Counselling"
+        },
+        {
+          name: "image",
+          label: "CTA Image",
+          type: "file",
+          required: false,
+          defaultValue: "/contact.webp"
+        },
+        {
+          name: "bgColor",
+          label: "Background Color",
+          type: "text",
+          required: false,
+          defaultValue: "#FEF9F4"
+        }
+      ]
+    }
+  ]
+},
 
   setting: {
     name: "Setting",
@@ -1594,6 +1688,27 @@ export const pageData: any = {
         ],
       },
 
+      {
+        name: "built-for",
+        label: "built for your career",
+        fields: [
+          {
+            name: "title",
+            label: "Section Title",
+            type: "text",
+          },
+          {
+            name: "description",
+            label: "Section Description",
+            type: "editor",
+          },
+          {
+            name: "primaryButton",
+            label: "Primary Button",
+            type: "text",
+          }
+        ],
+      },
       
       {
         name: "Career-Stats",

@@ -1,3 +1,9 @@
+
+
+
+
+
+
 "use client";
 
 import { useState } from "react";
@@ -101,6 +107,14 @@ interface CareersData {
     title: string;
     desc: string;
   }>;
+   build: {
+    title: string;
+    description: string;
+    image: string;
+    buttons: {
+      primary: string;
+    };
+  };
   stats: Array<{
     icon: string;
     value: string;
@@ -190,6 +204,21 @@ export default function CareersPage({ sections }: any) {
         value: item.value || "",
         label: item.label || "",
       })) || [],
+    build : {
+      title:
+        sections["Career-Hero"]?.fields?.title ||
+        "Build Your Future While Helping Students Build Theirs",
+      description:
+        sections["Career-Hero"]?.fields?.description?.replace(/<[^>]*>/g, "") ||
+        "",
+      image: sections["Career-Hero"]?.fields?.image || "",
+      buttons: {
+        primary:
+          sections["Career-Hero"]?.fields?.primaryButton ||
+          "Explore Open Roles"
+      },
+    
+    },
     departments:
       sections["Career-Departments"]?.fields?.items?.map((item: any) => ({
         icon: item.icon || "GraduationCap",
@@ -337,20 +366,26 @@ export default function CareersPage({ sections }: any) {
             <div className="grid lg:grid-cols-2 items-center gap-10 lg:gap-16 px-8 md:px-14 py-6">
               {/* Left Content */}
               <div className="max-w-xl">
-                <h2 className="text-4xl md:text-6xl font-bold leading-tight text-[#2F2F2F]">
-                  Built For <span className="text-[#F26E46]">Your Career.</span>
-                </h2>
-
-                <p className="mt-6 text-lg md:text-[20px] leading-9 text-[#444]">
-                  Whether you're a counselor, developer, designer, marketer or
-                  content creator, you'll find opportunities to learn, grow and
-                  make an impact.
-                </p>
-
-                <button className="mt-10 bg-[#F26E46] hover:bg-[#e65f35] text-white font-semibold text-xl px-8 py-4 rounded-xl transition-all duration-300">
-                  Explore Careers
-                </button>
-              </div>
+            
+            <h1 className="text-[42px] md:text-[52px] font-extrabold leading-tight text-black">
+              {data.build?.title.split("||")[0]}
+              <span style={{ color: orange }}>
+                {data.build?.title.split("||")[1]}
+              </span>
+             
+            </h1>
+            <p className="mt-6 text-black/80 text-lg max-w-md leading-relaxed">
+              {data.build.description}
+            </p>
+            <div className="mt-8 flex gap-4 flex-wrap">
+              <button
+                className="px-8 py-4 rounded-lg text-white text-base font-semibold hover:opacity-90 transition"
+                style={{ backgroundColor: orange }}
+              >
+                {data.build.buttons.primary}
+              </button>
+            </div>
+          </div>
 
               {/* Right Image */}
               <div className="flex justify-center lg:justify-end">
@@ -472,50 +507,44 @@ export default function CareersPage({ sections }: any) {
       </section>
 
       {/* ---------------- Hiring process ---------------- */}
-      <section
-        className="relative bg-[#FCEEE5] "
-        style={{
-          backgroundImage: "url('/image_30c67b71.png')",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-        }}
-      >
-        <div className="max-w-7xl mx-auto relative h-[420px]">
-          {/* STEP 1 */}
-          <div className="absolute top-[120px] left-[80px] max-w-[260px]">
-            <h3 className="text-2xl font-bold mb-3" style={{ color: orange }}>
-              {data.hiringProcess[1].title}
-            </h3>
+    <section
+  className="relative bg-[#FCEEE5] lg:bg-[url('/image_30c67b71.png')] bg-no-repeat bg-center bg-cover"
+>
+  <div className="max-w-7xl mx-auto relative lg:h-[420px] px-6 py-12 lg:px-0 lg:py-0">
+    {/* STEP 1 */}
+    <div className="lg:absolute lg:top-[120px] lg:left-[80px] max-w-full lg:max-w-[260px] mb-8 lg:mb-0">
+      <h3 className="text-2xl font-bold mb-3" style={{ color: orange }}>
+        {data.hiringProcess[1].title}
+      </h3>
 
-            <p className="text-gray-700 leading-8 text-lg">
-              {data.hiringProcess[1].desc}
-            </p>
-          </div>
+      <p className="text-gray-700 leading-7 lg:leading-8 text-base lg:text-lg">
+        {data.hiringProcess[1].desc}
+      </p>
+    </div>
 
-          {/* STEP 2 */}
-          <div className="absolute bottom-10 left-[390px] max-w-[300px]">
-            <h3 className="text-2xl font-bold mb-3" style={{ color: orange }}>
-              {data.hiringProcess[2].title}
-            </h3>
+    {/* STEP 2 */}
+    <div className="lg:absolute lg:bottom-10 lg:left-[390px] max-w-full lg:max-w-[300px] mb-8 lg:mb-0">
+      <h3 className="text-2xl font-bold mb-3" style={{ color: orange }}>
+        {data.hiringProcess[2].title}
+      </h3>
 
-            <p className="text-gray-700 leading-8 text-lg">
-              {data.hiringProcess[2].desc}
-            </p>
-          </div>
+      <p className="text-gray-700 leading-7 lg:leading-8 text-base lg:text-lg">
+        {data.hiringProcess[2].desc}
+      </p>
+    </div>
 
-          {/* STEP 3 */}
-          <div className="absolute bottom-10 right-[90px] max-w-[300px]">
-            <h3 className="text-2xl font-bold mb-3" style={{ color: orange }}>
-              {data.hiringProcess[0].title}
-            </h3>
+    {/* STEP 3 */}
+    <div className="lg:absolute lg:bottom-10 lg:right-[90px] max-w-full lg:max-w-[300px]">
+      <h3 className="text-2xl font-bold mb-3" style={{ color: orange }}>
+        {data.hiringProcess[0].title}
+      </h3>
 
-            <p className="text-gray-700 leading-8 text-lg">
-              {data.hiringProcess[0].desc}
-            </p>
-          </div>
-        </div>
-      </section>
+      <p className="text-gray-700 leading-7 lg:leading-8 text-base lg:text-lg">
+        {data.hiringProcess[0].desc}
+      </p>
+    </div>
+  </div>
+</section>
 
       {/* ---------------- Open Positions ---------------- */}
       <section className="max-w-7xl mx-auto px-6 md:px-0 py-12">

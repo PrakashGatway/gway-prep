@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/app/lib/db";
 import PageData from "@/app/Model/PageData";
+import { slugify } from "@/app/lib/slug";
 
 
 export async function GET(req: NextRequest): Promise<NextResponse> {

@@ -11,7 +11,7 @@ import { useState } from "react";
 export function StudentsSlider({ data }) {
 const [activeIndex, setActiveIndex] = useState(0);
     return (
-        <div className="w-full py-12 sm:px-6">
+        <div className="w-full  sm:px-6">
             <Swiper
                 modules={[EffectCoverflow, Autoplay]}
                 effect="coverflow"
@@ -36,7 +36,8 @@ const [activeIndex, setActiveIndex] = useState(0);
                 }}
                 className="students-swiper py-12"
             >
-                {[...data, ...data].map((item, i) => {
+                {/* {[...data, ...data].map((item, i) => { */}
+                {data.map((item, i) => {
                     const len = data.length;
                     const current = i % len;
 
@@ -59,19 +60,20 @@ const [activeIndex, setActiveIndex] = useState(0);
                     return (
                         <SwiperSlide
                             key={i}
-                            className="!w-[280px] py-12 transition-transform duration-500"
+                            className="!w-[240px] py-12 transition-transform duration-500"
                         >
                             {({ isActive }) => (
                                 <div
-                                    className={`group relative bg-white shadow-[0_20px_40px_-15px_rgba(58,13,31,0.25)] p-2.5 ring-black/5 overflow-hidden transition-all duration-500 ${translate} ${isActive ? "scale-103 opacity-100 shadow-[0_30px_60px_-20px_rgba(58,13,31,0.45)]" : "opacity-90"
+                                    className={`group relative bg-white shadow-[0_20px_40px_-15px_rgba(58,13,31,0.25)]
+                                         p-2.5 ring-black/5 overflow-hidden transition-all duration-500 ${translate} ${isActive ? "scale-103 opacity-100 shadow-[0_30px_60px_-20px_rgba(58,13,31,0.45)]" : "opacity-90"
                                         }`}
                                 >
                                     <div
-                                        className={`relative h-[200px] bg-gradient-to-tl bg-[#FE8E6D] from-[#FE8E6D] to-white`}
+                                        className={`relative h-[140px] bg-gradient-to-bl bg-[#FE8E6D] from-[#FE8E6D] to-white`}
                                     >
                                         <img
                                             src={item?.image}
-                                            className="h-full w-full object-cover mx-auto  transition-transform duration-500"
+                                            className="h-full w-full object-contain mx-auto  transition-transform duration-500"
                                             alt={item?.name}
                                         />
                                     </div>

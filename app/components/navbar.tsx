@@ -85,7 +85,7 @@ export function Navbar({ Data }: any) {
     },
     { name: "Blogs", href: "/blog", icon: Award },
     { name: "Career", href: "/career", icon: Clock },
-    { name: "Contact Us", href: "/contact", icon: Phone },
+    { name: "Contact Us", href: "/contactus", icon: Phone },
   ];
 
   React.useEffect(() => {

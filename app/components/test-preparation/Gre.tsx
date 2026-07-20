@@ -36,7 +36,7 @@ function AIStudySection({ aiStudySection }: { aiStudySection: any }) {
               __html: aiStudySection.sectionTitle || "",
             }}
           /> */}
-          <p className="text-2xl md:text-3xl font-extrabold m-4 flex gap-2 items-center justify-center">
+          <p className="text-2xl md:text-3xl lg:text-5xl font-extrabold m-4 flex gap-2 items-center justify-center">
             {aiStudySection?.sectionTitle?.split("||")[0] || "What is"}
             <span className="text-[#f06437]">
               {aiStudySection?.sectionTitle?.split("||")[1] || "GRE?"}
@@ -109,7 +109,7 @@ function FeatureCard({ feature, index }: { feature: any; index: number }) {
           <span className="text-orange-500 font-semibold uppercase tracking-widest text-xs md:text-sm">
             AI Feature {index + 1}
           </span>
-          <p className="text-2xl md:text-3xl lg:text-4xl font-bold mt-2 md:mt-4 mb-3 md:mb-6">
+          <p className="text-2xl md:text-3xl lg:text-5xl font-bold mt-2 md:mt-4 mb-3 md:mb-6">
             {feature.heading}
           </p>
           <p className="text-gray-600 text-sm md:text-base leading-relaxed">
@@ -190,7 +190,7 @@ function GreSection({
       <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-6 md:gap-8 items-start mb-8 md:mb-10">
         {/* Left Side Logo Graphic Header */}
         <div className="flex items-center gap-1 text-[#541e5c] justify-center md:justify-start">
-          <span className="text-3xl md:text-4xl font-extrabold -mt-2 animate-pulse">
+          <span className="text-3xl md:text-5xl font-extrabold -mt-2 animate-pulse">
             *
           </span>
           <h3 className="text-5xl md:text-6xl lg:text-9xl font-black tracking-tight lowercase">
@@ -376,11 +376,11 @@ function VideoExplanationSection({ videoData }: { videoData: any }) {
   return (
     <section className="relative overflow-hidden bg-white pt-12 md:pt-16 lg:pt-20 px-4 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        <div className="flex justify-center mb-8 md:mb-10">
+        {/* <div className="flex justify-center mb-8 md:mb-10">
           <span className="text-[#F36C45] text-base md:text-lg lg:text-xl font-medium">
             {"Video based learning"}
           </span>
-        </div>
+        </div> */}
 
         <div className="relative">
           <div
@@ -388,10 +388,10 @@ function VideoExplanationSection({ videoData }: { videoData: any }) {
           border-2 border-[#D9D9D9] bg-[#FAFAFA] px-6 md:px-10 lg:px-16 py-10 md:py-14 lg:py-16"
           >
             <div className="max-w-2xl text-center lg:text-left">
-              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold leading-tight text-[#333333]">
-                {videoData?.title || "Video explanations for"}
+              <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-bold leading-tight text-[#333333]">
+                {videoData?.titlel?.split("||")[0] || "Video explanations for"}
                 <br />
-                <span className="text-[#F36C45]">every question</span>
+                <span className="text-[#F36C45]">{videoData?.titlel?.split("||")[1] || "every question"}</span>
               </h2>
               <p className="mt-6 md:mt-8 text-[#5F5F5F] text-base md:text-lg lg:text-[1.2rem] leading-relaxed">
                 {videoData?.Subtitle ||
@@ -711,7 +711,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
     
 
       <section className="relative bg-[#FDF4EF]  overflow-visible">
-        <div className="max-w-7xl mx-auto  py-10 lg:py-14">
+        <div className="max-w-7xl mx-auto  py-10 lg:py-12">
           {/* Heading */}
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 text-center">
             <div
@@ -729,7 +729,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
               }}
             />
 
-            <p className="mt-4 max-w-4xl mx-auto text-[#555] text-base md:text-lg leading-8">
+            <p className="mt-2 max-w-4xl mx-auto text-[#555] text-base md:text-lg leading-8">
               {heroSection.paragraph}
             </p>
           </div>
@@ -844,7 +844,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
       <section className="relative overflow-hidden bg-gradient-to-b from-[#fdf0eb] to-white py-12 md:py-16 px-4">
         <div className="flex justify-center items-center flex-col w-full">
        
-          <h2 className="text-2xl md:text-3xl font-extrabold  text-center ">
+          <h2 className="text-2xl md:text-3xl lg:text-5xl font-extrabold  text-center ">
             {scoreGuaranteeSection?.title?.split("||")[0] || "What is"} <br />
             <p className="text-[#f06437]">
               {scoreGuaranteeSection?.title?.split("||")[1] || "GRE?"}
