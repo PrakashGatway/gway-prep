@@ -328,7 +328,7 @@ export default function CareersPage({ sections }: any) {
             <img
               src={data.hero.image || "/herom image.webp"}
               alt="Team collaborating"
-              className="rounded w-full h-[460px] object-contain "
+              className="hidden lg:block rounded w-full h-[460px] object-contain "
             />
           </div>
         </div>

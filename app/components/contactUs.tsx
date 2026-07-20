@@ -331,7 +331,7 @@ export default function ContactPage({ Data }: any) {
             </div>
           </div>
 
-          <div className="p-8 relative">
+          <div className="p-8 relative hidden md:block">
             <div className="h-full bg-transparent relative">
               <img
                 src={heroImage}

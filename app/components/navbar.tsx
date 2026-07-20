@@ -162,7 +162,7 @@ export function Navbar({ Data }: any) {
   return (
     <>
       <nav
-        className={`sticky top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        className={` left-0 right-0 z-500 transition-all duration-300 ${
           scrolled 
             ? "bg-white/80 backdrop-blur-xl shadow-lg border-b border-gray-100/50" 
             : "bg-white/95 backdrop-blur-sm"
@@ -342,7 +342,7 @@ export function Navbar({ Data }: any) {
                   onClick={() => Router.push("/auth")}
                   className="group relative overflow-hidden px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#F36C45] to-orange-500 text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-orange-500/25"
                 >
-                  <span className="relative z-10 flex items-center gap-2">
+                  <span className="relative z-100 flex items-center gap-2">
                     <User size={16} />
                     Login / Signup
                   </span>
@@ -357,7 +357,7 @@ export function Navbar({ Data }: any) {
                   }
                   className="group relative overflow-hidden px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-green-500 text-white font-medium transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/25"
                 >
-                  <span className="relative z-10 flex items-center gap-2">
+                  <span className="relative z-100 flex items-center gap-2">
                     <LayoutDashboard size={16} />
                     Dashboard
                   </span>
@@ -386,7 +386,7 @@ export function Navbar({ Data }: any) {
           <>
             {/* Enhanced Backdrop */}
             <motion.div
-              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-400"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -396,7 +396,7 @@ export function Navbar({ Data }: any) {
 
             {/* Enhanced Drawer - FIXED: Full viewport height */}
             <motion.div
-              className="fixed top-0 right-0 h-screen w-[90%] sm:w-[400px] bg-white z-50 shadow-2xl overflow-y-auto"
+              className="fixed top-0 right-0 h-screen w-[90%] sm:w-[400px] bg-white z-500 shadow-2xl overflow-y-auto"
               variants={mobileDrawerVariants}
               initial="hidden"
               animate="visible"

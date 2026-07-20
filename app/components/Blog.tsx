@@ -257,7 +257,7 @@ export default function BlogPage({ pageInfo, categories }: any) {
               alt="Students studying together"
               loading="eager"
               decoding="async"
-              className="h-64 w-full rounded-2xl object-cover  sm:h-80 md:h-96 lg:h-[380px]"
+              className="hidden lg:block h-64 w-full rounded-2xl object-cover  sm:h-80 md:h-96 lg:h-[380px]"
             />
         {/* <div className="relative flex w-full max-w-md items-center justify-center lg:w-[40%] lg:max-w-none">
           <div className="relative w-full">
