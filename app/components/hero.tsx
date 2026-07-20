@@ -161,7 +161,7 @@ export function Hero({ data, student }: HeroProps) {
   ];
 
   return (
-    <section className="relative overflow-hidden flex flex-col bg-[#FDF4EF]" style={{ backgroundImage: `url('/home/gridgb.png')` }}>
+    <section className=" overflow-hidden flex flex-col bg-[#FDF4EF]" style={{ backgroundImage: `url('/home/gridgb.png')` }}>
     
       {/* ─── Main Content ─── */}
       <div className="relative z-10 flex-1 flex flex-col justify-center px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 py-16 lg:py-0">
