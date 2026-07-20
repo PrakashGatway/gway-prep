@@ -238,10 +238,10 @@ export function Navbar({ Data }: any) {
                       exit="exit"
                       className="absolute left-1/2 -translate-x-1/2 top-full pt-4 w-[400px] xl:w-[480px]"
                     >
-                      <div className="rounded-2xl bg-white border border-gray-100 shadow-2xl shadow-black/5 overflow-hidden">
+                      <div className="rounded bg-white border border-gray-100 shadow-2xl shadow-black/5 overflow-hidden">
                         {/* Gradient header */}
                         <div className="relative overflow-hidden">
-                          <div className="absolute inset-0 bg-gradient-to-r from-orange-50 to-amber-50 opacity-50" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-300 opacity-50" />
                           <div className="relative px-6 py-4 border-b border-gray-100/50">
                             <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
                               <GraduationCap size={16} className="text-[#F36C45]" />

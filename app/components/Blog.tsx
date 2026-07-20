@@ -77,7 +77,7 @@ const data = {
   newsletterBanner: {
     title: "Get the Latest Updates in Your Inbox",
     text: "Study tips, exam updates, success stories and more.",
-    img: "https://images.unsplash.com/photo-1494790108377-be9c29b531c8?q=80&w=300&auto=format&fit=crop"
+    img: "/87921129_blog_concept.webp"
   },
   features: [
     { icon: "FileText", title: "Expert Insights", desc: "Learn from industry experts and top educators" },
@@ -197,18 +197,82 @@ export default function BlogPage({ pageInfo, categories }: any) {
 
   return (
     <div className="min-h-screen bg-white text-[#1f2430]">
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div className="absolute inset-0">
-          <Image 
-            src={data.hero.bgImage} 
-            alt="Students studying together" 
-            fill 
-            priority 
-            className="object-cover" 
-          />
-          <div className="absolute inset-0 bg-[#2a1a12]/70" />
+     
+     
+    <section className="relative w-full overflow-hidden bg-[#FDF4EE] py-8 md:py-12">
+      {/* Main Flex Container: Columns stacked on mobile, side-by-side on desktop */}
+      <div className="mx-auto flex max-w-7xl flex-col items-center gap-12 px-4 sm:px-6 lg:flex-row lg:justify-between lg:px-8">
+        
+        {/* Left Flex Item: Content Column */}
+        <div className="flex w-full flex-col justify-center text-center lg:w-[85%] lg:text-left">
+          
+          {/* Breadcrumbs */}
+          {/* <nav aria-label="Breadcrumb" className="mb-6 text-xs font-medium tracking-wide text-gray-600">
+            {data?.hero?.breadcrumb?.map((crumb, i) => (
+              <span key={crumb} className="inline-flex items-center">
+                <span className={i === data.hero.breadcrumb.length - 1 ? "font-semibold text-gray-900" : ""}>
+                  {crumb}
+                </span>
+                {i < data.hero.breadcrumb.length - 1 && <span className="mx-2 text-gray-400">›</span>}
+              </span>
+            ))}
+          </nav> */}
+
+          {/* Typography */}
+          <h1 className="text-4xl font-black tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+            {data?.hero?.title}
+          </h1>
+          <p className="mx-auto mt-4 max-w-xl text-base text-gray-600 lg:mx-0 lg:text-lg">
+            {data?.hero?.subtitle}
+          </p>
+
+          {/* Search Form Container */}
+          <form 
+            onSubmit={(e) => { e.preventDefault(); onSearchSubmit?.(); }}
+            className="mx-auto mt-8 flex w-full max-w-md overflow-hidden rounded-xl border border-gray-200 bg-white p-1 shadow-md focus-within:ring-2 focus-within:ring-[#F0642C] lg:mx-0"
+          >
+            <label htmlFor="hero-search" className="sr-only">Search for articles</label>
+            <input
+              id="hero-search"
+              type="text"
+              placeholder="Search for articles..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="w-full bg-transparent px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none"
+            />
+            <button
+              type="submit"
+              aria-label="Submit search"
+              className="flex items-center justify-center rounded-lg bg-[#F0642C] px-5 text-white transition-colors duration-200 hover:bg-[#d9551f] focus:outline-none focus:ring-2 focus:ring-[#d9551f]"
+            >
+              <Search size={18} aria-hidden="true" />
+            </button>
+          </form>
         </div>
+
+        {/* Right Flex Item: Image Column */}
+
+          <img
+              src="/blog image.webp"
+              alt="Students studying together"
+              loading="eager"
+              decoding="async"
+              className="h-64 w-full rounded-2xl object-cover  sm:h-80 md:h-96 lg:h-[380px]"
+            />
+        {/* <div className="relative flex w-full max-w-md items-center justify-center lg:w-[40%] lg:max-w-none">
+          <div className="relative w-full">
+          
+            <div className="absolute -inset-4 -z-10 rounded-2xl bg-[#F0642C]/5 blur-xl" />
+          </div>
+        </div> */}
+
+      </div>
+    </section>
+
+
+
+      {/* <section className="relative grid grid-col-2 overflow-hidden bg-[#FDF4EE]">
+        
         <div className="relative mx-auto max-w-7xl px-6 py-20 text-center text-white">
           <div className="mb-4 text-xs text-gray-200">
             {data.hero.breadcrumb.map((crumb, i) => (
@@ -236,7 +300,7 @@ export default function BlogPage({ pageInfo, categories }: any) {
             </button>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Body */}
       <main className="mx-auto max-w-7xl px-6 py-14">
@@ -490,8 +554,8 @@ export default function BlogPage({ pageInfo, categories }: any) {
 
         {/* Newsletter banner */}
         <div className="mt-16 flex flex-col items-center gap-8 rounded-lg bg-[#FBEAE2] p-8 sm:flex-row">
-          <div className="relative h-40 w-40 flex-shrink-0 overflow-hidden rounded-full">
-            <Image src={data.newsletterBanner.img} alt="Happy student" fill className="object-cover" />
+          <div className="relative h-40 w-80 flex-shrink-0 overflow-hidden rounded-full">
+            <Image src={data.newsletterBanner.img} alt="Happy student" fill className="object-contain" />
           </div>
           <div className="flex-1 text-center sm:text-left">
             <h3 className="mb-1 text-2xl font-bold text-[#1f2430]">{data.newsletterBanner.title}</h3>

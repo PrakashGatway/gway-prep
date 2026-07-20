@@ -18,6 +18,7 @@ import {
   UserCheck,
   Users as UsersIcon
 } from "lucide-react";
+import axiosInstance from "../lib/axios";
 
 type FormData = {
   [key: string]: string | string[];
@@ -63,9 +64,10 @@ interface FormConfig {
 
 interface RegistrationSectionProps {
   FORM_CONFIG: FormConfig;
+  onSubmitted?: (response: any) => void;
 }
 
-export default function FormSection({ FORM_CONFIG }: RegistrationSectionProps) {
+export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSectionProps) {
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -122,46 +124,146 @@ export default function FormSection({ FORM_CONFIG }: RegistrationSectionProps) {
   };
 
   const handleSubmit = async (e?: FormEvent) => {
-    if (e) {
-      e.preventDefault();
-    }
-    
-    // Validate all steps before submission
-    let allValid = true;
-    const allErrors: Record<string, string> = {};
-    
-    FORM_CONFIG.fields.forEach(field => {
-      if (field.required) {
-        const value = formData[field.name];
-        if (!value || (Array.isArray(value) && value.length === 0)) {
-          allErrors[field.name] = `${field.label} is required`;
-          allValid = false;
-        }
+  if (e) {
+    e.preventDefault();
+  }
+
+  // Validate all fields
+  let allValid = true;
+  const allErrors: Record<string, string> = {};
+
+  FORM_CONFIG.fields.forEach((field) => {
+    if (field.required) {
+      const value = formData[field.name];
+
+      if (!value || (Array.isArray(value) && value.length === 0)) {
+        allErrors[field.name] = `${field.label} is required`;
+        allValid = false;
       }
-    });
-    
-    if (!allValid) {
-      setErrors(allErrors);
-      // Scroll to first error
-      const firstErrorField = Object.keys(allErrors)[0];
-      const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
-      if (errorElement) {
-        errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-      return;
     }
-    
+  });
+
+
+  if (!allValid) {
+    setErrors(allErrors);
+
+    const firstErrorField = Object.keys(allErrors)[0];
+
+    const errorElement = document.querySelector(
+      `[name="${firstErrorField}"]`
+    );
+
+    if (errorElement) {
+      errorElement.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+
+    return;
+  }
+
+
+  try {
+
     setIsLoading(true);
 
-    const jsonData = JSON.stringify(formData, null, 2);
-    console.log("Form JSON:", jsonData);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-    setIsLoading(false);
+    // Get current page URL path
+    const pagePath = window.location.href;
+    // const pagePath = window.location.pathname;
+
+
+    const payload = {
+      path: pagePath,
+      data: formData,
+    };
+
+
+    console.log("Form Payload:", payload);
+
+
+
+    const response = await axiosInstance.post(
+      "/admin/formDetails",
+      payload
+    );
+
+
+    console.log("Form Submitted:", response.data);
+
     setSubmitted(true);
-  };
+
+    // Send response to parent if callback provided
+    if (onSubmitted) onSubmitted(response.data);
+
+
+  } catch (error: any) {
+
+    console.error(
+      "Form Submit Error:",
+      error.response?.data || error.message
+    );
+
+
+    setErrors({
+      submit:
+        error.response?.data?.error ||
+        "Something went wrong. Please try again.",
+    });
+
+
+  } finally {
+
+    setIsLoading(false);
+
+  }
+};
+
+  // const handleSubmit = async (e?: FormEvent) => {
+  //   if (e) {
+  //     e.preventDefault();
+  //   }
+    
+  //   // Validate all steps before submission
+  //   let allValid = true;
+  //   const allErrors: Record<string, string> = {};
+    
+  //   FORM_CONFIG.fields.forEach(field => {
+  //     if (field.required) {
+  //       const value = formData[field.name];
+  //       if (!value || (Array.isArray(value) && value.length === 0)) {
+  //         allErrors[field.name] = `${field.label} is required`;
+  //         allValid = false;
+  //       }
+  //     }
+  //   });
+    
+  //   if (!allValid) {
+  //     setErrors(allErrors);
+  //     // Scroll to first error
+  //     const firstErrorField = Object.keys(allErrors)[0];
+  //     const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
+  //     if (errorElement) {
+  //       errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  //     }
+  //     return;
+  //   }
+    
+  //   setIsLoading(true);
+
+  //   const jsonData = JSON.stringify(formData, null, 2);
+  //   console.log("Form JSON:", jsonData);
+
+  //     const api = axiosInstance('/admin/formDetails')
+
+
+  //   // Simulate API call
+  //   await new Promise((resolve) => setTimeout(resolve, 1500));
+    
+  //   setIsLoading(false);
+  //   setSubmitted(true);
+  // };
 
   const handleStepAction = async () => {
     const currentStepConfig = FORM_CONFIG.steps.find(s => s.step === step);

@@ -5,6 +5,9 @@ import { Calendar, Menu } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, FormEvent, useEffect, useRef } from "react";
+import { User, Mail, Phone, MapPin, BookOpen, Send, CheckCircle } from "lucide-react";
+import FormSection from "./formSection";
+
 
 // Types
 interface BlogData {
@@ -28,122 +31,106 @@ interface BlogDetailPageProps {
   res: BlogData[];
 }
 
-// Lead Form Component
-const LeadForm = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    mobile: '',
-    email: '',
-    interest: '',
-    city: '',
-    consent: true
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    
-    try {
-      // API call to submit lead
-      // await submitLead(formData);
-      console.log('Lead form submitted:', formData);
-      
-      // Show success message
-      alert('Thank you! We will contact you shortly.');
-    } catch (error) {
-      console.error('Error submitting form:', error);
-      alert('Something went wrong. Please try again.');
-    } finally {
-      setIsSubmitting(false);
+// ─── Form Configuration ───
+const FORM_CONFIG: any = {
+  steps: [
+    {
+      step: 1,
+      title: "",
+      icon: User,
+      fields: ["name", "mobile", "email", "interest", "city", "consent"],
+      button: "submit"
     }
-  };
+  ],
+  fields: [
+    {
+      name: "name",
+      label: "Name",
+      type: "text",
+      required: true,
+      placeholder: "Name",
+      step: 1,
+      grid: "full",
+      icon: User
+    },
+    {
+      name: "mobile",
+      label: "Mobile Number",
+      type: "tel",
+      required: true,
+      placeholder: "Mobile Number",
+      step: 1,
+      grid: "full",
+      icon: Phone,
+      pattern: "^[0-9]{10}$",
+      countryCode: "+91"
+    },
+    {
+      name: "email",
+      label: "Email Id",
+      type: "email",
+      required: true,
+      placeholder: "Email Id",
+      step: 1,
+      grid: "full",
+      icon: Mail
+    },
+    {
+      name: "interest",
+      label: "Interested in?",
+      type: "select",
+      required: true,
+      step: 1,
+      grid: "full",
+      options: [
+        { value: "", label: "Interested in?" },
+        { value: "GRE", label: "GRE" },
+        { value: "IELTS", label: "IELTS" },
+        { value: "GMAT", label: "GMAT" },
+        { value: "TOEFL", label: "TOEFL" }
+      ]
+    },
+    {
+      name: "city",
+      label: "City Name",
+      type: "text",
+      required: false,
+      placeholder: "City Name",
+      step: 1,
+      grid: "full",
+      icon: MapPin
+    },
+    {
+      name: "consent",
+      label: "Stay informed via SMS & WhatsApp",
+      type: "checkbox",
+      required: false,
+      step: 1,
+      grid: "full",
+      defaultValue: true
+    }
+  ],
+  submit: {
+    label: "Schedule a Call",
+    icon: Send,
+    variant: "primary",
+    size: "large",
+    position: "bottom",
+    onSuccess: {
+      message: "Thank you! We will contact you shortly.",
+      redirect: "/thank-you"
+    }
+  }
+};
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: type === 'checkbox' ? (e.target as HTMLInputElement).checked : value
-    }));
-  };
-
+const LeadForm = () => {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-6">
-      <h3 className="text-center text-lg md:text-xl font-semibold mb-6 text-neutral-900">
+      {/* <h3 className="text-center text-lg md:text-xl font-semibold mb-6 text-neutral-900">
         Speak to an Expert
-      </h3>
-      <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
-        <input
-          type="text"
-          name="name"
-          placeholder="Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-          className="w-full border border-neutral-300 rounded-lg px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] focus:ring-1 focus:ring-[#F86C43] text-sm transition-colors"
-        />
-        <div className="flex">
-          <div className="w-20 md:w-24 border border-neutral-300 rounded-l-lg flex items-center justify-center gap-1 md:gap-2 bg-neutral-50 text-sm text-neutral-700">
-            🇮🇳 +91
-          </div>
-          <input
-            type="tel"
-            name="mobile"
-            placeholder="Mobile Number"
-            value={formData.mobile}
-            onChange={handleChange}
-            required
-            className="flex-1 border border-l-0 border-neutral-300 rounded-r-lg px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] focus:ring-1 focus:ring-[#F86C43] text-sm transition-colors"
-          />
-        </div>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email Id"
-          value={formData.email}
-          onChange={handleChange}
-          required
-          className="w-full border border-neutral-300 rounded-lg px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] focus:ring-1 focus:ring-[#F86C43] text-sm transition-colors"
-        />
-        <select
-          name="interest"
-          value={formData.interest}
-          onChange={handleChange}
-          required
-          className="w-full border border-neutral-300 rounded-lg px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] focus:ring-1 focus:ring-[#F86C43] bg-white text-sm text-neutral-600 transition-colors appearance-none"
-        >
-          <option value="">Interested in?</option>
-          <option value="GRE">GRE</option>
-          <option value="IELTS">IELTS</option>
-          <option value="GMAT">GMAT</option>
-          <option value="TOEFL">TOEFL</option>
-        </select>
-        <input
-          type="text"
-          name="city"
-          placeholder="City Name"
-          value={formData.city}
-          onChange={handleChange}
-          className="w-full border border-neutral-300 rounded-lg px-4 py-2.5 md:py-3 outline-none focus:border-[#F86C43] focus:ring-1 focus:ring-[#F86C43] text-sm transition-colors"
-        />
-        <label className="flex items-start gap-2 text-xs text-neutral-500 cursor-pointer">
-          <input
-            type="checkbox"
-            name="consent"
-            checked={formData.consent}
-            onChange={handleChange}
-            className="accent-[#F86C43] mt-0.5"
-          />
-          <span>Stay informed via SMS & WhatsApp</span>
-        </label>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full bg-[#F86C43] hover:bg-[#e55a2f] active:bg-[#d14d24] transition-all text-white font-semibold py-2.5 md:py-3 rounded-lg text-sm md:text-base shadow-sm hover:shadow-md disabled:opacity-70 disabled:cursor-not-allowed"
-        >
-          {isSubmitting ? 'Submitting...' : 'Schedule a Call'}
-        </button>
-      </form>
+      </h3> */}
+      <FormSection FORM_CONFIG={FORM_CONFIG} />
     </div>
   );
 };
@@ -427,7 +414,7 @@ export default function BlogDetailPage({ blog, loading, res }: BlogDetailPagePro
 
           {/* Sidebar */}
           <div className="lg:col-span-4">
-            <div className="sticky top-34 space-y-6">
+            <div className="sticky top-24 space-y-2">
               {/* Table of Contents - Desktop */}
               {headings.length > 0 && (
                 <div className="hidden lg:block">

@@ -311,7 +311,7 @@ export function Hero({ data, student }: HeroProps) {
 
               {/* Form Body */}
               <div className="p-6 max-h-[70vh] overflow-y-auto">
-                <FormSection FORM_CONFIG={FORM_CONFIG} />
+                <FormSection FORM_CONFIG={FORM_CONFIG} onSubmitted={() => setIsPopupOpen(false)} />
               </div>
 
               {/* Footer */}
