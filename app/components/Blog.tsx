@@ -219,9 +219,13 @@ export default function BlogPage({ pageInfo, categories }: any) {
           </nav> */}
 
           {/* Typography */}
-          <h1 className="text-4xl font-black tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
+           <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+                  {"Ooshas Prep "}
+                  <span className="text-primary">{"Blog"}</span>
+           </h1>
+          {/* <h1 className="text-4xl font-black tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
             {data?.hero?.title}
-          </h1>
+          </h1> */}
           <p className="mx-auto mt-4 max-w-xl text-base text-gray-600 lg:mx-0 lg:text-lg">
             {data?.hero?.subtitle}
           </p>

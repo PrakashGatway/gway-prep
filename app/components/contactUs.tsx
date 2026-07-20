@@ -276,7 +276,8 @@ export default function ContactPage({ Data }: any) {
   const mapHighlightText = mapData?.highlightText || "India";
   const mapDescription = mapData?.description || "Visit our nearest office for personalized counseling and expert guidance on your study abroad journey.";
   const mapButtonText = mapData?.buttonText || "Get Directions";
-  const mapEmbedUrl = mapData?.mapEmbedUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13027.046312498469!2d75.76255926571812!3d26.907153148223077!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396db40d51d0b52b%3A0x839fb9b5210e18c1!2sCivil%20Lines%2C%20Jaipur%2C%20Rajasthan!5e1!3m2!1sen!2sin!4v1784363697294!5m2!1sen!2sin";
+  // <iframe src="" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+  const mapEmbedUrl = mapData?.mapEmbedUrl || "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d208472.84612209158!2d75.62574481854843!3d26.885421390638445!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x396c4adf4c57e281%3A0xce1c63a0cf22e09!2sJaipur%2C%20Rajasthan!5e1!3m2!1sen!2sin!4v1784547837337!5m2!1sen!2sin";
 
   // CTA data
   const ctaTitle = ctaData?.title || "Your Dream University";
@@ -348,7 +349,7 @@ export default function ContactPage({ Data }: any) {
       <ConnectSection data={pageData} />
 
       {/* ---------------- OUR OFFICES ---------------- */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      {/* <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <h2 className="text-3xl font-bold text-center text-gray-900 mb-10">
           {officesData?.title || "Our Offices"}
         </h2>
@@ -381,7 +382,7 @@ export default function ContactPage({ Data }: any) {
             </div>
           ))}
         </div>
-      </section>
+      </section> */}
 
       {/* ---------------- MAP & CTA ---------------- */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">

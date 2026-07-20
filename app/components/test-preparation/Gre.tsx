@@ -95,10 +95,10 @@ function FeatureCard({ feature, index }: { feature: any; index: number }) {
 
         {/* Content */}
         <div className="w-full lg:w-1/2 p-4 sm:p-6 md:p-8 lg:p-14 flex flex-col justify-center">
-          <span className="text-orange-500 font-semibold uppercase tracking-widest text-xs sm:text-sm">
+          {/* <span className="text-orange-500 font-semibold uppercase tracking-widest text-xs sm:text-sm">
             AI Feature {index + 1}
-          </span>
-          <p className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-bold mt-2 md:mt-4 mb-2 md:mb-6">
+          </span> */}
+          <p className="text-xl sm:text-2xl md:text-3xl font-bold mt-2 md:mt-4 mb-2 md:mb-6">
             {feature.heading}
           </p>
           <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
@@ -152,8 +152,9 @@ function GreSection({
     <section className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8 md:py-12 text-[#2d2d2d] bg-white">
       {/* Top Banner */}
       <div
-        className="w-full bg-[#f06437] text-white rounded-2xl md:rounded-[30px] px-4 sm:px-6 md:px-12 lg:px-20 py-4 sm:py-6 md:py-8 flex
-       flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 md:gap-6 mb-6 md:mb-8 lg:mb-12 shadow-sm"
+        className="w-full bg-[#f06437] text-white rounded-2xl md:rounded-[30px] px-4
+         sm:px-6 md:px-12 lg:px-20 py-4 sm:py-6 md:py-8 flex
+       flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 md:gap-6 mb-6 md:mb-8 lg:mb-18 shadow-sm"
       >
         <div className="flex items-center gap-2 sm:gap-3 text-center md:text-left">
           <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold tracking-wide">
@@ -191,7 +192,7 @@ function GreSection({
 
         {/* Right Side Introduction */}
         <div className="px-0 md:px-6">
-          <h4 className="text-xl sm:text-2xl md:text-3xl font-extrabold mb-3 sm:mb-4 flex flex-wrap gap-1 sm:gap-2">
+          <h4 className="text-xl sm:text-2xl md:text-5xl font-bold mb-3 sm:mb-4 flex flex-wrap gap-1 sm:gap-2">
             {whatIsGreSection?.sectionTitle?.split("||")[0] || "What is"}{" "}
             <p className="text-[#f06437]">
               {whatIsGreSection?.sectionTitle?.split("||")[1] || "GRE?"}
@@ -205,7 +206,7 @@ function GreSection({
 
       {/* Lower Cards Stack */}
       <div className="space-y-3 sm:space-y-4">
-        <h5 className="text-xl sm:text-2xl md:text-3xl font-extrabold m-2 sm:m-4 flex flex-wrap gap-1 sm:gap-2">
+        <h5 className="text-xl sm:text-2xl md:text-3xl font-semibold m-2 sm:m-4 flex flex-wrap gap-1 sm:gap-2">
           <p className="text-[#f06437]">
             {examFormatSection?.title?.split("||")[0] || "What is"}
           </p>{" "}
@@ -262,7 +263,7 @@ function GrePatternTable({ examPatternData }: { examPatternData: any }) {
           <div key={index} className="mb-6 sm:mb-8 last:mb-0">
             {/* Title Header Section */}
             <div className="mb-4 sm:mb-6">
-              <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-[#333333] mb-2 sm:mb-3 flex flex-wrap gap-1 sm:gap-2">
+              <h2 className="text-lg sm:text-2xl md:text-3xl font-semibold text-[#333333] mb-2 sm:mb-3 flex flex-wrap gap-1 sm:gap-2">
                 {patternItem?.title?.split("||")[0] ||
                   "GRE Exam Pattern 2026 -"}
                 <p className="text-[#f06437]">
@@ -503,7 +504,8 @@ function DashboardSection({ dashboardData }: { dashboardData: any }) {
   const router = useRouter();
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-[#FF5B36] via-[#FF7656] to-[#FDB19B] py-8 sm:py-10 md:py-14 px-3 sm:px-4">
+    <section className="relative overflow-hidden bg-gradient-to-r from-[#FF5B36] via-[#FF7656] to-[#FDB19B]
+     py-8 sm:py-10 md:py-12 px-3 sm:px-4 mb-14">
       <div className="mx-auto max-w-7xl">
         <div className="grid items-center gap-6 sm:gap-8 lg:grid-cols-2">
           {/* Left Content */}
@@ -678,7 +680,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
         <div className="max-w-7xl mx-auto py-8 sm:py-10 lg:py-12">
           {/* Heading */}
           <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-10 text-center">
-            <div
+            {/* <div
               className="
                 flex items-center flex-col
                 [&>h1]:text-2xl
@@ -693,7 +695,13 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
               dangerouslySetInnerHTML={{
                 __html: heroSection.title || "",
               }}
-            />
+            /> */}
+
+             <h1 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl">
+                  {heroSection.title?.split("||")[0]}
+                  <span className="text-primary">{heroSection.title?.split("||")[1]}</span>
+                  {heroSection.title?.split("||")[2]}
+                </h1>
 
             <p className="mt-2 max-w-4xl mx-auto text-[#555] text-sm sm:text-base md:text-lg leading-6 sm:leading-7 md:leading-8 px-2">
               {heroSection.paragraph}
@@ -750,38 +758,12 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
         </div>
       </section>
 
-      {/* Official Questions Section */}
-      <section className="md:min-h-150 relative lg:overflow-hidden flex items-center justify-center mb-8 sm:mb-10">
-        <div className="flex flex-col lg:flex-row p-4 sm:p-6 lg:p-10 justify-center items-center mx-auto lg:h-[60vh] bg-gradient-to-r from-[#F1AA94] to-[#EE653C] pt-10 sm:pt-16 lg:pt-20 bg-cover bg-center bg-no-repeat">
-          <div className="hidden lg:block lg:w-[40%] z-10 rounded-full">
-            <img src="/Gre/laptop.png" alt="img" className="w-full" />
-          </div>
-          <div className="w-full lg:w-[45%] relative text-white px-3 sm:px-4 lg:pl-10 text-center lg:text-left">
-            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold block">
-              {officialQuestionsSection.title ||
-                "Official GRE Questions - only with Ooshas"}
-            </span>
-            <p className="my-3 sm:my-4 md:my-6 text-sm sm:text-base">
-              {officialQuestionsSection.description ||
-                "We're the only GRE prep course licensed to use official ETS practice questions, so you know you're studying exactly what you'll see on test day."}
-            </p>
-            <div className="flex justify-center lg:justify-end">
-              <button
-                className="bg-gray-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl flex gap-2 items-center text-sm sm:text-base"
-                onClick={() => router.push("/auth")}
-              >
-                <Play size={16} />{" "}
-                {officialQuestionsSection.buttonText || "Preview Dashboard"}
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
+      <DashboardSection dashboardData={studentDashboard} />
 
       <AIStudySection aiStudySection={aiStudySection} />
 
       {/* Boost Profile Section */}
-      <div className="w-full max-w-6xl mx-auto my-8 sm:my-10 md:my-14 relative px-3 sm:px-4">
+      <div className="w-full max-w-6xl mx-auto my-8 sm:my-10 md:my-12 relative px-3 sm:px-4">
         <div className="bg-[#FDF0EB] rounded-xl md:rounded-[40px] p-4 sm:p-6 md:p-8 grid md:grid-cols-[800px_100px] items-center justify-between min-h-[200px] md:min-h-[300px] z-1">
           <div className="flex-1 z-10 text-center md:text-left space-y-3 sm:space-y-4 max-w-5xl pl-0 md:pl-20">
             <span className="text-[#FF6A39] text-xs sm:text-sm md:text-base font-medium tracking-wide block">
@@ -812,7 +794,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
       </div>
 
       {/* Score Guarantee Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#fdf0eb] to-white py-8 sm:py-12 md:py-16 px-3 sm:px-4">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#fdf0eb] to-white py-8 sm:pt-12 md:pt-12 px-3 sm:px-4">
         <div className="flex justify-center items-center flex-col w-full">
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-extrabold text-center">
             {scoreGuaranteeSection?.title?.split("||")[0] || "What is"} <br className="sm:hidden" />
@@ -846,7 +828,35 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
         <PricingSection plans={pricingData.pricing_plans} />
       </section>
 
-      <DashboardSection dashboardData={studentDashboard} />
+
+      {/* Official Questions Section */}
+      <section className="md:min-h-150 relative lg:overflow-hidden flex items-center justify-center">
+        <div className="flex flex-col lg:flex-row p-4 sm:p-6 lg:p-10 justify-center items-center mx-auto lg:h-[60vh] bg-gradient-to-r from-[#F1AA94] to-[#EE653C] pt-10 sm:pt-16 lg:pt-20 bg-cover bg-center bg-no-repeat">
+          <div className="hidden lg:block lg:w-[40%] z-10 rounded-full">
+            <img src="/Gre/laptop.png" alt="img" className="w-full" />
+          </div>
+          <div className="w-full lg:w-[45%] relative text-white px-3 sm:px-4 lg:pl-10 text-center lg:text-left">
+            <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold block">
+              {officialQuestionsSection.title ||
+                "Official GRE Questions - only with Ooshas"}
+            </span>
+            <p className="my-3 sm:my-4 md:my-6 text-sm sm:text-base">
+              {officialQuestionsSection.description ||
+                "We're the only GRE prep course licensed to use official ETS practice questions, so you know you're studying exactly what you'll see on test day."}
+            </p>
+            <div className="flex justify-center lg:justify-end">
+              <button
+                className="bg-gray-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl flex gap-2 items-center text-sm sm:text-base"
+                onClick={() => router.push("/auth")}
+              >
+                <Play size={16} />{" "}
+                {officialQuestionsSection.buttonText || "Preview Dashboard"}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <VideoExplanationSection videoData={studentVideo} />
       <TextTestimonials testimonialsSection={testimonialsSection} />
       <FreeResources resourcesData={freeResourcesSection} />
@@ -1657,7 +1667,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
 //             <img src="/Gre/laptop.png" alt="img" />
 //           </div>
 //           <div className="w-full lg:w-[45%] relative text-white pl-20">
-//             <span className="text-3xl md:text-5xl font-bold">
+//             <span className="text-lg sm:text-xl md:text-3xl lg:text-5xl">
 //               {officialQuestionsSection.title ||
 //                 "Official GRE Questions - only with Ooshas"}
 //             </span>

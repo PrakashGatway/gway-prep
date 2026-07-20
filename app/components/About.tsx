@@ -36,7 +36,7 @@ export default function About({ sections }: any) {
   return (
     <main className="min-h-screen bg-white text-gray-800" id="main-content">
       
-      <section className="relative overflow-hidden" aria-label="Hero banner">
+      {/* <section className="relative overflow-hidden" aria-label="Hero banner">
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
@@ -96,7 +96,62 @@ export default function About({ sections }: any) {
           )}
 
         </div>
-      </section>
+      </section> */}
+
+{/* ---------------- Hero ---------------- */}
+<section
+  className="bg-cover bg-center bg-no-repeat py-16 lg:py-12 bg-[#FDF4ED]"
+  style={{ 
+    backgroundImage: "url('/aboutbg.webp')",
+    backgroundPosition: "center",
+    backgroundRepeat:'no-repeat',
+    backgroundSize:'contain'
+
+   }} // Update with your image path
+
+>
+  <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <div className="grid lg:grid-cols-2 gap-12 lg:gap-14 items-center">
+
+      {/* Left Content */}
+      <div className="order-2 lg:order-1 text-center lg:text-left">
+
+        <h1 className="text-3xl md:text-5xl  font-bold leading-tight text-black">
+          
+          <span className="text-primary">
+            {hero?.title?.split("||")[0]}
+          </span>
+          {hero?.title?.split("||")[1]}
+        </h1>
+
+        <p className="mt-3 max-w-xl mx-auto lg:mx-0 text-lg leading-8 text-gray-700">
+          {hero?.subtitle}
+        </p>
+
+        <div className="mt-6 flex flex-wrap justify-center lg:justify-start gap-4">
+          <button className="rounded-xl bg-primary px-8 py-4 text-white font-semibold transition hover:opacity-90">
+            {hero?.buttons?.primary || "Get Started"}
+          </button>
+
+          <button className="rounded-xl border-2 border-black bg-white px-8 py-4 font-semibold text-black transition hover:bg-gray-100">
+            {hero?.buttons?.secondary || "Learn More"}
+          </button>
+        </div>
+
+      </div>
+
+      {/* Right Image */}
+      <div className="order-1 lg:order-2 flex justify-center">
+        <img
+          src={hero?.image || "/about.webp"}
+          alt="About"
+          className="w-full max-w-xl object-contain"
+        />
+      </div>
+
+    </div>
+  </div>
+</section>
 
 
       {whoWeAre.title && whoWeAre.description && (

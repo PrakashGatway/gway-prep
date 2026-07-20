@@ -7,7 +7,7 @@ export default function ServicesGrid({ data }: any) {
     <section className="py-2 bg-[#fff] overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center ">
-          <div className="text-4xl md:text-5xl font-bold">
+          <div className="text-lg sm:text-xl md:text-3xl lg:text-5xl">
             <span className="text-[#f26e46]">Four Ways to Learn.</span>{" "}
             <span className="text-gray-800"> One Standard of Excellence. </span>
           </div>

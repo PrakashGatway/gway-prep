@@ -41,7 +41,7 @@ export function TestPrepGrid({ data }: { data: any }) {
               ✦ Trusted by 50,000+ Students Globally ✦
             </span>
 
-            <h3 className="mt-2 text-4xl md:text-5xl font-bold text-gray-900">
+            <h3 className="mt-2 text-lg sm:text-xl md:text-3xl lg:text-5xl text-gray-900">
               Master Your Test Prep
               <span className="block text-[#f26e46]">
                 With Ooshas Prep

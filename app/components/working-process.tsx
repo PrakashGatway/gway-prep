@@ -27,7 +27,7 @@ export function WorkingProcess({ data }: { data: any }) {
         {/* Header Section */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12">
           <div 
-            className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-extrabold text-center"
+            className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold text-center"
             dangerouslySetInnerHTML={{ __html: data.fields.title }} 
           />
           <p className="text-gray-600 text-base sm:text-lg md:text-xl mt-4 max-w-2xl mx-auto px-4">

@@ -20,12 +20,13 @@ export function Consultants({ data, finalCtaSection }: any) {
 
   return (
     <div className="bg-white max-w-7xl mx-auto rounded-xl p-6 my-10">
-      <div 
-      className="text-3xl md:text-5xl mb-6"
-        dangerouslySetInnerHTML={{
-          __html: data.fields.title || `Frequently <span className="text-[#F36C45]">Asked Questions</span>`
-        }} 
-      />
+
+       <h2 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl mb-4">
+                  {data.fields.title?.split("||")[0]}
+                  <span className="text-primary">{data.fields.title?.split("||")[1]}</span>
+                 
+                </h2>
+      
 
       <div className="space-y-2">
         {/* 2. ADD OPTIONAL CHAINING and ensure items exists */}
@@ -39,7 +40,7 @@ export function Consultants({ data, finalCtaSection }: any) {
               onClick={() => toggle(index)}
               className="flex items-center justify-between w-full py-4 text-left cursor-pointer" // Fixed "pointer" class to "cursor-pointer"
             >
-              <span className="font-medium text-gray-800">
+              <span className="font-medium text-gray-800 text-xl">
                 {item.question}
               </span>
 

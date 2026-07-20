@@ -15,7 +15,7 @@ export function Banerhome({ data, img }: any) {
 
           <div className="pl-0 lg:pl-6 xl:pl-10 bg-white order-2 lg:order-none">
             
-            <div className="text-center lg:text-left" dangerouslySetInnerHTML={{ __html: data.fields?.title }} />
+            <div className="text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold" dangerouslySetInnerHTML={{ __html: data.fields?.title }} />
 
             <div className="space-y-6 sm:space-y-8 mt-6 sm:mt-8 lg:mt-10">
               {data.fields?.items.map((item: any, i: number) => (

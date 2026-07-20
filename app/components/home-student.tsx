@@ -6,6 +6,7 @@ import "keen-slider/keen-slider.min.css";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 export function HomeStudent({data}:{data : any}) {
+  
   const [sliderRef, slider] = useKeenSlider(
     {
       loop: true,

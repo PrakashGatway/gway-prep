@@ -103,10 +103,10 @@ function PracticeSection({ data }: { data: any }) {
       <div className="text-center mb-8 md:mb-12">
         <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900">
           <span className="text-[#f26e46]">{title?.split('||')[0]}</span>
-          <br className="hidden sm:block" /> 
+          {/* <br className="hidden sm:block" />  */}
           {title?.split('||')[1]}
         </h2>
-        <p className="text-gray-600 mt-3 max-w-2xl mx-auto text-sm md:text-base">
+        <p className="text-gray-600 mt-3  mx-auto text-sm md:text-base">
           {subtitle}
         </p>
       </div>
@@ -156,7 +156,7 @@ function PortalSection({ data }: { data: any }) {
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-[#303030]">
               {title?.split('||')[0]}
             </h2>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-[#f26e46] mt-2">
+            <h2 className="text-3xl sm:text-4xl  font-bold leading-tight text-[#f26e46] mt-2">
               {title.split('||')[1] || ""}
             </h2>
             <p className="mt-6 md:mt-8 text-[#4B4B4B] text-base md:text-xl leading-7 md:leading-8 whitespace-pre-line">
@@ -390,8 +390,8 @@ function EnvironmentSection({ data }: { data: any }) {
     <section className="bg-[#FFDDD3] py-12 md:py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="max-w-3xl mb-8 md:mb-12">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-[#333333]">
-            {title.split(' ').slice(0, -1).join(' ')} <br />
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight ">
+            {title.split(' ').slice(0, -1).join(' ')} {" "}
             <span className="text-[#f26e46]">{title.split(' ').slice(-1)[0]}</span>
           </h2>
           <p className="mt-4 text-base md:text-lg leading-7 md:leading-8 text-[#5B5B5B]">
@@ -465,9 +465,13 @@ function ResourcesSection({ data }: { data: any }) {
   return (
     <section className="py-12 md:py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="text-center md:text-left max-w-3xl mb-8 md:mb-12">
-          <h3 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#3B3B3B] leading-tight">
+        <div className="text-center md:text-center mb-8 md:mb-12">
+          {/* <h3 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#3B3B3B] leading-tight">
             {title}
+          </h3> */}
+          <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-center">
+            {title.split('||')[0]} {" "}
+            <span className="text-[#f26e46]">{title.split('||')[1]}</span>
           </h3>
           <p className="text-gray-600 text-base md:text-lg mt-4">
             {subtitle}
@@ -512,7 +516,7 @@ function SupportSection({ data }: { data: any }) {
   return (
     <section className="px-4 md:px-8 py-12 md:py-16 mx-auto bg-[#FFDDD3]">
       <div className="text-center mb-8 md:mb-10 max-w-6xl mx-auto">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">
+        <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold">
           <span className="text-gray-900">{title.split(' ').slice(0, -1).join(' ')} </span>
           <span className="text-[#f26e46]">{title.split(' ').slice(-1)[0]}</span>
         </h2>
@@ -1274,7 +1278,7 @@ export default function ServicesPage({ sections }: any) {
 //       <div className="max-w-7xl mx-auto px-4 sm:px-6">
 //         {/* Heading */}
 //         <div className="max-w-3xl mb-8 md:mb-12">
-//           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight text-[#333333]">
+//           <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight ">
 //             An Environment That Breeds
 //             <br />
 //             <span className="text-[#f26e46]">Champions.</span>
