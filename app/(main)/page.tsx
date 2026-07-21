@@ -28,7 +28,7 @@ export const dynamic = "force-dynamic";
 const SITE_URL = "https://ooshasprep.com"; 
 
 export async function generateMetadata(): Promise<Metadata> {
-  const data = await getPageInfo("blog");
+  const data = await getPageInfo("home");
   const seo = data?.seoMeta || {};
 
   const canonical =
