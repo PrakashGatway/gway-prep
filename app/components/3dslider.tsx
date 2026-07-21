@@ -96,7 +96,7 @@ export function StudentsSlider({ data }) {
           return (
             <SwiperSlide
               key={i}
-              className="!w-[180px] sm:!w-[200px] md:!w-[220px] lg:!w-[240px] py-6 sm:py-8 md:py-10 lg:py-12 transition-transform duration-500"
+              className="!w-[180px] sm:!w-[200px] md:!w-[220px] lg:!w-[260px] py-6 sm:py-8 md:py-10 lg:py-12 transition-transform duration-500"
             >
               {({ isActive }) => (
                 <div
@@ -110,22 +110,23 @@ export function StudentsSlider({ data }) {
                     }`}
                 >
                   <div
-                    className={`relative h-[100px] sm:h-[120px] md:h-[140px] lg:h-[180px] pb-4 bg-gradient-to-bl bg-[#FE8E6D] from-[#FE8E6D] to-white  overflow-hidden`}
+                    className={`relative w-full aspect-[410/486] pb-4 bg-gradient-to-bl bg-[#FE8E6D] from-[#FE8E6D] to-white overflow-hidden`}
                   >
                     <img
                       src={item?.image}
-                      className="h-full w-full object-contain mx-auto transition-transform duration-500"
+                      width={410}
+                      height={486}
+                      className="h-full w-full object-cover object-center duration-500"
                       alt={item?.name}
                     />
-                    
-                  <span 
-                    className={`absolute bottom-0 flex justify-center w-full text-xs sm:text-sm md:text-base text-center font-semibold
-                         text-white px-2 py-1 sm:py-1.5 `}
-                    style={{ backgroundColor: item?.colorCode || '#000' }}
-                  >
-                    {item?.course || ""}
-                  </span>
 
+                    <span
+                      className={`absolute bottom-0 flex justify-center w-full text-xs sm:text-sm md:text-base text-center font-semibold
+                         text-white px-2 py-1 sm:py-1.5 `}
+                      style={{ backgroundColor: item?.colorCode || '#000' }}
+                    >
+                      {item?.course || ""}
+                    </span>
                   </div>
                   
 

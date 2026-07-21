@@ -176,8 +176,8 @@ export function Hero({ data, student }: HeroProps) {
               className="order-2 lg:order-1"
             >
               {/* Title */}
-              <div className="text-black font-bold leading-[1.08] tracking-tight">
-                <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl">
+              <div className="">
+                <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
                   {data.fields.title?.split("||")[0]}
                   <span className="text-primary">{data.fields.title?.split("||")[1]}</span>
                   {data.fields.title?.split("||")[2]}

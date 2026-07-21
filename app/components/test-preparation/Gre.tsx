@@ -450,16 +450,21 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
   ];
 
   return (
-    <section className="py-8 sm:py-12 md:py-16 bg-white">
+    <section className="py-8 sm:py-10 md:py-12 bg-white">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6">
         <div className="text-center mb-6 sm:mb-10 md:mb-14">
-          <div
+          <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+            {resourcesData?.title.split("||")[0]}
+            <span className="text-primary">{resourcesData?.title.split("||")[1]}</span>
+          </h2>
+          {/* <div
+          className="text-left text-lg sm:text-xl md:text-3xl lg:text-4xl font-bold"
             dangerouslySetInnerHTML={{
               __html:
                 resourcesData?.title ||
-                "<h2 className='text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold'><span className='text-[#222]'>Free GRE </span><span className='text-[#F5632A]'>Prep Resources</span></h2>",
+                "<h2 className='text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold'><span className='text-[#222]'>Free GRE </span><span className='text-[#F5632A]'>Prep Resources</span></h2>",
             }}
-          />
+          /> */}
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
@@ -697,13 +702,13 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
               }}
             /> */}
 
-             <h1 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl">
+             <h1 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold ">
                   {heroSection.title?.split("||")[0]}
                   <span className="text-primary">{heroSection.title?.split("||")[1]}</span>
                   {heroSection.title?.split("||")[2]}
                 </h1>
 
-            <p className="mt-2 max-w-4xl mx-auto text-[#555] text-sm sm:text-base md:text-lg leading-6 sm:leading-7 md:leading-8 px-2">
+            <p className="mt-2 text-sm sm:text-base md:text-lg leading-6 sm:leading-7 md:leading-8 px-2">
               {heroSection.paragraph}
             </p>
           </div>

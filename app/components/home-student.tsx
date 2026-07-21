@@ -82,7 +82,7 @@ export function HomeStudent({data}:{data : any}) {
   );
 
   return (
-    <div className="relative my-4 sm:my-6 lg:my-8 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]  bg-[#FDF4EF]"  style={{
+    <div className="relative my-4 sm:my-6 lg:my-8 bg-[#FDF4EF]"  style={{
               backgroundImage: 'url("/home/grid.png")',
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",

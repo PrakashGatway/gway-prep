@@ -41,14 +41,14 @@ export function TestPrepGrid({ data }: { data: any }) {
               ✦ Trusted by 50,000+ Students Globally ✦
             </span>
 
-            <h3 className="mt-2 text-lg sm:text-xl md:text-3xl lg:text-5xl text-gray-900">
+            <h3 className="mt-2 text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
               Master Your Test Prep
-              <span className="block text-[#f26e46]">
+              <span className="block text-primary">
                 With Ooshas Prep
               </span>
             </h3>
 
-            <p className="mt-2 text-lg text-gray-600 leading-relaxed">
+            <p className="mt-2 text-lg leading-relaxed">
               From language proficiency to aptitude exams, get structured
               guidance and resources to crack the tests that matter for your
               study abroad journey.

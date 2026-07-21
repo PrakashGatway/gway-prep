@@ -486,14 +486,14 @@ export const pageData: any = {
           {
             name: "about",
             label: "student about",
-            type: "textarea",
+            type: "editor",
             required: false,
             placeholder: "",
           },
           {
             name: "outcome",
             label: "student Outcome",
-            type: "textarea",
+            type: "editor",
             required: false,
             placeholder: "",
           },
@@ -507,7 +507,7 @@ export const pageData: any = {
           {
             name: "message",
             label: "student Message",
-            type: "text",
+            type: "editor",
             required: false,
             placeholder: "",
           },

@@ -30,7 +30,7 @@ export function WorkingProcess({ data }: { data: any }) {
             className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold text-center"
             dangerouslySetInnerHTML={{ __html: data.fields.title }} 
           />
-          <p className="text-gray-600 text-base sm:text-lg md:text-xl mt-4 max-w-2xl mx-auto px-4">
+          <p className=" text-base sm:text-lg md:text-xl mt-4 max-w-2xl mx-auto px-4">
             {data.fields.subtitle}
           </p>
         </div>

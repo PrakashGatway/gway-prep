@@ -297,9 +297,9 @@ export function VideoTestimonialCard({ heading, data }: any) {
     <div className="max-w-7xl mx-auto font-['Open_Sans','Helvetica_Neue',Arial,sans-serif] px-4 sm:px-6 lg:px-8">
       {/* Heading - Updated to 5xl with responsive sizes */}
       <div className="text-center mb-8 sm:mb-10 md:mb-12 px-4">
-        <h2 className="text-3xl md:text-4xl  font-bold leading-tight">
-          <span className="text-[#FF6B35]">What Our</span>{" "}
-          <span className="text-[#626363]">Students Say</span>
+        <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+          <span className="text-primary">What Our</span>{" "}
+          <span className="">Students Say</span>
         </h2>
         {heading?.fields?.["video-testimonial-title"] && (
           <div 
@@ -519,9 +519,9 @@ export function TextTestimonials({ heading, data }: any) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading - Updated to 5xl with responsive sizes */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12">
-          <h2 className="text-2xl sm:text-3xl md:text-4xl  font-bold text-gray-600 leading-tight px-2">
+          <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-4xl font-bold">
             What Our Test Preparation{" "}
-            <span className="text-[#FF6B35]">Achievers Say</span>
+            <span className="text-primary">Achievers Say</span>
           </h2>
           {heading?.fields?.["title"] && (
             <div 

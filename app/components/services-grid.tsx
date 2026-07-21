@@ -7,11 +7,11 @@ export default function ServicesGrid({ data }: any) {
     <section className="py-2 bg-[#fff] overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto text-center ">
-          <div className="text-lg sm:text-xl md:text-3xl lg:text-5xl">
-            <span className="text-[#f26e46]">Four Ways to Learn.</span>{" "}
-            <span className="text-gray-800"> One Standard of Excellence. </span>
-          </div>
-          <p className="mt-6 text-lg text-gray-600 leading-relaxed">
+          <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+            <span className="text-primary">Four Ways to Learn.</span>{" "}
+            <span className=""> One Standard of Excellence. </span>
+          </h2>
+          <p className="mt-6 text-lg leading-relaxed">
             Whether you prefer the energy of live classrooms, the intimacy of
             1-on-1 sessions, or the freedom of self-paced AI coaching—we deliver
             world-class preparation in the format that fits your life.
