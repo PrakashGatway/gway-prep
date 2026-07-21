@@ -118,7 +118,8 @@ export default async function Home() {
   const sections = pageData?.sections || {};
 
   
-  const serviceData = [
+  const serviceData = sections["Home-Standard"].fields?.items ||
+   [
   {
     "id": 1,
     "title": "Online Live Classes",
@@ -159,7 +160,7 @@ export default async function Home() {
       <RegistrationSection data={sections["Registations"]} />
       {/* <Aboutresult data={studentsData} /> */}
       <AboutSection data={sections["Home-Banner"]}/>
-      <ServicesGrid data={serviceData} />
+      <ServicesGrid data={serviceData} heading={sections["Home-Standard"]} />
       <TestPrepGrid data={sections["Home-Courses"]} />
       {/* <Baners img="/home/000002.png" /> */}
       <WorkingProcess data={sections["Home-Working-Process"]} />

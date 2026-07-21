@@ -158,8 +158,8 @@ function ConnectSection({ data }: { data?: any }) {
     <section className="max-w-7xl mx-auto px-4 sm:px-6 mt-12 ">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
         <div>
-          <h2 className="text-4xl font-bold text-[#1a1a2e] mb-10">
-            {title} <span className="text-[#FF5E3A]">{highlightText}</span>
+          <h2 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold my-6">
+            {title} <span className="text-primary">{highlightText}</span>
           </h2>
 
           <div className="space-y-4">
@@ -302,10 +302,10 @@ export default function ContactPage({ Data }: any) {
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative">
           <div className="space-y-8">
             <div>
-              <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-2">
+              <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold mb-2">
                 {heroTitle}
               </h1>
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl lg:text-4xl font-bold mb-4">
                 {heroSubtitle}
               </h2>
               <p className="text-gray-600 mb-8">{heroDescription}</p>
@@ -399,16 +399,16 @@ export default function ContactPage({ Data }: any) {
             />
           </div>
           <div className="lg:w-1/3 p-8 flex flex-col justify-center bg-white">
-            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            <h3 className="text-2xl md:text-3xl font-bold  mb-2">
               {mapTitle}
             </h3>
-            <h3 className="text-2xl font-bold text-[#FF5E3A] mb-4">
+            <h3 className="text-2xl font-bold text-primary mb-2">
               {mapHighlightText}
             </h3>
-            <p className="text-sm text-gray-500 mb-6 leading-relaxed">
+            <p className="text-sm  mb-6 leading-relaxed">
               {mapDescription}
             </p>
-            <button className="self-start border border-[#FF5E3A] text-[#FF5E3A] font-medium py-2 px-6 rounded-lg flex items-center gap-2 hover:bg-[#FF5E3A] hover:text-white transition-colors">
+            <button className="self-start border border-[#FF5E3A] tfont-medium py-2 px-6 rounded-lg flex items-center gap-2 hover:bg-[#FF5E3A] hover:text-white transition-colors">
               {mapButtonText} <MapPin size={16} />
             </button>
           </div>
@@ -426,10 +426,10 @@ export default function ContactPage({ Data }: any) {
             />
           </div>
           <div className="lg:w-1/2 text-center lg:text-left mt-6 lg:mt-0">
-            <h3 className="text-3xl font-bold text-gray-900 mb-2">
+            <h3 className="text-3xl md:text-4xl font-bold  mb-2">
               {ctaTitle}
             </h3>
-            <h3 className="text-3xl font-bold text-[#FF5E3A] mb-4">
+            <h3 className="text-2xl md:text-3xl font-bold text-primary mb-4">
               {ctaHighlightText}
             </h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto lg:mx-0">

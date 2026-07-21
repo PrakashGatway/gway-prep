@@ -59,7 +59,7 @@ const getBgColor = (bg: string) => {
 
 // Section Title Component
 const SectionTitle = ({ pre, accent }: { pre: string; accent: string }) => (
-  <h2 className="text-3xl md:text-4xl font-bold text-black mb-12 text-center">
+  <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold mb-12">
     {pre} <span style={{ color: orange }}>{accent}</span>
   </h2>
 );
@@ -291,11 +291,11 @@ export default function CareersPage({ sections }: any) {
     <div className="bg-white text-black">
       {/* ---------------- Hero ---------------- */}
       <section className="bg-[#FCEEE5]">
-        <div className="max-w-7xl mx-auto px-6 md:px-0 py-12 md:py-24 grid md:grid-cols-2 gap-12 items-center">
+        <div className="max-w-7xl mx-auto px-6 md:px-0 py-10 md:py-12 grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h1 className="text-[42px] md:text-[52px] font-extrabold leading-tight text-black">
+            <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
               {data.hero?.title.split("||")[0]}
-              <span style={{ color: orange }}>
+              <span className="text-primary">
                 {data.hero?.title.split("||")[1]}
               </span>
               {/* <br />
@@ -303,7 +303,7 @@ export default function CareersPage({ sections }: any) {
               <br />
               */}
             </h1>
-            <p className="mt-6 text-black/80 text-lg max-w-md leading-relaxed">
+            <p className="mt-4 text-sm md:text-lg ">
               {data.hero.description}
             </p>
             <div className="mt-8 flex gap-4 flex-wrap">
@@ -336,7 +336,7 @@ export default function CareersPage({ sections }: any) {
 
       {/* ---------------- Why Join ---------------- */}
       <section className="max-w-7xl mx-auto px-6 md:px-0 py-12">
-        <SectionTitle pre="Why" accent="Join Oosha's" />
+        <SectionTitle pre="Why Join" accent=" Ooshas prap" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {data.whyJoin.map((w, i) => {
             const Icon = getIcon(w.icon);
@@ -367,9 +367,9 @@ export default function CareersPage({ sections }: any) {
               {/* Left Content */}
               <div className="max-w-xl">
             
-            <h1 className="text-[42px] md:text-[52px] font-extrabold leading-tight text-black">
+            <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold leading-14">
               {data.build?.title.split("||")[0]}
-              <span style={{ color: orange }}>
+              <span className="text-primary">
                 {data.build?.title.split("||")[1]}
               </span>
              
@@ -403,7 +403,7 @@ export default function CareersPage({ sections }: any) {
       {/* ---------------- Stats + Growth path ---------------- */}
       <section className="max-w-7xl mx-auto px-6 md:px-0 py-12 gap-8">
         <div className="border border-[#E8E0D8] rounded-2xl p-10 shadow-sm bg-white">
-          <h3 className="text-center text-2xl font-bold text-black mb-10">
+          <h3 className="text-center text-lg sm:text-xl md:text-3xl lg:text-4xl font-bold mb-10">
             Our People. <span style={{ color: orange }}>Our Strength.</span>
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">

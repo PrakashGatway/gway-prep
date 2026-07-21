@@ -128,18 +128,19 @@ export const pageData: any = {
         label: "Courses",
         fields: [
           {
-            name: "title",
-            label: "Courses title",
+            name: "heading",
+            label: "Courses heading",
             type: "text",
             required: true,
+            placeholder : "Trusted by 50,000+ Students Globally"
           },
           {
             name: "title",
             label: "Courses title",
             type: "text",
             required: true,
-            placeholder:
-              "along with the content for the split using (||). For example : Four Ways to Learn || One Standard of Excellence.",
+            // placeholder:
+            //   "along with the content for the split using (||). For example : Four Ways to Learn || One Standard of Excellence.",
           },
           {
             name: "subtitle",

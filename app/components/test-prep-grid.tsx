@@ -37,21 +37,21 @@ export function TestPrepGrid({ data }: { data: any }) {
           
           {/* Header */}
           <div className="max-w-3xl mx-auto text-center">
-            <span className="inline-flex items-center rounded-full border border-orange-100 bg-orange-50 px-5 py-2 text-sm font-semibold text-[#f26e46]">
-              ✦ Trusted by 50,000+ Students Globally ✦
+            <span className="inline-flex items-center rounded-full border border-orange-100 bg-orange-100 mt-2 px-5 py-2 text-sm font-semibold text-[#f26e46]">
+              ✦ {data.fields?.heading || "Trusted by 50,000+ Students Globally"} ✦
             </span>
 
-            <h3 className="mt-2 text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
-              Master Your Test Prep
+            <h3 className="mt-2 text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold  leading-14">
+              {data.fields?.title?.split("||")[0] || "Master Your Test Prep"}
               <span className="block text-primary">
-                With Ooshas Prep
+                {data.fields?.title?.split("||")[1] || "With Ooshas Prep"}
               </span>
             </h3>
 
             <p className="mt-2 text-lg leading-relaxed">
-              From language proficiency to aptitude exams, get structured
+              {data.fields.subtitle || `From language proficiency to aptitude exams, get structured
               guidance and resources to crack the tests that matter for your
-              study abroad journey.
+              study abroad journey.`}
             </p>
           </div>
 

@@ -177,13 +177,13 @@ export function Hero({ data, student }: HeroProps) {
             >
               {/* Title */}
               <div className="">
-                <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+                <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold leading-14">
                   {data.fields.title?.split("||")[0]}
                   <span className="text-primary">{data.fields.title?.split("||")[1]}</span>
                   {data.fields.title?.split("||")[2]}
                 </h1>
 
-                <br />
+                {/* <br /> */}
                 <span className="relative">
                   <span className="text-black animate-gradient-x">
                     {data.fields.subtitle || ""}
@@ -202,7 +202,7 @@ export function Hero({ data, student }: HeroProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.8 }}
-                className="mt-6 lg:mt-7 text-base sm:text-lg text-gray-900/90 leading-relaxed max-w-xl font-[300]"
+                className="mt-4 lg:mt-6 text-base sm:text-lg leading-relaxed max-w-xl font-[300]"
               >
                 {data.fields.paragraph || ""}
               </motion.p>
