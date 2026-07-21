@@ -110,19 +110,19 @@ export function StudentsSlider({ data }) {
                     }`}
                 >
                   <div
-                    className={`relative w-full aspect-[410/486] pb-4 bg-gradient-to-bl bg-[#FE8E6D] from-[#FE8E6D] to-white overflow-hidden`}
+                    className={`relative  w-full h-full bg-gradient-to-bl bg-[#FE8E6D] from-[#FE8E6D] to-white`}
                   >
                     <img
                       src={item?.image}
                       width={410}
                       height={486}
-                      className="h-full w-full object-cover object-center duration-500"
+                      className="h-full w-48 mx-auto object-contain duration-500"
                       alt={item?.name}
                     />
 
                     <span
-                      className={`absolute bottom-0 flex justify-center w-full text-xs sm:text-sm md:text-base text-center font-semibold
-                         text-white px-2 py-1 sm:py-1.5 `}
+                      className={`absolute bottom-0 flex justify-center w-full text-xs sm:text-sm md:text-2xl text-center font-semibold
+                         text-white px-2 py-1 sm:py-0 `}
                       style={{ backgroundColor: item?.colorCode || '#000' }}
                     >
                       {item?.course || ""}
@@ -130,15 +130,15 @@ export function StudentsSlider({ data }) {
                   </div>
                   
 
-                  <div className="p-1.5 sm:p-2 text-left">
+                  <div className="p-1.5 sm:px-6 sm:pb-3 text-left">
                     <div className="text-sm sm:text-base md:text-lg font-semibold text-[#1a1a1a] leading-tight truncate">
-                      {item.name}
+                      {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
                     </div>
-                    <div className="text-xs sm:text-sm font-medium text-neutral-500 mt-0.5">
+                    <div className="text-xs sm:text-sm font-medium text-neutral-500 ">
                       Standardized Test Results
                     </div>
-                    <div className="mt-0.5 text-xs sm:text-sm font-medium text-neutral-500">Score</div>
-                    <div className="text-xl sm:text-2xl md:text-3xl lg:text-3xl font-extrabold text-[#ff5722] leading-none">
+                    <div className=" text-xs sm:text-sm font-medium text-neutral-500">Score</div>
+                    <div className="text-xl sm:text-2xl md:text-3xl lg:text-2xl font-extrabold text-[#ff5722] leading-none">
                       {item?.score}
                     </div>
                   </div>
