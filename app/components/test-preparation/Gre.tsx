@@ -606,7 +606,8 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
     const displayStudents = async () => {
       try {
         const data = await getStudent(slug || "", 1, 8);
-        if (mounted) setstudentsData(data || []);
+        console.log(data.data, 'klkjoijoijoij')
+        if (mounted) setstudentsData(data.data || []);
       } catch (err) {
         console.error(err);
       }
@@ -712,14 +713,14 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
               {heroSection.paragraph}
             </p>
           </div>
-          <StudentsSlider data={studentsData?.data || []} />
+          <StudentsSlider data={studentsData || []} />
         </div>
 
         <div className="hidden md:block absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 w-[95%] sm:w-full max-w-5xl px-2 sm:px-4 z-20">
           <div className="bg-[#F86C43] rounded-full flex flex-col sm:flex-row items-center justify-between px-3 sm:px-4 py-2 sm:py-2 gap-2 sm:gap-0">
             
             <div className="flex items-center gap-3 sm:gap-5">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#2A0A3A] flex items-center justify-center flex-shrink-0">
+              <div  style={{ backgroundColor: studentsData?.[0]?.colorCode || "#555" }} className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center flex-shrink-0`}>
                 <span className="text-white text-base sm:text-lg font-bold uppercase">
                   {slug}
                 </span>
@@ -733,7 +734,8 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
             
             <button
               onClick={() => router.push("/auth")}
-              className="bg-[#424242] hover:bg-[#323232] rounded-full pl-4 sm:pl-6 pr-1.5 sm:pr-2 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-4 transition-all w-full sm:w-auto justify-center sm:justify-start"
+              className=" hover:bg-[#323232] rounded-full pl-4 sm:pl-6 pr-1.5 sm:pr-2 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-4 transition-all w-full sm:w-auto justify-center sm:justify-start"
+              style={{ backgroundColor: studentsData?.[0]?.colorCode || "#555" }} 
             >
               <span className="text-white font-semibold text-sm sm:text-base lg:text-lg">
                 Explore Courses
