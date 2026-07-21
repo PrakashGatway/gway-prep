@@ -5,7 +5,7 @@ export const StudentValidationSchema = z.object({
   course: z.string().trim().min(1, "Course is required"),
   score: z.string().optional(),
   image: z.string().url("Invalide image url").optional(),
-  university: z.string().trim().min(1, "university is required"),
+  university: z.string().optional(),
   universityLogo: z.string().url("Invalid image url").optional(),
   about: z.any().default({}),
   outcome: z.any().default({}),

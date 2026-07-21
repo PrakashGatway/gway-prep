@@ -6,11 +6,11 @@ export interface IStudent extends Document {
     colorCode?: string;
     score?: string;
     image?: string;
-    university: string;
+    university?: string;
     universityLogo?: string;
-    about: Record<string, any>;
-    outcome: Record<string, any>;
-    type: 'image' | 'video';
+    about?: Record<string, any>;
+    outcome?: Record<string, any>;
+    type?: 'image' | 'video';
     message?: string;
     messageDate?: string;
     video?: string;
@@ -26,7 +26,7 @@ const StudentSchema = new Schema<IStudent>(
         colorCode: String,
         score: String,
         image: String,
-        university: { type: String, trim: true },
+        university: { type: String},
         universityLogo: String,
         about: { type: Schema.Types.Mixed, default: {} },
         outcome: { type: Schema.Types.Mixed, default: {} },

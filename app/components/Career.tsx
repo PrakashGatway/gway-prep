@@ -1,12 +1,6 @@
-
-
-
-
-
-
 "use client";
 
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import {
   MapPin,
   Users,
@@ -22,6 +16,10 @@ import {
   Handshake,
   Megaphone,
   Star,
+  ClipboardList,
+  Briefcase,
+  Search,
+  User,
 } from "lucide-react";
 import { Consultants } from "./destinations-consultants";
 // import Consultants from '@/components/Consultants';
@@ -107,7 +105,7 @@ interface CareersData {
     title: string;
     desc: string;
   }>;
-   build: {
+  build: {
     title: string;
     description: string;
     image: string;
@@ -204,7 +202,7 @@ export default function CareersPage({ sections }: any) {
         value: item.value || "",
         label: item.label || "",
       })) || [],
-    build : {
+    build: {
       title:
         sections["Career-Hero"]?.fields?.title ||
         "Build Your Future While Helping Students Build Theirs",
@@ -215,9 +213,8 @@ export default function CareersPage({ sections }: any) {
       buttons: {
         primary:
           sections["Career-Hero"]?.fields?.primaryButton ||
-          "Explore Open Roles"
+          "Explore Open Roles",
       },
-    
     },
     departments:
       sections["Career-Departments"]?.fields?.items?.map((item: any) => ({
@@ -303,9 +300,7 @@ export default function CareersPage({ sections }: any) {
               <br />
               */}
             </h1>
-            <p className="mt-4 text-sm md:text-lg ">
-              {data.hero.description}
-            </p>
+            <p className="mt-4 text-sm md:text-lg ">{data.hero.description}</p>
             <div className="mt-8 flex gap-4 flex-wrap">
               <button
                 className="px-8 py-4 rounded-lg text-white text-base font-semibold hover:opacity-90 transition"
@@ -366,26 +361,24 @@ export default function CareersPage({ sections }: any) {
             <div className="grid lg:grid-cols-2 items-center gap-10 lg:gap-16 px-8 md:px-14 py-6">
               {/* Left Content */}
               <div className="max-w-xl">
-            
-            <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold leading-14">
-              {data.build?.title.split("||")[0]}
-              <span className="text-primary">
-                {data.build?.title.split("||")[1]}
-              </span>
-             
-            </h1>
-            <p className="mt-6 text-black/80 text-lg max-w-md leading-relaxed">
-              {data.build.description}
-            </p>
-            <div className="mt-8 flex gap-4 flex-wrap">
-              <button
-                className="px-8 py-4 rounded-lg text-white text-base font-semibold hover:opacity-90 transition"
-                style={{ backgroundColor: orange }}
-              >
-                {data.build.buttons.primary}
-              </button>
-            </div>
-          </div>
+                <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold leading-14">
+                  {data.build?.title.split("||")[0]}
+                  <span className="text-primary">
+                    {data.build?.title.split("||")[1]}
+                  </span>
+                </h1>
+                <p className="mt-6 text-black/80 text-lg max-w-md leading-relaxed">
+                  {data.build.description}
+                </p>
+                <div className="mt-8 flex gap-4 flex-wrap">
+                  <button
+                    className="px-8 py-4 rounded-lg text-white text-base font-semibold hover:opacity-90 transition"
+                    style={{ backgroundColor: orange }}
+                  >
+                    {data.build.buttons.primary}
+                  </button>
+                </div>
+              </div>
 
               {/* Right Image */}
               <div className="flex justify-center lg:justify-end">
@@ -423,8 +416,8 @@ export default function CareersPage({ sections }: any) {
         </div>
       </section>
 
-      {/* ---------------- Departments hiring ---------------- */}
-      <section className="bg-[#FCEEE5]">
+
+      {/* <section className="bg-[#FCEEE5]">
         <div className="max-w-7xl mx-auto px-6 md:px-0 py-12">
           <SectionTitle pre="Departments We Are" accent="Hiring For" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -454,7 +447,7 @@ export default function CareersPage({ sections }: any) {
             })}
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ---------------- Life at Ooshas ---------------- */}
       {/* <section className="bg-[#FCEEE5] pb-20">
@@ -480,8 +473,7 @@ export default function CareersPage({ sections }: any) {
           </div>
         </div>
       </section> */}
-
-      {/* ---------------- Benefits ---------------- */}
+{/*       
       <section className="max-w-7xl mx-auto px-6 md:px-0 py-12">
         <SectionTitle pre="Employee" accent="Benefits" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -504,47 +496,46 @@ export default function CareersPage({ sections }: any) {
             );
           })}
         </div>
+      </section> */}
+
+
+      <section className="relative bg-[#FCEEE5] lg:bg-[url('/image_30c67b71.webp')] bg-no-repeat bg-center bg-contain ">
+        <div className="max-w-7xl mx-auto relative lg:h-[420px] px-6 py-12 lg:px-0 lg:py-0">
+         
+          <div className="lg:absolute lg:top-[120px] lg:left-[80px] max-w-full lg:max-w-[260px] mb-8 lg:mb-0">
+            <h3 className="text-2xl font-bold mb-3" style={{ color: orange }}>
+              {data.hiringProcess[1].title}
+            </h3>
+
+            <p className="text-gray-700 leading-7 lg:leading-8 text-base lg:text-lg">
+              {data.hiringProcess[1].desc}
+            </p>
+          </div>
+
+          <div className="lg:absolute lg:bottom-10 lg:left-[390px] max-w-full lg:max-w-[300px] mb-8 lg:mb-0">
+            <h3 className="text-2xl font-bold mb-3" style={{ color: orange }}>
+              {data.hiringProcess[2].title}
+            </h3>
+
+            <p className="text-gray-700 leading-7 lg:leading-8 text-base lg:text-lg">
+              {data.hiringProcess[2].desc}
+            </p>
+          </div>
+
+          
+          <div className="lg:absolute lg:bottom-10 lg:right-[90px] max-w-full lg:max-w-[300px]">
+            <h3 className="text-2xl font-bold mb-3" style={{ color: orange }}>
+              {data.hiringProcess[0].title}
+            </h3>
+
+            <p className="text-gray-700 leading-7 lg:leading-8 text-base lg:text-lg">
+              {data.hiringProcess[0].desc}
+            </p>
+          </div>
+        </div>
       </section>
 
-      {/* ---------------- Hiring process ---------------- */}
-    <section
-  className="relative bg-[#FCEEE5] lg:bg-[url('/image_30c67b71.png')] bg-no-repeat bg-center bg-cover"
->
-  <div className="max-w-7xl mx-auto relative lg:h-[420px] px-6 py-12 lg:px-0 lg:py-0">
-    {/* STEP 1 */}
-    <div className="lg:absolute lg:top-[120px] lg:left-[80px] max-w-full lg:max-w-[260px] mb-8 lg:mb-0">
-      <h3 className="text-2xl font-bold mb-3" style={{ color: orange }}>
-        {data.hiringProcess[1].title}
-      </h3>
-
-      <p className="text-gray-700 leading-7 lg:leading-8 text-base lg:text-lg">
-        {data.hiringProcess[1].desc}
-      </p>
-    </div>
-
-    {/* STEP 2 */}
-    <div className="lg:absolute lg:bottom-10 lg:left-[390px] max-w-full lg:max-w-[300px] mb-8 lg:mb-0">
-      <h3 className="text-2xl font-bold mb-3" style={{ color: orange }}>
-        {data.hiringProcess[2].title}
-      </h3>
-
-      <p className="text-gray-700 leading-7 lg:leading-8 text-base lg:text-lg">
-        {data.hiringProcess[2].desc}
-      </p>
-    </div>
-
-    {/* STEP 3 */}
-    <div className="lg:absolute lg:bottom-10 lg:right-[90px] max-w-full lg:max-w-[300px]">
-      <h3 className="text-2xl font-bold mb-3" style={{ color: orange }}>
-        {data.hiringProcess[0].title}
-      </h3>
-
-      <p className="text-gray-700 leading-7 lg:leading-8 text-base lg:text-lg">
-        {data.hiringProcess[0].desc}
-      </p>
-    </div>
-  </div>
-</section>
+      {/* <ProcessSection /> */}
 
       {/* ---------------- Open Positions ---------------- */}
       <section className="max-w-7xl mx-auto px-6 md:px-0 py-12">
@@ -653,3 +644,170 @@ export default function CareersPage({ sections }: any) {
     </div>
   );
 }
+
+
+
+
+
+
+
+type Step = {
+  number: string;
+  title: string;
+  description: string;
+  icon: ReactNode;
+};
+
+const steps: Step[] = [
+  {
+    number: "1",
+    title: "Interview Rounds",
+    description: "2-3 rounds including skill assessment and culture fit.",
+    icon: <Search className="h-6 w-6 md:h-7 md:w-7" strokeWidth={2.25} />,
+  },
+  {
+    number: "2",
+    title: "Offer & Onboarding",
+    description: "Fast offer rollout and smooth onboarding experience.",
+    icon: <User className="h-6 w-6 md:h-7 md:w-7" strokeWidth={2.25} />,
+  },
+  {
+    number: "3",
+    title: "Application Review",
+    description: "We review your application within 3-5 working days.",
+    icon: <Handshake className="h-6 w-6 md:h-7 md:w-7" strokeWidth={2.25} />,
+  },
+];
+
+ function ProcessSection() {
+  return (
+    <section className="w-full bg-[#FCE3D4] py-16 px-6 sm:px-10">
+      <div className="mx-auto max-w-6xl">
+        {/* ---------- Mobile & small tablet: vertical stepper ---------- */}
+        <ol className="md:hidden relative flex flex-col gap-10 pl-2">
+          {/* connector line */}
+          <div
+            aria-hidden
+            className="absolute left-[27px] top-3 bottom-3 w-[2px] bg-[#E2704A]/40"
+          />
+          {steps.map((step) => (
+            <li key={step.number} className="relative flex gap-5">
+              <div className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-white text-[#E2704A] shadow-[0_6px_16px_rgba(226,112,74,0.25)]">
+                {step.icon}
+                <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#E2704A] text-[11px] font-bold text-white">
+                  {step.number}
+                </span>
+              </div>
+              <div className="pt-1">
+                <h3 className="text-lg font-bold text-[#E2622E]">
+                  {step.title}
+                </h3>
+                <p className="mt-1 text-sm leading-relaxed text-[#26344A]">
+                  {step.description}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+
+        {/* ---------- Desktop: wavy timeline ---------- */}
+        <div className="hidden md:block relative w-full" style={{ aspectRatio: "1900 / 620" }}>
+          {/* Wavy connector + start dot, drawn in SVG coordinate space */}
+          <svg
+            viewBox="0 0 1900 620"
+            className="absolute inset-0 h-full w-full overflow-visible"
+            fill="none"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M270,430
+                 C 380,470 430,490 530,485
+                 C 630,480 700,250 855,200
+                 C 1000,150 1050,380 1150,380
+                 C 1250,380 1300,310 1360,275
+                 C 1450,230 1520,300 1600,290
+                 C 1700,278 1760,330 1830,255"
+              stroke="#E2704A"
+              strokeWidth="5"
+              strokeLinecap="round"
+            />
+            {/* glowing start dot */}
+            <circle cx="270" cy="430" r="9" fill="#EA3323" />
+            <circle cx="270" cy="430" r="17" fill="#EA3323" opacity="0.35" />
+          </svg>
+
+          {/* Faded step numbers */}
+          <span className="absolute select-none font-extrabold text-[#F4CDB2]" style={{ left: "36%", top: "5%", fontSize: "7.5rem", lineHeight: 1 }}>
+            1
+          </span>
+          <span className="absolute select-none font-extrabold text-[#F4CDB2]" style={{ left: "53.5%", top: "31%", fontSize: "7.5rem", lineHeight: 1 }}>
+            2
+          </span>
+          <span className="absolute select-none font-extrabold text-[#F4CDB2]" style={{ left: "83.5%", top: "26%", fontSize: "7.5rem", lineHeight: 1 }}>
+            3
+          </span>
+
+          {/* Icon markers */}
+          <IconMarker leftPct={27.9} topPct={78.2}>
+            {steps[0].icon}
+          </IconMarker>
+          <IconMarker leftPct={45} topPct={32.3}>
+            {steps[1].icon}
+          </IconMarker>
+          <IconMarker leftPct={71.6} topPct={44.4}>
+            {steps[2].icon}
+          </IconMarker>
+
+          {/* Text blocks */}
+          <div className="absolute" style={{ left: "13%", top: "13%", width: "16rem" }}>
+            <h3 className="text-2xl font-bold text-[#E2622E]">
+              {steps[0].title}
+            </h3>
+            <p className="mt-2 text-base leading-relaxed text-[#26344A]">
+              {steps[0].description}
+            </p>
+          </div>
+
+          <div className="absolute" style={{ left: "34%", top: "64%", width: "16rem" }}>
+            <h3 className="text-2xl font-bold text-[#E2622E]">
+              {steps[1].title}
+            </h3>
+            <p className="mt-2 text-base leading-relaxed text-[#26344A]">
+              {steps[1].description}
+            </p>
+          </div>
+
+          <div className="absolute" style={{ left: "66.5%", top: "64%", width: "18rem" }}>
+            <h3 className="text-2xl font-bold text-[#E2622E]">
+              {steps[2].title}
+            </h3>
+            <p className="mt-2 text-base leading-relaxed text-[#26344A]">
+              {steps[2].description}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function IconMarker({
+  leftPct,
+  topPct,
+  children,
+}: {
+  leftPct: number;
+  topPct: number;
+  children: ReactNode;
+}) {
+  return (
+    <div
+      className="absolute flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-[#E2704A] shadow-[0_8px_20px_rgba(226,112,74,0.3)]"
+      style={{ left: `${leftPct}%`, top: `${topPct}%` }}
+    >
+      {children}
+    </div>
+  );
+}
+
+
