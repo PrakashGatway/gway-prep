@@ -19,6 +19,7 @@ import AuthDrawer from "./auth/drawer";
 import { useRouter } from "next/navigation";
 
 export function Navbar({ Data }: any) {
+  console.log("navdata",Data)
   const router = useRouter();
   const { user, logout, drawer, setDrawer } = useGlobal();
 
@@ -109,8 +110,8 @@ export function Navbar({ Data }: any) {
                 src="/image/logo.png"
                 alt="Ooshas Prep Logo"
                 width={160}
-                height={60}
-                className="h-10 w-auto transition-transform group-hover:scale-105"
+                height={80}
+                className="h-14 w-auto transition-transform group-hover:scale-105"
                 priority
               />
             </Link>
@@ -135,7 +136,7 @@ export function Navbar({ Data }: any) {
                           : "text-gray-600 hover:text-[#F36C45] hover:bg-orange-50/70"
                       }`}
                   >
-                    {item.icon && <item.icon size={18} />}
+                    {/* {item.icon && <item.icon size={18} />} */}
                     <span>{item.name}</span>
                     {item.hasDropdown && (
                       <ChevronDown

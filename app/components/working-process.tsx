@@ -26,10 +26,14 @@ export function WorkingProcess({ data }: { data: any }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12">
-          <div 
+          {/* <div 
             className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold text-center"
             dangerouslySetInnerHTML={{ __html: data.fields.title }} 
-          />
+          /> */}
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold text-center">
+            {data.fields.title.split("||")[0]}
+            <span className="text-primary">{data.fields.title.split("||")[1]}</span>
+          </h2>
           <p className=" text-base sm:text-lg md:text-xl mt-4 max-w-2xl mx-auto px-4">
             {data.fields.subtitle}
           </p>
@@ -54,11 +58,11 @@ export function WorkingProcess({ data }: { data: any }) {
                 >
                   <div className="flex items-center gap-3 sm:gap-4">
                     <div className="relative flex-shrink-0">
-                      <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center bg-[#f26e46]/10 rounded-full group-hover:bg-[#f26e46]/20 transition-all duration-300">
+                      <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center  rounded-full transition-all duration-300">
                         <img 
                           src={IconComponent} 
                           alt={step.title}
-                          className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
+                          className=" w-fullh-full object-contain"
                         />
                       </div>
                       {/* <span className="absolute -top-2 -right-2 w-5 h-5 sm:w-6 sm:h-6 bg-[#f26e46] text-white text-xs sm:text-sm font-bold rounded-full flex items-center justify-center">

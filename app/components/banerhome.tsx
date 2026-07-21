@@ -15,7 +15,11 @@ export function Banerhome({ data, img }: any) {
 
           <div className="pl-0 lg:pl-6 xl:pl-10 bg-white order-2 lg:order-none">
             
-            <div className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold" dangerouslySetInnerHTML={{ __html: data.fields?.title }} />
+            {/* <div className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold" dangerouslySetInnerHTML={{ __html: data.fields?.title }} /> */}
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl font-bold text-center">
+            {data.fields.title.split("||")[0]} <br />
+            <span className="text-primary">{data.fields.title.split("||")[1]}</span>
+          </h2>
 
             <div className="space-y-6 sm:space-y-8 mt-6 sm:mt-8 lg:mt-10">
               {data.fields?.items.map((item: any, i: number) => (

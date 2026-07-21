@@ -137,9 +137,10 @@ const GreForm: React.FC<GreFormProps> = ({ studentsData }) => {
   }, [studentsData]);
 
   return (
-    <div className="min-h-screen sm:h-auto lg:h-[calc(100vh-4rem)]">
-      <section className="h-full bg-white pt-4 sm:pt-8 md:pt-12 lg:pt-16 pb-8 sm:pb-12 lg:pb-0">
-        <div className="h-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 flex items-center">
+    // <div className="min-h-screen sm:h-auto lg:h-[calc(100vh-4rem)]">
+    <div className=" sm:h-auto ">
+      <section className=" bg-white pt-4 sm:pt-8 md:pt-12 lg:pt-16 pb-8 sm:pb-12 lg:pb-0">
+        <div className=" max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 flex items-center">
           <div className="w-full bg-[#FDF8E9] p-2 sm:p-3 md:p-4 lg:p-6 rounded-xl sm:rounded-2xl">
             <div className="grid lg:grid-cols-[1.3fr_0.9fr] gap-3 sm:gap-4 lg:gap-6 items-start">
               {/* LEFT - Testimonial */}

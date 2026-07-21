@@ -450,9 +450,9 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
   ];
 
   return (
-    <section className="py-8 sm:py-10 md:py-12 bg-white">
+    <section className="py-8 md:py-2 bg-white">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6">
-        <div className="text-center mb-6 sm:mb-10 md:mb-14">
+        <div className="text-center mb-6 sm:mb-10 md:mb-12">
           <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
             {resourcesData?.title.split("||")[0]}
             <span className="text-primary">{resourcesData?.title.split("||")[1]}</span>
@@ -702,7 +702,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
               }}
             /> */}
 
-             <h1 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold ">
+             <h1 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold leading-14">
                   {heroSection.title?.split("||")[0]}
                   <span className="text-primary">{heroSection.title?.split("||")[1]}</span>
                   {heroSection.title?.split("||")[2]}
@@ -835,11 +835,13 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
 
 
       {/* Official Questions Section */}
-      <section className="md:min-h-150 relative lg:overflow-hidden flex items-center justify-center">
-        <div className="flex flex-col lg:flex-row p-4 sm:p-6 lg:p-10 justify-center items-center mx-auto lg:h-[60vh] bg-gradient-to-r from-[#F1AA94] to-[#EE653C] pt-10 sm:pt-16 lg:pt-20 bg-cover bg-center bg-no-repeat">
-          <div className="hidden lg:block lg:w-[40%] z-10 rounded-full">
+      <section className=" relative w-full flex items-center justify-center bg-gradient-to-r from-[#F1AA94] to-[#EE653C] my-18">
+        
+        <div className="flex flex-col lg:flex-row p-4 sm:p-6 lg:p-10 justify-end items-center mx-auto pt-10 sm:pt-16 lg:pt-20 bg-cover bg-center bg-no-repeat">
+          <div className="absolute left-50 hidden lg:block lg:w-[40%] z-10 rounded-full">
             <img src="/Gre/laptop.png" alt="img" className="w-full" />
           </div>
+
           <div className="w-full lg:w-[45%] relative text-white px-3 sm:px-4 lg:pl-10 text-center lg:text-left">
             <span className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold block">
               {officialQuestionsSection.title ||

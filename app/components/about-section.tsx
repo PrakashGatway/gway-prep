@@ -79,7 +79,7 @@ export function AboutSection({data}:{data : any}) {
       },
     ]
   );
-  console.log(data.fields ,"qweqeqweqwqwqwqw ")
+  // console.log(data.fields ,"qweqeqweqwqwqwqw ")
 
   return (
     <div className="relative py-8 sm:py-10 lg:py-12  font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]">

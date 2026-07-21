@@ -78,8 +78,10 @@ export const getPageInfo = async (id: string) => {
 
 
 
-export const getPages = async () => {
-    const res = await axiosInstance.get(`/admin/pageInfo`);
+export const getPages = async ( limit : any ) => {
+
+    console.log(limit,'joijoijioji')
+    const res = await axiosInstance.get(`/admin/pageInfo?limit=${limit}`);
     return res.data.data;
 };
 

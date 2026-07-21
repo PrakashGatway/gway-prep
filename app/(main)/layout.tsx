@@ -24,7 +24,8 @@ const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-int
 const notoSans = Noto_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-noto-sans", display: "swap" });
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const NavData = await getPages();
+  const NavData = await getPages('30');
+  
   return (
     <html lang="en" className={inter.variable}>
       <head>
