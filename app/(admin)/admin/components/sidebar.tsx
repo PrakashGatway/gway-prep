@@ -37,7 +37,7 @@ const Sidebar = () => {
   // ✅ Auth Guard
   useEffect(() => {
     const token = getCookie("adminToken");
-    console.log("Admin token:", token); // Debug log
+    // console.log("Admin token:", token); // Debug log
     // if (!token) {
     //   router.push("/admin"); // redirect to login
     // } else {

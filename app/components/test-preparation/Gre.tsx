@@ -115,6 +115,7 @@ function GreSection({
   whatIsGreSection,
   cta_banner,
   slug,
+  img
 }: any) {
   const greData = {
     header: {
@@ -179,15 +180,23 @@ function GreSection({
 
       {/* Main Content Body */}
       <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4 sm:gap-6 md:gap-8 items-start mb-6 md:mb-8 lg:mb-10">
-        {/* Left Side Logo Graphic Header */}
-        <div className="flex items-center gap-1 text-[#541e5c] justify-center md:justify-start">
-          <span className="text-2xl sm:text-3xl md:text-5xl font-extrabold -mt-2 animate-pulse">
+        
+        <div className="flex items-center gap-1 text-[#541e5c] justify-center ">
+          {/* <span className="text-2xl sm:text-3xl md:text-5xl font-extrabold -mt-2 animate-pulse">
             *
           </span>
           <h3 className="text-4xl sm:text-5xl md:text-6xl lg:text-9xl font-black tracking-tight lowercase">
             {slug || "gre"}
           </h3>
-          <span className="text-base sm:text-lg font-bold self-start mt-1 sm:mt-2">®</span>
+          <span className="text-base sm:text-lg font-bold self-start mt-1 sm:mt-2">®</span> */}
+          
+          
+          <img
+            src={img}
+            alt="Img"
+            className=" object-contain"
+          />
+          
         </div>
 
         {/* Right Side Introduction */}
@@ -198,9 +207,16 @@ function GreSection({
               {whatIsGreSection?.sectionTitle?.split("||")[1] || "GRE?"}
             </p>
           </h4>
-          <p className="text-gray-600 text-sm sm:text-base leading-relaxed text-justify">
+          {/* <p className="text-gray-600 text-sm sm:text-base leading-relaxed text-justify">
             {whatIsGreSection?.description || greData.main_content.introduction}
-          </p>
+          </p> */}
+          
+          <p 
+            className="text-gray-600 text-sm sm:text-base leading-relaxed text-justify"
+            dangerouslySetInnerHTML={{ __html: whatIsGreSection?.description || greData.main_content.introduction }}
+          />
+
+
         </div>
       </div>
 
@@ -606,7 +622,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
     const displayStudents = async () => {
       try {
         const data = await getStudent(slug || "", 1, 8);
-        console.log(data.data, 'klkjoijoijoij')
+        // console.log(data.data, 'klkjoijoijoij')
         if (mounted) setstudentsData(data.data || []);
       } catch (err) {
         console.error(err);
@@ -720,14 +736,16 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
           <div className="bg-[#F86C43] rounded-full flex flex-col sm:flex-row items-center justify-between px-3 sm:px-4 py-2 sm:py-2 gap-2 sm:gap-0">
             
             <div className="flex items-center gap-3 sm:gap-5">
-              <div  style={{ backgroundColor: studentsData?.[0]?.colorCode || "#555" }} className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center flex-shrink-0`}>
+              <div 
+               style={{ backgroundColor: studentsData?.[0]?.colorCode || "#555" }}
+               className={`w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0`}>
                 <span className="text-white text-base sm:text-lg font-bold uppercase">
                   {slug}
                 </span>
               </div>
 
               <h3 className="text-white font-bold text-sm sm:text-lg md:text-2xl">
-                Full Courses starts at $99
+                {heroSection?.ctaButtonText || "Full Courses starts at $99"}
               </h3>
             </div>
 
@@ -757,6 +775,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
         whatIsGreSection={whatIsGreSection}
         cta_banner={cta_banner}
         slug={slug}
+        img={pageInfo?.seoMeta?.navIcon}
       />
 
       <section className="py-6 sm:py-8 md:py-12 bg-[#F8F9FD]">
@@ -1011,7 +1030,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
 //   cta_banner,
 //   slug,
 // }: any) {
-//   console.log("an data", examFormatSection, whatIsGreSection, cta_banner);
+//   // console.log("an data", examFormatSection, whatIsGreSection, cta_banner);
 //   const greData = {
 //     header: {
 //       banner_text: "Achieve your target GRE score with expert || guidance",

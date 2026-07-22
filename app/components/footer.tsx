@@ -4,9 +4,18 @@ import { Facebook, Instagram, Linkedin, Youtube } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import React from "react"
 
-export function Footer() {
+export function Footer({Data} : any) {
   const route = useRouter();
+
+  const couresData = React.useMemo(
+    () =>
+      Data?.filter(
+        (item: any) => item?.seoMeta?.template?.toLowerCase() === "preparation",
+      ) || [],
+    [Data],
+  );
 
   return (
     <>
@@ -30,13 +39,13 @@ export function Footer() {
                   src="/home/logo.png"
                   alt="Ooshas Prep"
                   width={120}
-                  height={40}
-                  className="mb-3 md:mb-4 w-auto h-8 md:h-10 lg:h-12 cursor-pointer"
+                  height={60}
+                  className="mb-3 md:mb-4 w-auto h-8 md:h-10 lg:h-14 cursor-pointer"
                   onClick={() => route.push('/')}
                 />
-                <p className="text-lg md:text-xl font-bold mb-2 md:mb-3">Ooshas Prep</p>
+                {/* <p className="text-lg md:text-xl font-bold mb-2 md:mb-3">Ooshas Prep</p> */}
                 <p className="text-xs md:text-sm leading-relaxed mb-4 md:mb-6 opacity-90">
-                  Your trusted partner for global education, university admissions, and international study planning.
+                  Ooshas Prep is a leading online test prep platform for IELTS, GRE, GMAT, SAT, TOEFL & PTE, offering flexible learning formats and world‑class coaching.
                 </p>
                 <button className="bg-white text-gray-900 px-4 md:px-6 py-2 md:py-2.5 rounded-full font-semibold text-sm md:text-base hover:bg-gray-100 transition-colors">
                   Get in Touch
@@ -64,22 +73,27 @@ export function Footer() {
 
                 {/* SERVICES */}
                 <div className="relative lg:px-6 h-auto lg:h-[12rem]">
-                  {/* Left divider - only on lg screens */}
                   <div className="hidden lg:block absolute left-0 top-0 w-[3px] h-full bg-white/30 rounded-full"></div>
                   <div className="flex flex-col">
                     <p className="font-bold text-base md:text-lg mb-3 md:mb-4">Our Services</p>
-                    <ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm">
-                      <li className="cursor-pointer hover:text-gray-200 transition-colors" onClick={() => route.push('/ielts')}>IELTS Preparation</li>
-                      <li className="cursor-pointer hover:text-gray-200 transition-colors" onClick={() => route.push('/gmat')}>GMAT Preparation</li>
-                      <li className="cursor-pointer hover:text-gray-200 transition-colors" onClick={() => route.push('/pte')}>PTE Preparation</li>
-                      <li className="cursor-pointer hover:text-gray-200 transition-colors" onClick={() => route.push('/gre')}>GRE Preparation</li>
+                    
+                    <ul className="space-y-1.5 md:space-y-2 text-xs md:text-sm"> 
+                      {couresData.map((ele, idx) => ( 
+                        <li 
+                          key={idx} 
+                          className="cursor-pointer hover:text-gray-200 transition-colors" 
+                          onClick={() => route.push(`/${ele.seoMeta.canonicalUrl}`)}
+                        > 
+                          {ele.seoMeta.navTitle} 
+                        </li> 
+                      ))} 
                     </ul>
+
                   </div>
                 </div>
 
                 {/* RESOURCES */}
                 <div className="relative lg:px-6 h-auto lg:h-[12rem]">
-                  {/* Left divider - only on lg screens */}
                   <div className="hidden lg:block absolute left-0 top-0 w-[3px] h-full bg-white/30 rounded-full"></div>
                   <div className="flex flex-col">
                     <p className="font-bold text-base md:text-lg mb-3 md:mb-4">Resources</p>
@@ -87,7 +101,7 @@ export function Footer() {
                       <li className="cursor-pointer hover:text-gray-200 transition-colors" onClick={() => route.push('/blog')}>Blogs</li>
                       <li className="cursor-pointer hover:text-gray-200 transition-colors" onClick={() => route.push('/blog')}>Case Studies</li>
                       <li className="cursor-pointer hover:text-gray-200 transition-colors" onClick={() => route.push('/blog')}>Student Testimonials</li>
-                      <li className="cursor-pointer hover:text-gray-200 transition-colors" onClick={() => route.push('/blog')}>FAQs</li>
+                      {/* <li className="cursor-pointer hover:text-gray-200 transition-colors" onClick={() => route.push('/blog')}>FAQs</li> */}
                       <li className="cursor-pointer hover:text-gray-200 transition-colors" onClick={() => route.push('/blog')}>Events & Webinars</li>
                     </ul>
                   </div>

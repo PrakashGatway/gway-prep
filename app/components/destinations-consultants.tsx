@@ -11,7 +11,7 @@ export function Consultants({ data, finalCtaSection }: any) {
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
-  console.log("data faq", data);
+  // console.log("data faq", data);
 
   // 1. ADD THIS GUARD: Prevents the "reading fields of undefined" crash
   if (!data || !data.fields) {

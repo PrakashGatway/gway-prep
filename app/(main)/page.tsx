@@ -156,6 +156,30 @@ export default async function Home() {
   
   return (
     <main className="">
+
+      
+      {/* FAQ Schema */}
+        {sections['Home-f&q']?.fields?.items && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": sections['Home-f&q'].fields.items.map(item => ({
+                  "@type": "Question",
+                  "name": item.question,
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": item.answer
+                  }
+                }))
+              }),
+            }}
+          />
+        )}
+
+
       <Hero data={sections["Home-hero-section"]} student={studentsData} />
       <RegistrationSection data={sections["Registations"]} />
       {/* <Aboutresult data={studentsData} /> */}

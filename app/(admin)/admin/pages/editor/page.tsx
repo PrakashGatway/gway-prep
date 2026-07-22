@@ -61,7 +61,7 @@ const Page = () => {
       setPages(res.data.data || []);
       setPagination(res.data?.pagination);
     } catch (err) {
-      console.log(err);
+      // console.log(err);
     } finally {
       setLoading(false);
     }
@@ -400,7 +400,7 @@ export default Page;
 //       setPages(res.data.data || []);
 //       setPagination(res.data?.pagination);
 //     } catch (err) {
-//       console.log(err);
+//       // console.log(err);
 //     } finally {
 //       setLoading(false);
 //     }

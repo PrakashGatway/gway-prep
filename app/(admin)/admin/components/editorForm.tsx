@@ -101,7 +101,7 @@ const EditorForm = ({ slug }: PageProps) => {
     const getData = async () => {
       try {
         const res = await getPageInfo(slug);
-        console.log("Fetched page data:", res);
+        // console.log("Fetched page data:", res);
 
         if (res.seoMeta) {
           setGeneralInfo(res.seoMeta);
@@ -418,7 +418,7 @@ const EditorForm = ({ slug }: PageProps) => {
   const saveOGImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     const name:any = e.target.name;
-    console.log(name, "ogimg");
+    // console.log(name, "ogimg");
     if (!file) return;
 
     setLoading(true);
@@ -1162,7 +1162,7 @@ const EditorForm = ({ slug }: PageProps) => {
           };
         });
       }
-      console.log(payload, "payload");
+      // console.log(payload, "payload");
 
       const endpoint =
           slug === "new"
@@ -1182,7 +1182,7 @@ const EditorForm = ({ slug }: PageProps) => {
       }
 
       const result = await response.json();
-      console.log("Save response:", result);
+      // console.log("Save response:", result);
 
       alert("Page saved successfully!");
 

@@ -10,7 +10,7 @@ export function Banerhome({ data, img }: any) {
           <img
             src={data.fields.image || "/image/about.jpeg"}
             alt="About Us"
-            className="w-full h-auto md:sticky top-32 rounded-lg sm:rounded-xl lg:rounded-2xl order-1 lg:order-none"
+            className="w-full h-auto lgff:sticky top-32 rounded-lg sm:rounded-xl lg:rounded-2xl order-1 lg:order-none"
           />
 
           <div className="pl-0 lg:pl-6 xl:pl-10 bg-white order-2 lg:order-none">

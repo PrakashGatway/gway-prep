@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import DOMPurify from "isomorphic-dompurify";
 
 export default function About({ sections }: any) {
-  // console.log(sections, 'About data ');
+  // // console.log(sections, 'About data ');
 
   const hero = sections?.["About-Hero"]?.fields || {};
   const whoWeAre = sections?.["About-Who-We-Are"]?.fields || {};
@@ -329,7 +329,7 @@ export default function About({ sections }: any) {
 }
 
 function LearningSection({ title, description, items }: any) {
-  console.log(description, "oiuuijoijijoijoijoj");
+  // console.log(description, "oiuuijoijijoijoijoj");
 
   // Map your items to the card format
   const cards = items.map((item: any, index: number) => ({

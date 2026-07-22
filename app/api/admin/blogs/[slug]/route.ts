@@ -12,13 +12,13 @@ export async function GET(_req: NextRequest, context: Context): Promise<NextResp
     await connectDB();
 
     const { slug } = await context.params;
-    console.log(slug, 'slug param')
+    // console.log(slug, 'slug param')
 
     const blog = await Blog.findOne({ slug })
       // .select("-__v")
       .lean();
 
-    console.log(blog)
+    // console.log(blog)
     if (!blog) {
       return NextResponse.json(
         { error: "Blog not found" },

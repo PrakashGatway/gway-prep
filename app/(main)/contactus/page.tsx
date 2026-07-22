@@ -28,11 +28,39 @@ export async function generateMetadata() {
   };
 }
 
+  // Breadcrumb Schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: SITE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Contact US",
+        item: `${SITE_URL}/contactus`,
+      },
+    ],
+  };
+
 export default async function ContactPage() {
   const pageData = await getPageInfo("contactus");
 
   return (
-    <main className="min-h-screen bg-white">
+    <main>
+      
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
+
       <ContactUs Data={pageData?.sections || {}} />
     </main>
   );

@@ -19,7 +19,7 @@ import AuthDrawer from "./auth/drawer";
 import { useRouter } from "next/navigation";
 
 export function Navbar({ Data }: any) {
-  console.log("navdata",Data)
+  // console.log("navdata",Data)
   const router = useRouter();
   const { user, logout, drawer, setDrawer } = useGlobal();
 
@@ -168,7 +168,7 @@ export function Navbar({ Data }: any) {
                           </p>
                         </div>
 
-                        <div className="p-3 max-h-[420px] overflow-y-auto">
+                        <div className="p-3 max-h-[500px] overflow-y-auto">
                           {item.dropdownItems?.map((dd: any, idx: number) => (
                             <Link
                               key={dd.slug}
@@ -210,7 +210,7 @@ export function Navbar({ Data }: any) {
                               </div>
 
                               <ArrowRight
-                                className="text-gray-300 group-hover:text-[#F36C45] mt-1.5 transition-transform group-hover:translate-x-0.5"
+                                className="text-gray-300 group-hover:text-[#F36C45] mt-3 transition-transform group-hover:translate-x-0.5"
                                 size={16}
                               />
                             </Link>

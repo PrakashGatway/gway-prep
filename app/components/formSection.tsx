@@ -180,7 +180,7 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
     };
 
 
-    console.log("Form Payload:", payload);
+    // console.log("Form Payload:", payload);
 
 
 
@@ -190,7 +190,7 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
     );
 
 
-    console.log("Form Submitted:", response.data);
+    // console.log("Form Submitted:", response.data);
 
     setSubmitted(true);
 
@@ -253,7 +253,7 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
   //   setIsLoading(true);
 
   //   const jsonData = JSON.stringify(formData, null, 2);
-  //   console.log("Form JSON:", jsonData);
+  //   // console.log("Form JSON:", jsonData);
 
   //     const api = axiosInstance('/admin/formDetails')
 

@@ -135,7 +135,7 @@ export async function DELETE(req: NextRequest): Promise<NextResponse> {
     const id = searchParams.get('id');
 
 
-console.log(id)
+// console.log(id)
     // 3. Pass the ID directly to findByIdAndDelete
     const deleted = await Student.findByIdAndDelete(id).lean();
 

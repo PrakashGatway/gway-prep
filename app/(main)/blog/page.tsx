@@ -65,12 +65,40 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   };
 }
+  // Breadcrumb Schema
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: SITE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Blog",
+        item: `${SITE_URL}/blog`,
+      },
+    ],
+  };
 
 
 export default async function BlogPage() {
     const data = await getPageInfo("blog");
     const categories = await getBlogCategory();
     return(
+        <>
+        
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
         <Blog pageInfo={data} categories={categories.data} />
+        </>
     )
 }

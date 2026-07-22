@@ -72,7 +72,30 @@ export default async function CareerPage() {
   const data = await getPageInfo("career");
   const sections = data?.sections || {};
     return (
+
+      <>
+         {sections["Career-FAQ"]?.fields?.items && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "FAQPage",
+                "mainEntity": sections['Career-FAQ'].fields.items.map(item => ({
+                  "@type": "Question",
+                  "name": item.question,
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": item.answer
+                  }
+                }))
+              }),
+            }}
+          />
+        )}
+        
         <Career sections={sections}/>
+      </>
 
     )
 }

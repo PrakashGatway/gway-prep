@@ -54,7 +54,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <GlobalProvider>
           <Navbar Data={NavData} />
           {children}
-          <Footer />
+          <Footer Data={NavData}/>
         </GlobalProvider>
       </body>
     </html>

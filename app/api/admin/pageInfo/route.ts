@@ -68,7 +68,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     const { name, description,template, seoMeta, sections, extraDetails } = body;
 
-      console.log( name ,"name")
+      // console.log( name ,"name")
     // 1. Add validation fallback since schema validation is commented out
     if (!name || typeof name !== 'string') {
       return NextResponse.json(

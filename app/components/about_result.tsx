@@ -102,7 +102,7 @@ export const Aboutresult = ({
   // Navigation functions
   const goToNext = useCallback(() => {
     if (isTransitioning || totalItems === 0) return;
-    console.log("Going to next slide"); // Debug log
+    // console.log("Going to next slide"); // Debug log
     setIsTransitioning(true);
     setActive((prev) => (prev + 1) % totalItems);
     setTimeout(() => setIsTransitioning(false), 500);
@@ -134,12 +134,12 @@ export const Aboutresult = ({
     }
 
     if (autoRotate && !isHovering && totalItems > 0) {
-      console.log("Starting auto-rotation"); // Debug log
+      // console.log("Starting auto-rotation"); // Debug log
       autoRotateTimerRef.current = setInterval(() => {
         goToNext();
       }, rotateInterval);
     } else {
-      console.log("Auto-rotation paused"); // Debug log
+      // console.log("Auto-rotation paused"); // Debug log
     }
 
     // Cleanup function
@@ -275,11 +275,11 @@ export const Aboutresult = ({
           className="relative overflow-hidden"
           style={{ height: `${cardHeight + 80}px` }}
           onMouseEnter={() => {
-            console.log("Mouse enter - pausing");
+            // console.log("Mouse enter - pausing");
             setIsHovering(true);
           }}
           onMouseLeave={() => {
-            console.log("Mouse leave - resuming");
+            // console.log("Mouse leave - resuming");
             setIsHovering(false);
           }}
           onTouchStart={onTouchStart}

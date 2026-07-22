@@ -41,10 +41,10 @@ const EditorForm = () => {
   async function fetchStudent(studentId: string) {
     try {
       setInitialLoading(true);
-      console.log("Fetching student with ID:", studentId);
+      // console.log("Fetching student with ID:", studentId);
       
       const res = await axiosInstance.get(`/admin/student/${studentId}`);
-      console.log("Student data:", res.data);
+      // console.log("Student data:", res.data);
       
       // Populate form fields with fetched data
       if (res.data && res.data.data) {
@@ -91,12 +91,12 @@ const EditorForm = () => {
     setLoading(true);
     
     try {
-      console.log("Submitting values:", values);
+      // console.log("Submitting values:", values);
       
       if (id === 'add' || !id) {
         // Create new student
         const res = await axiosInstance.post("/admin/student", values);
-        console.log("Created student:", res.data);
+        // console.log("Created student:", res.data);
         
         if (res.data.message === "Student created successfully.") {
           router.push('/admin/pages/student');
@@ -107,7 +107,7 @@ const EditorForm = () => {
           id, 
           ...values 
         });
-        console.log("Updated student:", res.data);
+        // console.log("Updated student:", res.data);
         
         if (res.data.message === "Student updated successfully.") {
           router.push('/admin/pages/student');
@@ -137,7 +137,7 @@ const EditorForm = () => {
 
     try {
       const res = await uploadImage(formData);
-      console.log("Uploaded file URL:", res.url);
+      // console.log("Uploaded file URL:", res.url);
       
       // Update the specific field with the uploaded file URL
       setValues((prev) => ({ ...prev, [name]: res.url }));

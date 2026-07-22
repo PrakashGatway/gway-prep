@@ -1,10 +1,7 @@
-
-
 "use client";
 
 import { IndianRupee } from "lucide-react";
 import { useRouter } from "next/navigation";
-
 
 export default function PricingSection({ plans }: { plans: any }) {
   const {
@@ -92,7 +89,25 @@ export default function PricingSection({ plans }: { plans: any }) {
                       dangerouslySetInnerHTML={{
                         __html: plan.content_data || "",
                       }}
-                      className="text-center text-2xl md:text-3xl lg:text-4xl font-bold"
+                      className="
+                        text-center
+
+                        [&_h1]:text-4xl [&_h1]:md:text-5xl [&_h1]:font-bold [&_h1]:mb-6
+                        [&_h2]:text-3xl [&_h2]:md:text-4xl [&_h2]:font-bold [&_h2]:mb-5
+                        [&_h3]:text-2xl [&_h3]:md:text-3xl [&_h3]:font-semibold [&_h3]:mb-4
+
+                        [&_p]:text-base [&_p]:md:text-lg [&_p]:leading-8 [&_p]:text-gray-700 [&_p]:mb-4
+
+                        [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4
+                        [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4
+                        [&_li]:text-base [&_li]:md:text-lg [&_li]:leading-8 [&_li]:text-gray-700 [&_li]:mb-2
+
+                        [&_strong]:font-bold
+                        [&_em]:italic
+
+                        [&_a]:text-[#240dbd] [&_a]:underline
+                        [&_a_*]:text-[#240dbd]
+                      "
                     />
 
                     {/* <ul className="mt-6 space-y-2">

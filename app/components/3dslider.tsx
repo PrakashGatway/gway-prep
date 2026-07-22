@@ -170,7 +170,7 @@ export function StudentsSlider({ data }) {
   
   return (
     /* ADDED overflow-hidden TO PREVENT THE PARTIALLY CUT-OFF CARDS FROM SHOWING ON THE EDGES */
-    <div className="w-full max-w-6xl mx-auto px-2 sm:px-4 md:px-6 overflow-hidden">
+    <div className="w-full max-w-6xl mx-auto px-2 sm:px-4 md:px-5 overflow-hidden">
       <Swiper
         modules={[EffectCoverflow, Autoplay]}
         effect="coverflow"

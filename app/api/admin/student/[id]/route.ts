@@ -11,7 +11,7 @@ export async function GET(
 
     const { id } = await params;
 
-    // console.log("ID:", id);
+    // // console.log("ID:", id);
 
     const student = await Student.findById(id);
 

@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 
 export default function ServicesGrid({ data, heading }: any) {
   // Extract title and split by "||"
-  const title = heading?.title || "Four Ways to Learn. || One Standard of Excellence.";
+  const title = heading?.fields?.title || "Four Ways to Learn. || One Standard of Excellence.";
   const titleParts = title?.split("||") || ["Four Ways to Learn.", "One Standard of Excellence."];
-  const subtitle = heading?.subtitle || "Whether you prefer the energy of live classrooms, the intimacy of 1-on-1 sessions, or the freedom of self-paced AI coaching—we deliver world-class preparation in the format that fits your life.";
+  const subtitle = heading?.fields?.subtitle || "Whether you prefer the energy of live classrooms, the intimacy of 1-on-1 sessions, or the freedom of self-paced AI coaching—we deliver world-class preparation in the format that fits your life.";
   
   // The items array from your data
   const items = heading?.items || data || [];

@@ -38,14 +38,14 @@ export const deleteBlogCategory = async (id: string) => {
 // };
 
 // export const getPageInfo = async (id: string) => {
-//     console.log(id)
+//     // console.log(id)
 //   if (!id) {
 //     console.error("getPageInfo Error: 'id' parameter is missing or empty.");
 //     return [];
 //   }
 //   try {
 //     const res = await axiosInstance.get(`/admin/pageInfo/${encodeURIComponent(id)}`);
-//     console.log(res,'res data')
+//     // console.log(res,'res data')
 //     return res?.data?.data || [];
 //   } catch (error) {
 //     console.error("API Call Failed:", error);
@@ -64,10 +64,10 @@ export const getPageInfo = async (id: string) => {
   
   try {
     const targetUrl = `/admin/pageInfo/${encodeURIComponent(id)}`;
-    console.log(`📡 Fetching API: ${targetUrl}`); // Debug the exact endpoint
+    // console.log(`📡 Fetching API: ${targetUrl}`); // Debug the exact endpoint
     
     const res = await axiosInstance.get(targetUrl);
-    console.log(res, 'res data');
+    // console.log(res, 'res data');
     return res?.data?.data || [];
   } catch (err) {
     console.error("API Fetch Error:", err);
@@ -80,7 +80,7 @@ export const getPageInfo = async (id: string) => {
 
 export const getPages = async ( limit : any ) => {
 
-    console.log(limit,'joijoijioji')
+    // console.log(limit,'joijoijioji')
     const res = await axiosInstance.get(`/admin/pageInfo?limit=${limit}`);
     return res.data.data;
 };

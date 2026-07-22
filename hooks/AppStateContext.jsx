@@ -13,7 +13,7 @@ export function GlobalProvider({ children }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    console.log(drawer)
+    // console.log(drawer)
 
 
     useEffect(() => {

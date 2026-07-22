@@ -2231,7 +2231,7 @@ export const pageData: any = {
           {
             name: "description",
             label: "Description",
-            type: "textarea",
+            type: "editor",
             value:
               "The GRE, your gateway to prestigious universities and diverse programs, assesses your verbal, quantitative, and analytical writing skills – crucial for graduate study worldwide.",
           },

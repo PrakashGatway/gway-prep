@@ -18,7 +18,7 @@ const BlogcategoryPage = () => {
   const fetchCategories = async () => {
     try {
       const res = await getBlogCategory();
-      console.log(res)
+      // console.log(res)
       setCategories(res?.data || []);
     } catch (err) {
       console.error(err);

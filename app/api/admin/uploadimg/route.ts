@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
 
     const token = req.cookies.get("adminToken")?.value;
 
-    console.log(token)
+    // console.log(token)
     
     if (!token) {
       return NextResponse.json(

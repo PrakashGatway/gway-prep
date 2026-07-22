@@ -167,7 +167,7 @@ interface CareersData {
 }
 
 export default function CareersPage({ sections }: any) {
-  console.log(sections["Career-FAQ"], "main");
+  // console.log(sections["Career-FAQ"], "main");
 
   const [data, setData] = useState<CareersData>({
     hero: {

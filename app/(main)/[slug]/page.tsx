@@ -1,4 +1,3 @@
-// app/(main)/preparation/[slug]/page.tsx
 import Gre from "@/app/components/test-preparation/Gre";
 import { getPageInfo } from "@/app/services/api";
 import Link from "next/link";
@@ -27,10 +26,10 @@ export async function generateMetadata({
   }
 
   const data = await getPageInfo(slug);
+
   const seo = data?.seoMeta || {};
 
-  const canonical =
-    seo?.canonicalUrl?.replace(/^\/+|\/+$/g, "") || `preparation/${slug}`;
+  const canonical = seo?.canonicalUrl?.replace(/^\/+|\/+$/g, "") || slug;
 
   const title = seo?.title?.trim() || `${slug.toUpperCase()} Preparation`;
 
@@ -42,6 +41,7 @@ export async function generateMetadata({
 
     title,
     description,
+
     keywords: seo?.keywords,
 
     alternates: {
@@ -51,7 +51,7 @@ export async function generateMetadata({
     robots: {
       index: true,
       follow: true,
-      nocache: false,
+
       googleBot: {
         index: true,
         follow: true,
@@ -63,16 +63,25 @@ export async function generateMetadata({
 
     openGraph: {
       title: seo?.ogTitle || title,
+
       description: seo?.ogDescription || description,
+
       url: `${SITE_URL}/${canonical}`,
+
       siteName: "Ooshas Prep",
+
       type: "website",
+
       locale: "en_US",
+
       images: [
         {
           url: seo?.ogImage || "/image/logo.png",
+
           width: 1200,
+
           height: 630,
+
           alt: seo?.ogTitle || title,
         },
       ],
@@ -80,13 +89,15 @@ export async function generateMetadata({
 
     twitter: {
       card: "summary_large_image",
+
       title: seo?.ogTitle || title,
+
       description: seo?.ogDescription || description,
+
       images: [seo?.ogImage || "/image/logo.png"],
     },
   };
 }
-
 
 export default async function PreparationPage({ params }: PageProps) {
   const { slug } = await params;
@@ -102,43 +113,143 @@ export default async function PreparationPage({ params }: PageProps) {
     (!Array.isArray(pageData) || pageData.length > 0) &&
     Object.keys(pageData).length > 0;
 
-  if (hasValidData) {
-    return <Gre pageInfo={pageData} slug={slug} />;
+  if (!hasValidData) {
+    return <NoDataFoundUI />;
   }
 
-  return <NoDataFoundUI />;
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+
+    "@type": "BreadcrumbList",
+
+    itemListElement: [
+      {
+        "@type": "ListItem",
+
+        position: 1,
+
+        name: "Home",
+
+        item: SITE_URL,
+      },
+
+      {
+        "@type": "ListItem",
+
+        position: 2,
+
+        name: pageData?.seoMeta?.title || slug.toUpperCase(),
+
+        item: `${SITE_URL}/${slug}`,
+      },
+    ],
+  };
+
+  const courseSchema = {
+    "@context": "https://schema.org",
+
+    "@type": "Course",
+
+    name: pageData?.seoMeta?.title || slug.toUpperCase(),
+
+    description:
+      pageData?.seoMeta?.description ||
+      `Learn ${slug.toUpperCase()} preparation with Ooshas Prep.`,
+
+    provider: {
+      "@type": "Organization",
+
+      name: "Ooshas Prep",
+
+      sameAs: SITE_URL,
+    },
+  };
+
+  const faqItems = pageData?.sections?.["f&q"]?.fields?.items || [];
+
+  const faqSchema =
+    faqItems.length > 0
+      ? {
+          "@context": "https://schema.org",
+
+          "@type": "FAQPage",
+
+          mainEntity: faqItems
+            .filter((item: any) => item.question && item.answer)
+
+            .map((item: any) => ({
+              "@type": "Question",
+
+              name: item.question,
+
+              acceptedAnswer: {
+                "@type": "Answer",
+
+                text: item.answer,
+              },
+            })),
+        }
+      : null;
+
+  return (
+    <>
+      {/* Breadcrumb Schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(breadcrumbSchema),
+        }}
+      />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(courseSchema),
+        }}
+      />
+
+      {/* FAQ Schema */}
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(faqSchema),
+          }}
+        />
+      )}
+
+      <Gre pageInfo={pageData} slug={slug} />
+    </>
+  );
 }
 
-// ── MODERN NO DATA FOUND UI COMPONENT ──────────────────────────────────────
+// ================= 404 UI =================
+
 function NoDataFoundUI() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FDF4EE] px-4 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]">
+    <div className="min-h-screen flex items-center justify-center bg-[#FDF4EE] px-4">
       <div className="text-center max-w-md">
-        {/* 404 */}
         <h1 className="text-8xl font-bold text-[#F36C45]">404</h1>
-        
-        {/* Message */}
+
         <h2 className="text-2xl font-semibold text-gray-800 mt-4">
           Page Not Found
         </h2>
-        
+
         <p className="text-gray-600 mt-2">
           Sorry, the page you are looking for does not exist.
         </p>
 
-        {/* Home Button */}
         <Link
           href="/"
-          className="inline-block mt-6 px-6 py-3 bg-[#F36C45] text-white rounded-lg hover:bg-[#e05a33] transition-colors"
+          className="inline-block mt-6 px-6 py-3 bg-[#F36C45] text-white rounded-lg"
         >
           ← Back to Home
         </Link>
 
-        {/* Footer */}
         <p className="mt-8 text-sm text-gray-400">
           © {new Date().getFullYear()} Ooshas Prep
         </p>
       </div>
     </div>
-    );
+  );
 }

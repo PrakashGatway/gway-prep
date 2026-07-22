@@ -9,7 +9,7 @@ export function TextTestimonials({ testimonialsSection }: any) {
   const [isMounted, setIsMounted] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
 
-  console.log("testimonialsSection", testimonialsSection);
+  // console.log("testimonialsSection", testimonialsSection);
 
   useEffect(() => {
     setIsMounted(true);
@@ -210,7 +210,7 @@ function CardContent({ data }: { data: any }) {
 // export function TextTestimonials({testimonialsSection}:any) {
 //   const containerRef = useRef(null);
   
-//   console.log("testimonialsSection",testimonialsSection)
+//   // console.log("testimonialsSection",testimonialsSection)
 //   // Track scroll progress of this specific section
 //   const { scrollYProgress } = useScroll({
 //     target: containerRef,

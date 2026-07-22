@@ -141,9 +141,9 @@ export default function BlogPage({ pageInfo, categories }: any) {
           itemsPerPage: res.itemsPerPage || 10,
         });
 
-        console.log(res, "all data");
+        // console.log(res, "all data");
       } catch (error) {
-        console.log(error, "errors");
+        // console.log(error, "errors");
         setBlogs([]);
       } finally {
         setLoading(false);
