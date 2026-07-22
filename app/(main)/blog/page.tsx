@@ -1,4 +1,4 @@
-import Blog from "@/app/components/Blog";
+import Blog from "@/components/Blog";
 import { getBlogCategory, getPageInfo } from "@/app/services/api";
 import { Metadata } from "next";
 

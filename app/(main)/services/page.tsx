@@ -1,6 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
-import ServicesPage from "@/app/components/servicesPage";
+import ServicesPage from "@/components/servicesPage";
 import { getPageInfo } from "@/app/services/api";
 
 const SITE_URL = "https://ooshasprep.com";

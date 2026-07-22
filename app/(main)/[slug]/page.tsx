@@ -1,4 +1,4 @@
-import Gre from "@/app/components/test-preparation/Gre";
+import Gre from "@/components/test-preparation/Gre";
 import { getPageInfo } from "@/app/services/api";
 import Link from "next/link";
 import { Metadata } from "next";

@@ -265,7 +265,7 @@ export function StudentsSlider({ data }) {
 
                     <span
                       className="absolute bottom-0 flex justify-center w-full text-xs sm:text-sm md:text-2xl text-center font-semibold text-white px-2 py-1 sm:py-0"
-                      style={{ backgroundColor: '#0b5294' }}
+                      style={{ backgroundColor: item?.colorCode || '#0b5294' }}
                     >
                       {item?.course || "GRE"}
                     </span>

@@ -18,7 +18,8 @@ import {
   UserCheck,
   Users as UsersIcon
 } from "lucide-react";
-import axiosInstance from "../lib/axios";
+import axiosInstance from "../app/lib/axios";
+import { useRouter } from "next/navigation";
 
 type FormData = {
   [key: string]: string | string[];
@@ -397,67 +398,69 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
     );
   };
 
+  const router = useRouter();
   if (submitted) {
-    return (
-      <section className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center"
-        >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
-            style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)` }}
-          >
-            <CheckCircle className="w-10 h-10 text-white" />
-          </motion.div>
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Thank You!</h2>
-          <p className="text-gray-600 mb-6 text-lg">
-            {submitConfig.onSuccess?.message || "Our counsellor will contact you within 24 hours."}
-          </p>
-          <div className="flex justify-center gap-3 mb-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="w-12 h-12 rounded-full flex items-center justify-center"
-              style={{ background: `${primaryColor}15` }}
-            >
-              <Phone className="w-5 h-5" style={{ color: primaryColor }} />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="w-12 h-12 rounded-full flex items-center justify-center"
-              style={{ background: `${primaryColor}15` }}
-            >
-              <Mail className="w-5 h-5" style={{ color: primaryColor }} />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="w-12 h-12 rounded-full flex items-center justify-center"
-              style={{ background: `${primaryColor}15` }}
-            >
-              <MessageSquare className="w-5 h-5" style={{ color: primaryColor }} />
-            </motion.div>
-          </div>
-          <button
-            onClick={restart}
-            className="px-6 py-2 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl"
-            style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)` }}
-          >
-            Submit Another Enquiry
-          </button>
-        </motion.div>
-      </section>
-    );
+    router.push('/thank-you')
+    // return (
+    //   <section className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+    //     <motion.div
+    //       initial={{ scale: 0.8, opacity: 0 }}
+    //       animate={{ scale: 1, opacity: 1 }}
+    //       transition={{ duration: 0.5 }}
+    //       className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center"
+    //     >
+    //       <motion.div
+    //         initial={{ scale: 0 }}
+    //         animate={{ scale: 1 }}
+    //         transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+    //         className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6"
+    //         style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)` }}
+    //       >
+    //         <CheckCircle className="w-10 h-10 text-white" />
+    //       </motion.div>
+    //       <h2 className="text-3xl font-bold text-gray-900 mb-2">Thank You!</h2>
+    //       <p className="text-gray-600 mb-6 text-lg">
+    //         {submitConfig.onSuccess?.message || "Our counsellor will contact you within 24 hours."}
+    //       </p>
+    //       <div className="flex justify-center gap-3 mb-6">
+    //         <motion.div
+    //           initial={{ opacity: 0, y: 20 }}
+    //           animate={{ opacity: 1, y: 0 }}
+    //           transition={{ delay: 0.4 }}
+    //           className="w-12 h-12 rounded-full flex items-center justify-center"
+    //           style={{ background: `${primaryColor}15` }}
+    //         >
+    //           <Phone className="w-5 h-5" style={{ color: primaryColor }} />
+    //         </motion.div>
+    //         <motion.div
+    //           initial={{ opacity: 0, y: 20 }}
+    //           animate={{ opacity: 1, y: 0 }}
+    //           transition={{ delay: 0.5 }}
+    //           className="w-12 h-12 rounded-full flex items-center justify-center"
+    //           style={{ background: `${primaryColor}15` }}
+    //         >
+    //           <Mail className="w-5 h-5" style={{ color: primaryColor }} />
+    //         </motion.div>
+    //         <motion.div
+    //           initial={{ opacity: 0, y: 20 }}
+    //           animate={{ opacity: 1, y: 0 }}
+    //           transition={{ delay: 0.6 }}
+    //           className="w-12 h-12 rounded-full flex items-center justify-center"
+    //           style={{ background: `${primaryColor}15` }}
+    //         >
+    //           <MessageSquare className="w-5 h-5" style={{ color: primaryColor }} />
+    //         </motion.div>
+    //       </div>
+    //       <button
+    //         onClick={restart}
+    //         className="px-6 py-2 text-white rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl"
+    //         style={{ background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)` }}
+    //       >
+    //         Submit Another Enquiry
+    //       </button>
+    //     </motion.div>
+    //   </section>
+    // );
   }
 
   return (
@@ -848,7 +851,7 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
         </AnimatePresence>
 
         {/* Navigation Buttons */}
-        <div className="flex justify-between mt-6 pt-4 border-t border-gray-200">
+        <div className="flex justify-between gap-4 mt-6 pt-4 border-t border-gray-200">
           {step > 1 ? (
             <motion.button
               type="button"

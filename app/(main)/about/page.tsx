@@ -1,4 +1,4 @@
-import About from "@/app/components/About";
+import About from "@/components/About";
 import { getPageInfo } from "@/app/services/api";
 import { Metadata } from "next";
 

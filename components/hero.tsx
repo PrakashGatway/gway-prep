@@ -3,7 +3,7 @@
 import { Phone, ArrowRight, Play, Star, GraduationCap, Award, Trophy, User, Mail, MapPin, Calendar, BookOpen, Target, Calendar as CalendarIcon, Book, FileText, PenTool, TrendingUp, Briefcase, Calculator, Headphones, MessageSquare, Hash, Send, X } from "lucide-react";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { HomeCountUp } from '@/app/components/HomeCountUp';
+import { HomeCountUp } from '@/components/HomeCountUp';
 import FormSection from "./formSection";
 
 // ─── Sparkle ───

@@ -1,4 +1,4 @@
-import ContactUs from "@/app/components/contactUs";
+import ContactUs from "@/components/contactUs";
 import { getPageInfo } from "@/app/services/api";
 
 const SITE_URL =

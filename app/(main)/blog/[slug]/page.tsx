@@ -2,7 +2,7 @@
 
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import BlogDetails from "@/app/components/Blogdetail";
+import BlogDetails from "@/components/Blogdetail";
 import axiosInstance from "@/app/lib/axios";
 
 interface PageProps {

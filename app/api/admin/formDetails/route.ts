@@ -48,19 +48,19 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     }
 
 
-    const existingForm = await FormDetails.findOne({ path });
+    // const existingForm = await FormDetails.findOne({ path });
 
 
-    if (existingForm) {
-      return NextResponse.json(
-        {
-          error: "Form with this path already exists"
-        },
-        {
-          status: 409
-        }
-      );
-    }
+    // if (existingForm) {
+    //   return NextResponse.json(
+    //     {
+    //       error: "Form with this path already exists"
+    //     },
+    //     {
+    //       status: 409
+    //     }
+    //   );
+    // }
 
 
     const newForm = await FormDetails.create({

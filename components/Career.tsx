@@ -361,7 +361,7 @@ export default function CareersPage({ sections }: any) {
             <div className="grid lg:grid-cols-2 items-center gap-10 lg:gap-16 px-8 md:px-14 py-6">
               {/* Left Content */}
               <div className="max-w-xl">
-                <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold leading-14">
+                <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
                   {data.build?.title.split("||")[0]}
                   <span className="text-primary">
                     {data.build?.title.split("||")[1]}

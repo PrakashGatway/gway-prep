@@ -4,23 +4,23 @@
 
 
 import type { Metadata } from "next";
-import { Hero } from "@/app/components/hero";
-import  ServicesGrid  from "@/app/components/services-grid";
-import { RegistrationSection } from "@/app/components/registration-section";
-import { TestPrepGrid } from "@/app/components/test-prep-grid";
-import { WorkingProcess } from "@/app/components/working-process";
+import { Hero } from "@/components/hero";
+import  ServicesGrid  from "@/components/services-grid";
+import { RegistrationSection } from "@/components/registration-section";
+import { TestPrepGrid } from "@/components/test-prep-grid";
+import { WorkingProcess } from "@/components/working-process";
 import {
   TextTestimonials,
   VideoTestimonialCard,
-} from "@/app/components/testimonials";
-import { PartnerSection } from "@/app/components/partner-section";
-import { Consultants } from "@/app/components/destinations-consultants";
-import { Baners } from "@/app/components/baner";
-import { HomeStudent } from "@/app/components/home-student";
-import { Mission } from "@/app/components/mission";
-import { Aboutresult } from "@/app/components/about_result";
-import { AboutSection } from "@/app/components/about-section";
-import { Banerhome } from "@/app/components/banerhome";
+} from "@/components/testimonials";
+import { PartnerSection } from "@/components/partner-section";
+import { Consultants } from "@/components/destinations-consultants";
+import { Baners } from "@/components/baner";
+import { HomeStudent } from "@/components/home-student";
+import { Mission } from "@/components/mission";
+import { Aboutresult } from "@/components/about_result";
+import { AboutSection } from "@/components/about-section";
+import { Banerhome } from "@/components/banerhome";
 import { getPageInfo, getStudent } from "../services/api";
 export const dynamic = "force-dynamic";
 

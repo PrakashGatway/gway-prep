@@ -2,7 +2,6 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IForm extends Document {
   path: string;
-  
   data: Record<string, any>;
 }
 

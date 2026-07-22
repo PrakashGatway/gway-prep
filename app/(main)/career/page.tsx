@@ -1,4 +1,4 @@
-import Career from "@/app/components/Career";
+import Career from "@/components/Career";
 import { getPageInfo } from "@/app/services/api";
 
 import { Metadata } from "next";

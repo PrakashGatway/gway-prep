@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { Inter, Noto_Sans } from "next/font/google";
 import Script from "next/script";
 import "../globals.css";
-import { Navbar } from "@/app/components/navbar";
-import { Footer } from "@/app/components/footer";
+import { Navbar } from "@/components/navbar";
+import { Footer } from "@/components/footer";
 import { getPages } from "../services/api";
 import { GlobalProvider } from "@/hooks/AppStateContext";
 
