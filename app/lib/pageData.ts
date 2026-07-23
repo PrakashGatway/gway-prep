@@ -321,7 +321,7 @@ export const pageData: any = {
           {
             name: "content",
             label: "Blog Content",
-            type: "textarea",
+            type: "editor",
             required: true,
             placeholder: "Write full blog content...",
           },
@@ -1887,73 +1887,73 @@ export const pageData: any = {
         ],
       },
 
-      {
-        name: "Career-Life",
-        label: "Life at Ooshas",
-        fields: [
-          {
-            name: "title",
-            label: "Section Title",
-            type: "text",
-          },
-          {
-            name: "description",
-            label: "Description",
-            type: "textarea",
-          },
-          {
-            name: "items",
-            label: "Gallery",
-            type: "repeater",
-            fields: [
-              {
-                name: "label",
-                label: "Image Label",
-                type: "text",
-              },
-              {
-                name: "image",
-                label: "Image",
-                type: "file",
-              },
-            ],
-          },
-        ],
-      },
+      // {
+      //   name: "Career-Life",
+      //   label: "Life at Ooshas",
+      //   fields: [
+      //     {
+      //       name: "title",
+      //       label: "Section Title",
+      //       type: "text",
+      //     },
+      //     {
+      //       name: "description",
+      //       label: "Description",
+      //       type: "textarea",
+      //     },
+      //     {
+      //       name: "items",
+      //       label: "Gallery",
+      //       type: "repeater",
+      //       fields: [
+      //         {
+      //           name: "label",
+      //           label: "Image Label",
+      //           type: "text",
+      //         },
+      //         {
+      //           name: "image",
+      //           label: "Image",
+      //           type: "file",
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // },
 
-      {
-        name: "Career-Benefits",
-        label: "Employee Benefits",
-        fields: [
-          {
-            name: "title",
-            label: "Section Title",
-            type: "text",
-          },
-          {
-            name: "items",
-            label: "Benefits",
-            type: "repeater",
-            fields: [
-              {
-                name: "icon",
-                label: "Lucide Icon",
-                type: "text",
-              },
-              {
-                name: "title",
-                label: "Benefit Title",
-                type: "text",
-              },
-              {
-                name: "description",
-                label: "Description",
-                type: "textarea",
-              },
-            ],
-          },
-        ],
-      },
+      // {
+      //   name: "Career-Benefits",
+      //   label: "Employee Benefits",
+      //   fields: [
+      //     {
+      //       name: "title",
+      //       label: "Section Title",
+      //       type: "text",
+      //     },
+      //     {
+      //       name: "items",
+      //       label: "Benefits",
+      //       type: "repeater",
+      //       fields: [
+      //         {
+      //           name: "icon",
+      //           label: "Lucide Icon",
+      //           type: "text",
+      //         },
+      //         {
+      //           name: "title",
+      //           label: "Benefit Title",
+      //           type: "text",
+      //         },
+      //         {
+      //           name: "description",
+      //           label: "Description",
+      //           type: "textarea",
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // },
 
       {
         name: "Career-Hiring-Process",
@@ -2022,6 +2022,11 @@ export const pageData: any = {
                 name: "location",
                 label: "Location",
                 type: "text",
+              },
+              {
+                name: "description",
+                label: "Description",
+                type: "editor"
               },
               {
                 name: "type",
@@ -2732,6 +2737,28 @@ export const pageData: any = {
     ],
   },
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // export const pageData: any = {
 //   home: {

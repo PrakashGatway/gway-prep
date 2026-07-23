@@ -14,18 +14,19 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 // Helper function to get icon component by name
 const getIconComponent = (iconName: string) => {
   const icons: Record<string, React.ReactNode> = {
-    'FileText': <FileText className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />,
-    'Clock': <Clock className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />,
-    'Layers': <Layers className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />,
-    'Target': <Target className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />,
-    'Sliders': <Sliders className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />,
-    'TrendingUp': <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />,
+    'FileText': <FileText className="w-5 h-5 md:w-6 md:h-6 text-primary" />,
+    'Clock': <Clock className="w-5 h-5 md:w-6 md:h-6 text-primary" />,
+    'Layers': <Layers className="w-5 h-5 md:w-6 md:h-6 text-primary" />,
+    'Target': <Target className="w-5 h-5 md:w-6 md:h-6 text-primary" />,
+    'Sliders': <Sliders className="w-5 h-5 md:w-6 md:h-6 text-primary" />,
+    'TrendingUp': <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-primary" />,
   };
-  return icons[iconName] || <FileText className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />;
+  return icons[iconName] || <FileText className="w-5 h-5 md:w-6 md:h-6 text-primary" />;
 };
 
 // Section Components
@@ -114,6 +115,7 @@ function ExamPillsSection({ data }: { data: any }) {
 
 function PracticeSection({ data }: { data: any }) {
   if (!data?.fields?.items?.length) return null;
+  const Router = useRouter();
   
   const items = data.fields.items;
   const title = data.fields.title || "";
@@ -121,7 +123,7 @@ function PracticeSection({ data }: { data: any }) {
   const buttonText = data.fields.button || "";
 
   return (
-    <section className="px-4 md:px-8 py-12 md:py-16 max-w-7xl mx-auto">
+    <section className="px-4 md:px-8 py-8 md:py-10 lg:py-12  max-w-7xl mx-auto">
       <div className="text-center mb-8 md:mb-12">
         <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
           <span className="text-primary">{title?.split('||')[0]}</span>
@@ -138,9 +140,9 @@ function PracticeSection({ data }: { data: any }) {
             key={card.title}
             className={`${idx % 2 === 0 ? "bg-[#FEF6F3]" : "bg-[#FEFBEA]"} border-2 border-[#ED7553] rounded-2xl md:rounded-3xl p-5 md:p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}
           >
-            <div className="bg-orange-50 w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-4">
+            {/* <div className="bg-orange-50 w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl flex items-center justify-center mb-3 md:mb-4">
               {getIconComponent(card.icon)}
-            </div>
+            </div> */}
             <h3 className="text-lg md:text-xl font-bold text-gray-900">{card.title}</h3>
             <p className="text-gray-600 text-sm mt-2 leading-relaxed">
               {card.description}
@@ -151,7 +153,9 @@ function PracticeSection({ data }: { data: any }) {
       
       {/* Mock Test CTA */}
       <div className="flex justify-center mt-6 md:mt-8">
-        <button className="flex items-center gap-2 rounded-full bg-[#F36C45] px-6 md:px-8 py-2.5 md:py-3 text-white font-semibold text-base md:text-lg shadow-md hover:bg-[#e85f35] transition">
+        <button
+         onClick={() => Router.push('/auth')}
+         className="flex items-center gap-2 rounded-full bg-primary px-6 md:px-8 py-2.5 md:py-3 text-white font-semibold text-base md:text-lg shadow-md hover:bg-[#e85f35] transition">
           {buttonText}
           <ArrowRight size={16} className="md:w-[18px] md:h-[18px]" />
         </button>
@@ -219,7 +223,8 @@ function DashboardSection({ data }: { data: any }) {
           <img
             src={leftImage}
             alt="Dashboard Results"
-            className="w-full rounded-[16px] md:rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-transform duration-300 ease-in-out hover:scale-105"
+            className="w-full rounded-[16px] md:rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.08)] 
+            transition-transform duration-300 ease-in-out hover:scale-105"
           />
         </div>
       )}
@@ -245,7 +250,7 @@ function AIStackSection({ data }: { data: any }) {
   const buttonText = data.fields.button || "";
 
   return (
-    <section className="bg-[#FDF4EF] py-12 md:py-16 lg:py-20 overflow-hidden">
+    <section className="bg-[#FDF4EF] py-8 md:py-10 lg:py-12 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
           <div className="max-w-3xl text-center md:text-left">
@@ -401,6 +406,7 @@ function FeatureCard({ feature, className = "" }: FeatureCardProps) {
 
 function EnvironmentSection({ data }: { data: any }) {
   if (!data?.fields?.items?.length) return null;
+  const Router = useRouter();
   
   const items = data.fields.items;
   const title = data.fields.title || "";
@@ -408,41 +414,43 @@ function EnvironmentSection({ data }: { data: any }) {
   const buttonText = data.fields.button || "";
 
   return (
-    <section className="bg-[#FFDDD3] py-12 md:py-16 lg:py-20">
+    <section className="bg-[#FFDDD3] py-8 md:py-10 lg:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="max-w-3xl mb-8 md:mb-12">
-          <h2 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+        <div className="text-center max-w-7xl mb-4 md:mb-8">
+          <h2 className=" text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
             {title.split(' ').slice(0, -1).join(' ')} {" "}
             <span className="text-primary">{title.split(' ').slice(-1)[0]}</span>
           </h2>
-          <p className="mt-4 text-base md:text-lg leading-7 md:leading-8 ">
+          <p className="mt-3 text-base md:text-lg leading-7 md:leading-8 ">
             {subtitle}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-5">
           {items.length > 0 && (
             <EnvironmentCard
               title={items[0].title}
               image={items[0].image}
-              className="sm:col-span-2 lg:col-span-1 lg:row-span-2 h-64 sm:h-80 lg:h-[520px]"
+              className="sm:col-span-2 lg:col-span-1 lg:row-span-2 h-64 sm:h-80 lg:h-[480px] py-12"
             />
           )}
-          <div className="sm:col-span-2 lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+          <div className="sm:col-span-2 lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-2 md:gap-5">
             {items.slice(1).map((item: any) => (
               <EnvironmentCard
                 key={item.title}
                 title={item.title}
                 image={item.image}
-                className="h-48 sm:h-56 lg:h-[250px]"
+                className="h-48 sm:h-56 lg:h-[230px]"
               />
             ))}
           </div>
         </div>
 
         {buttonText && (
-          <div className="flex justify-center md:justify-end mt-6 md:mt-8">
-            <button className="rounded-full bg-[#F2643D] hover:bg-[#e45b33] transition-all text-white font-semibold px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base">
+          <div className="flex justify-center md:justify-end mt-2 md:mt-4">
+            <button
+             onClick={() => Router.push("/auth")}
+             className="rounded-full bg-[#F2643D] hover:bg-[#e45b33] transition-all text-white font-semibold px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base">
               {buttonText}
             </button>
           </div>
@@ -452,39 +460,108 @@ function EnvironmentSection({ data }: { data: any }) {
   );
 }
 
+
+// interface EnvironmentCardProps {
+//   title: string;
+//   image: string;
+//   className?: string;
+// }
+
+// export function EnvironmentCard({ title, image, className }: EnvironmentCardProps) {
+//   return (
+//     <div 
+//       className={`relative overflow-hidden rounded-[20px] md:rounded-[28px] group cursor-pointer ${className}`}
+//       tabIndex={0} // Makes the card focusable via keyboard
+//     >
+//       <Image
+//         src={image}
+//         alt={title}
+//         fill
+//         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" // Adjust based on your layout
+//         className="object-cover transition-transform duration-500 group-hover:scale-105 group-focus-within:scale-105"
+//       />
+      
+//       <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+      
+//       <div className="absolute bottom-4 md:bottom-5 left-0 right-0 text-center px-4">
+//         <h3 className="text-white text-lg md:text-xl font-semibold line-clamp-1 group-hover:line-clamp-5 group-focus-within:line-clamp-5 transition-all duration-500">
+//           {title}
+//         </h3>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
 interface EnvironmentCardProps {
   title: string;
   image: string;
   className?: string;
 }
 
-function EnvironmentCard({ title, image, className }: EnvironmentCardProps) {
+export function EnvironmentCard({ title, image, className }: EnvironmentCardProps) {
   return (
-    <div className={`relative overflow-hidden rounded-[20px] md:rounded-[28px] group ${className}`}>
-      <Image
-        src={image}
-        alt={title}
-        fill
-        className="object-cover transition-transform duration-500 group-hover:scale-105"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-      <div className="absolute bottom-4 md:bottom-5 left-0 right-0 text-center px-4">
-        <h3 className="text-white text-lg md:text-xl font-semibold">{title}</h3>
-      </div>
-    </div>
+    <div className={`group relative cursor-pointer overflow-hidden rounded-lg bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-transform duration-1000 ease-in-out hover:scale-105 ${className}`}>
+  {/* Image with dimming effect via opacity */} 
+  <Image 
+    src={image} 
+    alt={title} 
+    width={400} 
+    height={400} 
+    className="w-full opacity-100 transition-opacity duration-1000 ease-in-out group-hover:opacity-40" 
+  /> 
+
+  {/* Gradient Overlay */} 
+  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/80 to-transparent pointer-events-none opacity-0 transition-opacity duration-1000 ease-in-out group-hover:opacity-100" /> 
+
+  {/* Content Container: Positioned at the bottom with smooth layout transition */} 
+  <div className="absolute bottom-0 left-0 right-0 max-h-[40%] overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-white/20 transition-all duration-1000 ease-in-out group-hover:bottom-[40%] group-hover:text-white"> 
+    <h3 className="text-center text-base md:text-sm font-semibold whitespace-normal break-words line-clamp-1 transition-all duration-1000 ease-in-out group-hover:line-clamp-5"> 
+      {title} 
+    </h3> 
+  </div> 
+</div>
+
+//    <div className={`group relative cursor-pointer overflow-hidden rounded-lg bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)] 
+//             transition-transform duration-300 ease-in-out hover:scale-105 ${className}`}>
+//   {/* Image with dimming effect via opacity */}
+//   <Image 
+//     src={image} 
+//     alt={title} 
+//     width={400} 
+//     height={400} 
+//     className="w-full opacity-100 transition-opacity duration-300 "
+//   />
+  
+//   {/* Gradient Overlay */}
+//   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/80 to-transparent pointer-events-none hidden group-hover:block" />
+  
+//   {/* Content Container: Positioned at the bottom, allows full text scrolling if it overflows */}
+//   <div className="absolute bottom-0 left-0 group-hover:bottom-[40%] group-hover:text-white  right-0 max-h-[40%] overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-white/20">
+//     <h3 className="text-center text-base md:text-sm font-semibold  whitespace-normal break-words line-clamp-1 group-hover:line-clamp-5">
+//       {title}
+//     </h3>
+//   </div>
+// </div>
+
   );
 }
 
+
+
+
 function ResourcesSection({ data }: { data: any }) {
   if (!data?.fields?.items?.length) return null;
-  
+  const Router = useRouter();
   const items = data.fields.items;
   const title = data.fields.title || "";
   const subtitle = data.fields.subtitle || "";
   const buttonText = data.fields.button || "";
 
   return (
-    <section className="py-12 md:py-16 lg:py-20">
+    <section className="py-8 md:py-10 lg:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center md:text-center mb-8 md:mb-12">
           {/* <h3 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#3B3B3B] leading-tight">
@@ -510,14 +587,16 @@ function ResourcesSection({ data }: { data: any }) {
               </div>
               <h4 className="font-bold text-gray-900 text-sm md:text-lg">{card.title}</h4>
               <p className="text-gray-500 text-xs md:text-sm hidden sm:block">{card.description}</p>
-              <p className="text-orange-500 font-bold text-sm">{card.metric}</p>
+              <p className="text-primary font-bold text-sm">{card.metric}</p>
             </div>
           ))}
         </div>
 
         {buttonText && (
           <div className="text-center mt-8">
-            <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold text-sm md:text-base shadow-sm transition">
+            <button 
+            onClick={() => Router.push('/auth')}
+            className="bg-primary text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold text-sm md:text-base shadow-sm transition">
               {buttonText} →
             </button>
           </div>
@@ -535,7 +614,7 @@ function SupportSection({ data }: { data: any }) {
   const subtitle = data.fields.subtitle || "";
 
   return (
-    <section className="px-4 md:px-8 py-12 md:py-16 mx-auto bg-[#FFDDD3]">
+    <section className="px-4 md:px-8 py-8 md:py-10 lg:py-12 mx-auto bg-[#FFDDD3]">
       <div className="text-center mb-8 md:mb-10 max-w-6xl mx-auto">
         <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
           <span className="">{title.split(' ').slice(0, -1).join(' ')} </span>
@@ -615,7 +694,7 @@ function TestimonialsSection({ data }: { data: any }) {
   const title = data.fields.title;
 
   return (
-    <section className="bg-[#FAFAFA] py-12 md:py-16 lg:py-20 px-4 md:px-8">
+    <section className="bg-[#FAFAFA] py-8 md:py-10 lg:py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="max-w-4xl mb-8 md:mb-10 px-0 md:px-12">
           <h2 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
@@ -741,7 +820,7 @@ function CTASection({ data }: { data: any }) {
 
   return (
     <section className="bg-white">
-      <div className="bg-primary text-white pt-16 md:pt-20 pb-16 md:pb-20 px-4">
+      <div className="bg-primary text-white py-10 lg:py-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
             {title}
@@ -875,42 +954,42 @@ export default function ServicesPage({ sections }: any) {
 
 // const practiceCards = [
 //   {
-//     icon: <FileText className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />,
+//     icon: <FileText className="w-5 h-5 md:w-6 md:h-6 text-primary" />,
 //     title: "Full-Length Mock",
 //     description:
 //       "Exact replicas of the real exam scenario, including question types, difficulty, and time limit.",
 //     tags: ["Score Report", "Section Analysis"],
 //   },
 //   {
-//     icon: <Clock className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />,
+//     icon: <Clock className="w-5 h-5 md:w-6 md:h-6 text-primary" />,
 //     title: "Short Quizzes (10-20)",
 //     description:
 //       "Quick burst practice sessions for daily exam preparation. Advanced practice for quick topic tests.",
 //     tags: ["Daily", "Topic Tests"],
 //   },
 //   {
-//     icon: <Layers className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />,
+//     icon: <Layers className="w-5 h-5 md:w-6 md:h-6 text-primary" />,
 //     title: "Sectional Tests",
 //     description:
 //       "Focused practice on individual exam sections. Practice daily, weekly, monthly, and annual tests.",
 //     tags: ["Section-wise", "Flexible"],
 //   },
 //   {
-//     icon: <Target className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />,
+//     icon: <Target className="w-5 h-5 md:w-6 md:h-6 text-primary" />,
 //     title: "Topic-Wise Tests",
 //     description:
 //       "Drill any specific topic. Sentence completion, critical reasoning, and reading comprehension.",
 //     tags: ["Grammar", "RC", "CR"],
 //   },
 //   {
-//     icon: <Sliders className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />,
+//     icon: <Sliders className="w-5 h-5 md:w-6 md:h-6 text-primary" />,
 //     title: "Customized Mock",
 //     description:
 //       "Build your own mock exams. Practice daily, weekly, monthly, and annual tests.",
 //     tags: ["Custom", "Flexible"],
 //   },
 //   {
-//     icon: <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-orange-500" />,
+//     icon: <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-primary" />,
 //     title: "Diagnostic Mock Tests",
 //     description:
 //       "Pre-program baseline tests that map your current level. Practice daily, weekly, monthly, and annual tests.",
@@ -1164,7 +1243,7 @@ export default function ServicesPage({ sections }: any) {
 
 // function AIStackSection() {
 //   return (
-//     <section className="bg-[#FDF4EF] py-12 md:py-16 lg:py-20 overflow-hidden">
+//     <section className="bg-[#FDF4EF] py-8 md:py-10 lg:py-12 overflow-hidden">
 //       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 //         <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
 //           {/* Heading */}
@@ -1296,7 +1375,7 @@ export default function ServicesPage({ sections }: any) {
 
 // function EnvironmentSection() {
 //   return (
-//     <section className="bg-[#FFDDD3] py-12 md:py-16 lg:py-20">
+//     <section className="bg-[#FFDDD3] py-8 md:py-10 lg:py-12">
 //       <div className="max-w-7xl mx-auto px-4 sm:px-6">
 //         {/* Heading */}
 //         <div className="max-w-3xl mb-8 md:mb-12">
@@ -1523,7 +1602,7 @@ export default function ServicesPage({ sections }: any) {
 //       <EnvironmentSection />
 
 //       {/* Resources Section */}
-//       <section className="py-12 md:py-16 lg:py-20">
+//       <section className="py-8 md:py-10 lg:py-12">
 //         <div className="max-w-7xl mx-auto px-4 sm:px-6">
 //           <div className="text-center md:text-left max-w-3xl mb-8 md:mb-12">
 //             <h3 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#3B3B3B] leading-tight">
@@ -1546,13 +1625,13 @@ export default function ServicesPage({ sections }: any) {
 //                 </div>
 //                 <h4 className="font-bold text-gray-900 text-sm md:text-lg">{card.title}</h4>
 //                 <p className="text-gray-500 text-xs md:text-sm hidden sm:block">{card.description}</p>
-//                 <p className="text-orange-500 font-bold text-sm">{card.metric}</p>
+//                 <p className="text-primary font-bold text-sm">{card.metric}</p>
 //               </div>
 //             ))}
 //           </div>
 
 //           <div className="text-center mt-8">
-//             <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold text-sm md:text-base shadow-sm transition">
+//             <button className="bg-primary hover:bg-orange-600 text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold text-sm md:text-base shadow-sm transition">
 //               {resourcesData.button_text} →
 //             </button>
 //           </div>
@@ -1636,7 +1715,7 @@ export default function ServicesPage({ sections }: any) {
 //       </section>
 
 //       {/* Testimonials Section */}
-//       <section className="bg-[#FAFAFA] py-12 md:py-16 lg:py-20 px-4 md:px-8">
+//       <section className="bg-[#FAFAFA] py-8 md:py-10 lg:py-12 px-4 md:px-8">
 //         <div className="max-w-7xl mx-auto">
 //           {/* Heading */}
 //           <div className="max-w-4xl mb-8 md:mb-10 px-0 md:px-12">

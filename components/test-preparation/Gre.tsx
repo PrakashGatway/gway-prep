@@ -732,7 +732,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
           <StudentsSlider data={studentsData || []} />
         </div>
 
-        <div className="hidden md:block absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 w-[95%] sm:w-full max-w-7xl
+        <div className="hidden md:block absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 w-[95%] sm:w-full max-w-5xl
          px-2 sm:px-4 z-20">
           <div className="bg-[#F86C43] rounded-2xl flex flex-col sm:flex-row items-center justify-between px-3 sm:px-4 py-2 sm:py-2 gap-2 sm:gap-0">
             

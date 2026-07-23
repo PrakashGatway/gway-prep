@@ -15,6 +15,8 @@ import {
   CheckCircle,
 } from "lucide-react";
 import FormSection from "./formSection";
+import axiosInstance from "@/app/lib/axios";
+import axios from "axios";
 
 // Types
 interface BlogData {
@@ -28,6 +30,7 @@ interface BlogData {
   excerpt?: string;
   slug?: string;
   tags?: string[];
+  count?: number;
 }
 
 interface BlogDetailPageProps {
@@ -36,6 +39,7 @@ interface BlogDetailPageProps {
   } | null;
   loading: boolean;
   res: BlogData[];
+  slug: any;
 }
 
 // ─── Form Configuration ───
@@ -256,6 +260,7 @@ export default function BlogDetailPage({
   blog,
   loading,
   res,
+  slug
 }: BlogDetailPageProps) {
   const router = useRouter();
   const [headings, setHeadings] = useState<string[]>([]);
@@ -289,6 +294,37 @@ export default function BlogDetailPage({
       }
     }
   }, [blog]);
+
+  
+  
+const blogcount = async (currentCount: number, slug: string) => { 
+  try { 
+    
+    const response = await axiosInstance.put(`/admin/blogs/${slug}`, { 
+      count: currentCount + 1 
+    });
+    return response.data;
+  } catch (error) { 
+    console.error('Error incrementing blog count:', error); 
+  } 
+};
+
+
+useEffect(() => {
+  
+  if (!blog?.data?.slug) return;
+
+  const timer = setTimeout(() => { 
+    const currentCount = blog?.data?.count || 1000;
+    const blogSlug = blog?.data?.slug;
+    
+    blogcount(currentCount, blogSlug); 
+  }, 10 * 1000); 
+
+  return () => clearTimeout(timer);
+
+}, [blog?.data?.slug]); 
+
 
   // Intersection Observer for active heading
   useEffect(() => {
@@ -379,7 +415,7 @@ export default function BlogDetailPage({
               <img
                 src={data.image}
                 alt={data.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
                 loading="eager"
               />
             </div>

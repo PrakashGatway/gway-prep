@@ -59,7 +59,7 @@ export function Consultants({ data, finalCtaSection }: any) {
         ))}
       </div>
 
-      <CallToActionSection finalCtaSection={finalCtaSection} />
+      {/* <CallToActionSection finalCtaSection={finalCtaSection} /> */}
     </div>
   );
 }

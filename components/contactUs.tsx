@@ -298,7 +298,7 @@ export default function ContactPage({ Data }: any) {
   return (
     <div className="min-h-screen text-gray-800">
       {/* ---------------- HERO SECTION ---------------- */}
-      <div className="bg-[#FEF9F4]">
+      <div className="bg-[#fcf4ed]">
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative">
           <div className="space-y-8">
             <div>

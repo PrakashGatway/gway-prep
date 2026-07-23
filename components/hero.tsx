@@ -83,7 +83,7 @@ const FORM_CONFIG: any = {
       required: true,
       placeholder: "+91 98765 43210",
       step: 1,
-      grid: "full",
+      grid: "half",
       icon: Phone
     },
     {
@@ -97,25 +97,25 @@ const FORM_CONFIG: any = {
       icon: MapPin
     },
    
-    {
-      name: "source",
-      label: "How did you hear about us?",
-      type: "select",
-      required: false,
-      step: 1,
-      grid: "half",
-      options: [
-        { value: "", label: "Select source" },
-        { value: "Google Search", label: "Google Search" },
-        { value: "Instagram", label: "Instagram" },
-        { value: "Facebook", label: "Facebook" },
-        { value: "YouTube", label: "YouTube" },
-        { value: "Friend Referral", label: "Friend Referral" },
-        { value: "Education Fair", label: "Education Fair" },
-        { value: "Walk-in", label: "Walk-in" },
-        { value: "Other", label: "Other" }
-      ]
-    }
+    // {
+    //   name: "source",
+    //   label: "How did you hear about us?",
+    //   type: "select",
+    //   required: false,
+    //   step: 1,
+    //   grid: "half",
+    //   options: [
+    //     { value: "", label: "Select source" },
+    //     { value: "Google Search", label: "Google Search" },
+    //     { value: "Instagram", label: "Instagram" },
+    //     { value: "Facebook", label: "Facebook" },
+    //     { value: "YouTube", label: "YouTube" },
+    //     { value: "Friend Referral", label: "Friend Referral" },
+    //     { value: "Education Fair", label: "Education Fair" },
+    //     { value: "Walk-in", label: "Walk-in" },
+    //     { value: "Other", label: "Other" }
+    //   ]
+    // }
   ],
   submit: {
     label: "Book Consultation",
@@ -282,7 +282,7 @@ export function Hero({ data, student }: HeroProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+            className="fixed top-20 inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
             onClick={() => setIsPopupOpen(false)}
           >
             <motion.div

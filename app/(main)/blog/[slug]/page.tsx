@@ -88,6 +88,7 @@ export default async function BlogDetailsPage({ params }: PageProps) {
         blog={blog}
         loading={false}
         res={res}
+        slug={slug}
       />
     </>
   );

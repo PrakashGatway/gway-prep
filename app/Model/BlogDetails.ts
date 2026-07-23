@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 // Comment Interface
 interface IComment {
   name: string;
-  email: string;
+  // email: string;
   message: string;
   createdAt?: Date;
 }
@@ -16,6 +16,7 @@ export interface IBlogDetail extends Document {
   excerpt?: string;
   image: string;
   category: string;
+  count ?: string;
   tags: string[];
   author: string;
   publishedDate: Date;
@@ -28,11 +29,6 @@ export interface IBlogDetail extends Document {
 const CommentSchema = new Schema<IComment>(
   {
     name: { type: String, required: true, trim: true },
-    email: {
-      type: String,
-      required: true,
-      match: [/^\S+@\S+\.\S+$/, "Invalid email"],
-    },
     message: { type: String, required: true, trim: true },
   },
   { timestamps: true }
@@ -57,6 +53,10 @@ const BlogSchema = new Schema<IBlogDetail>(
     image: {
       type: String,
       default: "/image/Blogdetaile-img.jpg",
+    },
+
+    count : {
+      type: String, default : 1000 
     },
 
     category: { type: String, required: true, trim: true },

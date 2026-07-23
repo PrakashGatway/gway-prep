@@ -321,7 +321,7 @@ export default function BlogPage({ pageInfo, categories }: any) {
 
   return (
     <div className="min-h-screen bg-white text-[#1f2430]">
-      <section className="relative w-full overflow-hidden bg-[#FDF4EE] py-8 md:py-12">
+      <section className="relative w-full overflow-hidden bg-[#fcf4ed] py-8 md:py-12">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-12 px-4 sm:px-6 lg:flex-row lg:justify-between lg:px-8">
           {/* Left Flex Item: Content Column */}
           <div className="flex w-full flex-col justify-center text-center lg:w-[85%] lg:text-left">

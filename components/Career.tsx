@@ -22,6 +22,7 @@ import {
   User,
 } from "lucide-react";
 import { Consultants } from "./destinations-consultants";
+import CareersSection from "./careerSection";
 // import Consultants from '@/components/Consultants';
 
 const orange = "#ED6B2C";
@@ -141,6 +142,7 @@ interface CareersData {
     icon: string;
     title: string;
     exp: string;
+    des: string;
     loc: string;
     type: string;
   }>;
@@ -245,6 +247,7 @@ export default function CareersPage({ sections }: any) {
         title: item.title || "",
         exp: item.experience || "",
         loc: item.location || "",
+        des: item.description || "",
         type: item.type || "Full-time",
       })) || [],
     testimonials:
@@ -287,7 +290,7 @@ export default function CareersPage({ sections }: any) {
   return (
     <div className="bg-white text-black">
       {/* ---------------- Hero ---------------- */}
-      <section className="bg-[#FCEEE5]">
+      <section className="bg-[#fcf4ed]">
         <div className="max-w-7xl mx-auto px-6 md:px-0 py-10 md:py-12 grid md:grid-cols-2 gap-12 items-center">
           <div>
             <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
@@ -449,6 +452,8 @@ export default function CareersPage({ sections }: any) {
         </div>
       </section> */}
 
+      <CareersSection data={{openPositions: data?.openPositions}} />
+
       {/* ---------------- Life at Ooshas ---------------- */}
       {/* <section className="bg-[#FCEEE5] pb-20">
         <div className="max-w-7xl mx-auto px-6 md:px-0">
@@ -538,15 +543,15 @@ export default function CareersPage({ sections }: any) {
       {/* <ProcessSection /> */}
 
       {/* ---------------- Open Positions ---------------- */}
-      <section className="max-w-7xl mx-auto px-6 md:px-0 py-12">
+      {/* <section className="max-w-7xl mx-auto px-6 md:px-0 py-12">
         <SectionTitle pre="Open" accent="Positions" />
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {data.openPositions.map((p, i) => {
             const Icon = getIcon(p.icon);
             return (
               <div
                 key={i}
-                className="border border-[#E8E0D8] rounded-2xl p-6 flex items-start gap-5 shadow-sm hover:shadow-lg transition bg-white"
+                className="border border-[#E8E0D8] rounded-xl p-6 flex items-start gap-5 shadow-sm hover:shadow-lg transition bg-[#FEF0BF]"
               >
                 <div className="w-12 h-12 rounded-xl bg-[#FCEEE5] flex items-center justify-center shrink-0">
                   {Icon && <Icon size={22} style={{ color: orange }} />}
@@ -566,6 +571,10 @@ export default function CareersPage({ sections }: any) {
                   <p className="text-sm text-gray-700 mt-2">
                     Experience: {p.exp}
                   </p>
+                  
+                  <div className="prose prose-invert max-w-none my-4 h-[14rem] overflow-y-scroll bg-[#FEF0BF] [&_p]:bg-[#FEF0BF]
+                  [&_*]:bg-[#FEF0BF] custom-scrollbar" dangerouslySetInnerHTML={{ __html: p.des }} />
+
                   <p className="text-sm text-gray-700">Location: {p.loc}</p>
                   <button
                     className="mt-4 text-sm font-semibold px-4 py-2 rounded-lg border-2 hover:bg-orange-50 transition"
@@ -578,7 +587,7 @@ export default function CareersPage({ sections }: any) {
             );
           })}
         </div>
-      </section>
+      </section> */}
 
       {/* ---------------- Testimonials ---------------- */}
       <section className="bg-[#FCEEE5]">
