@@ -334,7 +334,7 @@ export default function CareersPage({ sections }: any) {
 
       {/* ---------------- Why Join ---------------- */}
       <section className="max-w-7xl mx-auto px-6 md:px-0 py-12">
-        <SectionTitle pre="Why Join" accent=" Ooshas prap" />
+        <SectionTitle pre="Why Join" accent=" Ooshas prep" />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {data.whyJoin.map((w, i) => {
             const Icon = getIcon(w.icon);

@@ -137,7 +137,7 @@ export function HomeStudent({data}:{data : any}) {
             <div className="lg:w-2/3 flex flex-col gap-4 sm:gap-6">
               <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border">
                 <p className="text-[#FF6B35] font-bold mb-3 sm:mb-4 text-base sm:text-lg">
-                  How did {"Ooshaprap"} help{" "}
+                  How did {"Ooshaprep"} help{" "}
                   {student.name}?
                 </p>
                 <div className="text-sm sm:text-base" dangerouslySetInnerHTML={{__html: student.about}} />
