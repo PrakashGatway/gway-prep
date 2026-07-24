@@ -5,14 +5,14 @@ const BASE_URL = "https://www.ooshasprep.com";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
-    // const response = await axiosInstance.get("/admin/pageInfo/all");
+    const response = await axiosInstance.get("/admin/pageInfo/all");
     const response1 = await axiosInstance.get("/admin/blogs/all");
-    const pages = [];
+    const pages = response.data?.data || [];
     const pages1 = response1.data?.data || [];
-
+console.log(pages,'pages data')
     const routes: string[] = [""];
 
-    pages?.forEach((page: any) => {
+    pages.forEach((page: any) => {
       const slug = page.seoMeta?.canonicalUrl || page.name;
 
       if (!slug || slug === "home") return;
@@ -24,10 +24,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       }
     });
 
-    pages1.forEach((ele: any) => {
+    pages1.forEach((ele : any) => {
       const slug = ele.slug;
       routes.push(`blog/${slug}`);
-    });
+    })
 
     const uniqueRoutes = [...new Set(routes)];
 
@@ -50,6 +50,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // import { MetadataRoute } from "next";
 

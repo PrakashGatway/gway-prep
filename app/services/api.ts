@@ -64,7 +64,7 @@ export const getPageInfo = async (id: string) => {
   
   try {
     const targetUrl = `/admin/pageInfo/${encodeURIComponent(id)}`;
-    // console.log(`📡 Fetching API: ${targetUrl}`); // Debug the exact endpoint
+    console.log(`📡 Fetching API: ${targetUrl}`); // Debug the exact endpoint
     
     const res = await axiosInstance.get(targetUrl);
     // console.log(res, 'res data');
