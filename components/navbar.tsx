@@ -60,7 +60,7 @@ export function Navbar({ Data }: any) {
       },
       { name: "Blogs", href: "/blog", icon: null },
       { name: "Career", href: "/career", icon: null },
-      { name: "Contact Us", href: "/contactus", icon: null },
+      { name: "Contact Us", href: "/contact", icon: null },
     ],
     [NAVDATA],
   );
@@ -253,7 +253,8 @@ export function Navbar({ Data }: any) {
                   onClick={() =>
                     (window.location.href = "https://dashboard.ooshasprep.com")
                   }
-                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-600 text-white font-medium flex items-center gap-2 hover:shadow-xl hover:shadow-emerald-500/30 transition-all active:scale-95"
+                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-orange-500 to-primary text-white font-medium
+                   flex items-center gap-2 hover:shadow-lg cursor-pointer hover:shadow-orange-500/30 transition-all active:scale-95"
                 >
                   <LayoutDashboard size={18} />
                   Dashboard
@@ -434,7 +435,7 @@ export function Navbar({ Data }: any) {
                         window.location.href =
                           "https://dashboard.ooshasprep.com";
                       }}
-                      className="w-full py-4 bg-gradient-to-r from-emerald-500 to-green-600 text-white rounded-2xl font-medium"
+                      className="w-full py-4 bg-gradient-to-r from-orange-500 to-primary text-white rounded-2xl font-medium"
                     >
                       Go to Dashboard
                     </button>

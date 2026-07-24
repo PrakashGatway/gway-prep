@@ -10,7 +10,7 @@ export async function generateMetadata() {
 
   const canonical = seo?.canonicalUrl
     ? `${SITE_URL}/${seo.canonicalUrl.replace(/^\/+/, "")}`
-    : `${SITE_URL}/contactus`;
+    : `${SITE_URL}/contact`;
 
   return {
     title: seo?.title?.trim() || "Contact Us",
@@ -43,7 +43,7 @@ export async function generateMetadata() {
         "@type": "ListItem",
         position: 2,
         name: "Contact US",
-        item: `${SITE_URL}/contactus`,
+        item: `${SITE_URL}/contact`,
       },
     ],
   };

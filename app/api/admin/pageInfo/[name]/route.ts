@@ -1,9 +1,3 @@
-/**
- * GET    /api/pages/[name]   → Get one page
- * POST   /api/pages/[name]   → Duplicate page
- * PUT    /api/pages/[name]   → Update page
- * DELETE /api/pages/[name]   → Delete page
- */
 
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/app/lib/db";
@@ -15,27 +9,26 @@ type Params = {
   }>;
 };
 
-// ─────────────────────────────────────────────────────────────
-// GET
-// ─────────────────────────────────────────────────────────────
 
 export async function GET(
   _req: NextRequest,
-  { params }: Params
+  { params }: Params,
 ): Promise<NextResponse> {
   try {
     const { name } = await params;
 
     await connectDB();
 
-    const page = await PageData.findOne({
-      $or: [
-        { name: name.toLowerCase() },
-        { slug: name.toLowerCase() },
-      ],
-    })
-      .select("-__v")
-      .lean();
+    let page;
+    if (name === "all") {
+      page = await PageData.find().select("name seoMeta.canonicalUrl seoMeta.navIcon template").lean();
+    } else {
+      page = await PageData.findOne({
+        $or: [{ name: name.toLowerCase() }, { slug: name.toLowerCase() }],
+      })
+        .select("-__v")
+        .lean();
+    }
 
     if (!page) {
       return NextResponse.json(
@@ -43,7 +36,7 @@ export async function GET(
           message: `Page "${name}" not found.`,
           data: [],
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -52,7 +45,7 @@ export async function GET(
         message: "Page fetched.",
         data: page,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("[PAGE GET]", error);
@@ -61,18 +54,15 @@ export async function GET(
       {
         error: "Server error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-// POST (Duplicate Page)
-// ─────────────────────────────────────────────────────────────
 
 export async function POST(
   req: NextRequest,
-  { params }: Params
+  { params }: Params,
 ): Promise<NextResponse> {
   try {
     const { name } = await params;
@@ -89,7 +79,7 @@ export async function POST(
         {
           error: "Both name and slug are required.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -103,16 +93,13 @@ export async function POST(
         {
           error: "Source page not found.",
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     // Check duplicate
     const alreadyExists = await PageData.findOne({
-      $or: [
-        { name: newName },
-        { slug: newSlug },
-      ],
+      $or: [{ name: newName }, { slug: newSlug }],
     });
 
     if (alreadyExists) {
@@ -120,7 +107,7 @@ export async function POST(
         {
           error: "Page with same name or slug already exists.",
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -141,28 +128,24 @@ export async function POST(
         message: "Page duplicated successfully.",
         data: duplicatedPage,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("[PAGE DUPLICATE]", error);
 
     return NextResponse.json(
       {
-        error:
-          error instanceof Error ? error.message : "Server error",
+        error: error instanceof Error ? error.message : "Server error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-// PUT
-// ─────────────────────────────────────────────────────────────
 
 export async function PUT(
   req: NextRequest,
-  { params }: Params
+  { params }: Params,
 ): Promise<NextResponse> {
   try {
     const { name } = await params;
@@ -206,7 +189,7 @@ export async function PUT(
         new: true,
         upsert: true,
         select: "-__v",
-      }
+      },
     ).lean();
 
     return NextResponse.json(
@@ -214,28 +197,24 @@ export async function PUT(
         message: "Page updated.",
         data: updated,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("[PAGE UPDATE]", error);
 
     return NextResponse.json(
       {
-        error:
-          error instanceof Error ? error.message : "Server error",
+        error: error instanceof Error ? error.message : "Server error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-// DELETE
-// ─────────────────────────────────────────────────────────────
 
 export async function DELETE(
   _req: NextRequest,
-  { params }: Params
+  { params }: Params,
 ): Promise<NextResponse> {
   try {
     const { name } = await params;
@@ -251,7 +230,7 @@ export async function DELETE(
         {
           error: `Page "${name}" not found.`,
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -259,7 +238,7 @@ export async function DELETE(
       {
         message: `Page "${name}" deleted.`,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("[PAGE DELETE]", error);
@@ -268,14 +247,10 @@ export async function DELETE(
       {
         error: "Server error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-
-
-
-
 
 
 // import { NextRequest, NextResponse } from "next/server";
@@ -293,7 +268,6 @@ export async function DELETE(
 //   try {
 //     const {name} = await params;
 //     await connectDB();
-
 
 //     const page = await PageData.findOne({
 //       name: name.toLowerCase(),
@@ -324,7 +298,7 @@ export async function DELETE(
 //   { params }: Params
 // ): Promise<NextResponse> {
 //   try {
-    
+
 //     const { name } = await params; // ✅ await params
 
 //     const body = await req.json();
@@ -381,7 +355,7 @@ export async function DELETE(
 //       { status: 200 }
 //     );
 //   } catch (error) {
-    
+
 //     console.error("[PAGES POST]", error);
 //     return NextResponse.json({ error: `Server error: ${error instanceof Error ? error.message : error}` }, { status: 500 });
 //   }

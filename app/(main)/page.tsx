@@ -21,7 +21,7 @@ import { Mission } from "@/components/mission";
 import { Aboutresult } from "@/components/about_result";
 import { AboutSection } from "@/components/about-section";
 import { Banerhome } from "@/components/banerhome";
-import { getPageInfo, getStudent } from "../services/api";
+import { getPageInfo, getPages, getStudent } from "../services/api";
 export const dynamic = "force-dynamic";
 
 
@@ -113,6 +113,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function Home() {
   const pageData = await getPageInfo("home");
+  const NavData = await getPages('30');
   const studentsData =  await getStudent("",1,8);
 
   const sections = pageData?.sections || {};
@@ -185,7 +186,7 @@ export default async function Home() {
       {/* <Aboutresult data={studentsData} /> */}
       <AboutSection data={sections["Home-Banner"]}/>
       <ServicesGrid data={serviceData} heading={sections["Home-Standard"]} />
-      <TestPrepGrid data={sections["Home-Courses"]} />
+      <TestPrepGrid data={sections["Home-Courses"]} NavData={NavData}/>
       {/* <Baners img="/home/000002.png" /> */}
       <WorkingProcess data={sections["Home-Working-Process"]} />
       <HomeStudent data={studentsData} />

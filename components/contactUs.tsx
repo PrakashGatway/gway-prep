@@ -385,7 +385,7 @@ export default function ContactPage({ Data }: any) {
       </section> */}
 
       {/* ---------------- MAP & CTA ---------------- */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      {/* <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="flex flex-col lg:flex-row rounded-2xl overflow-hidden shadow-sm border border-gray-100 bg-white">
           <div className="lg:w-2/3 h-64 lg:h-96 bg-gray-100 relative">
             <iframe
@@ -413,7 +413,7 @@ export default function ContactPage({ Data }: any) {
             </button>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ---------------- BOTTOM CTA (STUDENTS) ---------------- */}
       <section className="bg-[#FEF9F4] py-16 relative overflow-hidden">

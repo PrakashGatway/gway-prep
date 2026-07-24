@@ -14,9 +14,13 @@ export async function GET(_req: NextRequest, context: Context): Promise<NextResp
     const { slug } = await context.params;
     // console.log(slug, 'slug param')
 
-    const blog = await Blog.findOne({ slug })
-      // .select("-__v")
-      .lean();
+    let blog;
+
+    if(slug === 'all'){
+       blog = await Blog.find().select('slug title').lean();
+    }else {
+       blog = await Blog.findOne({ slug }).lean();
+    }
 
     // console.log(blog)
     if (!blog) {

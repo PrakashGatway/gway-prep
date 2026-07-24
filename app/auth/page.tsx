@@ -1,3 +1,12 @@
+
+
+
+
+
+
+
+
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -26,6 +35,8 @@ import {
 import Swal from "sweetalert2";
 import axiosInstance from "@/services/axiosInstance";
 import { useGlobal } from "@/hooks/AppStateContext";
+import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 
 type AuthMode = "email" | "register" | "otp" | "success";
 
@@ -75,7 +86,7 @@ const InputField = ({
     </div>
     <input
       {...props}
-      className={`w-full px-4 py-3 rounded-xl border-2 bg-gray-50/50 transition-all duration-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#f26e46]/20 ${
+      className={`w-full px-4 py-3 border-b-2 bg-gray-50/50 transition-all duration-200 focus:bg-white focus:outline-none focus:ring-b-2 focus:ring-[#f26e46]/20 ${
         error 
           ? "border-red-400 focus:border-red-500" 
           : "border-gray-200 focus:border-[#f26e46] hover:border-gray-300"
@@ -102,12 +113,21 @@ function Auth({ toggleDrawer }: any) {
   const [termsAccepted, setTermsAccepted] = useState(true);
   const [errors, setErrors] = useState<any>({});
   const [resendCooldown, setResendCooldown] = useState(0);
+  const search = useSearchParams();
+  const referral = search.get("referral") ?? "";
 
   const [formData, setFormData] = useState({
     name: "",
     phoneNumber: "",
     referCode: "",
   });
+
+  useEffect(() => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      referCode: referral,
+    }));
+  }, [referral]);
 
   const validatePhone = (value: string) => /^[6-9]\d{9}$/.test(value);
   const validateName = (value: string) => /^[A-Za-z ]{2,}$/.test(value);
@@ -264,7 +284,7 @@ function Auth({ toggleDrawer }: any) {
         <img 
           src="https://www.ooshasprep.com/image/logo.png" 
           alt="Ooshas Prep" 
-          className="h-12 w-auto object-contain"
+          className="h-24 w-auto object-contain"
         />
       </div>
 
@@ -275,9 +295,9 @@ function Auth({ toggleDrawer }: any) {
         className="w-full max-w-md"
       >
         {/* Progress Steps */}
-        {mode !== "success" && (
+        {/* {mode !== "success" && (
           <ProgressSteps currentStep={getCurrentStep()} />
-        )}
+        )} */}
 
         <AnimatePresence mode="wait">
           {/* STEP 1: Email Verification */}
@@ -292,10 +312,11 @@ function Auth({ toggleDrawer }: any) {
               transition={{ duration: 0.3 }}
             >
               <div className="text-center">
-                <h2 className="text-2xl font-bold text-gray-800">
-                  Welcome to Ooshas Prep
+                <h2 className="text-3xl font-semibold text-gray-800">
+                  Welcome to <span className="text-primary">Ooshas Prep</span>
+                   
                 </h2>
-                <p className="text-gray-500 text-sm mt-1">
+                <p className=" text-lg mt-1">
                   Enter your email to get started
                 </p>
               </div>
@@ -315,7 +336,7 @@ function Auth({ toggleDrawer }: any) {
                 required
               />
 
-              <div className="flex items-start gap-2.5 p-3 bg-gray-50 rounded-xl">
+              {/* <div className="flex items-start gap-2.5 p-3 bg-gray-50 rounded-xl">
                 <input
                   type="checkbox"
                   id="terms"
@@ -333,7 +354,7 @@ function Auth({ toggleDrawer }: any) {
                     Privacy Policy
                   </a>
                 </label>
-              </div>
+              </div> */}
 
               <button
                 type="submit"
@@ -688,12 +709,12 @@ const AuthDrawer = () => {
             <aside className="hidden md:flex flex-col justify-between w-1/2 shrink-0 relative overflow-hidden">
               {/* Animated Gradient Background */}
               <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-[#f26e46] via-[#e05a33] to-[#c94a28]"
+                className="absolute inset-0 bg-gradient-to-br from-[#fcf3ed] via-[#fcf3ed] to-[#fcf3ed]"
                 animate={{
                   background: [
-                    "linear-gradient(135deg, #f26e46, #e05a33, #c94a28)",
-                    "linear-gradient(225deg, #f26e46, #c94a28, #e05a33)",
-                    "linear-gradient(135deg, #f26e46, #e05a33, #c94a28)",
+                    "linear-gradient(135deg, #fcf3ed, #fcf3ed, #fcf3ed)",
+                    "linear-gradient(225deg, #fcf3ed, #fcf3ed, #fcf3ed)",
+                    "linear-gradient(135deg, #fcf3ed, #fcf3ed, #fcf3ed)",
                   ],
                 }}
                 transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
@@ -724,31 +745,10 @@ const AuthDrawer = () => {
                 aria-hidden="true"
               />
 
-              {/* Floating Particles */}
-              {[...Array(6)].map((_, i) => (
-                <motion.div
-                  key={i}
-                  className="absolute w-2 h-2 bg-white/20 rounded-full"
-                  initial={{
-                    x: Math.random() * 100 + "%",
-                    y: Math.random() * 100 + "%",
-                  }}
-                  animate={{
-                    y: ["0%", "100%", "0%"],
-                    x: ["0%", "100%", "0%"],
-                    opacity: [0.2, 0.6, 0.2],
-                  }}
-                  transition={{
-                    duration: 10 + i * 2,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
-                  aria-hidden="true"
-                />
-              ))}
+           
 
               {/* Content */}
-              <div className="relative z-10 flex flex-col justify-between h-full p-10 lg:p-12 text-white">
+              <div className="relative z-10 flex flex-col justify-between h-full p-10 lg:p-12 text-black">
                 {/* Top Section */}
                 <div>
                   {/* Brand Badge */}
@@ -756,12 +756,12 @@ const AuthDrawer = () => {
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="flex items-center gap-2 mb-6"
+                    className="flex items-center gap-2 my-6"
                   >
-                    <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full border border-white/10 flex items-center gap-1.5">
+                    {/* <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full border border-white/10 flex items-center gap-1.5">
                       <Shield className="w-3.5 h-3.5" />
                       <span className="text-xs font-medium">Trusted Platform</span>
-                    </div>
+                    </div> */}
                   </motion.div>
 
                   <motion.div
@@ -769,20 +769,20 @@ const AuthDrawer = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                   >
-                    <h2 className="text-[2.8rem] font-extrabold leading-[1.1] tracking-tight">
-                      Transform Your
-                      <br />
-                      <span className="text-white/90">Future Abroad</span>
+                    <h2 className="text-[2.8rem] font-semibold leading-[1.1] tracking-tight">
+                      Transform Your Future with  {" "}
+                      <span className="text-primary"> Ooshas Prep</span> Online Platform
                     </h2>
 
-                    <p className="mt-4 text-white/80 text-[15px] leading-relaxed max-w-xs">
-                      Join thousands of students who've achieved their dream of
-                      studying at top universities worldwide.
+                    <p className="mt-4 text-black/80 text-[15px] leading-relaxed px-2 font-semibold">
+                      India’s most trusted online test prep platform — study at home, learn smarter, and join thousands of students achieving their dream scores worldwide.
                     </p>
                   </motion.div>
-
+                  
+                  
+                <Image src={'/login.webp'} alt="login img" width={600} height={600} className="mx-auto mt-4"/>
                   {/* Testimonial Carousel */}
-                  <motion.div
+                  {/* <motion.div
                     key={activeTestimonial}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -805,7 +805,6 @@ const AuthDrawer = () => {
                     </div>
                   </motion.div>
 
-                  {/* Dots Indicator */}
                   <div className="flex gap-1.5 mt-3">
                     {TESTIMONIALS.map((_, idx) => (
                       <button
@@ -819,11 +818,11 @@ const AuthDrawer = () => {
                         aria-label={`View testimonial ${idx + 1}`}
                       />
                     ))}
-                  </div>
+                  </div> */}
+
                 </div>
 
-                {/* Stats Section */}
-                <div className="space-y-4">
+                {/* <div className="space-y-4">
                   {STATS.map((stat, i) => {
                     const Icon = stat.icon;
                     return (
@@ -852,34 +851,8 @@ const AuthDrawer = () => {
                     );
                   })}
 
-                  {/* Divider + Trust Badge */}
-                  <div className="pt-4 border-t border-white/10">
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: 0.8 }}
-                      className="flex items-center justify-between"
-                    >
-                      <div className="flex items-center gap-2 text-white/50 text-xs">
-                        <div className="flex -space-x-2">
-                          {[...Array(4)].map((_, i) => (
-                            <div
-                              key={i}
-                              className="w-6 h-6 rounded-full border-2 border-white/20 bg-white/10 backdrop-blur-sm flex items-center justify-center text-[8px] font-bold"
-                            >
-                              {String.fromCharCode(65 + i)}
-                            </div>
-                          ))}
-                        </div>
-                        <span>Join 10K+ students</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-white/40 text-xs">
-                        <span>Learn more</span>
-                        <ChevronRight className="w-3 h-3" />
-                      </div>
-                    </motion.div>
-                  </div>
-                </div>
+                </div> */}
+
               </div>
             </aside>
           </motion.div>
@@ -890,3 +863,7 @@ const AuthDrawer = () => {
 };
 
 export default AuthDrawer;
+
+
+
+
