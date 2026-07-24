@@ -1,36 +1,27 @@
-
-
-
-
-
-
-
-
-
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  X, 
-  ArrowRight, 
-  GraduationCap, 
-  Globe, 
-  TrendingUp, 
+import {
+  X,
+  ArrowRight,
+  GraduationCap,
+  Globe,
+  TrendingUp,
   Sparkles,
   Shield,
   Star,
   ChevronRight,
-  ArrowLeft, 
-  CheckCircle, 
-  Mail, 
-  User, 
-  Phone, 
+  ArrowLeft,
+  CheckCircle,
+  Mail,
+  User,
+  Phone,
   Key,
   Loader2,
   Send,
   Check,
-  AlertCircle
+  AlertCircle,
 } from "lucide-react";
 import Swal from "sweetalert2";
 import axiosInstance from "@/services/axiosInstance";
@@ -41,7 +32,13 @@ import { useSearchParams } from "next/navigation";
 type AuthMode = "email" | "register" | "otp" | "success";
 
 // Progress Steps Component
-const ProgressSteps = ({ currentStep, totalSteps = 3 }: { currentStep: number; totalSteps?: number }) => {
+const ProgressSteps = ({
+  currentStep,
+  totalSteps = 3,
+}: {
+  currentStep: number;
+  totalSteps?: number;
+}) => {
   return (
     <div className="flex items-center justify-center gap-2 mb-6">
       {Array.from({ length: totalSteps }).map((_, index) => (
@@ -73,12 +70,7 @@ const ProgressSteps = ({ currentStep, totalSteps = 3 }: { currentStep: number; t
 };
 
 // Input Field Component
-const InputField = ({ 
-  icon: Icon, 
-  label, 
-  error, 
-  ...props 
-}: any) => (
+const InputField = ({ icon: Icon, label, error, ...props }: any) => (
   <div className="space-y-1.5">
     <div className="flex items-center gap-2 text-sm font-medium text-gray-700">
       {Icon && <Icon className="w-4 h-4 text-gray-400" />}
@@ -87,8 +79,8 @@ const InputField = ({
     <input
       {...props}
       className={`w-full px-4 py-3 border-b-2 bg-gray-50/50 transition-all duration-200 focus:bg-white focus:outline-none focus:ring-b-2 focus:ring-[#f26e46]/20 ${
-        error 
-          ? "border-red-400 focus:border-red-500" 
+        error
+          ? "border-red-400 focus:border-red-500"
           : "border-gray-200 focus:border-[#f26e46] hover:border-gray-300"
       } ${props.className || ""}`}
     />
@@ -131,22 +123,31 @@ function Auth({ toggleDrawer }: any) {
 
   const validatePhone = (value: string) => /^[6-9]\d{9}$/.test(value);
   const validateName = (value: string) => /^[A-Za-z ]{2,}$/.test(value);
-  const validateEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  const validateEmail = (value: string) =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
   const getCurrentStep = () => {
     switch (mode) {
-      case "email": return 1;
-      case "register": return 1;
-      case "otp": return 2;
-      case "success": return 3;
-      default: return 0;
+      case "email":
+        return 1;
+      case "register":
+        return 1;
+      case "otp":
+        return 2;
+      case "success":
+        return 3;
+      default:
+        return 0;
     }
   };
 
   // Resend OTP cooldown
   useEffect(() => {
     if (resendCooldown > 0) {
-      const timer = setTimeout(() => setResendCooldown(resendCooldown - 1), 1000);
+      const timer = setTimeout(
+        () => setResendCooldown(resendCooldown - 1),
+        1000,
+      );
       return () => clearTimeout(timer);
     }
   }, [resendCooldown]);
@@ -178,7 +179,9 @@ function Auth({ toggleDrawer }: any) {
       }
     } catch (error: any) {
       setErrors({
-        email: error.response?.data?.message || "Failed to verify email. Please try again."
+        email:
+          error.response?.data?.message ||
+          "Failed to verify email. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -206,7 +209,7 @@ function Auth({ toggleDrawer }: any) {
       Swal.fire(
         "Error",
         error.response?.data?.message || "Failed to send OTP.",
-        "error"
+        "error",
       );
     }
   };
@@ -231,7 +234,9 @@ function Auth({ toggleDrawer }: any) {
       setMode("otp");
     } catch (error: any) {
       setErrors({
-        general: error.response?.data?.message || "Failed to send OTP. Please try again."
+        general:
+          error.response?.data?.message ||
+          "Failed to send OTP. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -251,9 +256,7 @@ function Auth({ toggleDrawer }: any) {
 
     setLoading(true);
     try {
-      const payload = userExists
-        ? { email, otp }
-        : { email, otp, ...formData };
+      const payload = userExists ? { email, otp } : { email, otp, ...formData };
 
       const res = await axiosInstance.post("/auth/verify_otp", payload);
 
@@ -270,7 +273,9 @@ function Auth({ toggleDrawer }: any) {
       }
     } catch (error: any) {
       setErrors({
-        otp: error.response?.data?.message || "OTP verification failed. Please try again."
+        otp:
+          error.response?.data?.message ||
+          "OTP verification failed. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -281,9 +286,9 @@ function Auth({ toggleDrawer }: any) {
     <div className="flex flex-col items-center justify-center w-full">
       {/* Logo */}
       <div className="mb-6">
-        <img 
-          src="https://www.ooshasprep.com/image/logo.png" 
-          alt="Ooshas Prep" 
+        <img
+          src="https://www.ooshasprep.com/image/logo.png"
+          alt="Ooshas Prep"
           className="h-24 w-auto object-contain"
         />
       </div>
@@ -314,11 +319,8 @@ function Auth({ toggleDrawer }: any) {
               <div className="text-center">
                 <h2 className="text-3xl font-semibold text-gray-800">
                   Welcome to <span className="text-primary">Ooshas Prep</span>
-                   
                 </h2>
-                <p className=" text-lg mt-1">
-                  Enter your email to get started
-                </p>
+                <p className=" text-lg mt-1">Enter your email to get started</p>
               </div>
 
               <InputField
@@ -426,9 +428,10 @@ function Auth({ toggleDrawer }: any) {
                   placeholder="Enter your 10-digit phone number"
                   value={formData.phoneNumber}
                   onChange={(e: any) => {
-                    const value = e.target.value.replace(/\D/g, '');
+                    const value = e.target.value.replace(/\D/g, "");
                     setFormData({ ...formData, phoneNumber: value });
-                    if (errors.phoneNumber) setErrors({ ...errors, phoneNumber: "" });
+                    if (errors.phoneNumber)
+                      setErrors({ ...errors, phoneNumber: "" });
                   }}
                   error={errors.phoneNumber}
                   maxLength={10}
@@ -487,7 +490,9 @@ function Auth({ toggleDrawer }: any) {
               className="space-y-5"
             >
               <button
-                onClick={() => userExists ? setMode("email") : setMode("register")}
+                onClick={() =>
+                  userExists ? setMode("email") : setMode("register")
+                }
                 className="flex items-center gap-2 text-gray-500 hover:text-gray-700 transition-colors mb-2"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -508,7 +513,10 @@ function Auth({ toggleDrawer }: any) {
               </div>
 
               <div className="space-y-1.5">
-                <label htmlFor="otp" className="text-sm font-medium text-gray-700 block">
+                <label
+                  htmlFor="otp"
+                  className="text-sm font-medium text-gray-700 block"
+                >
                   Verification Code
                 </label>
                 <input
@@ -517,15 +525,15 @@ function Auth({ toggleDrawer }: any) {
                   placeholder="Enter 6-digit OTP"
                   value={otp}
                   onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, '').slice(0, 6);
+                    const value = e.target.value.replace(/\D/g, "").slice(0, 6);
                     setOtp(value);
                     if (errors.otp) setErrors({ ...errors, otp: "" });
                   }}
                   required
                   maxLength={6}
                   className={`w-full px-4 py-3.5 text-center text-lg font-mono tracking-[0.3em] rounded-xl border-2 bg-gray-50/50 transition-all duration-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#f26e46]/20 ${
-                    errors.otp 
-                      ? "border-red-400 focus:border-red-500" 
+                    errors.otp
+                      ? "border-red-400 focus:border-red-500"
                       : "border-gray-200 focus:border-[#f26e46] hover:border-gray-300"
                   }`}
                 />
@@ -543,15 +551,14 @@ function Auth({ toggleDrawer }: any) {
                   onClick={sendOtp}
                   disabled={resendCooldown > 0}
                   className={`text-sm transition-colors ${
-                    resendCooldown > 0 
-                      ? "text-gray-400 cursor-not-allowed" 
+                    resendCooldown > 0
+                      ? "text-gray-400 cursor-not-allowed"
                       : "text-[#f26e46] hover:text-[#c94a28] font-medium"
                   }`}
                 >
-                  {resendCooldown > 0 
-                    ? `Resend in ${resendCooldown}s` 
-                    : "Didn't receive code? Resend OTP"
-                  }
+                  {resendCooldown > 0
+                    ? `Resend in ${resendCooldown}s`
+                    : "Didn't receive code? Resend OTP"}
                 </button>
               </div>
 
@@ -595,8 +602,7 @@ function Auth({ toggleDrawer }: any) {
               <p className="text-gray-500 mt-2">
                 {userExists
                   ? "You have been successfully logged in."
-                  : "Your account has been created successfully."
-                }
+                  : "Your account has been created successfully."}
               </p>
 
               <div className="mt-6 p-4 bg-gray-50 rounded-xl">
@@ -617,14 +623,30 @@ function Auth({ toggleDrawer }: any) {
 
 // Stats and Testimonials data
 const STATS = [
-  { value: "10K+", label: "Students", icon: GraduationCap, detail: "Active learners" },
+  {
+    value: "10K+",
+    label: "Students",
+    icon: GraduationCap,
+    detail: "Active learners",
+  },
   { value: "50+", label: "Countries", icon: Globe, detail: "Global presence" },
-  { value: "98%", label: "Success Rate", icon: TrendingUp, detail: "Student satisfaction" },
+  {
+    value: "98%",
+    label: "Success Rate",
+    icon: TrendingUp,
+    detail: "Student satisfaction",
+  },
 ];
 
 const TESTIMONIALS = [
-  { quote: "The best decision I made for my study abroad journey", author: "Sarah K." },
-  { quote: "Expert guidance that truly makes a difference", author: "Michael R." },
+  {
+    quote: "The best decision I made for my study abroad journey",
+    author: "Sarah K.",
+  },
+  {
+    quote: "Expert guidance that truly makes a difference",
+    author: "Michael R.",
+  },
 ];
 
 // AuthDrawer Component
@@ -642,6 +664,13 @@ const AuthDrawer = () => {
   const handleClose = () => setIsVisible(false);
 
   return (
+    
+      <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-[#f26e46] border-t-transparent rounded-full animate-spin" />
+      </div>
+    }>
+      
     <AnimatePresence mode="wait">
       {isVisible && (
         <>
@@ -735,17 +764,23 @@ const AuthDrawer = () => {
               <motion.div
                 className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl"
                 animate={{ scale: [1, 1.2, 1], x: [0, -20, 0] }}
-                transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 8,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
                 aria-hidden="true"
               />
               <motion.div
                 className="absolute bottom-10 -left-20 w-64 h-64 bg-white/[0.07] rounded-full blur-3xl"
                 animate={{ scale: [1, 1.1, 1], y: [0, -30, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 6,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
                 aria-hidden="true"
               />
-
-           
 
               {/* Content */}
               <div className="relative z-10 flex flex-col justify-between h-full p-10 lg:p-12 text-black">
@@ -770,17 +805,25 @@ const AuthDrawer = () => {
                     transition={{ delay: 0.3 }}
                   >
                     <h2 className="text-[2.8rem] font-semibold leading-[1.1] tracking-tight">
-                      Transform Your Future with  {" "}
-                      <span className="text-primary"> Ooshas Prep</span> Online Platform
+                      Transform Your Future with{" "}
+                      <span className="text-primary"> Ooshas Prep</span> Online
+                      Platform
                     </h2>
 
                     <p className="mt-4 text-black/80 text-[15px] leading-relaxed px-2 font-semibold">
-                      India’s most trusted online test prep platform — study at home, learn smarter, and join thousands of students achieving their dream scores worldwide.
+                      India’s most trusted online test prep platform — study at
+                      home, learn smarter, and join thousands of students
+                      achieving their dream scores worldwide.
                     </p>
                   </motion.div>
-                  
-                  
-                <Image src={'/login.webp'} alt="login img" width={600} height={600} className="mx-auto mt-4"/>
+
+                  <Image
+                    src={"/login.webp"}
+                    alt="login img"
+                    width={600}
+                    height={600}
+                    className="mx-auto mt-4"
+                  />
                   {/* Testimonial Carousel */}
                   {/* <motion.div
                     key={activeTestimonial}
@@ -819,7 +862,6 @@ const AuthDrawer = () => {
                       />
                     ))}
                   </div> */}
-
                 </div>
 
                 {/* <div className="space-y-4">
@@ -852,18 +894,15 @@ const AuthDrawer = () => {
                   })}
 
                 </div> */}
-
               </div>
             </aside>
           </motion.div>
         </>
       )}
     </AnimatePresence>
+    </Suspense>
+    
   );
 };
 
 export default AuthDrawer;
-
-
-
-

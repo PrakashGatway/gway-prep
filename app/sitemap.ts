@@ -26,7 +26,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     pages1.forEach((ele : any) => {
       const slug = ele.slug;
-      routes.push(slug);
+      routes.push(`blog/${slug}`);
     })
 
     const uniqueRoutes = [...new Set(routes)];
