@@ -1109,8 +1109,12 @@ export default function CareersPage({ sections }: any) {
         </div>
       </section> */}
 
-      <section className="relative bg-[#FCEEE5] lg:bg-[url('/image_30c67b71.webp')] bg-no-repeat bg-center bg-contain ">
-        <div className="max-w-7xl mx-auto relative lg:h-[420px] px-6 py-12 lg:px-0 lg:py-0">
+      <section className="">
+        
+          <h3 className="text-center text-lg sm:text-xl md:text-3xl lg:text-4xl font-bold my-10">
+           {sections["Career-Hiring-Process"]?.fields?.title?.split("||")[0]} <span style={{ color: orange }}>{sections["Career-Hiring-Process"]?.fields?.title?.split("||")[1]}</span>
+          </h3>
+        <div className=" relative bg-[#FCEEE5] lg:bg-[url('/image_30c67b71.webp')] bg-no-repeat bg-center bg-contain max-w-7xl mx-auto relative lg:h-[420px] px-6 py-12 lg:px-0 lg:py-0">
          <div className="rounded-full bg-primary p-2.5 h-14 w-14 object-scale-down lg:absolute lg:bottom-[30px] lg:left-[180px]">
           <img 
             src="/icon/2.webp" 

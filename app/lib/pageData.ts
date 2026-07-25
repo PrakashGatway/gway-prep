@@ -1801,27 +1801,27 @@ export const pageData: any = {
         ],
       },
 
-      {
-        name: "built-for",
-        label: "built for your career",
-        fields: [
-          {
-            name: "title",
-            label: "Section Title",
-            type: "text",
-          },
-          {
-            name: "description",
-            label: "Section Description",
-            type: "textarea",
-          },
-          {
-            name: "primaryButton",
-            label: "Primary Button",
-            type: "text",
-          },
-        ],
-      },
+      // {
+      //   name: "built-for",
+      //   label: "built for your career",
+      //   fields: [
+      //     {
+      //       name: "title",
+      //       label: "Section Title",
+      //       type: "text",
+      //     },
+      //     {
+      //       name: "description",
+      //       label: "Section Description",
+      //       type: "textarea",
+      //     },
+      //     {
+      //       name: "primaryButton",
+      //       label: "Primary Button",
+      //       type: "text",
+      //     },
+      //   ],
+      // },
 
       {
         name: "Career-Stats",
@@ -1853,39 +1853,39 @@ export const pageData: any = {
         ],
       },
 
-      {
-        name: "Career-Departments",
-        label: "Departments",
-        fields: [
-          {
-            name: "title",
-            label: "Section Title",
-            type: "text",
-          },
-          {
-            name: "items",
-            label: "Departments",
-            type: "repeater",
-            fields: [
-              {
-                name: "icon",
-                label: "Lucide Icon",
-                type: "text",
-              },
-              {
-                name: "title",
-                label: "Title",
-                type: "text",
-              },
-              {
-                name: "points",
-                label: "Points",
-                type: "textarea",
-              },
-            ],
-          },
-        ],
-      },
+      // {
+      //   name: "Career-Departments",
+      //   label: "Departments",
+      //   fields: [
+      //     {
+      //       name: "title",
+      //       label: "Section Title",
+      //       type: "text",
+      //     },
+      //     {
+      //       name: "items",
+      //       label: "Departments",
+      //       type: "repeater",
+      //       fields: [
+      //         {
+      //           name: "icon",
+      //           label: "Lucide Icon",
+      //           type: "text",
+      //         },
+      //         {
+      //           name: "title",
+      //           label: "Title",
+      //           type: "text",
+      //         },
+      //         {
+      //           name: "points",
+      //           label: "Points",
+      //           type: "textarea",
+      //         },
+      //       ],
+      //     },
+      //   ],
+      // },
 
       // {
       //   name: "Career-Life",

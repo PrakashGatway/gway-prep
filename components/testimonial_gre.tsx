@@ -17,8 +17,8 @@ export function TextTestimonials({ testimonialsSection }: any) {
       setIsDesktop(window.innerWidth > 688);
     };
     checkWidth();
-    window.addEventListener('resize', checkWidth);
-    return () => window.removeEventListener('resize', checkWidth);
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
   }, []);
 
   // Track scroll progress of this specific section
@@ -35,33 +35,37 @@ export function TextTestimonials({ testimonialsSection }: any) {
   const x5 = useTransform(scrollYProgress, [0.3, 0.6], ["20%", "140%"]);
 
   const testimonials = testimonialsSection?.testimonials || [
-    { 
-      studentName: "Khushal", 
-      mathScore: 80, 
-      verbalScore: 169, 
-      quote: "My journey with Gateway Abroad Jaipur went beyond my expectations. The mock tests provided by my trainers gave an accurate simulation of the real exam...", 
-      rating: 5 
+    {
+      studentName: "Khushal",
+      mathScore: 80,
+      verbalScore: 169,
+      quote:
+        "My journey with Gateway Abroad Jaipur went beyond my expectations. The mock tests provided by my trainers gave an accurate simulation of the real exam...",
+      rating: 5,
     },
-    { 
-      studentName: "Mayank", 
-      mathScore: 80, 
-      verbalScore: 169, 
-      quote: "Gateway Abroad Jaipur made studying PTE seamless. I still can't believe that I scored 80. This is all because of the efforts of my trainers...", 
-      rating: 5 
+    {
+      studentName: "Mayank",
+      mathScore: 80,
+      verbalScore: 169,
+      quote:
+        "Gateway Abroad Jaipur made studying PTE seamless. I still can't believe that I scored 80. This is all because of the efforts of my trainers...",
+      rating: 5,
     },
-    { 
-      studentName: "Sandeep", 
-      mathScore: 85, 
-      verbalScore: 169, 
-      quote: "The personalized attention and the quality of study material are unmatched. Highly recommend for anyone looking to clear PTE on the first go.", 
-      rating: 5 
+    {
+      studentName: "Sandeep",
+      mathScore: 85,
+      verbalScore: 169,
+      quote:
+        "The personalized attention and the quality of study material are unmatched. Highly recommend for anyone looking to clear PTE on the first go.",
+      rating: 5,
     },
-    { 
-      studentName: "Sandeep", 
-      mathScore: 85, 
-      verbalScore: 169, 
-      quote: "The personalized attention and the quality of study material are unmatched. Highly recommend for anyone looking to clear PTE on the first go.", 
-      rating: 5 
+    {
+      studentName: "Sandeep",
+      mathScore: 85,
+      verbalScore: 169,
+      quote:
+        "The personalized attention and the quality of study material are unmatched. Highly recommend for anyone looking to clear PTE on the first go.",
+      rating: 5,
     },
   ];
 
@@ -76,7 +80,8 @@ export function TextTestimonials({ testimonialsSection }: any) {
       <div className="max-w-7xl m-auto">
         <div className="text-center mt-10">
           <h2 className="text-xl md:text-2xl text-left text-gray-600">
-            {testimonialsSection?.sectionSubtitle || "Purchased by 500,000+ GRE students"}
+            {testimonialsSection?.sectionSubtitle ||
+              "Purchased by 500,000+ GRE students"}
           </h2>
         </div>
 
@@ -95,10 +100,9 @@ export function TextTestimonials({ testimonialsSection }: any) {
         {/* Desktop: Animated Stack */}
         <div className="hidden lg:block relative h-[500px] md:h-[350px] flex items-center justify-center">
           <div className="flex flex-col md:relative md:block mt-20">
-            
             {/* Card 1 (Bottom/Left) */}
-            <motion.div 
-              style={{ 
+            <motion.div
+              style={{
                 x: isMounted && isDesktop ? x1 : "0%",
               }}
               className="md:absolute top-0 left-0 w-full md:w-[20%] h-64 bg-white border-2 rounded-3xl p-6 z-10 mb-6"
@@ -107,10 +111,10 @@ export function TextTestimonials({ testimonialsSection }: any) {
             </motion.div>
 
             {/* Card 2 (Middle) */}
-            <motion.div 
-              style={{ 
+            <motion.div
+              style={{
                 x: isMounted && isDesktop ? x2 : "0%",
-                rotate: isMounted && isDesktop ? 3 : 0
+                rotate: isMounted && isDesktop ? 3 : 0,
               }}
               className="md:absolute top-10 left-0 w-full md:w-[20%] h-64 bg-white border-2 rounded-3xl p-6 z-20 mb-6"
             >
@@ -118,10 +122,10 @@ export function TextTestimonials({ testimonialsSection }: any) {
             </motion.div>
 
             {/* Card 3 (Top/Right) */}
-            <motion.div 
-              style={{ 
+            <motion.div
+              style={{
                 x: isMounted && isDesktop ? x3 : "0%",
-                rotate: isMounted && isDesktop ? -2 : 0
+                rotate: isMounted && isDesktop ? -2 : 0,
               }}
               className="md:absolute -top-10 left-0 w-full md:w-[20%] h-64 bg-white border-2 rounded-3xl p-6 z-30 mb-6"
             >
@@ -129,10 +133,10 @@ export function TextTestimonials({ testimonialsSection }: any) {
             </motion.div>
 
             {/* Card 4 (Top/Right) */}
-            <motion.div 
-              style={{ 
+            <motion.div
+              style={{
                 x: isMounted && isDesktop ? x4 : "0%",
-                rotate: isMounted && isDesktop ? 2 : 0
+                rotate: isMounted && isDesktop ? 2 : 0,
               }}
               className="md:absolute top-0 left-0 w-full md:w-[20%] h-64 bg-white border-2 rounded-3xl p-6 z-40 mb-6"
             >
@@ -140,16 +144,19 @@ export function TextTestimonials({ testimonialsSection }: any) {
             </motion.div>
 
             {/* Image Card */}
-            <motion.div 
-              style={{ 
+            <motion.div
+              style={{
                 x: isMounted && isDesktop ? x5 : "0%",
-                rotate: 0
+                rotate: 0,
               }}
               className="md:absolute top-0 -left-12 w-full md:w-[40rem] h-[20rem] hidden lg:block p-6 z-30 mb-6"
             >
-              <img src={'/image/grt.png'} className="h-full w-full object-contain" alt="GRE Testimonial" />
+              <img
+                src={"/image/grt.png"}
+                className="h-full w-full object-contain"
+                alt="GRE Testimonial"
+              />
             </motion.div>
-
           </div>
         </div>
       </div>
@@ -164,26 +171,29 @@ function CardContent({ data }: { data: any }) {
       <div className="flex justify-between items-start flex-col">
         <p className="text-xl font-bold text-[#555]">{data?.studentName}</p>
         <span className="flex justify-between w-full gap-2">
-          
+          <div className="flex items-center my-1">
+            {data?.mathScore?.split("||")?.[0] || data?.score || ""}
+
+            <p className="w-10 ml-1 bg-orange-600 font-bold rounded text-center text-white">
+              {data?.mathScore?.split("||")?.[1] || data?.score || ""}
+            </p>
+          </div>
+
           <div className="flex items-center">
-  {data?.mathScore?.split("||")?.[0] || data?.score || ""}
+            {data?.verbalScore?.split("||")?.[0] || data?.verbal || ""}
 
-  <p className="w-10 ml-1 bg-orange-600 font-bold rounded text-center text-white">
-    {data?.mathScore?.split("||")?.[1] || data?.score || ""}
-  </p>
-</div>
-
-<div className="flex items-center">
-  {data?.verbalScore?.split("||")?.[0] || data?.verbal || ""}
-
-  <p className="w-10 ml-1 bg-gray-600 font-bold rounded text-center text-white">
-    {data?.verbalScore?.split("||")?.[1] || data?.verbal || ""}
-  </p>
-</div>
+            <p className="w-10 ml-1 bg-gray-600 font-bold rounded text-center text-white">
+              {data?.verbalScore?.split("||")?.[1] || data?.verbal || ""}
+            </p>
+          </div>
         </span>
         <div className="flex gap-1">
           {[...Array(data?.rating || 5)].map((_, i) => (
-            <Star key={i} size={18} className="fill-yellow-400 text-yellow-400" />
+            <Star
+              key={i}
+              size={18}
+              className="fill-yellow-400 text-yellow-400"
+            />
           ))}
         </div>
       </div>
@@ -194,14 +204,6 @@ function CardContent({ data }: { data: any }) {
   );
 }
 
-
-
-
-
-
-
-
-
 // "use client";
 // import { Star } from "lucide-react";
 // import { motion, useScroll, useTransform } from "framer-motion";
@@ -209,7 +211,7 @@ function CardContent({ data }: { data: any }) {
 
 // export function TextTestimonials({testimonialsSection}:any) {
 //   const containerRef = useRef(null);
-  
+
 //   // console.log("testimonialsSection",testimonialsSection)
 //   // Track scroll progress of this specific section
 //   const { scrollYProgress } = useScroll({
@@ -256,9 +258,9 @@ function CardContent({ data }: { data: any }) {
 //         {/* Desktop: Animated Stack | Mobile: Vertical List */}
 //         <div className="hidden lg:block relative h-[500px] md:h-[350px] flex items-center justify-cneter">
 //           <div className="flex flex-col md:relative md:block mt-20">
-            
+
 //             {/* Card 1 (Bottom/Left) */}
-//             <motion.div 
+//             <motion.div
 //               style={{ x: typeof window !== 'undefined' && window.innerWidth > 688 ? x1 : 0 }}
 //               className="md:absolute top-0 left-0 w-full md:w-[20%] h-64 bg-white border-2 rounded-3xl p-6 z-10 mb-6"
 //             >
@@ -266,10 +268,10 @@ function CardContent({ data }: { data: any }) {
 //             </motion.div>
 
 //             {/* Card 2 (Middle) */}
-//             <motion.div 
-//               style={{ 
+//             <motion.div
+//               style={{
 //                 x: typeof window !== 'undefined' && window.innerWidth > 688 ? x2 : 0,
-//                 rotate: 3 
+//                 rotate: 3
 //               }}
 //               className="md:absolute top-10 left-0 w-full md:w-[20%] h-64 bg-white border-2 rounded-3xl p-6 z-20 mb-6"
 //             >
@@ -277,30 +279,29 @@ function CardContent({ data }: { data: any }) {
 //             </motion.div>
 
 //             {/* Card 3 (Top/Right) */}
-//             <motion.div 
-//               style={{ 
+//             <motion.div
+//               style={{
 //                 x: typeof window !== 'undefined' && window.innerWidth > 688 ? x3 : 0,
-//                 rotate: -2 
+//                 rotate: -2
 //               }}
 //               className="md:absolute -top-10 left-0 w-full md:w-[20%] h-64 bg-white border-2 rounded-3xl p-6 z-30 mb-6"
 //             >
 //               <CardContent data={testimonials[2]} />
 //             </motion.div>
 
-            
 //             {/* Card 4 (Top/Right) */}
-//             <motion.div 
-//               style={{ 
+//             <motion.div
+//               style={{
 //                 x: typeof window !== 'undefined' && window.innerWidth > 688 ? x4 : 0,
-//                 rotate: 2 
+//                 rotate: 2
 //               }}
 //               className="md:absolute top-0 left-0 w-full md:w-[20%] h-64 bg-white border-2 rounded-3xl p-6 z-40 mb-6"
 //             >
 //               <CardContent data={testimonials[3]} />
 //             </motion.div>
 
-//               <motion.div 
-//               style={{ 
+//               <motion.div
+//               style={{
 //                 x: typeof window !== 'undefined' && window.innerWidth > 688 ? x5 : 0,
 //                 rotate: 0
 //               }}

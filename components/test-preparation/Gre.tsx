@@ -151,32 +151,7 @@ function GreSection({
 
   return (
     <section className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8 md:py-12 text-[#2d2d2d] bg-white">
-      {/* Top Banner */}
-      <div
-        className="w-full bg-[#f06437] text-white rounded-2xl md:rounded-[30px]
-         px-4 sm:px-6 md:px-12  py-4 sm:py-2 md:py-4 flex relative my-10
-       flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 shadow-sm"
-      >
-        <div className=" flex items-center gap-2 sm:gap-3 text-center md:text-left">
-          <h2 className="text-base sm:text-lg md:text-xl lg:text-xl tracking-wide">
-            {cta_banner?.title}
-          </h2>
-        </div>
-        <div className="order-first md:order-none lg:absolute bottom-4 right-88">
-          <img
-            src="/pc.png"
-            alt=""
-            className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-30 lg:h-30 object-contain"
-          />
-        </div>
-        <a
-          href={`https://wa.me/9166146538?text=Hello`}
-          target="_blank"
-          className="bg-white hover:bg-gray-100 text-black font-semibold py-2 px-4 sm:px-6 rounded-full text-lg transition-colors duration-200 whitespace-nowrap w-full md:w-auto text-center"
-        >
-          {cta_banner?.buttonText || ""}
-        </a>
-      </div>
+     
 
       {/* Main Content Body */}
       <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4 sm:gap-6 md:gap-8 items-start mb-6 md:mb-8 lg:mb-10">
@@ -253,6 +228,34 @@ function GreSection({
             </div>
           ),
         )}
+      </div>
+
+
+       {/* Top Banner */}
+      <div
+        className="w-full bg-[#f06437] text-white rounded-2xl md:rounded-[30px]
+         px-4 sm:px-6 md:px-12  py-4 sm:py-2 md:py-4 flex relative mt-18
+       flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 shadow-sm"
+      >
+        <div className=" flex items-center gap-2 sm:gap-3 text-center md:text-left">
+          <h2 className="text-base sm:text-lg md:text-xl lg:text-xl tracking-wide">
+            {cta_banner?.title}
+          </h2>
+        </div>
+        <div className="order-first md:order-none lg:absolute bottom-4 right-88">
+          <img
+            src="/pc.png"
+            alt=""
+            className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-30 lg:h-30 object-contain"
+          />
+        </div>
+        <a
+          href={`https://wa.me/9166146538?text=Hello`}
+          target="_blank"
+          className="bg-white hover:bg-gray-100 text-black font-semibold py-2 px-4 sm:px-6 rounded-full text-lg transition-colors duration-200 whitespace-nowrap w-full md:w-auto text-center"
+        >
+          {cta_banner?.buttonText || ""}
+        </a>
       </div>
     </section>
   );
