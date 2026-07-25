@@ -42,6 +42,12 @@ export function Footer({ Data = [] }: FooterProps) {
       hoverColor: "hover:text-blue-700",
     },
     {
+      icon: "/icon/whatsapp.webp",
+      label: "whatsapp",
+      url: "https://wa.me/919166146538",
+      hoverColor: "hover:text-blue-700",
+    },
+    {
       icon: "/icon/youtube.webp",
       label: "YouTube",
       url: "https://youtube.com/@ooshasprep",
@@ -65,11 +71,11 @@ export function Footer({ Data = [] }: FooterProps) {
   ];
 
   return (
-    <footer className="bg-[#FDF4EF] mt-2 mx-4 sm:mx-8 lg:mx-16 overflow-hidden border-2 border-primary rounded-t-[2rem] sm:rounded-t-[3rem] lg:rounded-t-[3.5rem]">
+    <footer className="bg-[#FDF4EF] mt-2 mx-4 sm:mx-8 lg:mx-16 overflow-hidden border-2 border-primary rounded-t-[2rem] sm:rounded-t-[3rem] lg:rounded-t-[3.5rem] mt-10">
       {/* ================= TOP ================= */}
       <div className="">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-8 md:gap-12 lg:gap-16 items-start">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6  md:gap-12 lg:gap-16 items-start">
             {/* Logo */}
             <div className="sm:col-span-2 lg:col-span-2 pr-10 space-y-3">
               <Image
@@ -238,13 +244,13 @@ export function Footer({ Data = [] }: FooterProps) {
             </p>
             <Link
               href="/privacy-policy"
-              className="text-white hover:text-[#FF6D4D] text-sm"
+              className="text-white text-sm"
             >
               Privacy Policy
             </Link>
             <Link
               href="/terms-and-conditions"
-              className="text-white hover:text-[#FF6D4D] text-sm"
+              className="text-white text-sm"
             >
               Terms of Service
             </Link>

@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { CheckCircle, Phone, Mail, MessageSquare, RotateCcw } from "lucide-react";
 import { useRouter } from "next/navigation";
+import ConfettiEffect from "./conEeffect";
 
 // Ooshas Prap - Thank You Page (Enhanced UI/UX)
 const ThankYouPage = () => {
@@ -28,6 +29,8 @@ const ThankYouPage = () => {
   return (
     <section className="relative min-h-screen bg-slate-50 flex items-center justify-center p-4 overflow-hidden ">
       {/* Animated Background Blobs */}
+      
+      <ConfettiEffect trigger={true} />
       <div className="absolute top-0 left-0 w-96 h-96 bg-primary rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse"></div>
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-primary rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-pulse delay-1000"></div>
 

@@ -24,7 +24,7 @@ const CKEditorComponent = dynamic(() => import("./ckEditor"), {
 });
 
 interface PageProps {
-  slug: string;
+  rawText: string;
   page?: any;
 }
 
@@ -45,7 +45,17 @@ interface GeneralInfo {
   template: string;
 }
 
-const EditorForm = ({ slug }: PageProps) => {
+const EditorForm = ({ rawText }: PageProps) => {
+
+
+// 1. Decode the text twice to remove %2520 and %20
+const cleanText = decodeURIComponent(decodeURIComponent(rawText));
+
+// 2. Convert spaces to hyphens for the URL slug
+const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
+
+console.log(slug); // Output: gmat-coaching-in-jaipur
+
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [values, setValues] = useState<Record<string, any>>({});
@@ -111,8 +121,10 @@ const EditorForm = ({ slug }: PageProps) => {
         const key = Object.keys(pageData).find(
           (k) => pageData[k].name === res.seoMeta?.template,
         );
+        console.log(key,'key')
         if (key) {
           setFormData(pageData[key]);
+          console.log(pageData[key],'key');
         } else {
           const fallbackKey = Object.keys(pageData).find(
             (k) => pageData[k].name.toLowerCase() === slug.toLowerCase(),
@@ -1233,6 +1245,7 @@ const EditorForm = ({ slug }: PageProps) => {
   }
 
   if (!formData) {
+    console.log(formData,'form')
     return <div className="p-8 text-center">Loading form data...</div>;
   }
 

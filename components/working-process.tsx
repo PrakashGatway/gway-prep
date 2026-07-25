@@ -79,7 +79,7 @@ export function WorkingProcess({ data }: { data: any }) {
                     <p className="text-xl sm:text-2xl font-bold text-[#f26e46] mb-1 sm:mb-2 hidden sm:block">
                       {step.title}
                     </p>
-                    <p className="text-gray-600 leading-relaxed text-sm sm:text-base">
+                    <p className="text-gray-600 leading-relaxed text-sm text-justify sm:text-base">
                       {step.subtitle}
                     </p>
                   </div>

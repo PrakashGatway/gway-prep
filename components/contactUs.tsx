@@ -305,7 +305,7 @@ export default function ContactPage({ Data }: any) {
               <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold mb-2">
                 {heroTitle}
               </h1>
-              <h2 className="text-3xl lg:text-4xl font-bold mb-4">
+              <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-primary">
                 {heroSubtitle}
               </h2>
               <p className="text-gray-600 mb-8">{heroDescription}</p>

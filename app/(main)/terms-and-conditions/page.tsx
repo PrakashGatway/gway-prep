@@ -16,8 +16,8 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: seo?.ogTitle || seo?.title || "Terms & Conditions",
       description: seo?.ogDescription || seo?.description,
-      url: seo?.canonicalUrl 
-        ? `https://ooshasprap.com/${seo.canonicalUrl}` 
+      url: seo?.canonicalUrl
+        ? `https://ooshasprap.com/${seo.canonicalUrl}`
         : "https://ooshasprap.com/terms-and-conditions",
       type: "website",
       images: seo?.ogImage ? [{ url: seo.ogImage }] : undefined,
@@ -27,7 +27,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function TermsAndConditionsPage() {
   const pageData = await getPageInfo("terms-and-conditions");
-
 
   const heroSection = pageData.sections?.["hero-section"]?.fields;
   const settingDetails = pageData.sections?.["Setting-Details"]?.fields;
@@ -41,9 +40,7 @@ export default async function TermsAndConditionsPage() {
             <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               {heroSection.title}
             </h1>
-            <p className="text-lg text-gray-600 dark:text-gray-300">
-              {heroSection.subtitle}
-            </p>
+            <p className="text-lg  dark:text-white">{heroSection.subtitle}</p>
           </div>
         </div>
       )}
@@ -51,13 +48,67 @@ export default async function TermsAndConditionsPage() {
       {/* Content Section */}
       {settingDetails?.allContent && (
         <div className="max-w-4xl mx-auto px-4 py-12">
-          <div 
+          {/* <div 
             className="prose prose-lg dark:prose-invert max-w-none"
             dangerouslySetInnerHTML={{ __html: settingDetails.allContent }}
+          /> */}
+          <div
+            className="
+              prose 
+              prose-lg 
+              dark:prose-invert 
+              max-w-none
+
+              [&_h1]:text-4xl
+              [&_h1]:font-bold
+              [&_h1]:text-[#1a1a1a]
+              [&_h1]:mb-6
+
+              [&_h2]:text-3xl
+              [&_h2]:font-semibold
+              [&_h2]:text-[#1a1a1a]
+              [&_h2]:mt-8
+              [&_h2]:mb-4
+
+              [&_h3]:text-2xl
+              [&_h3]:font-semibold
+              [&_h3]:mt-6
+
+              [&_p]:text-base
+              [&_p]:leading-8
+              [&_p]:text-gray-700
+              [&_p]:mb-4
+
+              [&_div]:my-4
+
+              [&_ul]:list-disc
+              [&_ul]:pl-6
+              [&_ul]:space-y-2
+
+              [&_ol]:list-decimal
+              [&_ol]:pl-6
+              [&_ol]:space-y-2
+
+              [&_li]:text-gray-700
+              [&_li]:leading-7
+
+              [&_a]:text-[#f26e46]
+              [&_a]:font-semibold
+              [&_a]:underline
+              [&_a:hover]:text-[#d9532f]
+
+              [&_strong]:font-bold
+              [&_strong]:text-black
+
+              [&_img]:rounded-xl
+              [&_img]:my-6
+            "
+            dangerouslySetInnerHTML={{
+              __html: settingDetails?.allContent || "",
+            }}
           />
         </div>
       )}
     </div>
   );
 }
-

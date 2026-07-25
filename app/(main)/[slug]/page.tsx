@@ -2,6 +2,7 @@ import Gre from "@/components/test-preparation/Gre";
 import { getPageInfo } from "@/app/services/api";
 import Link from "next/link";
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -14,7 +15,14 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  if (!slug) {
+  
+// // 1. Decode the text twice to remove %2520 and %20
+const cleanText = decodeURIComponent(decodeURIComponent(slug));
+
+// // 2. Convert spaces to hyphens for the URL slug
+const rowtext = cleanText.toLowerCase().replace(/\s+/g, '-');
+
+  if (!rowtext) {
     return {
       title: "No Data Found",
       description: "Preparation material not found",
@@ -25,16 +33,16 @@ export async function generateMetadata({
     };
   }
 
-  const data = await getPageInfo(slug);
+  const data = await getPageInfo(rowtext);
 
   const seo = data?.seoMeta || {};
 
-  const canonical = seo?.canonicalUrl?.replace(/^\/+|\/+$/g, "") || slug;
+  const canonical = seo?.canonicalUrl?.replace(/^\/+|\/+$/g, "") || rowtext;
 
-  const title = seo?.title?.trim() || `${slug.toUpperCase()} Preparation`;
+  const title = seo?.title?.trim() || `${rowtext.toUpperCase()} Preparation`;
 
   const description =
-    seo?.description || `Prepare for ${slug.toUpperCase()} with Ooshas Prep.`;
+    seo?.description || `Prepare for ${rowtext.toUpperCase()} with Ooshas Prep.`;
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -102,11 +110,20 @@ export async function generateMetadata({
 export default async function PreparationPage({ params }: PageProps) {
   const { slug } = await params;
 
-  if (!slug || slug.toLowerCase() === "home") {
-    return <NoDataFoundUI />;
+// // 1. Decode the text twice to remove %2520 and %20
+const cleanText = decodeURIComponent(decodeURIComponent(slug));
+
+// // 2. Convert spaces to hyphens for the URL slug
+const rowtext = cleanText.toLowerCase().replace(/\s+/g, '-');
+
+console.log(rowtext); // Output: gmat-coaching-in-jaipur
+
+
+  if (!rowtext || rowtext.toLowerCase() === "home") {
+    redirect('/');
   }
 
-  const pageData = await getPageInfo(slug);
+  const pageData = await getPageInfo(rowtext);
 
   const hasValidData =
     pageData &&
@@ -138,9 +155,9 @@ export default async function PreparationPage({ params }: PageProps) {
 
         position: 2,
 
-        name: pageData?.seoMeta?.title || slug.toUpperCase(),
+        name: pageData?.seoMeta?.title || rowtext.toUpperCase(),
 
-        item: `${SITE_URL}/${slug}`,
+        item: `${SITE_URL}/${rowtext}`,
       },
     ],
   };
@@ -150,11 +167,11 @@ export default async function PreparationPage({ params }: PageProps) {
 
     "@type": "Course",
 
-    name: pageData?.seoMeta?.title || slug.toUpperCase(),
+    name: pageData?.seoMeta?.title || rowtext.toUpperCase(),
 
     description:
       pageData?.seoMeta?.description ||
-      `Learn ${slug.toUpperCase()} preparation with Ooshas Prep.`,
+      `Learn ${rowtext.toUpperCase()} preparation with Ooshas Prep.`,
 
     provider: {
       "@type": "Organization",
@@ -218,7 +235,7 @@ export default async function PreparationPage({ params }: PageProps) {
         />
       )}
 
-      <Gre pageInfo={pageData} slug={slug} />
+      <Gre pageInfo={pageData} slug={rowtext} />
     </>
   );
 }

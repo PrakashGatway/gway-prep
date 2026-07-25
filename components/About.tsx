@@ -2,6 +2,10 @@
 
 import { motion } from "framer-motion";
 import DOMPurify from "isomorphic-dompurify";
+import PopupModal from "./popupModel";
+import { useState } from "react";
+
+
 
 export default function About({ sections }: any) {
   // // console.log(sections, 'About data ');
@@ -33,6 +37,7 @@ export default function About({ sections }: any) {
 
   // Parse statistics items
   const statsItems = statistics.items || [];
+  const [isPopupOpen,setIsPopupOpen] = useState<boolean>(false);
 
   return (
     <main className="min-h-screen bg-white text-gray-800" id="main-content">
@@ -62,14 +67,16 @@ export default function About({ sections }: any) {
               </p>
 
               <div className="mt-6 flex flex-wrap justify-center lg:justify-start gap-4">
-                <button className="rounded-xl bg-primary px-8 py-4 text-white font-semibold transition hover:opacity-90">
+                <button onClick={() => setIsPopupOpen(true)} className="rounded-xl bg-primary px-8 py-4 text-white font-semibold transition hover:opacity-90">
                   {hero?.buttons?.primary || "Get Started"}
                 </button>
-
+{/* 
                 <button className="rounded-xl border-2 border-black bg-white px-8 py-4 font-semibold text-black transition hover:bg-gray-100">
                   {hero?.buttons?.secondary || "Learn More"}
-                </button>
+                </button> */}
               </div>
+              
+            <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen}/>
             </div>
 
             {/* Right Image */}

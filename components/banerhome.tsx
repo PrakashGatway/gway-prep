@@ -35,7 +35,7 @@ export function Banerhome({ data, img }: any) {
                     <p className="text-lg sm:text-xl font-bold text-gray-700">
                       {item.title ?? "Reliable Study Materials"}
                     </p>
-                    <p className="text-sm sm:text-base text-gray-500 mt-1 leading-relaxed">
+                    <p className="text-sm text-justify sm:text-base text-gray-600 mt-1 leading-relaxed">
                       {item.subtitle}
                     </p>
                   </div>

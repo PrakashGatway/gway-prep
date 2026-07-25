@@ -8,6 +8,7 @@ import {
   Star,
   Quote,
   X,
+  UserRound,
 } from "lucide-react";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useKeenSlider } from "keen-slider/react";
@@ -539,30 +540,30 @@ export function TextTestimonials({ heading, data }: any) {
             {validTestimonials.map((item: any, idx: number) => (
               <div
                 key={idx}
-                className="keen-slider__slide relative bg-white rounded-2xl p-4 sm:p-6 lg:p-8 transition-shadow duration-300 border-2 border-gray-100 mt-4"
+                className="keen-slider__slide relative bg-white rounded p-4 sm:p-6 lg:p-8 transition-shadow duration-300 border-2 border-gray-100 mt-4"
               >
                 {/* Quote Icon */}
-                <div className="absolute top-2 left-3 w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center z-20">
+                <div className="md:absolute top-2 left-3 w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center z-20">
                   <img
-                    src="/icon/text.png"
+                    src="/icon/quote.png"
                     alt="quote icon"
                     className="w-12 h-12 sm:w-14 sm:h-14 object-contain"
                   />
                 </div>
 
-                <div className="h-full flex flex-col pt-4 sm:pt-6 mt-2">
+                <div className="h-full flex flex-col md:pt-6 mt-2">
                   {/* Testimonial Text */}
                   <div className="flex-1">
-                    <p className="text-gray-600 leading-relaxed text-sm sm:text-base lg:text-lg line-clamp-4">
+                    <p className="text-gray-600 text-justify leading-relaxed text-sm sm:text-base lg:text-lg line-clamp-4">
                       {item.message}
                     </p>
 
-                    {item.message?.length > 150 && (
+                    {item.message?.length > 140 && (
                       <button
                         onClick={() =>
                           setSelectedTestimonial(item)
                         }
-                        className="mt-3 text-[#FF6B35] font-semibold hover:underline text-sm sm:text-base"
+                        className="md:mt-3 text-[#FF6B35] font-semibold hover:underline text-sm sm:text-base"
                       >
                         Read More
                       </button>
@@ -570,13 +571,16 @@ export function TextTestimonials({ heading, data }: any) {
                   </div>
 
                   {/* Footer */}
-                  <div className="mt-4 sm:mt-6 pt-4 sm:pt-5 border-t border-gray-100">
+                  <div className="hidden md:block mt-4 sm:mt-6 pt-4 sm:pt-5 border-t-2">
                     <div className="flex items-center justify-between gap-2 sm:gap-3">
                       <div className="flex gap-2 sm:gap-3 items-center min-w-0">
-                        <img
+                        {/* <img
                           src={item.image}
                           alt={item.name}
-                          className="h-10 w-10 sm:h-12 sm:w-12 rounded-full object-cover flex-shrink-0"
+                          className="h-10 w-10 sm:h-12 sm:w-12 p-1 rounded-full object-cover bg-primary flex-shrink-0"
+                        /> */}
+                        <UserRound
+                          className="h-10 w-10 sm:h-12 text-white sm:w-12 p-2 rounded-full object-cover bg-primary flex-shrink-0"
                         />
 
                         <div className="min-w-0">
@@ -590,7 +594,8 @@ export function TextTestimonials({ heading, data }: any) {
                         </div>
                       </div>
 
-                      <div className="flex gap-0.5 flex-shrink-0">
+                    </div>
+                      <div className="flex justify-end gap-0.5 flex-shrink-0">
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
@@ -603,7 +608,6 @@ export function TextTestimonials({ heading, data }: any) {
                           />
                         ))}
                       </div>
-                    </div>
                   </div>
                 </div>
               </div>

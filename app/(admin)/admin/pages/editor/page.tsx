@@ -59,9 +59,10 @@ const Page = () => {
       );
 
       setPages(res.data.data || []);
+      console.log(res.data)
       setPagination(res.data?.pagination);
     } catch (err) {
-      // console.log(err);
+      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -113,6 +114,35 @@ const Page = () => {
     setNewPageSlug("");
   };
 
+  
+  const openDeleteModal = async (pageItem: any, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent card click
+
+    // 1. Show confirmation alert
+    const confirmDelete = window.confirm(`Are you sure you want to delete "${pageItem}"?`);
+    
+    // 2. Exit function if the user clicks "Cancel"
+    if (!confirmDelete) return;
+
+    try {
+      // 3. Make the API request if confirmed
+      const response = await axiosInstance.delete(
+        `/admin/pageInfo/${pageItem}`
+      );
+      
+      console.log(response, 'response');
+      
+      // 4. Show success toast (Changed from .error to .success)
+      toast.success("Page deleted successfully!");
+      fetchPages();
+
+    } catch (error) {
+      console.log(error, "delete error");
+      toast.error("Failed to delete the page.");
+    }
+};
+
+  
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
@@ -167,7 +197,7 @@ const Page = () => {
               <div
                 key={pageItem._id}
                 onClick={() =>
-                  router.push(`/admin/pages/editor/${pageItem.name.toLowerCase()}`)
+                  router.push(`/admin/pages/editor/${pageItem.slug}`)
                 }
                 className="group bg-white rounded-2xl border p-6 shadow-sm hover:shadow-lg transition cursor-pointer"
               >
@@ -193,13 +223,19 @@ const Page = () => {
                   <div className="flex gap-2">
                     <button
                       onClick={(e) => openDuplicateModal(pageItem, e)}
-                      className="h-12 w-12 rounded-xl bg-blue-50 flex items-center justify-center hover:bg-blue-500 transition group/btn"
+                      className="h-12 w-12 rounded-xl bg-blue-50 flex items-center justify-center hover:bg-blue-500 transition 
+                      group/btn"
                       title="Duplicate page"
                     >
                       <Copy className="text-blue-600 group-hover/btn:text-white transition" size={18} />
                     </button>
-                    <div className="h-12 w-12 rounded-xl bg-orange-50 flex items-center justify-center group-hover:bg-orange-500 transition">
+                    <div className="h-12 w-12 rounded-xl bg-orange-50 flex items-center justify-center group-hover:bg-orange-500 
+                    transition">
                       <Edit className="group-hover:text-white" size={18} />
+                    </div>
+                    <div onClick={(e) => openDeleteModal(pageItem.name,e)} className="h-12 w-12 rounded-xl bg-red-50 flex items-center justify-center hover:bg-red-500 hover:text-white
+                    transition">
+                      <Trash2 className="" size={18} /> 
                     </div>
                   </div>
                 </div>

@@ -1115,7 +1115,7 @@ export default function CareersPage({ sections }: any) {
            {sections["Career-Hiring-Process"]?.fields?.title?.split("||")[0]} <span style={{ color: orange }}>{sections["Career-Hiring-Process"]?.fields?.title?.split("||")[1]}</span>
           </h3>
         <div className=" relative bg-[#FCEEE5] lg:bg-[url('/image_30c67b71.webp')] bg-no-repeat bg-center bg-contain max-w-7xl mx-auto relative lg:h-[420px] px-6 py-12 lg:px-0 lg:py-0">
-         <div className="rounded-full bg-primary p-2.5 h-14 w-14 object-scale-down lg:absolute lg:bottom-[30px] lg:left-[180px]">
+         <div className="hidden md:block rounded-full bg-primary p-2.5 h-14 w-14 object-scale-down lg:absolute lg:bottom-[30px] lg:left-[180px]">
           <img 
             src="/icon/2.webp" 
             alt="icon" 
@@ -1123,14 +1123,14 @@ export default function CareersPage({ sections }: any) {
           />
         </div>
 
-         <div className="rounded-full bg-primary p-2 h-14 w-14 object-scale-down  lg:absolute lg:top-[74px] lg:right-[600px]">
+         <div className="hidden md:block rounded-full bg-primary p-2 h-14 w-14 object-scale-down  lg:absolute lg:top-[74px] lg:right-[600px]">
           <img 
             src="/icon/3.webp" 
             alt="icon" 
             className="" 
           />
         </div>
-         <div className="rounded-full bg-primary p-2 h-14 w-14 object-scale-down  lg:absolute lg:top-[90px] lg:right-[180px]">
+         <div className="hidden md:block rounded-full bg-primary p-2 h-14 w-14 object-scale-down  lg:absolute lg:top-[90px] lg:right-[180px]">
           <img 
             src="/icon/1.webp" 
             alt="icon" 

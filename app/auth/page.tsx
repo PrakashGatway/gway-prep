@@ -28,6 +28,7 @@ import axiosInstance from "@/services/axiosInstance";
 import { useGlobal } from "@/hooks/AppStateContext";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
+import ConfettiEffect from "@/components/conEeffect";
 
 type AuthMode = "email" | "register" | "otp" | "success";
 
@@ -665,7 +666,7 @@ const AuthDrawer = () => {
 
   return (
     
-      <Suspense fallback={
+    <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-[#f26e46] border-t-transparent rounded-full animate-spin" />
       </div>
@@ -674,6 +675,7 @@ const AuthDrawer = () => {
     <AnimatePresence mode="wait">
       {isVisible && (
         <>
+
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}

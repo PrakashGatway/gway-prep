@@ -21,10 +21,10 @@ export async function GET(
 
     let page;
     if (name === "all") {
-      page = await PageData.find().select("name seoMeta.canonicalUrl seoMeta.navIcon template").lean();
+      page = await PageData.find().select("name seoMeta.canonicalUrl seoMeta.navIcon template slug").lean();
     } else {
       page = await PageData.findOne({
-        $or: [{ name: name.toLowerCase() }, { slug: name.toLowerCase() }],
+        $or: [{ name: name.toLowerCase() }, { slug: name }],
       })
         .select("-__v")
         .lean();
@@ -121,6 +121,12 @@ export async function POST(
       ...sourcePage,
       name: newName,
       slug: newSlug,
+      seoMeta: {
+    ...sourcePage.seoMeta,
+        name: newName,
+        slug: newSlug,
+        canonicalUrl: newSlug,
+      },
     });
 
     return NextResponse.json(
@@ -218,39 +224,35 @@ export async function DELETE(
 ): Promise<NextResponse> {
   try {
     const { name } = await params;
-
     await connectDB();
 
-    const deleted = await PageData.findOneAndDelete({
-      name: name.toLowerCase(),
+    
+    const page = await PageData.findOne({
+      $or: [{ name: name.toLowerCase() }, { slug: name.toLowerCase() }],
     }).lean();
 
-    if (!deleted) {
+    if (!page) {
       return NextResponse.json(
-        {
-          error: `Page "${name}" not found.`,
-        },
+        { error: `Page "${name}" not found.` },
         { status: 404 },
       );
     }
 
+    const deleted = await PageData.findByIdAndDelete(page._id).lean();
+
     return NextResponse.json(
-      {
-        message: `Page "${name}" deleted.`,
-      },
+      { message: `Page "${name}" with ID ${page._id} deleted.` },
       { status: 200 },
     );
   } catch (error) {
     console.error("[PAGE DELETE]", error);
-
     return NextResponse.json(
-      {
-        error: "Server error",
-      },
+      { error: "Server error" },
       { status: 500 },
     );
   }
 }
+
 
 
 // import { NextRequest, NextResponse } from "next/server";

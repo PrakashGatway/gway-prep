@@ -365,7 +365,7 @@ export function Navbar({ Data }: any) {
                                     className="flex gap-4 py-4 px-4 rounded-2xl hover:bg-orange-50 group"
                                   >
                                     {/* ... same dropdown item UI as desktop ... */}
-                                    <div className="w-10 h-10 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
+                                    <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0">
                                       {sub.img ? (
                                         <Image
                                           src={sub.img}

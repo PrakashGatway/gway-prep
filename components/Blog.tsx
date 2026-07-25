@@ -324,8 +324,8 @@ export default function BlogPage({ pageInfo, categories }: any) {
       <section className="relative w-full overflow-hidden bg-[#fcf4ed] py-8 md:py-12">
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-12 px-4 sm:px-6 lg:flex-row lg:justify-between lg:px-8">
           {/* Left Flex Item: Content Column */}
-          <div className="flex w-full flex-col justify-center text-center lg:w-[85%] lg:text-left">
-            <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+          <div className="flex w-full flex-col justify-center text-center lg:w-[85%] text-center lg:text-left">
+            <h1 className=" text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
               {"Ooshas Prep "}
               <span className="text-primary">{"Blog"}</span>
             </h1>

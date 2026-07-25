@@ -19,7 +19,7 @@ export default function ServicesGrid({ data, heading }: any) {
             <span className="text-primary">{titleParts[0]?.trim() || "Four Ways to Learn."}</span>{" "}
             <span className="">{titleParts[1]?.trim() || "One Standard of Excellence."}</span>
           </h2>
-          <p className="mt-6 text-lg leading-relaxed">
+          <p className="my-6 md:text-lg leading-relaxed">
             {subtitle}
           </p>
         </div>
@@ -87,13 +87,13 @@ function Card({ item }: CardProps) {
   const buttonText = contentParts[1]?.trim() || "Learn More";
   
   return (
-    <div className="bg-white rounded-3xl p-2 shadow-md border border-orange-100 hover:-translate-y-2 transition-all duration-300">
+    <div className="bg-white md:rounded-3xl p-2 shadow-md border border-orange-100 hover:-translate-y-2 transition-all duration-300">
       {item.heading && (
         <h3 className="text-center text-base font-semibold text-gray-800">
           {item.heading}
         </h3>
       )}
-      <p className="text-gray-600 text-center mt-2 leading-relaxed text-sm">
+      <p className="text-gray-600 lg:text-center mt-2 leading-relaxed text-sm text-justify sm:text-base">
         {description}
       </p>
       <div className="mt-2 flex justify-center">

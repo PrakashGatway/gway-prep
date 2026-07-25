@@ -51,7 +51,7 @@ export function Consultants({ data, finalCtaSection }: any) {
             </button>
 
             {openIndex !== index && (
-              <div className="pb-4 text-gray-600 leading-relaxed text-sm">
+              <div className="pb-4 text-justify leading-relaxed text-sm">
                 {item.answer}
               </div>
             )}

@@ -140,12 +140,12 @@ export function HomeStudent({data}:{data : any}) {
                   How did {"Ooshaprep"} help{" "}
                   {student.name}?
                 </p>
-                <div className="text-sm sm:text-base" dangerouslySetInnerHTML={{__html: student.about}} />
+                <div className="text-sm sm:text-base text-justify" dangerouslySetInnerHTML={{__html: student.about}} />
               </div>
 
               <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border">
                 <p className="text-[#FF6B35] font-bold mb-3 sm:mb-4 text-base sm:text-lg">Outcome</p>
-                <div className="text-sm sm:text-base" dangerouslySetInnerHTML={{__html : student.outcome}} />
+                <div className="text-sm sm:text-base " dangerouslySetInnerHTML={{__html : student.outcome}} />
               </div>
             </div>
           </div>

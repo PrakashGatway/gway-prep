@@ -27,7 +27,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     const [pages, total] = await Promise.all([
       PageData.find(filter)
-        .select("name seoMeta")
+        .select("name slug seoMeta")
         .skip(skip)
         .limit(limit)
         .lean(),
