@@ -186,7 +186,7 @@ export async function PUT(
 
     const updated = await PageData.findOneAndUpdate(
       {
-        name: name.toLowerCase(),
+        slug: name,
       },
       {
         $set: setPayload,

@@ -1179,7 +1179,7 @@ console.log(slug); // Output: gmat-coaching-in-jaipur
       const endpoint =
           slug === "new"
           ? `/api/admin/pageInfo`
-          : `/api/admin/pageInfo/${slug.toLowerCase()}`;
+          : `/api/admin/pageInfo/${slug}`;
 
       const method = slug === "new" ? "POST" : "PUT";
 
