@@ -246,7 +246,7 @@ export function Navbar({ Data }: any) {
                   className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-[#F36C45] to-orange-500 text-white font-medium flex items-center gap-2 hover:shadow-xl hover:shadow-orange-500/30 transition-all active:scale-95"
                 >
                   <User size={18} />
-                  Login / Signup
+                  Get Started
                 </button>
               ) : (
                 <button
@@ -426,7 +426,7 @@ export function Navbar({ Data }: any) {
                       }}
                       className="w-full py-4 bg-gradient-to-r from-[#F36C45] to-orange-500 text-white rounded-2xl font-medium"
                     >
-                      Login / Signup
+                      Get Started
                     </button>
                   ) : (
                     <button

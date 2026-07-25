@@ -39,7 +39,7 @@ export function Consultants({ data, finalCtaSection }: any) {
               onClick={() => toggle(index)}
               className="flex items-center justify-between w-full py-4 text-left cursor-pointer" // Fixed "pointer" class to "cursor-pointer"
             >
-              <span className="font-medium text-gray-800 text-xl">
+              <span className="font-medium text-primary text-xl">
                 {item.question}
               </span>
 

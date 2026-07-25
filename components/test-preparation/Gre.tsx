@@ -153,16 +153,16 @@ function GreSection({
     <section className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8 md:py-12 text-[#2d2d2d] bg-white">
       {/* Top Banner */}
       <div
-        className="w-full bg-[#f06437] text-white rounded-2xl md:rounded-[30px] px-4
-         sm:px-6 md:px-12 lg:px-20 py-4 sm:py-6 md:py-8 flex
-       flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 md:gap-6 mb-6 md:mb-8 lg:mb-18 shadow-sm"
+        className="w-full bg-[#f06437] text-white rounded-2xl md:rounded-[30px]
+         px-4 sm:px-6 md:px-12  py-4 sm:py-2 md:py-4 flex relative my-10
+       flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 shadow-sm"
       >
-        <div className="flex items-center gap-2 sm:gap-3 text-center md:text-left">
-          <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-bold tracking-wide">
+        <div className=" flex items-center gap-2 sm:gap-3 text-center md:text-left">
+          <h2 className="text-base sm:text-lg md:text-xl lg:text-xl tracking-wide">
             {cta_banner?.title}
           </h2>
         </div>
-        <div className="order-first md:order-none">
+        <div className="order-first md:order-none lg:absolute bottom-4 right-88">
           <img
             src="/pc.png"
             alt=""
@@ -172,7 +172,7 @@ function GreSection({
         <a
           href={`https://wa.me/9166146538?text=Hello`}
           target="_blank"
-          className="bg-white hover:bg-gray-100 text-black font-semibold py-2 px-4 sm:px-6 rounded-full text-sm transition-colors duration-200 whitespace-nowrap w-full md:w-auto text-center"
+          className="bg-white hover:bg-gray-100 text-black font-semibold py-2 px-4 sm:px-6 rounded-full text-lg transition-colors duration-200 whitespace-nowrap w-full md:w-auto text-center"
         >
           {cta_banner?.buttonText || ""}
         </a>
@@ -732,20 +732,20 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
           <StudentsSlider data={studentsData || []} />
         </div>
 
-        <div className="hidden md:block absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 w-[95%] sm:w-full max-w-5xl
-         px-2 sm:px-4 z-20">
+        <div className="hidden md:block absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 w-[95%] sm:w-full max-w-xl
+         px-2 sm:px-2 z-20">
           <div className="bg-[#F86C43] rounded-2xl flex flex-col sm:flex-row items-center justify-between px-3 sm:px-4 py-2 sm:py-2 gap-2 sm:gap-0">
             
             <div className="flex items-center gap-3 sm:gap-5">
-              <div 
+              {/* <div 
                style={{ backgroundColor: studentsData?.[0]?.colorCode || "#555" }}
                className={`w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0`}>
                 <span className="text-white text-base sm:text-lg font-bold uppercase">
                   {slug}
                 </span>
-              </div>
+              </div> */}
 
-              <h3 className="text-white font-bold text-sm sm:text-lg md:text-2xl">
+              <h3 className="text-white font-bold text-sm sm:text-lg md:text-lg">
                 {heroSection?.ctaButtonText || "Full Courses starts at $99"}
               </h3>
             </div>
@@ -753,16 +753,16 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
             
             <button
               onClick={() => router.push("/auth")}
-              className=" hover:bg-[#323232] rounded-full pl-4 sm:pl-6 pr-1.5 sm:pr-2 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-4 transition-all w-full sm:w-auto justify-center sm:justify-start"
+              className=" hover:bg-[#323232] rounded-full px-1 sm:px-4 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-4 transition-all w-full sm:w-auto justify-center sm:justify-start"
               style={{ backgroundColor: studentsData?.[0]?.colorCode || "#555" }} 
             >
               <span className="text-white font-semibold text-sm sm:text-base lg:text-lg">
                 Explore Courses
               </span>
 
-              <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white flex items-center justify-center">
+              {/* <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white flex items-center justify-center">
                 <ChevronRight className="text-[#424242]" size={16} />
-              </span>
+              </span> */}
             </button>
           </div>
         </div>
