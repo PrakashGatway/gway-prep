@@ -2556,7 +2556,7 @@ export const pageData: any = {
           {
             name: "Subtitle",
             label: "Subtitle",
-            type: "textarea",
+            type: "editor",
             value: "Purchased by 500,000+ GRE students",
           },
           {
