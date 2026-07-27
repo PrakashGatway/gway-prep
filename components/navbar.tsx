@@ -25,9 +25,15 @@ export function Navbar({ Data }: any) {
 
   const [isOpen, setIsOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
-  const [activeDropdown, setActiveDropdown] = React.useState<string | null>(null);
-  const [activeSubDropdown, setActiveSubDropdown] = React.useState<string | null>(null);
-  const [mobileDropdown, setMobileDropdown] = React.useState<string | null>(null);
+  const [activeDropdown, setActiveDropdown] = React.useState<string | null>(
+    null,
+  );
+  const [activeSubDropdown, setActiveSubDropdown] = React.useState<
+    string | null
+  >(null);
+  const [mobileDropdown, setMobileDropdown] = React.useState<string | null>(
+    null,
+  );
 
   // ---- DATA (only change here if you need different structure) ----
   const NAVDATA = React.useMemo(
@@ -172,22 +178,24 @@ export function Navbar({ Data }: any) {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 8, scale: 0.97 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute left-[10%]  top-full pt-2 z-50"
+                        className="absolute left-[10%] top-full pt-2 z-50"
                         onMouseEnter={() => setActiveDropdown(item.name)}
                         onMouseLeave={closeDesktopDropdown}
                       >
                         <div className="bg-white rounded border border-gray-100 shadow-xl overflow-hidden flex">
-                          
                           <div className="py-2 max-h-[520px] overflow-y-auto min-w-[280px] xl:min-w-[320px] bg-orange-50/60">
                             {item.dropdownItems?.map((dd: any) => {
-                              const hasSub = dd.sublink && dd.sublink.length > 0;
+                              const hasSub =
+                                dd.sublink && dd.sublink.length > 0;
                               const isActive = activeSubDropdown === dd.slug;
 
                               return (
                                 <div
                                   key={dd.slug}
                                   onMouseEnter={() => {
-                                    setActiveSubDropdown(hasSub ? dd.slug : null);
+                                    setActiveSubDropdown(
+                                      hasSub ? dd.slug : null,
+                                    );
                                   }}
                                   className="relative"
                                 >
@@ -290,19 +298,30 @@ export function Navbar({ Data }: any) {
                                             <Link
                                               key={sub.slug}
                                               href={`/${sub.slug}`}
-                                              className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-orange-50 transition-all group/sub"
+                                              className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-orange-50
+                                               transition-all group/sub"
                                               onClick={closeDesktopDropdown}
                                             >
-                                              <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-gray-50 group-hover/sub:bg-orange-100 transition-colors">
+                                              <div
+                                                className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0
+                                               bg-white transition-colors"
+                                              >
                                                 {sub.img ? (
                                                   <Image
                                                     src={sub.img}
                                                     alt={sub.name}
-                                                    width={22}
-                                                    height={22}
+                                                    width={28}
+                                                    height={28}
                                                     className="object-contain"
                                                   />
                                                 ) : (
+                                                  // <Image
+                                                  //   src={sub.img}
+                                                  //   alt={sub.name}
+                                                  //   width={22}
+                                                  //   height={22}
+                                                  //   className="object-contain"
+                                                  // />
                                                   <GraduationCap
                                                     size={14}
                                                     className="text-[#F36C45]"
@@ -510,12 +529,13 @@ export function Navbar({ Data }: any) {
                                           </div>
                                         )}
                                       </div>
-                                      {sub.sublink && sub.sublink.length > 0 && (
-                                        <ChevronRight
-                                          size={16}
-                                          className="text-gray-300 flex-shrink-0"
-                                        />
-                                      )}
+                                      {sub.sublink &&
+                                        sub.sublink.length > 0 && (
+                                          <ChevronRight
+                                            size={16}
+                                            className="text-gray-300 flex-shrink-0"
+                                          />
+                                        )}
                                     </Link>
 
                                     {/* Mobile Sublinks */}
@@ -617,10 +637,6 @@ export function Navbar({ Data }: any) {
     </>
   );
 }
-
-
-
-
 
 // "use client";
 
@@ -1083,6 +1099,3 @@ export function Navbar({ Data }: any) {
 //     </>
 //   );
 // }
-
-
-
