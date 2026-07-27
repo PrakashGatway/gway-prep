@@ -80,6 +80,7 @@ const Page = () => {
         {
           name: newPageName,
           slug: newPageSlug,
+          duplicateOf : duplicatePage.name.toLowerCase()
         }
       );
 

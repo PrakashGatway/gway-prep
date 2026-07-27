@@ -73,6 +73,7 @@ export async function POST(
 
     const newName = body.name?.trim().toLowerCase();
     const newSlug = body.slug?.trim().toLowerCase();
+    const duplicateOf = body?.duplicateOf;
 
     if (!newName || !newSlug) {
       return NextResponse.json(
@@ -126,6 +127,7 @@ export async function POST(
         name: newName,
         slug: newSlug,
         canonicalUrl: newSlug,
+        duplicateOf: duplicateOf
       },
     });
 
