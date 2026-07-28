@@ -14,10 +14,19 @@ interface FooterProps {
 export function Footer({ Data = [] }: FooterProps) {
   const router = useRouter();
 
-  const courseData = React.useMemo(
+const courseData = React.useMemo(
+  () => Data?.filter((item: any) => {
+    return item?.seoMeta?.template?.toLowerCase() === "preparation" && !item?.seoMeta?.duplicateOf;
+  }) || [],
+  [Data],
+);
+
+
+  
+  const courseData1 = React.useMemo(
     () =>
       Data?.filter(
-        (item: any) => item?.seoMeta?.template?.toLowerCase() === "preparation",
+        (item: any) => item?.seoMeta?.template?.toLowerCase() === "examdetails",
       ) || [],
     [Data],
   );
@@ -166,9 +175,19 @@ export function Footer({ Data = [] }: FooterProps) {
 
             {/* Contact - Hidden on mobile, visible on lg screens */}
             <div className="hidden lg:block">
-              <h3 className="text-xl font-bold my-5">Contact us</h3>
+              <h3 className="text-xl font-bold my-5">Exam Details</h3>
               <ul className="space-y-2 text-sm text-[#444]">
-                {socialLinks.map((social) => {
+                {courseData1.map((item: any) => (
+                  <li
+                    key={item._id}
+                    onClick={() => router.push(`/${item.seoMeta.canonicalUrl}`)}
+                    className="cursor-pointer hover:text-[#FF6D4D]"
+                  >
+                    {item.seoMeta.navTitle}
+                  </li>
+                ))}
+
+                {/* {socialLinks.map((social) => {
                   const Icon = social.icon;
                   return (
                     <li key={social.label}>
@@ -181,7 +200,7 @@ export function Footer({ Data = [] }: FooterProps) {
                       </button>
                     </li>
                   );
-                })}
+                })} */}
               </ul>
             </div>
           </div>

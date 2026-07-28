@@ -30,7 +30,7 @@ function AIStudySection({ aiStudySection }: { aiStudySection: any }) {
   return (
     <section className="px-4 sm:px-6 bg-white">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-6 md:mb-12 lg:mb-16">
+        <div className="text-center mb-6 md:mb-12 lg:mb-16 max-w-5xl mx-auto">
           <p className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-extrabold m-3 sm:m-4 flex flex-wrap gap-1 sm:gap-2 items-center justify-center">
             {aiStudySection?.sectionTitle?.split("||")[0] || "What is"}
             <span className="text-[#f06437]">
@@ -825,7 +825,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
 
       {/* Score Guarantee Section */}
       <section className="relative overflow-hidden bg-gradient-to-b from-[#fdf0eb] to-white py-8 sm:pt-12 md:pt-12 px-3 sm:px-4">
-        <div className="flex justify-center items-center flex-col w-full">
+        <div className="flex justify-center items-center flex-col max-w-6xl mx-auto">
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-extrabold text-center">
             {scoreGuaranteeSection?.title?.split("||")[0] || "What is"} <br className="sm:hidden" />
             <p className="text-[#f06437]">
@@ -833,7 +833,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
             </p>
           </h2>
 
-          <p className="my-3 sm:my-4 md:my-6 text-sm sm:text-base text-center px-2">
+          <p className="my-3 sm:my-4 md:my-6 text-sm sm:text-base text-center px-2 text-justify">
             {scoreGuaranteeSection.subtitle}
           </p>
         </div>

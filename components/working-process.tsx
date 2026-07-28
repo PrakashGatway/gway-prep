@@ -34,7 +34,7 @@ export function WorkingProcess({ data }: { data: any }) {
             {data.fields.title.split("||")[0]}
             <span className="text-primary">{data.fields.title.split("||")[1]}</span>
           </h2>
-          <p className=" text-base sm:text-lg md:text-xl mt-4 max-w-2xl mx-auto px-4">
+          <p className=" text-base sm:text-lg md:text-xl mt-4 max-w-5xl mx-auto text-justify px-4">
             {data.fields.subtitle}
           </p>
         </div>

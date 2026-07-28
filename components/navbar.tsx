@@ -35,7 +35,16 @@ export function Navbar({ Data }: any) {
     null,
   );
 
-  // ---- DATA (only change here if you need different structure) ----
+  
+  const NAVDATA1 = React.useMemo(
+    () =>
+      Data?.filter(
+        (item: any) => item?.seoMeta?.template?.toLowerCase() === "examdetails",
+      ) || [],
+    [Data],
+  );
+
+  
   const NAVDATA = React.useMemo(
     () =>
       Data?.filter(
@@ -73,6 +82,20 @@ export function Navbar({ Data }: any) {
       },
       { name: "About Us", href: "/about", icon: null },
       { name: "Services", href: "/services", icon: null },
+      // {
+      //   name: "Exam Prep",
+      //   href: "#",
+      //   hasDropdown: true,
+      //   icon: GraduationCap,
+      //   dropdownItems: NAVDATA1.map((item: any) => ({
+      //     name: item.seoMeta.navTitle,
+      //     img: item?.seoMeta?.navIcon,
+      //     slug: item.seoMeta.canonicalUrl,
+      //     description: item.seoMeta.navSubtitle,
+      //     badge: item.seoMeta?.badge || null,
+        
+      //   })),
+      // },
       { name: "Blogs", href: "/blog", icon: null },
       { name: "Career", href: "/career", icon: null },
       { name: "Contact Us", href: "/contact", icon: null },
