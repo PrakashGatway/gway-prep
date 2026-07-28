@@ -2735,7 +2735,7 @@ export const pageData: any = {
   ExamDetails: {
     name: "ExamDetails",
     description: "Create and manage Exam Infomation.",
-    require: false,
+    require: true,
     sections: [
       {
         name: "basic-info",
@@ -2773,87 +2773,66 @@ export const pageData: any = {
       },
       
       {
-        name: "pricing-section",
-        label: "Pricing Plans",
+        name: "exam-data",
+        label: "Exam Data",
         fields: [
           {
-            name: "testimonial",
-            label: "Testimonial Quote",
-            type: "editor",
-            required: false,
-          },
-          {
-            name: "pricing_plans",
-            label: "Pricing Plans",
+            name: "exam_details",
+            label: "Exam Details",
             type: "repeater",
             max: 3,
             fields: [
-              {
-                name: "plan_name",
-                label: "Plan Name",
-                type: "text",
-                placeholder: "Plan Name",
-              },
-              {
-                name: "subtitle",
-                label: "Plan Subtitle",
-                type: "text",
-              },
-              {
-                name: "badge",
-                label: "Badge",
-                type: "text",
-              },
-              {
-                name: "is_highlighted",
-                label: "Highlighted (featured)",
-                type: "select",
-                option: ["true", "false"],
-              },
-              {
-                name: "bundle_offer",
-                label: "Bundle Offer Badge",
-                type: "text",
-                placeholder: "Bundle and save $854 ($1073 value)",
-              },
               {
                 name: "content_data",
                 label: "Content Data",
                 type: "editor",
               },
               {
-                name: "content_features",
-                label: "Content Features",
+                name: "faq",
+                label: "FAQ",
                 type: "repeater",
                 fields: [
                   {
-                    name: "feature",
-                    label: "Feature",
+                    name: "question",
+                    label: "Question",
                     type: "text",
                   },
+                  {
+                    name : "answer",
+                    label : "Answer",
+                    type : "textarea"
+                  }
                 ],
               },
+              
               {
-                name: "Form_Data",
-                label: "form data",
+                name: "question",
+                label: "Question Title",
+                type: "text",
+                required: true,
+                placeholder: "Enter Question",
+              },
+              {
+                name: "options",
+                label: "Options",
                 type: "repeater",
                 fields: [
-                  {
-                    name: "label",
-                    label: "Label",
-                    type: "text",
-                  },
                   {
                     name: "value",
                     label: "Value",
                     type: "text",
                   },
+                   {
+                    name: "label",
+                    label: "Label",
+                    type: "text",
+                  },
                   {
                     name: "type",
-                    label: "Publish Status",
+                    label: "Input Type",
                     type: "select",
                     required: true,
-                    option: ["true", "false"],
+                    option: ["text", "radio"],
                   },
                 ],
               }
@@ -2866,19 +2845,6 @@ export const pageData: any = {
   },
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -15,12 +15,11 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  
-// // 1. Decode the text twice to remove %2520 and %20
-const cleanText = decodeURIComponent(decodeURIComponent(slug));
+  // // 1. Decode the text twice to remove %2520 and %20
+  const cleanText = decodeURIComponent(decodeURIComponent(slug));
 
-// // 2. Convert spaces to hyphens for the URL slug
-const rowtext = cleanText.toLowerCase().replace(/\s+/g, '-');
+  // // 2. Convert spaces to hyphens for the URL slug
+  const rowtext = cleanText.toLowerCase().replace(/\s+/g, "-");
 
   if (!rowtext) {
     return {
@@ -42,7 +41,8 @@ const rowtext = cleanText.toLowerCase().replace(/\s+/g, '-');
   const title = seo?.title?.trim() || `${rowtext.toUpperCase()} Preparation`;
 
   const description =
-    seo?.description || `Prepare for ${rowtext.toUpperCase()} with Ooshas Prep.`;
+    seo?.description ||
+    `Prepare for ${rowtext.toUpperCase()} with Ooshas Prep.`;
 
   return {
     metadataBase: new URL(SITE_URL),
@@ -110,17 +110,16 @@ const rowtext = cleanText.toLowerCase().replace(/\s+/g, '-');
 export default async function PreparationPage({ params }: PageProps) {
   const { slug } = await params;
 
-// // 1. Decode the text twice to remove %2520 and %20
-const cleanText = decodeURIComponent(decodeURIComponent(slug));
+  // // 1. Decode the text twice to remove %2520 and %20
+  const cleanText = decodeURIComponent(decodeURIComponent(slug));
 
-// // 2. Convert spaces to hyphens for the URL slug
-const rowtext = cleanText.toLowerCase().replace(/\s+/g, '-');
+  // // 2. Convert spaces to hyphens for the URL slug
+  const rowtext = cleanText.toLowerCase().replace(/\s+/g, "-");
 
-console.log(rowtext); // Output: gmat-coaching-in-jaipur
-
+  console.log(rowtext); // Output: gmat-coaching-in-jaipur
 
   if (!rowtext || rowtext.toLowerCase() === "home") {
-    redirect('/');
+    redirect("/");
   }
 
   const pageData = await getPageInfo(rowtext);
@@ -210,7 +209,6 @@ console.log(rowtext); // Output: gmat-coaching-in-jaipur
 
   return (
     <>
-      {/* Breadcrumb Schema */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -225,7 +223,6 @@ console.log(rowtext); // Output: gmat-coaching-in-jaipur
         }}
       />
 
-      {/* FAQ Schema */}
       {faqSchema && (
         <script
           type="application/ld+json"
@@ -235,7 +232,10 @@ console.log(rowtext); // Output: gmat-coaching-in-jaipur
         />
       )}
 
-      <Gre pageInfo={pageData} slug={rowtext} />
+      {pageData?.template === 'preparation' ? (
+        <Gre pageInfo={pageData} slug={rowtext} />
+      ) : null}
+
     </>
   );
 }
