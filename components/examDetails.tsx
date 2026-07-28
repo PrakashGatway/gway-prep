@@ -1,688 +1,462 @@
-// app/exam/page.tsx
-import React, { Suspense } from 'react';
+"use client";
 
-// ... type definitions
+import React, { useMemo, useState, useEffect, useRef } from "react";
+import {
+  ChevronDown,
+  CircleHelp,
+  CheckCircle2,
+  FileText,
+  Menu,
+  X,
+  Send,
+  MapPin,
+  Mail,
+  Phone,
+  User,
+} from "lucide-react";
+import FormSection from "./formSection";
+import EditorContent from "./editorContent";
 
-// Loading component
-function ExamLoading() {
+const ExamDetails = ({ pagedata }: any) => {
+  const basicInfo = pagedata?.sections?.["basic-info"]?.fields;
+  const examData =
+    pagedata?.sections?.["exam-data"]?.fields?.exam_details || [];
+
+  const [activeSection, setActiveSection] = useState<string>("");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+
+  const toc = useMemo(() => {
+    return examData.map((item: any, index: number) => ({
+      id: `section-${index}`,
+      title:
+        // item.question || item.faq?.length
+        //   ? "Frequently Asked Questions"
+        //   :
+           item.content_heading || `Section ${index + 1}`,
+    }));
+  }, [examData]);
+
+  // Handle scroll detection
+  useEffect(() => {
+    const handleScroll = () => {
+      let currentActive = "";
+      const scrollPosition = window.scrollY + 100;
+
+      // Check each section
+      toc.forEach((item) => {
+        const element = sectionRefs.current[item.id];
+        if (element) {
+          const offsetTop = element.offsetTop;
+          const offsetBottom = offsetTop + element.offsetHeight;
+
+          if (scrollPosition >= offsetTop && scrollPosition < offsetBottom) {
+            currentActive = item.id;
+          }
+        }
+      });
+
+      setActiveSection(currentActive);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Initial check
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [toc]);
+
+  const scrollToSection = (id: string) => {
+    const element = sectionRefs.current[id];
+    if (element) {
+      const offset = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+      setIsMobileMenuOpen(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-            <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
-            <div className="h-4 bg-gray-200 rounded w-1/2 mb-6"></div>
-            <div className="space-y-4">
-              <div className="h-20 bg-gray-200 rounded"></div>
-              <div className="h-20 bg-gray-200 rounded"></div>
-              <div className="h-20 bg-gray-200 rounded"></div>
+    <>
+      <main className="min-h-screen bg-white">
+        {/* ── HEADER CARD ─────────────────────────────────────────────────── */}
+        <div className="relative max-w-[100vw] overflow-hidden mx-auto h-[30rem] px-2 sm:px-10 py-10 flex items-center justify-center">
+          <div
+            className="absolute bg-primary w-full h-[35rem] left-0 -top-[100px]"
+            style={{
+              borderRadius: "0 0 50% 50%/0 0 100% 100%",
+              transform: "scaleX(2.4)",
+            }}
+          ></div>
+
+          <div className="flex md:flex-col lg:flex-row bg-white rounded overflow-hidden w-full h-[100%] z-50 mt-20">
+            <div className="p-6 flex items-start gap-4 flex-col w-full lg:w-1/3">
+             
+              <div>
+                <h1 className="text-3xl font-bold text-slate-900">
+                  {basicInfo?.title}
+                </h1>
+                {basicInfo?.subtitle && (
+                //   <p className="text-gray-600 mt-2">{basicInfo.subtitle}</p>
+                <div
+                    className="text-gray-600 mt-2 text-justify"
+                    dangerouslySetInnerHTML={{
+                    __html: basicInfo.subtitle,
+                    }}
+                />
+                )}
+              </div>
             </div>
+            <div className="hedding lg:block lg:w-fit p-2">
+                
+             <img
+                src={basicInfo?.Image || "https://res.cloudinary.com/drsainihk/image/upload/v1784546671/cway-admin/rx2e0kmbnawefickyvqr.webp"}
+                alt={`${basicInfo?.title} logo`}
+                className="h-full w-full object-contain bg-white rounded-xl"
+              />
+            </div>
+
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
 
-// Error component
-function ExamError({ error }: { error: Error }) {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md max-w-md w-full">
-        <div className="text-center">
-          <div className="text-6xl mb-4">😕</div>
-          <h2 className="text-2xl font-bold text-red-600 mb-2">Something went wrong</h2>
-          <p className="text-gray-600 mb-4">{error.message}</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors"
-          >
-            Try Again
-          </button>
+        {/* ── SUB-NAVIGATION BAR ──────────────────────────────────────── */}
+        <div className="sticky top-0 z-40 bg-white border-b shadow-sm">
+          <div className="max-w-7xl mx-auto px-4">
+            {/* Mobile Toggle */}
+            <div className="lg:hidden flex items-center justify-between py-3">
+              <span className="font-semibold text-sm">Table of Contents</span>
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              >
+                {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
+
+            {/* Desktop Navigation */}
+            <div className="hidden lg:flex items-center gap-6 py-3 overflow-x-auto">
+              {toc.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => scrollToSection(item.id)}
+                  className={`whitespace-nowrap text-sm font-medium transition-colors relative pb-1 ${
+                    activeSection === item.id
+                      ? "text-[#F26E46] border-b-2 border-[#F26E46]"
+                      : "text-gray-600 hover:text-[#F26E46]"
+                  }`}
+                >
+                  {item.title}
+                </button>
+              ))}
+            </div>
+
+            {/* Mobile Navigation Menu */}
+            {isMobileMenuOpen && (
+              <div className="lg:hidden py-4 border-t">
+                <ul className="space-y-3">
+                  {toc.map((item) => (
+                    <li key={item.id}>
+                      <button
+                        onClick={() => scrollToSection(item.id)}
+                        className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-sm ${
+                          activeSection === item.id
+                            ? "bg-[#F26E46] text-white"
+                            : "hover:bg-gray-100 text-gray-700"
+                        }`}
+                      >
+                        {item.title}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+
+        {/* ── CONTENT ──────────────────────────────────────────────────── */}
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="grid lg:grid-cols-[1fr_320px] gap-10">
+            {/* Main */}
+            <div className="space-y-0">
+              {examData.map((section: any, index: number) => (
+                <div
+                  key={index}
+                  ref={(el) => {
+                    sectionRefs.current[`section-${index}`] = el;
+                  }}
+                  id={`section-${index}`}
+                  className="bg-white p-8 scroll-mt-20"
+                >
+                  {/* Section Title */}
+                  {section.content_heading && (
+                    <h2 className="text-2xl font-bold text-[#00306a] mb-6">
+                      {section.content_heading}
+                    </h2>
+                  )}
+
+                 
+
+                  {section.content_data && (
+                    <EditorContent content_data={section.content_data}/>
+           
+                  )}
+
+                  {section.faq?.length > 0 && (
+                    <div className="mt-8">
+                      <h2 className="text-2xl font-bold mb-6 text-[#183153]">
+                        Frequently Asked Questions
+                      </h2>
+
+                      {section.faq.map((faq: any, i: number) => (
+                        <FAQItem
+                          key={i}
+                          question={faq.question}
+                          answer={faq.answer}
+                        />
+                      ))}
+                    </div>
+                  )}
+
+                  {section.question && <QuizCard section={section} />}
+                </div>
+              ))}
+            </div>
+
+            {/* Sidebar */}
+            <aside className="hidden lg:block sticky top-24 h-fit">
+              
+              <LeadForm />
+            </aside>
+          </div>
+        </div>
+      </main>
+    </>
+  );
+};
+
+export default ExamDetails;
+
+function FAQItem({
+  question,
+  answer,
+}: {
+  question: string;
+  answer: string;
+}) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="border rounded-xl mb-3 overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex justify-between items-center px-5 py-4 hover:bg-gray-50 transition-colors"
+      >
+        <span className="font-medium">{question}</span>
+        <ChevronDown
+          className={`transition-transform duration-200 ${
+            open ? "rotate-180" : ""
+          }`}
+        />
+      </button>
+
+      {open && (
+        <div className="px-5 pb-5 text-gray-600 border-t pt-4">{answer}</div>
+      )}
     </div>
   );
 }
 
-// Main page component
-export default async function ExamPage() {
-  try {
-    const examData = await getExamData();
-    
-    return (
-      <Suspense fallback={<ExamLoading />}>
-        <ExamContent examData={examData} />
-      </Suspense>
-    );
-  } catch (error) {
-    return <ExamError error={error as Error} />;
-  }
+function QuizCard({ section }: any) {
+  const [answer, setAnswer] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = () => {
+    if (answer) {
+      setSubmitted(true);
+    }
+  };
+
+  return (
+    <div className="mt-8 bg-[#FFF8F5] rounded-2xl p-6">
+      <div className="flex items-center gap-2 mb-4">
+        <CircleHelp className="text-[#F26E46]" />
+        <h3 className="font-bold text-xl">Quick Question</h3>
+      </div>
+
+      <p className="font-medium mb-5">{section.question}</p>
+
+      <div className="space-y-4">
+        {section.options.map((option: any, i: number) => {
+          if (option.type === "radio") {
+            return (
+              <label
+                key={i}
+                className={`flex items-center gap-3 border rounded-xl p-4 cursor-pointer transition-colors ${
+                  answer === option.value
+                    ? "border-[#F26E46] bg-[#FFF0EA]"
+                    : "hover:bg-gray-50"
+                }`}
+              >
+                <input
+                  type="radio"
+                  name={section.question}
+                  value={option.value}
+                  onChange={(e) => {
+                    setAnswer(e.target.value);
+                    setSubmitted(false);
+                  }}
+                  className="accent-[#F26E46]"
+                />
+                <span className="text-sm">{option.label}</span>
+              </label>
+            );
+          }
+
+          return (
+            <input
+              key={i}
+              className="w-full border rounded-xl p-4 focus:outline-none focus:ring-2 focus:ring-[#F26E46] focus:border-transparent"
+              placeholder={option.label}
+              onChange={(e) => {
+                setAnswer(e.target.value);
+                setSubmitted(false);
+              }}
+            />
+          );
+        })}
+      </div>
+
+      <button
+        onClick={handleSubmit}
+        className="mt-6 bg-[#F26E46] text-white px-6 py-3 rounded-xl hover:bg-[#E05D35] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={!answer}
+      >
+        Submit Answer
+      </button>
+
+      {submitted && answer && (
+        <div className="flex items-center gap-2 mt-5 text-green-600 bg-green-50 p-3 rounded-lg">
+          <CheckCircle2 size={18} />
+          <span>Your answer: {answer}</span>
+        </div>
+      )}
+    </div>
+  );
 }
 
-// Separate content component
-function ExamContent({ examData }: { examData: ExamData }) {
-  // ... same JSX as the main component above
-}
 
 
 
 
 
-// // app/exam/[id]/page.tsx
-// "use client";
+// ─── Form Configuration ───
+const FORM_CONFIG: any = {
+  steps: [
+    {
+      step: 1,
+      title: "",
+      icon: User,
+      fields: ["name", "mobile", "email", "interest", "city", "consent"],
+      button: "submit",
+    },
+  ],
+  fields: [
+    {
+      name: "name",
+      label: "Name",
+      type: "text",
+      required: true,
+      placeholder: "Name",
+      step: 1,
+      grid: "full",
+      icon: User,
+    },
+    {
+      name: "mobile",
+      label: "Mobile Number",
+      type: "tel",
+      required: true,
+      placeholder: "Mobile Number",
+      step: 1,
+      grid: "full",
+      icon: Phone,
+      pattern: "^[0-9]{10}$",
+      countryCode: "+91",
+    },
+    {
+      name: "email",
+      label: "Email Id",
+      type: "email",
+      required: true,
+      placeholder: "Email Id",
+      step: 1,
+      grid: "full",
+      icon: Mail,
+    },
+    {
+      name: "interest",
+      label: "Interested in?",
+      type: "select",
+      required: true,
+      step: 1,
+      grid: "full",
+      options: [
+        { value: "", label: "Interested in?" },
+        { value: "GRE", label: "GRE" },
+        { value: "IELTS", label: "IELTS" },
+        { value: "GMAT", label: "GMAT" },
+        { value: "TOEFL", label: "TOEFL" },
+        { value: "PET", label: "PET" },
+        { value: "SAT", label: "SAT" }
+      ],
+    },
+    {
+      name: "city",
+      label: "City Name",
+      type: "text",
+      required: false,
+      placeholder: "City Name",
+      step: 1,
+      grid: "full",
+      icon: MapPin,
+    },
+    {
+      name: "consent",
+      label: "Stay informed via SMS & WhatsApp",
+      type: "checkbox",
+      required: false,
+      step: 1,
+      grid: "full",
+      defaultValue: true,
+    },
+  ],
+  submit: {
+    label: "Schedule a Call",
+    icon: Send,
+    variant: "primary",
+    size: "large",
+    position: "bottom",
+    onSuccess: {
+      message: "Thank you! We will contact you shortly.",
+      redirect: "/thank-you",
+    },
+  },
+};
+
+const LeadForm = () => {
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-6">
+      <h3 className="text-center text-lg md:text-xl font-semibold mb-6 text-neutral-900">
+        Speak to an Expert
+      </h3>
+      <FormSection FORM_CONFIG={FORM_CONFIG} />
+    </div>
+  );
+};
 
-// import { Calendar, Menu } from "lucide-react";
-// import Image from "next/image";
-// import { useRouter } from "next/navigation";
-// import { useState, FormEvent, useEffect, useRef } from "react";
-// import {
-//   User,
-//   Mail,
-//   Phone,
-//   MapPin,
-//   BookOpen,
-//   Send,
-//   CheckCircle,
-// } from "lucide-react";
-// import FormSection from "./formSection";
-// import axiosInstance from "@/app/lib/axios";
-// import axios from "axios";
 
-// // Types
-// interface examData {
-//   _id?: string;
-//   title: string;
-//   content: string;
-//   image: string;
-//   category: string;
-//   author: string;
-//   publishedDate: string;
-//   excerpt?: string;
-//   slug?: string;
-//   tags?: string[];
-//   count?: number;
-// }
-
-// interface examDetailPageProps {
-//   exam: {
-//     data: examData;
-//   } | null;
-//   loading: boolean;
-//   res: examData[];
-//   slug: any;
-// }
-
-// // ─── Form Configuration ───
-// const FORM_CONFIG: any = {
-//   steps: [
-//     {
-//       step: 1,
-//       title: "",
-//       icon: User,
-//       fields: ["name", "mobile", "email", "interest", "city", "consent"],
-//       button: "submit",
-//     },
-//   ],
-//   fields: [
-//     {
-//       name: "name",
-//       label: "Name",
-//       type: "text",
-//       required: true,
-//       placeholder: "Name",
-//       step: 1,
-//       grid: "full",
-//       icon: User,
-//     },
-//     {
-//       name: "mobile",
-//       label: "Mobile Number",
-//       type: "tel",
-//       required: true,
-//       placeholder: "Mobile Number",
-//       step: 1,
-//       grid: "full",
-//       icon: Phone,
-//       pattern: "^[0-9]{10}$",
-//       countryCode: "+91",
-//     },
-//     {
-//       name: "email",
-//       label: "Email Id",
-//       type: "email",
-//       required: true,
-//       placeholder: "Email Id",
-//       step: 1,
-//       grid: "full",
-//       icon: Mail,
-//     },
-//     {
-//       name: "interest",
-//       label: "Interested in?",
-//       type: "select",
-//       required: true,
-//       step: 1,
-//       grid: "full",
-//       options: [
-//         { value: "", label: "Interested in?" },
-//         { value: "GRE", label: "GRE" },
-//         { value: "IELTS", label: "IELTS" },
-//         { value: "GMAT", label: "GMAT" },
-//         { value: "TOEFL", label: "TOEFL" },
-//       ],
-//     },
-//     {
-//       name: "city",
-//       label: "City Name",
-//       type: "text",
-//       required: false,
-//       placeholder: "City Name",
-//       step: 1,
-//       grid: "full",
-//       icon: MapPin,
-//     },
-//     {
-//       name: "consent",
-//       label: "Stay informed via SMS & WhatsApp",
-//       type: "checkbox",
-//       required: false,
-//       step: 1,
-//       grid: "full",
-//       defaultValue: true,
-//     },
-//   ],
-//   submit: {
-//     label: "Schedule a Call",
-//     icon: Send,
-//     variant: "primary",
-//     size: "large",
-//     position: "bottom",
-//     onSuccess: {
-//       message: "Thank you! We will contact you shortly.",
-//       redirect: "/thank-you",
-//     },
-//   },
-// };
-
-// const LeadForm = () => {
-//   return (
-//     <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-6">
-//       {/* <h3 className="text-center text-lg md:text-xl font-semibold mb-6 text-neutral-900">
-//         Speak to an Expert
-//       </h3> */}
-//       <FormSection FORM_CONFIG={FORM_CONFIG} />
-//     </div>
-//   );
-// };
-
-// // exam Card Component
-// const examCard = ({
-//   post,
-//   onClick,
-// }: {
-//   post: examData;
-//   onClick: () => void;
-// }) => (
-//   <article className="group cursor-pointer" onClick={onClick}>
-//     <div className="relative mb-3 h-40 w-full overflow-hidden rounded-md">
-//       <span className="absolute left-2 top-2 z-10 rounded bg-[#F0642C] px-2 py-0.5 text-[10px] font-semibold text-white">
-//         {post.category || "exam"}
-//       </span>
-//       <Image
-//         src={post.image || "/placeholder-exam.jpg"}
-//         alt={post.title}
-//         fill
-//         className="object-cover transition-transform duration-300 group-hover:scale-105"
-//       />
-//     </div>
-//     <h3 className="mb-2 text-[15px] font-bold leading-snug text-[#1f2430] group-hover:text-[#F0642C]">
-//       {post.title}
-//     </h3>
-//     <p className="mb-3 text-[13px] leading-relaxed text-gray-500">
-//       {post.excerpt}
-//     </p>
-//     <div className="flex items-center gap-4 text-[11px] text-gray-400">
-//       <span className="flex items-center gap-1">
-//         <Calendar size={11} />
-//         {post.publishedDate?.split("T")[0] || "2026-07-07"}
-//       </span>
-//     </div>
-//   </article>
-// );
-
-
-// // Table of Contents Component
-// const TableOfContents = ({
-//   headings,
-//   activeHeading,
-//   open,
-// }: {
-//   headings: string[];
-//   activeHeading: string;
-//   open?: any;
-// }) => {
-//   const [isOpen, setIsOpen] = useState(open || false);
-//   const [isMobile, setIsMobile] = useState(false);
-
-//   useEffect(() => {
-//     const checkMobile = () => {
-//       setIsMobile(window.innerWidth < 768);
-//     };
-//     checkMobile();
-//     window.addEventListener("resize", checkMobile);
-//     return () => window.removeEventListener("resize", checkMobile);
-//   }, []);
-
-//   const handleHeadingClick = (heading: string) => {
-//     const element = document.getElementById(`heading-${heading}`);
-//     if (element) {
-//       const headerOffset = 80;
-//       const elementPosition = element.getBoundingClientRect().top;
-//       const offsetPosition =
-//         elementPosition + window.pageYOffset - headerOffset;
-
-//       window.scrollTo({
-//         top: offsetPosition,
-//         behavior: "smooth",
-//       });
-//     }
-//     setIsOpen(false);
-//   };
-
-//   if (headings.length === 0) return null;
-
-//   return (
-//     <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-6">
-//       <div
-//         className="flex items-center justify-between cursor-pointer"
-//         onClick={() => setIsOpen(!isOpen)}
-//       >
-//         <h3 className="text-lg font-semibold text-neutral-900 flex items-center gap-2">
-//           <Menu size={20} className="text-[#F86C43]" />
-//           Table of Contents
-//         </h3>
-//         <span className="text-[#F86C43] text-sm">{isOpen ? "▼" : "▶"}</span>
-//       </div>
-
-//       <div
-//         className={`mt-4 space-y-2 transition-all duration-300 ${isOpen ? "block" : "hidden"}`}
-//       >
-//         {headings.map((heading, index) => (
-//           <button
-//             key={index}
-//             onClick={() => handleHeadingClick(heading)}
-//             className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all hover:bg-neutral-50 hover:text-[#F86C43] ${
-//               activeHeading === heading
-//                 ? "bg-[#F86C43]/10 text-[#F86C43] font-medium border-l-2 border-[#F86C43]"
-//                 : "text-neutral-600"
-//             }`}
-//           >
-//             {heading}
-//           </button>
-//         ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// // Main Component
-// export default function examDetailPage({
-//   exam,
-//   loading,
-//   res,
-//   slug
-// }: examDetailPageProps) {
-//   const router = useRouter();
-//   const [headings, setHeadings] = useState<string[]>([]);
-//   const [activeHeading, setActiveHeading] = useState<string>("");
-//   const contentRef = useRef<HTMLDivElement>(null);
-
-//   // Extract headings from content and add IDs
-//   useEffect(() => {
-//     if (exam?.data?.content) {
-//       const tempDiv = document.createElement("div");
-//       tempDiv.innerHTML = exam.data.content;
-
-//       // Find all h2 tags and extract text
-//       const h2Elements = tempDiv.querySelectorAll("h2");
-//       const headingTexts: string[] = [];
-
-//       h2Elements.forEach((h2, index) => {
-//         const text = h2.textContent?.trim() || `Section ${index + 1}`;
-//         headingTexts.push(text);
-
-//         // Add ID to h2 for scrolling
-//         const id = `heading-${text}`;
-//         h2.id = id;
-//       });
-
-//       setHeadings(headingTexts);
-
-//       // Update content with new IDs
-//       if (contentRef.current) {
-//         contentRef.current.innerHTML = tempDiv.innerHTML;
-//       }
-//     }
-//   }, [exam]);
-
-  
-  
-// const examcount = async (currentCount: number, slug: string) => { 
-//   try { 
-    
-//     const response = await axiosInstance.put(`/admin/exams/${slug}`, { 
-//       count: currentCount + 1 
-//     });
-//     return response.data;
-//   } catch (error) { 
-//     console.error('Error incrementing exam count:', error); 
-//   } 
-// };
-
-
-// useEffect(() => {
-  
-//   if (!exam?.data?.slug) return;
-
-//   const timer = setTimeout(() => { 
-//     const currentCount = exam?.data?.count || 1000;
-//     const examSlug = exam?.data?.slug;
-    
-//     examcount(currentCount, examSlug); 
-//   }, 10 * 1000); 
-
-//   return () => clearTimeout(timer);
-
-// }, [exam?.data?.slug]); 
-
-
-//   // Intersection Observer for active heading
-//   useEffect(() => {
-//     if (headings.length === 0) return;
-
-//     const observer = new IntersectionObserver(
-//       (entries) => {
-//         entries.forEach((entry) => {
-//           if (entry.isIntersecting) {
-//             const id = entry.target.id;
-//             const heading = id.replace("heading-", "");
-//             setActiveHeading(heading);
-//           }
-//         });
-//       },
-//       {
-//         rootMargin: "-80px 0px -50% 0px",
-//         threshold: 0.1,
-//       },
-//     );
-
-//     // Observe all heading elements
-//     headings.forEach((heading) => {
-//       const element = document.getElementById(`heading-${heading}`);
-//       if (element) {
-//         observer.observe(element);
-//       }
-//     });
-
-//     return () => observer.disconnect();
-//   }, [headings]);
-
-//   // Loading state
-//   if (loading) {
-//     return (
-//       <div className="flex justify-center items-center min-h-screen">
-//         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#F86C43]"></div>
-//       </div>
-//     );
-//   }
-
-//   // Not found state
-//   if (!exam) {
-//     return (
-//       <div className="flex flex-col justify-center items-center min-h-screen gap-4">
-//         <h2 className="text-2xl font-semibold text-neutral-700">
-//           exam not found
-//         </h2>
-//         <button
-//           onClick={() => router.push("/exam")}
-//           className="text-[#F86C43] hover:underline"
-//         >
-//           Back to exam
-//         </button>
-//       </div>
-//     );
-//   }
-
-//   const data = exam.data;
-
-//   return (
-//     <div className="bg-neutral-50 min-h-screen">
-//       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-//         {/* Breadcrumb */}
-//         <nav className="text-sm text-neutral-500 mb-6">
-//           <span
-//             className="hover:text-[#F86C43] cursor-pointer transition-colors"
-//             onClick={() => router.push("/")}
-//           >
-//             Home
-//           </span>
-//           <span className="mx-2">/</span>
-//           <span
-//             className="hover:text-[#F86C43] cursor-pointer transition-colors"
-//             onClick={() => router.push("/exam")}
-//           >
-//             exam
-//           </span>
-//           <span className="mx-2">/</span>
-//           <span className="text-neutral-800 font-medium">{data.category}</span>
-//         </nav>
-
-//         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-//           {/* Main exam Content */}
-//           <div className="lg:col-span-8">
-//             {/* Hero Image */}
-//             <div className="relative w-full h-64 md:h-108 rounded-2xl overflow-hidden mb-8 shadow-sm">
-//               <img
-//                 src={data.image}
-//                 alt={data.title}
-//                 className="w-full h-full object-contain"
-//                 loading="eager"
-//               />
-//             </div>
-
-//             {/* Title & Meta */}
-//             <h1 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4 leading-tight">
-//               {data.title}
-//             </h1>
-
-//             <div className="flex flex-wrap items-center gap-4 text-sm text-neutral-500 mb-8 pb-8 border-b border-neutral-200">
-//               <div className="flex items-center gap-2">
-//                 <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-bold text-neutral-600">
-//                   {data.author?.charAt(0)?.toUpperCase() || "A"}
-//                 </div>
-//                 <span className="font-medium text-neutral-700">
-//                   {data.author || "Anonymous"}
-//                 </span>
-//               </div>
-//               <span>•</span>
-//               <span>
-//                 {data.publishedDate
-//                   ? new Date(data.publishedDate).toLocaleDateString("en-US", {
-//                       year: "numeric",
-//                       month: "long",
-//                       day: "numeric",
-//                     })
-//                   : "Date not available"}
-//               </span>
-//             </div>
-
-//             {/* Table of Contents - Desktop */}
-//             {headings.length > 0 && (
-//               <div className="mb-8 ">
-//                 <TableOfContents
-//                   headings={headings}
-//                   activeHeading={activeHeading}
-//                   open={true}
-//                 />
-//               </div>
-//             )}
-
-//             {/* exam Content */}
-
-//             <style>{`
-//         .exam-html table {
-//             width: 100%;
-//             border-collapse: collapse;
-//             margin: 20px 0;
-//             font-size: 15px;
-//             overflow-x: auto !important;
-//         }
-
-//         .exam-html table {
-//           width: 100%;
-//           table-layout: fixed;
-//           border-collapse: collapse;
-//         }
-
-//         .exam-html table td,
-//         .exam-html table th {
-//           width: 50%;
-//           padding: 12px;
-//           border: 1px solid #e5e7eb;
-//           word-break: break-word;
-//           vertical-align: top;
-//         }
-
-//             .exam-html th,
-//             .exam-html td {
-//               border: 1px solid #e5e7eb;
-//             }
-
-//             .exam-html th {
-//               background: #F46C44;
-//               text-align: center;
-//               color: white;
-//               font-weight: 600;
-//             }
-//                   .exam-html tr {
-//               text-align: center;
-//             }
-//                     .exam-html table * p {
-//               padding: 10px;
-//             }
-            
-
-//             .exam-html tr:nth-child(even) {
-//               background-color: #f3ebeb;
-              
-//             }
-//             .exam-html h2 {
-//               font-size: 26px;
-//               margin: 28px 0 12px;
-//               font-weight: 700;
-//               color: #00306a
-//             }
-
-//             .exam-html h2 * {
-//               font-size: 26px;
-//               margin: 28px 0 12px;
-//               font-weight: 700;
-//               color: #00306a
-//             }
-
-//             .exam-html h3 {
-//               font-size: 20px;
-//               margin: 22px 0 10px;
-//               font-weight: 600;
-//               color: #00306a
-
-//             }
-
-//             .exam-html h4 {
-//               font-size: 18px;
-//               margin: 18px 0 8px;
-//               font-weight: 600;
-//             }
-
-//             .exam-html * a {
-//               color: #240dbd;
-//             }
-
-//             .exam-html p {
-//               line-height: 1.8;
-//             }
-
-//             .exam-html ul {
-//               margin-left: 22px;
-//               list-style: disc;
-//             }
-
-//             .exam-html ol {
-//               margin-left: 22px;
-//               list-style: decimal;
-//             }
-
-//             .exam-html li {
-//               margin: 6px 0;
-//             }
-
-//             .exam-html figure.table {
-//               overflow-x: auto;
-//               margin: 20px 0;
-//             }
-
-//             .exam-html strong {
-//               font-weight: 600;
-//             }
-//               html {
-//               scroll-behavior: smooth;
-//             }
-//           `}</style>
-
-//             <article
-//               ref={contentRef}
-//               className="exam-html prose prose-lg max-w-none text-neutral-700 leading-relaxed"
-//             />
-
-//             {/* Related Posts Section */}
-//             {res && res.length > 0 && (
-//               <div className="mt-12 pt-8 border-t border-neutral-200">
-//                 <h2 className="text-2xl font-bold text-neutral-900 mb-6">
-//                   Related Posts
-//                 </h2>
-//                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-//                   {res.map((post) => (
-//                     <examCard
-//                       key={post._id}
-//                       post={post}
-//                       onClick={() => router.push(`/exam/${post.slug}`)}
-//                     />
-//                   ))}
-//                 </div>
-//               </div>
-//             )}
-//           </div>
-
-//           {/* Sidebar */}
-//           <div className="lg:col-span-4">
-//             <div className="sticky top-24 space-y-2">
-//               {/* Table of Contents - Desktop */}
-//               {headings.length > 0 && (
-//                 <div className="hidden lg:block">
-//                   <TableOfContents
-//                     headings={headings}
-//                     activeHeading={activeHeading}
-//                   />
-//                 </div>
-//               )}
-
-//               <LeadForm />
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }

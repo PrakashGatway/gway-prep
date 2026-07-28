@@ -3,6 +3,7 @@ import { getPageInfo } from "@/app/services/api";
 import Link from "next/link";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
+import ExamDetails from "@/components/examDetails";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -234,7 +235,7 @@ export default async function PreparationPage({ params }: PageProps) {
 
       {pageData?.template === 'preparation' ? (
         <Gre pageInfo={pageData} slug={rowtext} />
-      ) : null}
+      ) : <ExamDetails pagedata={pageData}/>}
 
     </>
   );

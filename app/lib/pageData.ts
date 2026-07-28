@@ -2253,7 +2253,7 @@ export const pageData: any = {
             type: "repeater",
             fields: [
               { name: "title", label: "title", type: "text" },
-              { name: "description", label: "description", type: "textarea" },
+              { name: "description", label: "description", type: "editor" },
             ],
           },
         ],
@@ -2763,12 +2763,12 @@ export const pageData: any = {
             required: false,
             placeholder: "Admin",
           },
-          // {
-          //   name: "image",
-          //   label: "Featured Image",
-          //   type: "file",
-          //   accept: "image/*",
-          // },
+          {
+            name: "image",
+            label: "Featured Image",
+            type: "file",
+            accept: "image/*",
+          },
         ],
       },
       
@@ -2782,6 +2782,12 @@ export const pageData: any = {
             type: "repeater",
             max: 3,
             fields: [
+              
+              {
+                name: "content_heading",
+                label: "Content Heading",
+                type: "text",
+              },
               {
                 name: "content_data",
                 label: "Content Data",
@@ -2802,6 +2808,37 @@ export const pageData: any = {
                     label : "Answer",
                     type : "textarea"
                   }
+                ],
+              },
+              
+              {
+                name: "Image",
+                label: "Banner Image",
+                type: "file",
+                accept: "image/*",
+              },
+
+              {
+                name: "Banner",
+                label: "Banner",
+                type: "repeater",
+                fields: [
+                  {
+                    name: "title",
+                    label: "Title",
+                    type: "text",
+                  },
+                  {
+                    name : "subtitle",
+                    label : "Subtitle",
+                    type : "textarea"
+                  },
+                  {
+                    name: "buttontext",
+                    label : "Button Text",
+                    type : "text"
+                  },
+                  
                 ],
               },
               

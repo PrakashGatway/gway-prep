@@ -99,6 +99,8 @@ const FORM_CONFIG: any = {
         { value: "IELTS", label: "IELTS" },
         { value: "GMAT", label: "GMAT" },
         { value: "TOEFL", label: "TOEFL" },
+        { value: "PET", label: "PET" },
+        { value: "SAT", label: "SAT" }
       ],
     },
     {
