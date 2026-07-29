@@ -1,3 +1,12 @@
+
+
+
+
+
+
+
+
+
 "use client";
 
 import React, { useMemo, useState, useEffect, useRef } from "react";
@@ -83,7 +92,7 @@ const ExamDetails = ({ pagedata }: any) => {
   return (
     <>
       <main className="min-h-screen bg-white">
-        {/* ── HEADER CARD ─────────────────────────────────────────────────── */}
+        
         <div className="relative max-w-[100vw] overflow-hidden mx-auto h-[30rem] px-2 sm:px-10 py-10 flex items-center justify-center">
           <div
             className="absolute bg-primary w-full h-[35rem] left-0 -top-[100px]"
@@ -94,14 +103,13 @@ const ExamDetails = ({ pagedata }: any) => {
           ></div>
 
           <div className="flex md:flex-col lg:flex-row bg-white rounded overflow-hidden w-full h-[100%] z-50 mt-20">
-            <div className="p-6 flex items-start gap-4 flex-col w-full lg:w-1/3">
+            <div className="p-6 flex items-start gap-4 flex-col w-full lg:w-1/2">
              
               <div>
                 <h1 className="text-3xl font-bold text-slate-900">
                   {basicInfo?.title}
                 </h1>
                 {basicInfo?.subtitle && (
-                //   <p className="text-gray-600 mt-2">{basicInfo.subtitle}</p>
                 <div
                     className="text-gray-600 mt-2 text-justify"
                     dangerouslySetInnerHTML={{
@@ -111,20 +119,19 @@ const ExamDetails = ({ pagedata }: any) => {
                 )}
               </div>
             </div>
-            <div className="hedding lg:block lg:w-fit p-2">
+            <div className="hidden lg:block lg:w-full h-[26rem] p-2">
                 
              <img
-                src={basicInfo?.Image || "https://res.cloudinary.com/drsainihk/image/upload/v1784546671/cway-admin/rx2e0kmbnawefickyvqr.webp"}
+                src={basicInfo?.image || "https://res.cloudinary.com/drsainihk/image/upload/v1784546671/cway-admin/rx2e0kmbnawefickyvqr.webp"}
                 alt={`${basicInfo?.title} logo`}
-                className="h-full w-full object-contain bg-white rounded-xl"
+                className="h-full w-full object-cover bg-white rounded-xl"
               />
             </div>
 
           </div>
         </div>
 
-        {/* ── SUB-NAVIGATION BAR ──────────────────────────────────────── */}
-        <div className="sticky top-0 z-40 bg-white border-b shadow-sm">
+        <div className="sticky lg:top-20 z-40 bg-white border-b shadow-sm">
           <div className="max-w-7xl mx-auto px-4">
             {/* Mobile Toggle */}
             <div className="lg:hidden flex items-center justify-between py-3">
@@ -138,7 +145,7 @@ const ExamDetails = ({ pagedata }: any) => {
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-6 py-3 overflow-x-auto">
+            <div className="custom-scrollbar flex items-center gap-6 py-3 overflow-x-auto">
               {toc.map((item) => (
                 <button
                   key={item.id}
@@ -154,8 +161,7 @@ const ExamDetails = ({ pagedata }: any) => {
               ))}
             </div>
 
-            {/* Mobile Navigation Menu */}
-            {isMobileMenuOpen && (
+            {/* {isMobileMenuOpen && (
               <div className="lg:hidden py-4 border-t">
                 <ul className="space-y-3">
                   {toc.map((item) => (
@@ -174,11 +180,11 @@ const ExamDetails = ({ pagedata }: any) => {
                   ))}
                 </ul>
               </div>
-            )}
+            )} */}
           </div>
         </div>
 
-        {/* ── CONTENT ──────────────────────────────────────────────────── */}
+
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="grid lg:grid-cols-[1fr_320px] gap-10">
             {/* Main */}
