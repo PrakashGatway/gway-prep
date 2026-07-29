@@ -296,7 +296,7 @@ function QuizCard({ section }: any) {
                 <input
                   type="radio"
                   name={section.question}
-                  value={option.value }
+                  value={option.value || i+1}
                   onChange={(e) => {
                     setAnswer(e.target.value);
                     setSubmitted(false);
