@@ -233,9 +233,10 @@ export default async function PreparationPage({ params }: PageProps) {
         />
       )}
 
-      {pageData?.template === 'preparation' ? (
-        <Gre pageInfo={pageData} slug={rowtext} />
-      ) : <ExamDetails pagedata={pageData}/>}
+      {pageData?.template === 'preparation' ? 
+        (<Gre pageInfo={pageData} slug={rowtext} />) 
+        : <ExamDetails pagedata={pageData}/>
+      }
 
     </>
   );

@@ -168,7 +168,7 @@ const EditorContent = ({ content_data }: EditorContentProps) => {
             prose-lg
             dark:prose-invert
             max-w-none
-
+            
             [&_h1]:text-4xl
             [&_h1]:font-bold
             [&_h1]:text-[#1a1a1a]
@@ -212,6 +212,7 @@ const EditorContent = ({ content_data }: EditorContentProps) => {
 
             [&_img]:rounded-xl
             [&_img]:my-6
+
           "
           dangerouslySetInnerHTML={{
             __html: sanitizeContent(content_data),

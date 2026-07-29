@@ -174,7 +174,7 @@ const courseData = React.useMemo(
             </div>
 
             {/* Contact - Hidden on mobile, visible on lg screens */}
-            <div className="hidden lg:block">
+            <div className=" lg:block">
               <h3 className="text-xl font-bold my-5">Exam Details</h3>
               <ul className="space-y-2 text-sm text-[#444]">
                 {courseData1.map((item: any) => (
@@ -211,15 +211,15 @@ const courseData = React.useMemo(
       <div className="relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 text-black">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8">
-            <motion.div
+           <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.5 }}
               className="flex flex-col sm:flex-row items-center w-full gap-3 sm:gap-4 text-center sm:text-left"
             >
-              <h6 className="text-lg md:text-xl font-bold tracking-tight mb-1 text-gray-900">
+              <p className="text-lg md:text-xl font-bold tracking-tight mb-1 text-gray-900">
                 Get Exam Updates
-              </h6>
+              </p>
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
                 <input
                   type="text"

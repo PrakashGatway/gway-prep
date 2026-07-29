@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 "use client";
 
 import React, { useMemo, useState, useEffect, useRef } from "react";
@@ -42,7 +33,7 @@ const ExamDetails = ({ pagedata }: any) => {
         // item.question || item.faq?.length
         //   ? "Frequently Asked Questions"
         //   :
-           item.content_heading || `Section ${index + 1}`,
+        item.content_heading || `Section ${index + 1}`,
     }));
   }, [examData]);
 
@@ -77,7 +68,7 @@ const ExamDetails = ({ pagedata }: any) => {
   const scrollToSection = (id: string) => {
     const element = sectionRefs.current[id];
     if (element) {
-      const offset = 80;
+      const offset = 120;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
 
@@ -92,7 +83,6 @@ const ExamDetails = ({ pagedata }: any) => {
   return (
     <>
       <main className="min-h-screen bg-white">
-        
         <div className="relative max-w-[100vw] overflow-hidden mx-auto h-[30rem] px-2 sm:px-10 py-10 flex items-center justify-center">
           <div
             className="absolute bg-primary w-full h-[35rem] left-0 -top-[100px]"
@@ -104,37 +94,37 @@ const ExamDetails = ({ pagedata }: any) => {
 
           <div className="flex md:flex-col lg:flex-row bg-white rounded overflow-hidden w-full h-[100%] z-50 mt-20">
             <div className="p-6 flex items-start gap-4 flex-col w-full lg:w-1/2">
-             
               <div>
                 <h1 className="text-3xl font-bold text-slate-900">
                   {basicInfo?.title}
                 </h1>
                 {basicInfo?.subtitle && (
-                <div
+                  <div
                     className="text-gray-600 mt-2 text-justify"
                     dangerouslySetInnerHTML={{
-                    __html: basicInfo.subtitle,
+                      __html: basicInfo.subtitle,
                     }}
-                />
+                  />
                 )}
               </div>
             </div>
             <div className="hidden lg:block lg:w-full h-[26rem] p-2">
-                
-             <img
-                src={basicInfo?.image || "https://res.cloudinary.com/drsainihk/image/upload/v1784546671/cway-admin/rx2e0kmbnawefickyvqr.webp"}
+              <img
+                src={
+                  basicInfo?.image ||
+                  "https://res.cloudinary.com/drsainihk/image/upload/v1784546671/cway-admin/rx2e0kmbnawefickyvqr.webp"
+                }
                 alt={`${basicInfo?.title} logo`}
                 className="h-full w-full object-cover bg-white rounded-xl"
               />
             </div>
-
           </div>
         </div>
 
-        <div className="sticky lg:top-20 z-40 bg-white border-b shadow-sm">
-          <div className="max-w-7xl mx-auto px-4">
+        <div className="sticky top-20 z-40 bg-white border-b shadow-sm">
+          <div className=" mx-auto px-4">
             {/* Mobile Toggle */}
-            <div className="lg:hidden flex items-center justify-between py-3">
+            {/* <div className="lg:hidden flex items-center justify-between py-3">
               <span className="font-semibold text-sm">Table of Contents</span>
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -142,15 +132,20 @@ const ExamDetails = ({ pagedata }: any) => {
               >
                 {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
               </button>
-            </div>
+            </div> */}
 
             {/* Desktop Navigation */}
-            <div className="custom-scrollbar flex items-center gap-6 py-3 overflow-x-auto">
+            <div
+              className=" flex items-center gap-6 py-1 whitespace-nowrap overflow-auto"
+              style={{
+                scrollbarWidth: "none",
+              }}
+            >
               {toc.map((item) => (
                 <button
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
-                  className={`whitespace-nowrap text-sm font-medium transition-colors relative pb-1 ${
+                  className={`whitespace-nowrap text-sm font-medium transition-colors relative py-2 ${
                     activeSection === item.id
                       ? "text-[#F26E46] border-b-2 border-[#F26E46]"
                       : "text-gray-600 hover:text-[#F26E46]"
@@ -184,7 +179,6 @@ const ExamDetails = ({ pagedata }: any) => {
           </div>
         </div>
 
-
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="grid lg:grid-cols-[1fr_320px] gap-10">
             {/* Main */}
@@ -196,20 +190,17 @@ const ExamDetails = ({ pagedata }: any) => {
                     sectionRefs.current[`section-${index}`] = el;
                   }}
                   id={`section-${index}`}
-                  className="bg-white p-8 scroll-mt-20"
+                  className="bg-white lg:p-6 scroll-mt-20"
                 >
                   {/* Section Title */}
-                  {section.content_heading && (
+                  {section?.content_heading && (
                     <h2 className="text-2xl font-bold text-[#00306a] mb-6">
                       {section.content_heading}
                     </h2>
                   )}
 
-                 
-
                   {section.content_data && (
-                    <EditorContent content_data={section.content_data}/>
-           
+                    <EditorContent content_data={section.content_data} />
                   )}
 
                   {section.faq?.length > 0 && (
@@ -234,8 +225,7 @@ const ExamDetails = ({ pagedata }: any) => {
             </div>
 
             {/* Sidebar */}
-            <aside className="hidden lg:block sticky top-24 h-fit">
-              
+            <aside className="hidden lg:block sticky top-38 h-fit">
               <LeadForm />
             </aside>
           </div>
@@ -247,13 +237,7 @@ const ExamDetails = ({ pagedata }: any) => {
 
 export default ExamDetails;
 
-function FAQItem({
-  question,
-  answer,
-}: {
-  question: string;
-  answer: string;
-}) {
+function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -282,6 +266,7 @@ function QuizCard({ section }: any) {
   const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = () => {
+    console.log(answer,'answer')
     if (answer) {
       setSubmitted(true);
     }
@@ -311,7 +296,7 @@ function QuizCard({ section }: any) {
                 <input
                   type="radio"
                   name={section.question}
-                  value={option.value}
+                  value={option.value }
                   onChange={(e) => {
                     setAnswer(e.target.value);
                     setSubmitted(false);
@@ -340,7 +325,7 @@ function QuizCard({ section }: any) {
       <button
         onClick={handleSubmit}
         className="mt-6 bg-[#F26E46] text-white px-6 py-3 rounded-xl hover:bg-[#E05D35] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        disabled={!answer}
+        // disabled={!answer}
       >
         Submit Answer
       </button>
@@ -354,11 +339,6 @@ function QuizCard({ section }: any) {
     </div>
   );
 }
-
-
-
-
-
 
 // ─── Form Configuration ───
 const FORM_CONFIG: any = {
@@ -418,7 +398,7 @@ const FORM_CONFIG: any = {
         { value: "GMAT", label: "GMAT" },
         { value: "TOEFL", label: "TOEFL" },
         { value: "PET", label: "PET" },
-        { value: "SAT", label: "SAT" }
+        { value: "SAT", label: "SAT" },
       ],
     },
     {
@@ -456,13 +436,11 @@ const FORM_CONFIG: any = {
 
 const LeadForm = () => {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-6">
-      <h3 className="text-center text-lg md:text-xl font-semibold mb-6 text-neutral-900">
+    <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 px-6 py-2">
+      <h3 className="text-center text-lg md:text-xl font-semibold mb-2 text-neutral-900">
         Speak to an Expert
       </h3>
       <FormSection FORM_CONFIG={FORM_CONFIG} />
     </div>
   );
 };
-
-
