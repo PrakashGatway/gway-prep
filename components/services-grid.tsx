@@ -93,7 +93,7 @@ function Card({ item }: CardProps) {
           {item.heading}
         </h3>
       )}
-      <p className="text-gray-600 lg:text-center mt-2 leading-relaxed text-sm text-justify sm:text-base">
+      <p className="text-gray-600 lg:text-center mt-2 leading-5 text-justify text-sm">
         {description}
       </p>
       <div className="mt-2 flex justify-center">

@@ -363,7 +363,8 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
         disabled={isLoading}
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
-        className={`${sizeClasses[submitConfig.size || "large"]} font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 w-full`}
+        className={`${sizeClasses[submitConfig.size || "large"]} font-bold text-white rounded-xl transition-all shadow-lg
+         hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 w-full`}
         style={{ 
           background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
         }}

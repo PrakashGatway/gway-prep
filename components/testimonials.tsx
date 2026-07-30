@@ -652,7 +652,7 @@ export function TextTestimonials({ heading, data }: any) {
       {/* Modal */}
       {selectedTestimonial && (
         <div
-          className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4"
+          className="fixed inset-0 top-0 z-500 bg-black/60 flex items-center justify-center p-4"
           onClick={() => setSelectedTestimonial(null)}
         >
           <div
