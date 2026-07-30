@@ -616,7 +616,7 @@ function QuizCard({ section, pagedata }: any) {
   const slug = pagedata?.seoMeta;
 
   // Mock API response for demo - replace with your actual data
-  const mockApiData = {
+  const [mockApiData,setmockApiData] = useState({
     success: true,
     data: [
       { option: "5%", totalClicks: 1, _id: "6a6b0713058cb6bebfab7548" },
@@ -624,7 +624,7 @@ function QuizCard({ section, pagedata }: any) {
       { option: "12.5%", totalClicks: 3, _id: "6a6b0730058cb6bebfab754d" },
       { option: "7.5%", totalClicks: 1, _id: "6a6b08ee058cb6bebfab755a" }
     ]
-  };
+  });
 
   useEffect(() => {
     if (isPopupOpen) {
@@ -665,11 +665,15 @@ function QuizCard({ section, pagedata }: any) {
 
       // Use mock data for demonstration
       // Replace with: setApiResponse(response.data)
+      
+      setmockApiData(response?.data);
       setApiResponse({
         data: mockApiData,
         status: response.status,
         message: response.data?.message || "Successfully submitted your answer!"
       });
+
+      console.log(mockApiData,"mockApiData",response?.data);
 
       const isAnswerCorrect = response.data?.isCorrect !== undefined 
         ? response.data.isCorrect 

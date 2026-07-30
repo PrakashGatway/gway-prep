@@ -390,11 +390,11 @@ export function Navbar({ Data }: any) {
                 href="tel:+919166146538"
                 className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all group"
               >
-                <div className="w-8 h-8 rounded-full bg-[#F36C45]/10 flex items-center justify-center">
+                {/* <div className="w-8 h-8 rounded-full bg-[#F36C45]/10 flex items-center justify-center">
                   <Phone size={18} className="text-[#F36C45]" />
-                </div>
+                </div> */}
                 <div>
-                  <div className="text-xs text-gray-400">Call us</div>
+                  <div className="text-xs text-gray-400 flex items-center gap-2">  <Phone size={12} className="text-[#F36C45]" /> Call us</div>
                   <div className="font-semibold text-sm text-gray-700 group-hover:text-[#F36C45]">
                     +91 9166146538
                   </div>
@@ -417,6 +417,7 @@ export function Navbar({ Data }: any) {
                   className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-orange-500 to-primary text-white font-medium flex items-center gap-2 hover:shadow-lg cursor-pointer hover:shadow-orange-500/30 transition-all active:scale-95"
                 >
                   <LayoutDashboard size={18} />
+                  {/* <UserCircle size={18} /> */}
                   Dashboard
                 </button>
               )}
