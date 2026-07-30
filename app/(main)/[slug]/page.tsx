@@ -212,13 +212,15 @@ export default async function PreparationPage({ params }: PageProps) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbSchema),
-        }}
+        async={true}
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
       <script
         type="application/ld+json"
+        async={true}
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(courseSchema),
         }}
@@ -227,17 +229,19 @@ export default async function PreparationPage({ params }: PageProps) {
       {faqSchema && (
         <script
           type="application/ld+json"
+        async={true}
+        strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(faqSchema),
           }}
         />
       )}
 
-      {pageData?.template === 'preparation' ? 
-        (<Gre pageInfo={pageData} slug={rowtext} />) 
-        : <ExamDetails pagedata={pageData}/>
-      }
-
+      {pageData?.template === "preparation" ? (
+        <Gre pageInfo={pageData} slug={rowtext} />
+      ) : (
+        <ExamDetails pagedata={pageData} />
+      )}
     </>
   );
 }

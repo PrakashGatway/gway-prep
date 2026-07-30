@@ -163,6 +163,8 @@ export default async function Home() {
         {sections['Home-f&q']?.fields?.items && (
           <script
             type="application/ld+json"
+        async={true}
+        strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: JSON.stringify({
                 "@context": "https://schema.org",
