@@ -37,7 +37,7 @@ function HeroSection({ data }: { data: any }) {
     <section className="relative overflow-hidden bg-[#FDF4EF] min-h-auto py-6 md:py-16 lg:py-20 flex items-center">
       <img
         src="/services/h.webp"
-        alt=""
+        alt="services"
         className="hidden lg:block absolute -right-20 bottom-20 h-[80%] w-full md:w-[56%] object-cover
          md:object-contain pointer-events-none select-none opacity-30 md:opacity-100"
       />

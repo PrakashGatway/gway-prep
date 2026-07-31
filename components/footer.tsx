@@ -115,7 +115,7 @@ const courseData = React.useMemo(
                         onClick={() => window.open(social.url, "_blank")}
                         aria-label={`Follow us on ${social.label}`}
                       >
-                        <img src={Icon} className="w-6 h-6" />
+                        <img src={Icon} alt={`Follow us on ${social.label}`} className="w-6 h-6" />
                       </button>
                     </li>
                   );
@@ -285,6 +285,8 @@ const courseData = React.useMemo(
     </footer>
   );
 }
+
+
 
 
 

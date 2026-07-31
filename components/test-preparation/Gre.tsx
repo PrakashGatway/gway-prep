@@ -245,7 +245,7 @@ function GreSection({
         <div className="order-first md:order-none lg:absolute bottom-4 right-88">
           <img
             src="/pc.png"
-            alt=""
+            alt="img"
             className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-30 lg:h-30 object-contain"
           />
         </div>
