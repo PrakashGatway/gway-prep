@@ -701,7 +701,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
 
   return (
     <>
-      <section className="relative bg-[#FDF4EF] overflow-visible">
+      <section className="relative bg-[#FDF4EF] overflow-visible" style={{"scrollbarWidth":'none'}}>
         <div className="max-w-7xl mx-auto py-8 sm:py-10 lg:py-12">
           {/* Heading */}
           <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-10 text-center">
@@ -735,8 +735,8 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
           <StudentsSlider data={studentsData || []} />
         </div>
 
-        <div className="hidden md:block absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 w-[95%] sm:w-full max-w-xl
-         px-2 sm:px-2 z-20">
+        <div className=" md:absolute left-1/2 bottom-0 md:-translate-x-1/2 md:translate-y-1/2 w-[95%] sm:w-full max-w-xl mx-auto
+         px-2 sm:px-2 z-20 pb-4 md:p-0 ">
           <div className="bg-[#F86C43] rounded-2xl flex flex-col sm:flex-row items-center justify-between px-3 sm:px-4 py-2 sm:py-2 gap-2 sm:gap-0">
             
             <div className="flex items-center gap-3 sm:gap-5">

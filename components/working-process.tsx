@@ -91,14 +91,14 @@ export function WorkingProcess({ data }: { data: any }) {
           {/* Image - Right Column with Sticky */}
           <div className="hidden lg:block lg:col-span-4">
             <div 
-              className="sticky top-8" 
+              className="sticky top-8 " 
               style={{ 
                 position: 'sticky',
                 top: '6rem',
                 alignSelf: 'flex-start'
               }}
             >
-              <div className="relative h-[600px] w-full">
+              <div className=" relative h-[600px] w-full">
                 <Image
                   src="/image/steps.png"
                   alt="Working Process"
@@ -111,7 +111,7 @@ export function WorkingProcess({ data }: { data: any }) {
           </div>
 
           {/* Mobile Image */}
-          {isMobile && (
+          {/* {isMobile && (
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -128,7 +128,7 @@ export function WorkingProcess({ data }: { data: any }) {
                 />
               </div>
             </motion.div>
-          )}
+          )} */}
         </div>
       </div>
     </section>

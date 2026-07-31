@@ -96,7 +96,7 @@ export const HomeCountUp: React.FC<HomeCountUpProps> = ({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: false, amount: 0.2 }}
         transition={{ duration: 0.6, delay: 0.2 }}
-        className="flex flex-wrap justify-center  mx-4 md:mx-16 gap-6 md:gap-16 bg-white p-4 md:p-6 
+        className="grid grid-cols-2 lg:grid-cols-4 justify-center  mx-4 md:mx-16 gap-6 md:gap-16 bg-white p-4 md:p-6 
         rounded-[20px] md:rounded-[26px] shadow-sm "
       >
         {countItems.map((item, idx) => {

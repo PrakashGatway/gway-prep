@@ -68,7 +68,7 @@ const FORM_CONFIG: any = {
       grid: "full",
       options: [
         { value: "Gre", label: "Gre" },
-        { value: "Gmate", label: "Gmate" },
+        { value: "Gmat", label: "Gmat" },
         { value: "Act", label: "Act" },
         { value: "Ielts", label: "Ielts" },
         { value: "Toefl", label: "Toefl" },

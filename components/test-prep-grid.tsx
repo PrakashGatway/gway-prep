@@ -14,12 +14,12 @@ export function TestPrepGrid({
 }) {
   const router = useRouter();
   const FALLBACK_ITEMS = [
-    { title: "GRE", image: "/home/subject icon/gre.png" },
-    { title: "GMAT", image: "/home/subject icon/gmat.png" },
-    { title: "ACT", image: "/home/subject icon/act.png" },
-    { title: "IELTS", image: "/home/subject icon/ielts.png" },
-    { title: "TOEFL", image: "/home/subject icon/toefl.png" },
-    { title: "DUOLINGO", image: "/home/subject icon/dulingo.png" },
+    { title: "GRE", image: "/home/subject icon/gre.png", slug:"gre" },
+    { title: "GMAT", image: "/home/subject icon/gmat.png", slug:"gmat" },
+    { title: "ACT", image: "/home/subject icon/act.png", slug:"act" },
+    { title: "IELTS", image: "/home/subject icon/ielts.png", slug:"ielts" },
+    { title: "TOEFL", image: "/home/subject icon/toefl.png", slug:"toefl" },
+    { title: "PTE", image: "/home/subject icon/pte.webp", slug:"pte" },
   ];
   const DATA = React.useMemo(
     () =>
@@ -37,6 +37,7 @@ export function TestPrepGrid({
           slug: item?.seoMeta?.canonicalUrl,
         }))
       : FALLBACK_ITEMS;
+
   return (
     <section className="overflow-hidden">
       <div
@@ -180,7 +181,7 @@ export function TestPrepGrid({
 
           {/* Grid of Test Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-5 max-w-lg sm:max-w-xl mx-auto pb-8">
-            {items.map((item: any, index: number) => (
+            {FALLBACK_ITEMS.map((item: any, index: number) => (
               <div key={index} className="flex justify-center">
                 <LogoCard
                   item={item}
@@ -191,7 +192,7 @@ export function TestPrepGrid({
                       "act",
                       "ielts",
                       "toefl",
-                      "duoling",
+                      "pte",
                     ];
                     router.push(`/${item.slug}`);
                   }}

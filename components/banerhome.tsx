@@ -23,7 +23,7 @@ export function Banerhome({ data, img }: any) {
 
             <div className="space-y-6 sm:space-y-8 mt-6 sm:mt-8 lg:mt-10">
               {data.fields?.items.map((item: any, i: number) => (
-                <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4" key={i}>
+                <div className="flex flex-col sm:flex-row lg:items-start gap-3 sm:gap-4" key={i}>
                   <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center mx-auto sm:mx-0">
                     <img 
                       src={item.icon || "/home/06.png"} 
@@ -31,11 +31,11 @@ export function Banerhome({ data, img }: any) {
                       className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 object-contain"
                     />
                   </div>
-                  <div className="text-center sm:text-left flex-1">
-                    <p className="text-lg sm:text-xl font-bold text-gray-700">
+                  <div className="text-center md:text-left flex-1">
+                    <p className="text-lg md:text-xl font-bold text-gray-700">
                       {item.title ?? "Reliable Study Materials"}
                     </p>
-                    <p className="text-sm text-justify sm:text-base text-gray-600 mt-1 leading-relaxed">
+                    <p className="text-sm text-justify text-center md:text-base text-gray-600 mt-1 leading-relaxed">
                       {item.subtitle}
                     </p>
                   </div>
