@@ -1040,6 +1040,7 @@ const FORM_CONFIG: any = {
         { value: "TOEFL", label: "TOEFL" },
         { value: "PET", label: "PET" },
         { value: "SAT", label: "SAT" },
+        { value: "other", label: "Other"}
       ],
     },
     {
@@ -1063,11 +1064,12 @@ const FORM_CONFIG: any = {
     },
   ],
   submit: {
-    label: "Schedule a Call",
+    label: "Apply Target Score",
     icon: Send,
     variant: "primary",
     size: "large",
     position: "bottom",
+    totalStep : 1,
     onSuccess: {
       message: "Thank you! We will contact you shortly.",
       redirect: "/thank-you",

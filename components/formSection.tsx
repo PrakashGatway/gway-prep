@@ -27,6 +27,7 @@ type FormData = {
 
 interface FieldConfig {
   name: string;
+  other?: string;
   label: string;
   type: string;
   step: number;
@@ -51,6 +52,7 @@ interface SubmitConfig {
   variant?: "primary" | "secondary" | "success" | "danger" | "warning" | "info";
   size?: "small" | "medium" | "large";
   position?: "bottom" | "top" | "both";
+  totalStep?:Number;
   onSuccess?: {
     message: string;
     redirect?: string;
@@ -523,7 +525,7 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
                           }}
                           required={field.required}
                         >
-                          <option value="">Select {field.label}</option>
+                          {/* <option value="">Select {field.label}</option> */}
                           {field.options?.map((option) => (
                             <option key={option.value} value={option.value}>
                               {option.label}
@@ -533,6 +535,16 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
                         {hasError && (
                           <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>
                         )}
+                        {
+                          formData[field.name] === "other" && (
+                            <input type="text" 
+                            
+                          name={field.other}
+                          value={formData[field.other] as string || ""}
+                          onChange={(e) => updateField(field.other, e.target.value)}
+                            className={`w-full border-2 rounded-xl px-4  py-2 mt-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white `} />
+                          )
+                        }
                       </>
                     )}
 
@@ -852,8 +864,8 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
         </AnimatePresence>
 
         {/* Navigation Buttons */}
-        <div className="flex justify-between gap-4 mt-6 pt-4 border-t border-gray-200">
-          {step > 1 ? (
+        <div className={`flex ${FORM_CONFIG.steps.length > 1 ? 'justify-between': 'justify-center'} gap-4 mt-2 pt-4 border-t border-gray-200`}>
+          {step > 1 &&  (
             <motion.button
               type="button"
               whileHover={{ scale: 1.05 }}
@@ -864,18 +876,18 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
               <ArrowLeft className="w-4 h-4" />
               Back
             </motion.button>
-          ) : (
-            <div />
           )}
+          
 
           <motion.button
             type="button"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={buttonConfig.action}
-            className="px-8 py-3 text-sm font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl flex items-center gap-2"
+            className="px-8 py-3 text-sm font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl
+             flex items-center gap-2"
             style={{ 
-              background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
+              background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor})`
             }}
           >
             {buttonConfig.text}

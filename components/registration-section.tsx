@@ -167,41 +167,6 @@ const FORM_CONFIG: FormConfigType = {
       grid: "half",
       icon: Calendar
     },
-    // {
-    //   name: "profile",
-    //   label: "Current Profile",
-    //   type: "select",
-    //   required: false,
-    //   step: 1,
-    //   grid: "half",
-    //   options: [
-    //     { value: "", label: "Select your profile" },
-    //     { value: "School student", label: "School student" },
-    //     { value: "Undergraduate student", label: "Undergraduate student" },
-    //     { value: "Recent graduate", label: "Recent graduate" },
-    //     { value: "Working professional", label: "Working professional" },
-    //     { value: "Homemaker", label: "Homemaker" }
-    //   ]
-    // },
-    // {
-    //   name: "source",
-    //   label: "How did you hear about us?",
-    //   type: "select",
-    //   required: false,
-    //   step: 1,
-    //   grid: "half",
-    //   options: [
-    //     { value: "", label: "Select source" },
-    //     { value: "Google Search", label: "Google Search" },
-    //     { value: "Instagram", label: "Instagram" },
-    //     { value: "Facebook", label: "Facebook" },
-    //     { value: "YouTube", label: "YouTube" },
-    //     { value: "Friend Referral", label: "Friend Referral" },
-    //     { value: "Education Fair", label: "Education Fair" },
-    //     { value: "Walk-in", label: "Walk-in" },
-    //     { value: "Other", label: "Other" }
-    //   ]
-    // },
     {
       name: "exam",
       label: "Target Exam",
