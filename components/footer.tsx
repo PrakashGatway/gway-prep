@@ -115,7 +115,14 @@ const courseData = React.useMemo(
                         onClick={() => window.open(social.url, "_blank")}
                         aria-label={`Follow us on ${social.label}`}
                       >
-                        <img src={Icon} alt={`Follow us on ${social.label}`} className="w-6 h-6" />
+                        <img
+                          src={Icon}
+                          alt={`${social.label} social icon`}
+                          width={24}
+                          height={24}
+                          loading="lazy"
+                          className="w-6 h-6"
+                        />
                       </button>
                     </li>
                   );
@@ -278,7 +285,7 @@ const courseData = React.useMemo(
           <img
             src="/icon/footer.webp"
             alt="img"
-            className="h-24 sm:h-28 lg:h-34 absolute right-4 sm:right-6 lg:right-8 bottom-1 opacity-50 sm:opacity-100"
+            className="hidden lg:block h-24 sm:h-28 lg:h-34 absolute right-4 sm:right-6 lg:right-8 bottom-1 opacity-50 sm:opacity-100"
           />
         </div>
       </div>
