@@ -1090,7 +1090,7 @@ export const pageData: any = {
           {
             name: "subtitle",
             label: "Subtitle",
-            type: "textarea",
+            type: "editor",
           },
           {
             name: "image",

@@ -94,7 +94,7 @@ export function PartnerSection() {
   const [formSubmitted, setFormSubmitted] = useState(false);
 
   return (
-    <section className="py-8 md:py-10 lg:py-12 bg-[url('/image/bg-contect.jpeg')] bg-cover bg-center relative overflow-hidden font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]" id="partner">
+    <section className="py-8 md:py-10 lg:py-12 bg-[url('/image/bg-contect.jpeg')] bg-cover bg-center relative overflow-hidden " id="partner">
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/50 z-0"></div>
       

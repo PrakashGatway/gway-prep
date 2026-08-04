@@ -57,7 +57,7 @@
 
 // // Section Title Component
 // const SectionTitle = ({ pre, accent }: { pre: string; accent: string }) => (
-//   <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold mb-12">
+//   <h2 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold mb-12">
 //     {pre} <span style={{ color: orange }}>{accent}</span>
 //   </h2>
 // );
@@ -286,7 +286,7 @@
 //       <section className="bg-[#fcf4ed]">
 //         <div className="max-w-7xl mx-auto px-6 md:px-0 py-10 md:py-12 grid md:grid-cols-2 gap-12 items-center">
 //           <div>
-//             <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+//             <h1 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold">
 //               {data.hero?.title.split("||")[0]}
 //               <span className="text-primary">
 //                 {data.hero?.title.split("||")[1]}
@@ -348,7 +348,7 @@
 //           <div className="rounded-sm overflow-hidden">
 //             <div className="grid lg:grid-cols-2 items-center gap-10 lg:gap-16 px-8 md:px-14 py-6">
 //               <div className="max-w-xl">
-//                 <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
+//                 <h1 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
 //                   {data.build?.title.split("||")[0]}
 //                   <span className="text-primary">
 //                     {data.build?.title.split("||")[1]}
@@ -382,7 +382,7 @@
 //       {data.stats.length > 0 && (
 //         <section className="max-w-7xl mx-auto px-6 md:px-0 py-12 gap-8">
 //           <div className="border border-[#E8E0D8] rounded-2xl p-10 shadow-sm bg-white">
-//             <h3 className="text-center text-lg sm:text-xl md:text-3xl lg:text-4xl font-bold mb-10">
+//             <h3 className="text-center text-2xl md:text-3xl lg:text-4xl font-bold mb-10">
 //               Our People. <span style={{ color: orange }}>Our Strength.</span>
 //             </h3>
 //             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -665,7 +665,7 @@ const getBgColor = (bg: string) => {
 
 // Section Title Component
 const SectionTitle = ({ pre, accent }: { pre: string; accent: string }) => (
-  <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold mb-12">
+  <h2 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold mb-12">
     {pre} <span style={{ color: orange }}>{accent}</span>
   </h2>
 );
@@ -900,7 +900,7 @@ export default function CareersPage({ sections }: any) {
       <section className="bg-[#fcf4ed]">
         <div className="max-w-7xl mx-auto px-6 md:px-0 py-10 md:py-12 grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+            <h1 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold">
               {data.hero?.title.split("||")[0]}
               <span className="text-primary">
                 {data.hero?.title.split("||")[1]}
@@ -910,7 +910,7 @@ export default function CareersPage({ sections }: any) {
               <br />
               */}
             </h1>
-            <p className="mt-4 text-sm md:text-lg ">{data.hero.description}</p>
+            <p className="mt-4 text-lg ">{data.hero.description}</p>
             <div className="mt-8 flex gap-4 flex-wrap">
               <button
                 className="px-8 py-4 rounded-lg text-white text-base font-semibold hover:opacity-90 transition"
@@ -971,7 +971,7 @@ export default function CareersPage({ sections }: any) {
             <div className="grid lg:grid-cols-2 items-center gap-10 lg:gap-16 px-8 md:px-14 py-6">
               {/* Left Content */}
               <div className="max-w-xl">
-                <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
+                <h1 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
                   {data.build?.title.split("||")[0]}
                   <span className="text-primary">
                     {data.build?.title.split("||")[1]}
@@ -1006,7 +1006,7 @@ export default function CareersPage({ sections }: any) {
       {/* ---------------- Stats + Growth path ---------------- */}
       <section className="max-w-7xl mx-auto px-6 md:px-0 py-12 gap-8">
         <div className="border border-[#E8E0D8] rounded-2xl p-10 shadow-sm bg-white">
-          <h3 className="text-center text-lg sm:text-xl md:text-3xl lg:text-4xl font-bold mb-10">
+          <h3 className="text-center text-2xl md:text-3xl lg:text-4xl font-bold mb-10">
             Our People. <span style={{ color: orange }}>Our Strength.</span>
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
@@ -1111,7 +1111,7 @@ export default function CareersPage({ sections }: any) {
 
       <section className="">
         
-          <h3 className="text-center text-lg sm:text-xl md:text-3xl lg:text-4xl font-bold my-10">
+          <h3 className="text-center text-2xl md:text-3xl lg:text-4xl font-bold my-10">
            {sections["Career-Hiring-Process"]?.fields?.title?.split("||")[0]} <span style={{ color: orange }}>{sections["Career-Hiring-Process"]?.fields?.title?.split("||")[1]}</span>
           </h3>
         <div className=" relative bg-[#FCEEE5] lg:bg-[url('/image_30c67b71.webp')] bg-no-repeat bg-center bg-contain max-w-7xl mx-auto relative lg:h-[420px] px-6 py-12 lg:px-0 lg:py-0">
@@ -1144,7 +1144,7 @@ export default function CareersPage({ sections }: any) {
               {data.hiringProcess[1].title}
             </h3>
 
-            <p className="text-gray-700 leading-4 lg:leading-5 text-base lg:text-sm">
+            <p className="text-gray-700 leading-6 lg:leading-5 text-base lg:text-sm">
               {data.hiringProcess[1].desc}
             </p>
           </div>
@@ -1154,7 +1154,7 @@ export default function CareersPage({ sections }: any) {
               {data.hiringProcess[2].title}
             </h3>
 
-            <p className="text-gray-700 leading-4 lg:leading-5 text-base lg:text-sm">
+            <p className="text-gray-700 leading-6 lg:leading-5 text-base lg:text-sm">
               {data.hiringProcess[2].desc}
             </p>
           </div>
@@ -1164,7 +1164,7 @@ export default function CareersPage({ sections }: any) {
               {data.hiringProcess[0].title}
             </h3>
 
-            <p className="text-gray-700 leading-4 lg:leading-5 text-base lg:text-sm">
+            <p className="text-gray-700 leading-6 lg:leading-5 text-base lg:text-sm">
               {data.hiringProcess[0].desc}
             </p>
           </div>

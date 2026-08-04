@@ -15,7 +15,7 @@ export default function ServicesGrid({ data, heading }: any) {
     <section className="py-2 bg-[#fff] overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+          <h2 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold md:leading:7 lg:leading-14">
             <span className="text-primary">{titleParts[0]?.trim() || "Four Ways to Learn."}</span>{" "}
             <span className="">{titleParts[1]?.trim() || "One Standard of Excellence."}</span>
           </h2>
@@ -119,7 +119,7 @@ function Card({ item }: CardProps) {
 //     <section className="py-2 bg-[#fff] overflow-hidden">
 //       <div className="container mx-auto px-4">
 //         <div className="max-w-4xl mx-auto text-center ">
-//           <div className="text-lg sm:text-xl md:text-3xl lg:text-5xl">
+//           <div className="text-2xl md:text-3xl lg:text-5xl">
 //             <span className="text-[#f26e46]">Four Ways to Learn.</span>{" "}
 //             <span className="text-gray-800"> One Standard of Excellence. </span>
 //           </div>

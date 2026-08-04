@@ -345,7 +345,7 @@ export function RegistrationSection({ data }: any) {
           >
             {/* Optional: Add a header above the form */}
             <div className="mb-6 text-center lg:text-left">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
                 Register Now
               </h2>
               <p className="text-gray-600">

@@ -58,7 +58,7 @@ export function TestPrepGrid({
               ✦
             </span>
 
-            <h3 className="mt-2 text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
+            <h3 className="mt-2 text-center text-xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
               {data.fields?.title?.split("||")[0] || "Master Your Test Prep"}
               <span className="block text-primary">
                 {data.fields?.title?.split("||")[1] || "With Ooshas Prep"}
@@ -153,7 +153,7 @@ export function TestPrepGrid({
               ✦
             </span>
 
-            <h3 className="mt-2 text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
+            <h3 className="mt-2 text-center text-2xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
               {data.fields?.title?.split("||")[0] || "Master Your Test Prep"}
               <span className="block text-primary">
                 {data.fields?.title?.split("||")[1] || "With Ooshas Prep"}
@@ -240,7 +240,7 @@ function LogoCard({
       ) : (
         <span
           className={`font-bold text-gray-800
-          ${isMobile ? "text-lg sm:text-xl md:text-2xl" : "text-2xl"}`}
+          ${isMobile ? "text-2xl md:text-2xl" : "text-2xl"}`}
         >
           {item.title}
         </span>

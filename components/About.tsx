@@ -55,7 +55,7 @@ export default function About({ sections }: any) {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-14 items-center">
             {/* Left Content */}
             <div className="order-2 lg:order-1 text-center lg:text-left">
-              <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+              <h1 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold">
                 <span className="text-primary">
                   {hero?.title?.split("||")[0]}
                 </span>
@@ -100,7 +100,7 @@ export default function About({ sections }: any) {
             <div>
               <h2
                 id="who-are-we"
-                className="text-left text-lg sm:text-xl md:text-3xl lg:text-4xl font-bold"
+                className="text-left text-2xl md:text-3xl lg:text-4xl font-bold"
               >
                 {whoWeAre.title.split("||")[0]}
                 <span className="text-primary">{whoWeAre.title.split("||")[1]}</span>
@@ -175,7 +175,7 @@ export default function About({ sections }: any) {
               {features.title && (
                 <h2
                   id="what-will-we-do"
-                  className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold mb-4"
+                  className="text-center text-2xl md:text-3xl lg:text-5xl font-bold mb-4"
                 >
                   {features.title}
                 </h2>
@@ -184,14 +184,14 @@ export default function About({ sections }: any) {
               {features.description && (
                 <div
                   className="prose max-w-none text-slate-700 
-             prose-headings:text-slate-900
-             [&_ul]:list-disc 
-             [&_ol]:list-decimal 
-             [&_ul]:pl-5 
-             [&_ol]:pl-5 
-             [&_li]:my-4
-             [&_p]:my-4
-             "
+                    prose-headings:text-slate-900
+                    [&_ul]:list-disc 
+                    [&_ol]:list-decimal 
+                    [&_ul]:pl-5 
+                    [&_ol]:pl-5 
+                    [&_li]:my-4
+                    [&_p]:my-4
+                    "
                   dangerouslySetInnerHTML={{
                     __html: DOMPurify.sanitize(features.description),
                   }}
@@ -224,7 +224,7 @@ export default function About({ sections }: any) {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <h2
               id="people-behind"
-              className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold"
+              className="text-center text-2xl md:text-3xl lg:text-5xl font-bold"
             >
               {leaders.title.split("||")[0]}
               <span className="text-primary">
@@ -360,7 +360,7 @@ function LearningSection({ title, description, items }: any) {
           <div className="col-span-2 row-span-1 flex flex-col justify-center pr-8">
             <h2
               id="world-class-learning"
-              className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold"
+              className="text-left text-2xl md:text-3xl lg:text-5xl font-bold"
             >
               {title.split("||")[0] || "World-Class Learning for"}
               <br />
@@ -395,7 +395,7 @@ function LearningSection({ title, description, items }: any) {
           <div className="mb-8 md:mb-10">
             <h2
               id="world-class-learning"
-              className="text-3xl xl:text-4xl font-extrabold text-[#3E3E3E]"
+              className="text-2xl md:text-4xl font-bold text-[#3E3E3E]"
             >
               {title.split("||")[0] || "World-Class Learning for"}
               <br />
@@ -420,7 +420,7 @@ function LearningSection({ title, description, items }: any) {
           <div className="mb-6 md:mb-10">
             <h2
               id="world-class-learning"
-              className="text-3xl xl:text-4xl font-extrabold text-[#3E3E3E]"
+              className="text-2xl md:text-4xl font-bold text-[#3E3E3E]"
             >
               {title.split("||")[0] || "World-Class Learning for"}
               <br />
@@ -459,7 +459,7 @@ function Card({
         ${orange ? "bg-[#f26e46] text-white" : "bg-[#F5F5F5] text-[#3E3E3E]"}
       `}
     >
-      <h3 className="text-lg sm:text-xl md:text-2xl xl:text-[30px] font-bold leading-tight">
+      <h3 className="text-xl md:text-2xl xl:text-[30px] font-bold leading-tight">
         {title}
       </h3>
       <p
@@ -472,7 +472,6 @@ function Card({
     </article>
   );
 }
-
 
 function CallToActionSection({
   title,

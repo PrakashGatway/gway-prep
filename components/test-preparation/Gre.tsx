@@ -375,7 +375,7 @@ function VideoExplanationSection({ videoData }: { videoData: any }) {
           border-2 border-[#D9D9D9] bg-[#FAFAFA] px-4 sm:px-6 md:px-10 lg:px-16 py-8 sm:py-10 md:py-14 lg:py-16"
           >
             <div className="max-w-2xl text-center lg:text-left">
-              <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-5xl font-bold leading-tight text-[#333333]">
+              <h2 className="text-2xl md:text-2xl lg:text-3xl xl:text-5xl font-bold leading-tight text-[#333333]">
                 {videoData?.titlel?.split("||")[0] || "Video explanations for"}
                 <br />
                 <span className="text-[#F36C45]">
@@ -472,16 +472,16 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
     <section className="py-8 md:py-2 bg-white">
       <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6">
         <div className="text-center mb-6 sm:mb-10 md:mb-12">
-          <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+          <h2 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold">
             {resourcesData?.title.split("||")[0]}
             <span className="text-primary">{resourcesData?.title.split("||")[1]}</span>
           </h2>
           {/* <div
-          className="text-left text-lg sm:text-xl md:text-3xl lg:text-4xl font-bold"
+          className="text-left text-2xl md:text-3xl lg:text-4xl font-bold"
             dangerouslySetInnerHTML={{
               __html:
                 resourcesData?.title ||
-                "<h2 className='text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold'><span className='text-[#222]'>Free GRE </span><span className='text-[#F5632A]'>Prep Resources</span></h2>",
+                "<h2 className='text-left text-2xl md:text-3xl lg:text-5xl font-bold'><span className='text-[#222]'>Free GRE </span><span className='text-[#F5632A]'>Prep Resources</span></h2>",
             }}
           /> */}
         </div>
@@ -722,7 +722,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
               }}
             /> */}
 
-             <h1 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
+             <h1 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
                   {heroSection.title?.split("||")[0]}
                   <span className="text-primary">{heroSection.title?.split("||")[1]}</span>
                   {heroSection.title?.split("||")[2]}

@@ -12,7 +12,7 @@
   export function Mission({ data }: any) {
     return (
       <section
-        className="py-8 md:py-12 bg-white font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]"
+        className="py-8 md:py-12 bg-white "
         id="about"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

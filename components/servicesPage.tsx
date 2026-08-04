@@ -63,12 +63,12 @@ function HeroSection({ data }: { data: any }) {
           return (
             <h1 className=" max-w-3xl md:leading-12">
               {titleParts[0] && (
-                <span className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold text-primary">
+                <span className="text-left text-2xl md:text-3xl lg:text-5xl font-bold text-primary">
                   {titleParts[0]}
                 </span>
               )}
               {(titleParts[1] || titleParts[2]) && (
-                <span className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+                <span className="text-left text-2xl md:text-3xl lg:text-5xl font-bold">
                   {titleParts[1]}
                   {titleParts[2] && (
                     <span className="mt-4 text-primary ">{titleParts[2]}</span>
@@ -126,7 +126,7 @@ function PracticeSection({ data }: { data: any }) {
   return (
     <section className="px-4 md:px-8 py-8 md:py-10 lg:py-12  max-w-7xl mx-auto">
       <div className="text-center mb-8 md:mb-12">
-        <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+        <h2 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold">
           <span className="text-primary">{title?.split('||')[0]}</span>
           {/* <br className="hidden sm:block" />  */}
           {title?.split('||')[1]}
@@ -180,14 +180,20 @@ function PortalSection({ data }: { data: any }) {
       <div className="max-w-7xl mx-auto rounded-[30px] md:rounded-[40px] border border-[#E8DDD7] bg-[#FDF4EF] px-6 md:px-8 py-8 md:py-12">
         <div className="grid lg:grid-cols-2 items-center gap-8 md:gap-12">
           <div className="text-center lg:text-left">
-            <h2 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+            <h2 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold">
               {title?.split('||')[0] || ""}
               <span className="text-primary">{title.split('||')[1] || ""}</span>
             </h2>
             
-            <p className="mt-2 md:mt-4 text-[#4B4B4B] text-base md:text-xl leading-7 md:leading-8 text-left whitespace-pre-line">
+            {/* <p className="mt-2 md:mt-4 text-[#4B4B4B] text-base md:text-xl leading-7 md:leading-8 text-left whitespace-pre-line">
               {subtitle}
-            </p>
+            </p> */}
+             <div
+                  dangerouslySetInnerHTML={{
+                    __html: subtitle || "",
+                  }}
+                  className="mt-2 md:mt-4 text-[#4B4B4B] text-base md:text-lg leading-7 md:leading-8 text-left whitespace-pre-line"
+                />
             {buttonText && (
               <button className="mt-6 md:mt-8 bg-[#F36C45] px-6 md:px-8 py-2.5 md:py-3 text-white font-semibold rounded-full hover:bg-[#e85f35] transition">
                 {buttonText}
@@ -255,7 +261,7 @@ function AIStackSection({ data }: { data: any }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
           <div className="max-w-3xl text-center md:text-left">
-            <h2 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+            <h2 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold">
               {title?.split("||")[0] || ""}{" "}
               <span className="text-primary">{title?.split("||")[1] || ""}</span>
             </h2>
@@ -418,7 +424,7 @@ function EnvironmentSection({ data }: { data: any }) {
     <section className="bg-[#FFDDD3] py-8 md:py-10 lg:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center max-w-7xl mb-4 md:mb-8">
-          <h2 className=" text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+          <h2 className=" text-2xl md:text-3xl lg:text-5xl font-bold">
             {title.split(' ').slice(0, -1).join(' ')} {" "}
             <span className="text-primary">{title.split(' ').slice(-1)[0]}</span>
           </h2>
@@ -568,7 +574,7 @@ function ResourcesSection({ data }: { data: any }) {
           {/* <h3 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#3B3B3B] leading-tight">
             {title}
           </h3> */}
-          <h3 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+          <h3 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold">
             {title.split('||')[0]} {" "}
             <span className="text-primary">{title.split('||')[1]}</span>
           </h3>
@@ -617,7 +623,7 @@ function SupportSection({ data }: { data: any }) {
   return (
     <section className="px-4 md:px-8 py-8 md:py-10 lg:py-12 mx-auto bg-[#FFDDD3]">
       <div className="text-center mb-8 md:mb-10 max-w-6xl mx-auto">
-        <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+        <h2 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold">
           <span className="">{title.split(' ').slice(0, -1).join(' ')} </span>
           <span className="text-primary">{title.split(' ').slice(-1)[0]}</span>
         </h2>
@@ -698,7 +704,7 @@ function TestimonialsSection({ data }: { data: any }) {
     <section className="bg-[#FAFAFA] py-8 md:py-10 lg:py-12 px-4 md:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="max-w-4xl mb-8 md:mb-10 px-0 md:px-12">
-          <h2 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+          <h2 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold">
             {title}
           </h2>
           <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-[#f26e46] leading-tight mt-1">
@@ -781,7 +787,7 @@ function CountriesSection({ data }: { data: any }) {
   return (
     <section className="py-6 md:py-8 px-4 md:px-8 bg-white">
       <div className="text-center max-w-5xl mx-auto mb-8 md:mb-14">
-        <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+        <h2 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold">
           <span className="text-primary">{title.split('.')[0]}.</span>{" "}
           <span className="">{title.split('.').slice(1).join('.')}</span>
         </h2>
@@ -823,7 +829,7 @@ function CTASection({ data }: { data: any }) {
     <section className="bg-white mb-16">
       <div className="bg-primary text-white py-10 lg:py-12 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+          <h2 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold">
             {title}
           </h2>
           <p className="mt-4 md:mt-6 text-white/90 text-sm md:text-lg max-w-3xl mx-auto leading-6 md:leading-7">

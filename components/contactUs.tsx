@@ -158,7 +158,7 @@ function ConnectSection({ data }: { data?: any }) {
     <section className="max-w-7xl mx-auto px-4 sm:px-6 mt-12 ">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
         <div>
-          <h2 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold my-6">
+          <h2 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold my-6">
             {title} <span className="text-primary">{highlightText}</span>
           </h2>
 
@@ -302,7 +302,7 @@ export default function ContactPage({ Data }: any) {
         <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative">
           <div className="space-y-8">
             <div>
-              <h1 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold mb-2">
+              <h1 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold mb-2">
                 {heroTitle}
               </h1>
               <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-primary">

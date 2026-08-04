@@ -22,7 +22,7 @@ export function WorkingProcess({ data }: { data: any }) {
   }, []);
 
   return (
-    <section className="py-1 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]">
+    <section className="py-1 ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12">
@@ -30,7 +30,7 @@ export function WorkingProcess({ data }: { data: any }) {
             className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold text-center"
             dangerouslySetInnerHTML={{ __html: data.fields.title }} 
           /> */}
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-5xl font-bold text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl lg:text-5xl font-bold text-center">
             {data.fields.title.split("||")[0]}
             <span className="text-primary">{data.fields.title.split("||")[1]}</span>
           </h2>
@@ -70,7 +70,7 @@ export function WorkingProcess({ data }: { data: any }) {
                       </span> */}
                     </div>
                     
-                    <p className="text-lg sm:text-xl md:text-2xl font-bold text-[#f26e46] sm:hidden">
+                    <p className="text-2xl md:text-2xl font-bold text-[#f26e46] sm:hidden">
                       {step.title}
                     </p>
                   </div>

@@ -4,7 +4,7 @@ import "./globals.css";
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#FDF4EE] px-4 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]">
+    <div className="min-h-screen flex items-center justify-center bg-[#FDF4EE] px-4 ">
       <div className="text-center max-w-md">
         {/* 404 */}
         <h1 className="text-8xl font-bold text-[#F36C45]">404</h1>

@@ -295,10 +295,10 @@ export function VideoTestimonialCard({ heading, data }: any) {
   const currentSlide = slider?.current?.track?.details?.rel || 0;
 
   return (
-    <div className="max-w-7xl mx-auto font-['Open_Sans','Helvetica_Neue',Arial,sans-serif] px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto  px-4 sm:px-6 lg:px-8">
       {/* Heading - Updated to 5xl with responsive sizes */}
       <div className="text-center mb-8 sm:mb-10 md:mb-12 px-4">
-        <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold">
+        <h2 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold">
           <span className="text-primary">What Our</span>{" "}
           <span className="">Students Say</span>
         </h2>
@@ -520,7 +520,7 @@ export function TextTestimonials({ heading, data }: any) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Heading - Updated to 5xl with responsive sizes */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12">
-          <h2 className="text-center text-lg sm:text-xl md:text-3xl lg:text-4xl font-bold">
+          <h2 className="text-center text-2xl md:text-3xl lg:text-4xl font-bold">
             What Our Test Preparation{" "}
             <span className="text-primary">Achievers Say</span>
           </h2>
@@ -676,7 +676,7 @@ export function TextTestimonials({ heading, data }: any) {
               />
 
               <div>
-                <p className="text-lg sm:text-xl font-bold">
+                <p className="text-2xl font-bold">
                   {selectedTestimonial.name}
                 </p>
 
@@ -1022,7 +1022,7 @@ export function TextTestimonials({ heading, data }: any) {
 //   const currentSlide = slider?.current?.track?.details?.rel || 0;
 
 //   return (
-//     <div className="max-w-7xl mx-auto font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]">
+//     <div className="max-w-7xl mx-auto ">
 //       {/* Heading */}
 //       <div className="text-center mb-12 px-4">
 //         {/* <div

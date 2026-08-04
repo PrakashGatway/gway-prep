@@ -57,7 +57,7 @@ export default async function RootLayout({
         <link
           rel="icon"
           href="/image/ooshasprep.png"
-          className="w-20 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]"
+          className="w-20 "
         />
         <meta
           name="google-site-verification"

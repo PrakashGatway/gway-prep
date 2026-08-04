@@ -3,7 +3,7 @@
 
 export function Banerhome({ data, img }: any) {
   return (
-    <section className="py-6 sm:py-8 md:py-10 lg:py-12 bg-white font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]" id="about">
+    <section className="py-6 sm:py-8 md:py-10 lg:py-12 bg-white " id="about">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-8 md:gap-10 lg:gap-12 items-start">
           
@@ -15,8 +15,8 @@ export function Banerhome({ data, img }: any) {
 
           <div className="pl-0 lg:pl-6 xl:pl-10 bg-white order-2 lg:order-none">
             
-            {/* <div className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold" dangerouslySetInnerHTML={{ __html: data.fields?.title }} /> */}
-            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-4xl font-bold text-center">
+            {/* <div className="text-left text-2xl md:text-3xl lg:text-5xl font-bold" dangerouslySetInnerHTML={{ __html: data.fields?.title }} /> */}
+            <h2 className="text-2xl sm:text-3xl md:text-5xl  font-bold text-center">
             {data.fields.title.split("||")[0]} <br />
             <span className="text-primary">{data.fields.title.split("||")[1]}</span>
           </h2>
@@ -80,7 +80,7 @@ export function Banerhome({ data, img }: any) {
 //                     />
 //                   </div>
 //                   <div className="text-center sm:text-left flex-1">
-//                     <h3 className="text-lg sm:text-xl font-bold text-gray-700">
+//                     <h3 className="text-2xl font-bold text-gray-700">
 //                       {item.title ?? "Reliable Study Materials"}
 //                     </h3>
 //                     <p className="text-sm sm:text-base text-gray-500 mt-1 leading-relaxed">

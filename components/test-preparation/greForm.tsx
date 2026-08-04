@@ -189,7 +189,7 @@ const GreForm: React.FC<GreFormProps> = ({ studentsData }) => {
 
                               {/* Score */}
                               <div className="mt-3 sm:mt-4 flex items-center gap-2 flex-wrap">
-                                <span className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-[#4A2B0F]">
+                                <span className="text-2xl md:text-2xl lg:text-3xl font-bold text-[#4A2B0F]">
                                   {ele.score}
                                 </span>
 
@@ -256,7 +256,7 @@ const GreForm: React.FC<GreFormProps> = ({ studentsData }) => {
 
               {/* RIGHT - Form */}
               <div className="bg-white border border-[#EFE7D4] p-3 sm:p-4 md:p-5 lg:p-6 rounded-xl sm:rounded-2xl">
-                <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl text-center font-semibold mb-3 sm:mb-4 md:mb-5 lg:mb-7">
+                <h2 className="text-2xl md:text-2xl lg:text-3xl text-center font-semibold mb-3 sm:mb-4 md:mb-5 lg:mb-7">
                   Speak to an Expert
                 </h2>
 

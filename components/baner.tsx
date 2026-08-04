@@ -3,7 +3,7 @@
 
 export function Baners({ heading, img }: { heading?: any; img?: any }) {
   return (
-    <section className="bg-white py-8 sm:py-10 md:py-12 font-['Open_Sans','Helvetica_Neue',Arial,sans-serif]" id="about">
+    <section className="bg-white py-8 sm:py-10 md:py-12 " id="about">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top Header */}
         <h2 className="text-3xl sm:text-4xl md:text-5xl text-[#626363] font-bold text-center mb-6 sm:mb-8">

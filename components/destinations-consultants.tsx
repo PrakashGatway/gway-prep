@@ -20,7 +20,7 @@ export function Consultants({ data, finalCtaSection }: any) {
 
   return (
     <div className="bg-white max-w-7xl mx-auto rounded-xl p-6 my-10">
-      <h2 className="text-left text-lg sm:text-xl md:text-3xl lg:text-5xl font-bold mb-4">
+      <h2 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold mb-4">
         {data.fields.title?.split("||")[0]}
         <span className="text-primary">
           {data.fields.title?.split("||")[1]}
@@ -39,7 +39,7 @@ export function Consultants({ data, finalCtaSection }: any) {
               onClick={() => toggle(index)}
               className="flex items-center justify-between w-full py-4 text-left cursor-pointer" // Fixed "pointer" class to "cursor-pointer"
             >
-              <span className="font-medium text-primary text-xl">
+              <span className="font-medium text-primary text-lg md:text-xl">
                 {item.question}
               </span>
 
