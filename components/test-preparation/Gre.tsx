@@ -794,7 +794,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
 
       {/* Boost Profile Section */}
       <div className="w-full max-w-6xl mx-auto my-8 sm:my-10 md:my-12 relative px-3 sm:px-4">
-        <div className="bg-[#FDF0EB] rounded-xl md:rounded-[40px] p-4 sm:p-6 md:p-8 grid md:grid-cols-[800px_100px] items-center justify-between min-h-[200px] md:min-h-[300px] z-1">
+        <div className="bg-[#FDF0EB] rounded-xl md:rounded-[40px] p-4 sm:p-6 md:p-8 grid md:grid-cols-[2fr_1fr] items-center justify-between min-h-[200px] md:min-h-[300px] z-1">
           <div className="flex-1 z-10 text-center md:text-left space-y-3 sm:space-y-4 max-w-5xl pl-0 md:pl-20">
             <span className="text-[#FF6A39] text-xs sm:text-sm md:text-base font-medium tracking-wide block">
               {boostProfileSection.tagline || "Test Prep & Profile Building"}
