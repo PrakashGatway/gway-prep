@@ -176,12 +176,12 @@ function GreSection({
 
         {/* Right Side Introduction */}
         <div className="px-0 md:px-6">
-          <h4 className="text-xl sm:text-2xl md:text-5xl font-bold mb-3 sm:mb-4 flex flex-wrap gap-1 sm:gap-2">
+          <h2 className="text-xl sm:text-2xl md:text-5xl font-bold mb-3 sm:mb-4 flex flex-wrap gap-1 sm:gap-2">
             {whatIsGreSection?.sectionTitle?.split("||")[0] || "What is"}{" "}
             <p className="text-[#f06437]">
               {whatIsGreSection?.sectionTitle?.split("||")[1] || "GRE?"}
             </p>
-          </h4>
+          </h2>
           {/* <p className="text-gray-600 text-sm sm:text-base leading-relaxed text-justify">
             {whatIsGreSection?.description || greData.main_content.introduction}
           </p> */}
@@ -197,12 +197,12 @@ function GreSection({
 
       {/* Lower Cards Stack */}
       <div className="space-y-3 sm:space-y-4">
-        <h5 className="text-xl sm:text-2xl md:text-3xl font-semibold m-2 sm:m-4 flex flex-wrap gap-1 sm:gap-2">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold m-2 sm:m-4 flex flex-wrap gap-1 sm:gap-2">
           <p className="text-[#f06437]">
             {examFormatSection?.title?.split("||")[0] || "What is"}
           </p>{" "}
           {examFormatSection?.title?.split("||")[1] || "GRE?"}
-        </h5>
+        </h2>
 
         {(patternTable.length > 0 ? patternTable : greData.sections).map(
           (item: any, index: number) => (

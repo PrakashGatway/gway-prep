@@ -242,11 +242,11 @@ const GreForm: React.FC<GreFormProps> = ({ studentsData,formSection }) => {
 
                   <div className="py-2 sm:py-3 md:py-4 text-center">
                     <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#6A4700]">
-                      {formSection?.score1 || "3,100+"}
+                      {formSection?.score2 || "3,100+"}
                     </p>
 
                     <p className="mt-0.5 text-[7px] sm:text-[8px] md:text-[10px] tracking-[0.2em] uppercase text-gray-500">
-                      {formSection?.title1 || "MBA Candidates Coached"}
+                      {formSection?.title2 || "MBA Candidates Coached"}
                     </p>
                   </div>
                 </div>
