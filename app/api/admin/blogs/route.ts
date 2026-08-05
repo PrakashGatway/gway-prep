@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 🔥 Generate slug
-    const slug = slugify(body.title);
+    const slug = body?.slug ||  slugify(body.title);
 
     // 🔒 Prevent duplicate slug
     const exists = await Blog.findOne({ slug });
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
     );
   } catch (error) {
     console.error("[BLOG CREATE]", error);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json({ "error": "Server error", errormsg : error?.message }, { status: 500 });
   }
 }
 

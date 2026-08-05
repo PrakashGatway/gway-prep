@@ -118,13 +118,11 @@ const FORM_CONFIG: any = {
 };
 
 interface GreFormProps {
-  studentsData?: any
-  // {
-  //   data: StudentData[];
-  // };
+  studentsData?: any;
+  formSection? : any
 }
 
-const GreForm: React.FC<GreFormProps> = ({ studentsData }) => {
+const GreForm: React.FC<GreFormProps> = ({ studentsData,formSection }) => {
   const [activeIndex, setActiveIndex] = useState(0);
   console.log(studentsData,"student data")
   useEffect(() => {
@@ -209,9 +207,9 @@ const GreForm: React.FC<GreFormProps> = ({ studentsData }) => {
                                 </div>
 
                                 <div className="min-w-0 flex-1">
-                                  <h4 className="font-semibold text-sm sm:text-base lg:text-lg truncate">
+                                  <p className="font-semibold text-sm sm:text-base lg:text-lg truncate">
                                     {ele.name}
-                                  </h4>
+                                  </p>
 
                                   <p className="text-gray-500 text-xs sm:text-sm truncate">
                                     {ele.university}
@@ -233,22 +231,22 @@ const GreForm: React.FC<GreFormProps> = ({ studentsData }) => {
                 {/* Bottom Stats - Fixed */}
                 <div className="grid grid-cols-2 mt-3 sm:mt-4 border-t border-[#F5ECD6] flex-shrink-0">
                   <div className="py-2 sm:py-3 md:py-4 text-center border-r border-[#F5ECD6]">
-                    <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-serif text-[#6A4700]">
-                      +68
-                    </h3>
+                    <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-serif text-[#6A4700]">
+                      {formSection?.score || "+68"}
+                    </p>
 
                     <p className="mt-0.5 text-[7px] sm:text-[8px] md:text-[10px] tracking-[0.2em] uppercase text-gray-500">
-                      Avg. Score Gain
+                      {formSection?.title || "Avg. Score Gain"}
                     </p>
                   </div>
 
                   <div className="py-2 sm:py-3 md:py-4 text-center">
-                    <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#6A4700]">
-                      3,100+
-                    </h3>
+                    <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-[#6A4700]">
+                      {formSection?.score1 || "3,100+"}
+                    </p>
 
                     <p className="mt-0.5 text-[7px] sm:text-[8px] md:text-[10px] tracking-[0.2em] uppercase text-gray-500">
-                      MBA Candidates Coached
+                      {formSection?.title1 || "MBA Candidates Coached"}
                     </p>
                   </div>
                 </div>

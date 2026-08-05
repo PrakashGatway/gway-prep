@@ -585,7 +585,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
   const heroSection = pageInfo?.sections?.["hero-section"]?.fields || {};
-  const Registrations = pageInfo?.sections?.["Registrations"]?.fields || {};
+  const Registrations = pageInfo?.sections?.["from-section"]?.fields || {};
   const cta_banner = pageInfo?.sections?.["cta-banner-section"]?.fields || {};
   const aiStudySection = pageInfo?.sections?.["ai-study-section"]?.fields || {};
   const testDatesSection =
@@ -598,8 +598,6 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
   const testimonialsSection =
     pageInfo?.sections?.["testimonials-section"]?.fields || {};
   const faqSection = pageInfo?.sections?.["f&q"] || {};
-  const registrationSection =
-    pageInfo?.sections?.["Registrations"]?.fields || {};
   const examFormatSection =
     pageInfo?.sections?.["exam-Format-section"]?.fields || {};
   const examPatternSection =
@@ -748,9 +746,9 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
                 </span>
               </div> */}
 
-              <h3 className="text-white font-bold text-sm sm:text-lg md:text-lg">
+              <span className="text-white font-bold text-sm sm:text-lg md:text-lg">
                 {heroSection?.ctaButtonText || "Full Courses starts at $99"}
-              </h3>
+              </span>
             </div>
 
             
@@ -772,7 +770,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
         
       </section>
 
-      <GreForm studentsData={studentsData} />
+      <GreForm studentsData={studentsData} formSection={Registrations} />
 
       <GreSection
         examFormatSection={examFormatSection}

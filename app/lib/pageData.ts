@@ -2197,9 +2197,41 @@ export const pageData: any = {
             placeholder: "Full courses starts at $99",
             value: "Full Courses starts at $99",
           },
+
         ],
       },
-
+      
+      {
+        name: "from-section",
+        label: "From section",
+        fields: [
+          {
+            name: "score",
+            label: "Score ",
+            type: "text",
+            value: "68+",
+          },
+          {
+            name: "title",
+            label: "title",
+            type: "text",
+            value: "Avg. Score Gain",
+          },
+          {
+            name: "score2",
+            label: "Score 2",
+            type: "text",
+            value: "68+",
+          },
+          {
+            name: "title2",
+            label: "title 2",
+            type: "text",
+            value: "Avg. Score Gain",
+          },
+        ],
+      },
+      
       {
         name: "cta-banner-section",
         label: "CTA Banner",
