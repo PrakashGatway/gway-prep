@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import DOMPurify from "isomorphic-dompurify";
 import PopupModal from "./popupModel";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 
 
@@ -70,7 +71,7 @@ export default function About({ sections }: any) {
                 <button onClick={() => setIsPopupOpen(true)} className="rounded-xl bg-primary px-8 py-4 text-white font-semibold transition hover:opacity-90">
                   {hero?.buttons?.primary || "Get Started"}
                 </button>
-{/* 
+                {/* 
                 <button className="rounded-xl border-2 border-black bg-white px-8 py-4 font-semibold text-black transition hover:bg-gray-100">
                   {hero?.buttons?.secondary || "Learn More"}
                 </button> */}
@@ -484,6 +485,10 @@ function CallToActionSection({
   primaryButton?: string;
   secondaryButton?: string;
 }) {
+  
+  const router = useRouter();
+  const [popup,setpopup] = useState(false);
+  
   return (
     <section className="relative overflow-hidden flex items-center py-6 mt-8 max-w-6xl mx-auto">
       <div
@@ -530,7 +535,7 @@ function CallToActionSection({
 
           <div className="flex flex-col sm:flex-row gap-3">
             {primaryButton && (
-              <button className="flex-shrink-0 flex items-center gap-2 bg-white text-[#f26e46] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap">
+              <button onClick={() => router.push('/auth')} className="flex-shrink-0 flex items-center gap-2 bg-white text-[#f26e46] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap">
                 {primaryButton}
                 <svg
                   xmlns="http://w3.org"
@@ -549,11 +554,14 @@ function CallToActionSection({
               </button>
             )}
             {secondaryButton && (
-              <button className="flex-shrink-0 flex items-center gap-2 bg-black text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-gray-800 transition-all whitespace-nowrap">
+              <button onClick={()=> setpopup(true)} className="flex-shrink-0 flex items-center gap-2 bg-black text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-gray-800 transition-all whitespace-nowrap">
                 {secondaryButton}
               </button>
             )}
           </div>
+
+          
+            <PopupModal isPopupOpen={popup} setIsPopupOpen={setpopup}/>
         </motion.div>
       </div>
     </section>

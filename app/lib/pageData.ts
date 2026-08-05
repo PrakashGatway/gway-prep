@@ -1290,8 +1290,8 @@ export const pageData: any = {
                 type: "textarea",
               },
               {
-                name: "contact",
-                label: "Contact",
+                name: "url",
+                label: "url",
                 type: "text",
               },
               {

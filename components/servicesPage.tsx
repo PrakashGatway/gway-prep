@@ -172,7 +172,7 @@ function PortalSection({ data }: { data: any }) {
   const subtitle = data?.fields?.subtitle || "";
   const buttonText = data?.fields?.button || "";
   const image = data?.fields?.image || "";
-
+  const router = useRouter();
   if (!title && !subtitle) return null;
 
   return (
@@ -195,7 +195,7 @@ function PortalSection({ data }: { data: any }) {
                   className="mt-2 md:mt-4 text-[#4B4B4B] text-base md:text-lg leading-7 md:leading-8 text-left whitespace-pre-line"
                 />
             {buttonText && (
-              <button className="mt-6 md:mt-8 bg-[#F36C45] px-6 md:px-8 py-2.5 md:py-3 text-white font-semibold rounded-full hover:bg-[#e85f35] transition">
+              <button onClick={() => router.push('/auth')} className="mt-6 md:mt-8 bg-[#F36C45] px-6 md:px-8 py-2.5 md:py-3 text-white font-semibold rounded-full hover:bg-[#e85f35] transition">
                 {buttonText}
               </button>
             )}
@@ -619,6 +619,7 @@ function SupportSection({ data }: { data: any }) {
   const items = data.fields.items;
   const title = data.fields.title || "";
   const subtitle = data.fields.subtitle || "";
+  const router = useRouter();
 
   return (
     <section className="px-4 md:px-8 py-8 md:py-10 lg:py-12 mx-auto bg-[#FFDDD3]">
@@ -663,6 +664,7 @@ function SupportSection({ data }: { data: any }) {
 
             {card.button && (
               <button
+                onClick={() => router.push(`${card?.url}`)}
                 className={`mt-2 md:mt-4 h-12 md:h-14 rounded-2xl text-sm md:text-[17px] font-semibold transition-all duration-300 flex items-center justify-center gap-2
                   ${card.primary
                     ? "bg-[#FE6610] text-white hover:bg-[#e95a08]"
@@ -822,6 +824,7 @@ function CTASection({ data }: { data: any }) {
   const subtitle = data?.fields?.subtitle || "";
   const primaryButton = data?.fields?.primaryButton || "";
   const secondaryButton = data?.fields?.secondaryButton || "";
+  const route = useRouter();
 
   if (!title && !subtitle && !primaryButton && !secondaryButton) return null;
 
@@ -837,12 +840,12 @@ function CTASection({ data }: { data: any }) {
           </p>
           <div className="mt-8 md:mt-10 flex flex-col sm:flex-row justify-center gap-3 md:gap-5">
             {primaryButton && (
-              <button className="bg-white text-[#222] px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold text-sm md:text-lg hover:scale-105 transition-all duration-300">
+              <button onClick={() => route.push('/auth')} className="bg-white text-[#222] px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold text-sm md:text-lg hover:scale-105 transition-all duration-300">
                 {primaryButton}
               </button>
             )}
             {secondaryButton && (
-              <button className="bg-[#3D1E16] text-white px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold text-sm md:text-lg hover:bg-[#2B140F] transition-all duration-300">
+              <button onClick={() => route.push('/auth')} className="bg-[#3D1E16] text-white px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold text-sm md:text-lg hover:bg-[#2B140F] hover:scale-105 transition-all duration-300">
                 {secondaryButton}
               </button>
             )}
