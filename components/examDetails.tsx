@@ -29,10 +29,14 @@ import EditorContent from "./editorContent";
 import PopupModal from "./popupModel";
 import axiosInstance from "@/app/lib/axios";
 
+
 import { motion, AnimatePresence } from 'framer-motion';
+import { useRouter } from "next/navigation";
 
 
 const ExamDetails = ({ pagedata }: any) => {
+
+  console.log(pagedata,"page data")
   const basicInfo = pagedata?.sections?.["basic-info"]?.fields;
   const examData = pagedata?.sections?.["exam-data"]?.fields?.exam_details || [];
   const [activeSection, setActiveSection] = useState<string>("");
@@ -233,6 +237,10 @@ const ExamDetails = ({ pagedata }: any) => {
                     </div>
                   )}
 
+                  {section &&
+                  Array.isArray(section?.Banner) && section.Banner.length > 0 
+                  && <Banner finalCtaSection={section.Banner[0]} Image={section.Image}/>}
+
                   {section.question && <QuizCard section={section} pagedata={pagedata} />}
                 </div>
               ))}
@@ -275,6 +283,81 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
   );
 }
 
+
+function Banner({ finalCtaSection, Image }: any) {
+  const router = useRouter();
+
+  return (
+    <section className="relative overflow-hidden flex items-center py-6 mt-8 ">
+      {/* Main Orange Banner Container */}
+      <div className=" w-full mx-auto bg-[#FF6A13] rounded-[24px] overflow-hidden 
+      flex flex-col md:flex-row items-center justify-between p-6 md:p-8 gap-6 min-h-[160px]"
+      >
+        {/* Left Side: Animated Character Image */}
+        {Image && <motion.div
+          initial={{ x: "-150%", opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{
+            type: "spring",
+            stiffness: 60,
+            damping: 15,
+            duration: 1,
+          }}
+          className="flex-shrink-0 z-10 w-[180px] md:w-[220px] md:absolute md:left-8 md:bottom-0"
+        >
+           <img
+            src={Image || "/footer.png"}
+            alt="Student reading on beanbag"
+            className="w-full h-auto object-contain block"
+          />
+        </motion.div>}
+
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8, duration: 0.5 }}
+          className={`flex flex-col md:flex-row items-center justify-between w-full ${Image && "md:pl-[240px]"} gap-6 text-center md:text-left`}
+        >
+          {/* Text Content */}
+          <div className="text-white max-w-xl">
+            <h6 className="text-2xl md:text-4xl font-bold tracking-tight mb-2">
+              {finalCtaSection?.title || "Ready to Achieve Your Dreams?"}
+            </h6>
+            <p className="text-sm md:text-base opacity-90 font-medium">
+              {finalCtaSection?.subtitle ||
+                "Join thousands of successful students and start your journey today."}
+            </p>
+          </div>
+
+          {/* Call to Action Button */}
+          {finalCtaSection?.buttontext && 
+           <button
+            onClick={() => router.push("/auth")}
+            className="flex-shrink-0 flex items-center gap-2 bg-white text-[#FF6A13] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap"
+          >
+            {finalCtaSection?.buttontext || "Enroll Now"}
+            <svg
+              xmlns="http://w3.org"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={2.5}
+              stroke="currentColor"
+              className="w-4 h-4"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M13.5 4.5l6.75 6.75-6.75 6.75M19.5 12H9"
+              />
+            </svg>
+          </button>
+          }
+        </motion.div>
+      </div>
+    </section>
+  );
+}
 
 
 // function QuizCard({ section ,pagedata}: any) {
@@ -580,6 +663,8 @@ const SimpleBarChart = ({ data }: { data: any[] }) => {
     </div>
   );
 };
+
+
 
 const StatisticsCard = ({ data }: { data: any[] }) => {
   const totalClicks = data.reduce((sum, item) => sum + item.totalClicks, 0);
