@@ -133,6 +133,7 @@ export default async function BlogDetailsPage({
 
   const blogUrl = `${SITE_URL}/blog/${slug}`;
 
+  console.log("blog :",blog)
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -153,7 +154,7 @@ export default async function BlogDetailsPage({
       {
         "@type": "ListItem",
         position: 3,
-        name: blog.title,
+        name: blog?.data?.title,
         item: blogUrl,
       },
     ],
