@@ -183,8 +183,8 @@ const EditorContent = ({ content_data }: EditorContentProps) => {
             [&_h3]:text-2xl
             [&_h3]:font-semibold
             [&_h3]:mt-6
-
-            [&_p]:text-base
+          
+            [&_p]:text-justify
             [&_p]:leading-8
             [&_p]:text-gray-700
             [&_p]:mb-4

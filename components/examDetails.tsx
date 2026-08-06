@@ -117,12 +117,14 @@ const ExamDetails = ({ pagedata }: any) => {
                   {basicInfo?.title}
                 </h1>
                 {basicInfo?.subtitle && (
-                  <div
-                    className="text-gray-600 mt-2 text-justify"
-                    dangerouslySetInnerHTML={{
-                      __html: basicInfo.subtitle,
-                    }}
-                  />
+                  // <div
+                  //   className="text-gray-600 mt-2 text-justify"
+                  //   dangerouslySetInnerHTML={{
+                  //     __html: basicInfo.subtitle,
+                  //   }}
+                  // />
+                  
+                    <EditorContent content_data={basicInfo.subtitle} />
                 )}
               </div>
             </div>
