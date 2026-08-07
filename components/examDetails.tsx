@@ -36,7 +36,7 @@ import { useRouter } from "next/navigation";
 
 const ExamDetails = ({ pagedata }: any) => {
 
-  console.log(pagedata,"page data")
+  // console.log(pagedata,"page data")
   const basicInfo = pagedata?.sections?.["basic-info"]?.fields;
   const examData = pagedata?.sections?.["exam-data"]?.fields?.exam_details || [];
   const [activeSection, setActiveSection] = useState<string>("");
@@ -646,7 +646,7 @@ const SimpleBarChart = ({ data }: { data: any[] }) => {
       <div className="space-y-3">
         {data.map((item, idx) => (
           <div key={idx} className="flex items-center gap-3">
-            <span className="text-sm font-medium text-gray-600 w-16">{item.option}</span>
+            <span className="text-sm font-medium text-gray-600 w-44">{item.option}</span>
             <div className="flex-1 h-7 bg-gray-100 rounded-full overflow-hidden relative">
               <motion.div
                 initial={{ width: 0 }}
@@ -703,15 +703,7 @@ function QuizCard({ section, pagedata }: any) {
   const slug = pagedata?.seoMeta;
 
   // Mock API response for demo - replace with your actual data
-  const [mockApiData,setmockApiData] = useState({
-    success: true,
-    data: [
-      { option: "5%", totalClicks: 1, _id: "6a6b0713058cb6bebfab7548" },
-      { option: "10%", totalClicks: 3, _id: "6a6b072a058cb6bebfab754a" },
-      { option: "12.5%", totalClicks: 3, _id: "6a6b0730058cb6bebfab754d" },
-      { option: "7.5%", totalClicks: 1, _id: "6a6b08ee058cb6bebfab755a" }
-    ]
-  });
+  const [mockApiData,setmockApiData] = useState({});
 
   useEffect(() => {
     if (isPopupOpen) {
@@ -729,6 +721,8 @@ function QuizCard({ section, pagedata }: any) {
       setIsPopupOpen(true);
       return;
     }
+
+    // console.log(section.options,"section.options")
 
     const correctAnswer = section.options.find(
       (option: any) => option.value !== ""
@@ -760,11 +754,15 @@ function QuizCard({ section, pagedata }: any) {
         message: response.data?.message || "Successfully submitted your answer!"
       });
 
-      console.log(mockApiData,"mockApiData",response?.data);
 
-      const isAnswerCorrect = response.data?.isCorrect !== undefined 
-        ? response.data.isCorrect 
-        : selectedOption === correctAnswer;
+      // const isAnswerCorrect = response.data?.isCorrect !== undefined 
+      //   ? response.data.isCorrect 
+      //   : selectedOption === correctAnswer;
+
+      const isAnswerCorrect = selectedOption?.toString().trim() === correctAnswer?.toString().trim();
+
+
+      console.log(mockApiData,"mockApiData",response?.data,selectedOption,correctAnswer);
 
       setIsCorrect(isAnswerCorrect);
       setAnswer(correctAnswer);

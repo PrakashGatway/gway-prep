@@ -179,7 +179,7 @@ const EditorContent = ({ content_data }: EditorContentProps) => {
             [&_h2]:text-[#1a1a1a]
             [&_h2]:mt-8
             [&_h2]:mb-4
-
+          
             [&_h3]:text-2xl
             [&_h3]:font-semibold
             [&_h3]:mt-6
@@ -201,6 +201,7 @@ const EditorContent = ({ content_data }: EditorContentProps) => {
 
             [&_li]:text-gray-700
             [&_li]:leading-7
+            [&_li]:text-justify
 
             [&_a]:text-[#f26e46]
             [&_a]:font-semibold
