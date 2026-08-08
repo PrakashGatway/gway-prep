@@ -10,6 +10,7 @@ import {
   LogOut,
   FileEditIcon,
   File,
+  BookUser
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -57,6 +58,7 @@ const Sidebar = () => {
     { icon: <Users size={18} />, label: "Students", href: "/admin/pages/student" },
     { icon: <FileEditIcon size={18} />, label: "Editor", href: "/admin/pages/editor" },
     { icon: <File size={18} />, label: "Blog", href: "/admin/pages/Blogs" },
+    { icon: <BookUser size={18} />, label: "Auther", href: "/admin/pages/auther"}
   ];
 
   // if (!isAuthChecked) return null;

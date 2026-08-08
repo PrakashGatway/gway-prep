@@ -54,7 +54,7 @@ const Blog = () => {
           </button>
           <button
             onClick={() => router.push("/admin/pages/Blogs/add")}
-            className="bg-blue-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition shadow-sm"
+            className="bg-orange-600 text-white px-5 py-2.5 rounded-xl hover:bg-blue-700 transition "
           >
             + Create Blog
           </button>
@@ -62,7 +62,7 @@ const Blog = () => {
       </div>
 
       {/* LIST */}
-      <div className="bg-white rounded-2xl shadow-sm border overflow-hidden">
+      <div className="bg-white rounded-2xl  border overflow-hidden">
         {loading ? (
           <div className="p-8 text-center text-gray-500">Loading blogs...</div>
         ) : blogs.length === 0 ? (
