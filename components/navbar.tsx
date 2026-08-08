@@ -13,16 +13,21 @@ import {
   GraduationCap,
   ArrowRight,
   ChevronRight,
+  UserCircle,
+  LogOut,
+  Settings,
+  ChevronUp,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGlobal } from "@/hooks/AppStateContext";
 import AuthDrawer from "./auth/drawer";
 import { useRouter } from "next/navigation";
+import axiosInstance from "@/services/axiosInstance";
 
 export function Navbar({ Data }: any) {
   const router = useRouter();
   const { user, logout, drawer, setDrawer } = useGlobal();
-
+  console.log(user, "user");
   const [isOpen, setIsOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
   const [activeDropdown, setActiveDropdown] = React.useState<string | null>(
@@ -36,6 +41,35 @@ export function Navbar({ Data }: any) {
   );
 
   
+const [showProfileMenu, setShowProfileMenu] = React.useState(false);
+
+const profileMenuRef = React.useRef<HTMLDivElement>(null);
+
+// Close dropdown when clicking outside
+React.useEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      profileMenuRef.current &&
+      !profileMenuRef.current.contains(
+        event.target as Node
+      )
+    ) {
+      setShowProfileMenu(false);
+    }
+  };
+
+  document.addEventListener(
+    "mousedown",
+    handleClickOutside
+  );
+
+  return () => {
+    document.removeEventListener(
+      "mousedown",
+      handleClickOutside
+    );
+  };
+});
   const NAVDATA1 = React.useMemo(
     () =>
       Data?.filter(
@@ -44,7 +78,6 @@ export function Navbar({ Data }: any) {
     [Data],
   );
 
-  
   const NAVDATA = React.useMemo(
     () =>
       Data?.filter(
@@ -93,7 +126,7 @@ export function Navbar({ Data }: any) {
       //     slug: item.seoMeta.canonicalUrl,
       //     description: item.seoMeta.navSubtitle,
       //     badge: item.seoMeta?.badge || null,
-        
+
       //   })),
       // },
       { name: "Blogs", href: "/blog", icon: null },
@@ -103,7 +136,9 @@ export function Navbar({ Data }: any) {
     [NAVDATA],
   );
 
-  const [mobileSubDropdown, setMobileSubDropdown] = React.useState<string | null>(null);
+  const [mobileSubDropdown, setMobileSubDropdown] = React.useState<
+    string | null
+  >(null);
   // Scroll handler
   React.useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
@@ -386,16 +421,19 @@ export function Navbar({ Data }: any) {
             </div>
 
             {/* Desktop CTAs */}
-            <div className="hidden lg:flex items-center gap-4">
+            {/* <div className="hidden lg:flex items-center gap-4">
               <a
                 href="tel:+919166146538"
-                className="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-gray-50 hover:bg-gray-100 transition-all group"
+                className="flex items-center gap-2.5 px-4 py-1.5 rounded-2xl hover:bg-gray-100 transition-all group"
               >
-                {/* <div className="w-8 h-8 rounded-full bg-[#F36C45]/10 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-[#F36C45]/10 flex items-center justify-center">
                   <Phone size={18} className="text-[#F36C45]" />
-                </div> */}
+                </div> 
                 <div>
-                  <div className="text-xs text-gray-400 flex items-center gap-2">  <Phone size={12} className="text-[#F36C45]" /> Call us</div>
+                  <div className="text-xs text-gray-400 flex items-center gap-2">
+                    {" "}
+                    <Phone size={12} className="text-[#F36C45]" /> Call us
+                  </div>
                   <div className="font-semibold text-sm text-gray-700 group-hover:text-[#F36C45]">
                     +91 9166146538
                   </div>
@@ -415,23 +453,286 @@ export function Navbar({ Data }: any) {
                   onClick={() =>
                     (window.location.href = "https://dashboard.ooshasprep.com")
                   }
-                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-orange-500 to-primary text-white font-medium flex items-center gap-2 hover:shadow-lg cursor-pointer hover:shadow-orange-500/30 transition-all active:scale-95"
+                  className="px-2 py-2.5 rounded-2xl bg-gradient-to-r from-orange-500 to-primary text-white font-medium flex items-center gap-2 hover:shadow-lg cursor-pointer hover:shadow-orange-500/30 transition-all active:scale-95"
                 >
-                  <LayoutDashboard size={18} />
-                  {/* <UserCircle size={18} /> */}
-                  Dashboard
+                  <LayoutDashboard size={18} /> 
+                   Dashboard 
                 </button>
               )}
-            </div>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsOpen(true)}
-              className="lg:hidden p-3 rounded-2xl hover:bg-gray-100 transition-colors"
-              aria-label="Open navigation menu"
-            >
-              <Menu size={28} className="text-gray-700" />
-            </button>
+            </div> */}
+
+<div className="hidden lg:flex items-center gap-4">
+  
+ <a
+                href="tel:+919166146538"
+                className="flex items-center gap-2.5 px-4 py-1.5 rounded-2xl hover:bg-gray-100 transition-all group"
+              >
+                
+                <div>
+                  <div className="text-xs text-gray-400 flex items-center gap-2">
+                    {" "}
+                    <Phone size={12} className="text-[#F36C45]" /> Call us
+                  </div>
+                  <div className="font-semibold text-sm text-gray-700 group-hover:text-[#F36C45]">
+                    +91 9166146538
+                  </div>
+                </div>
+              </a>
+            {!user?.email ? (
+
+              <button
+                onClick={() => router.push("/auth")}
+                className="
+      px-6 py-2.5
+      rounded-2xl
+      bg-gradient-to-r
+      from-[#F36C45]
+      to-orange-500
+      text-white
+      font-medium
+      flex items-center
+      gap-2
+      hover:shadow-xl
+      hover:shadow-orange-500/30
+      transition-all
+      active:scale-95
+    "
+              >
+                <User size={18} />
+                Get Started
+              </button>
+            ) : (
+              <div ref={profileMenuRef} className="relative">
+                {/* ================= PROFILE BUTTON ================= */}
+
+                <button
+                  type="button"
+                  onClick={() => setShowProfileMenu((prev) => !prev)}
+                  className="
+        flex
+        items-center
+        gap-2
+        rounded-full
+        bg-gradient-to-r
+        from-orange-500
+        to-[#F36C45]
+        pr-2
+        transition-all
+        hover:shadow-lg
+        hover:shadow-orange-500/30
+        active:scale-95
+      ">
+        
+
+                  <div
+                    className="
+          flex
+          h-10
+          w-10
+          items-center
+          justify-center
+          rounded-full
+          bg-white
+          text-gray-700
+        "
+                  >
+                    <UserCircle size={24} />
+                  </div>
+
+                  {/* CHEVRON */}
+
+                  {/* {showProfileMenu ? (
+                    <ChevronUp size={17} className="text-white " />
+                  ) : (
+                    <ChevronDown size={17} className="text-white" />
+                  )} */}
+                  <ChevronDown size={17} className={`text-white ${showProfileMenu ? '-rotate-180':'rotate-0'} duration-300 ease-in-out`} />
+                  
+                </button>
+
+
+
+                {showProfileMenu && (
+                  <div
+                    className="
+                      absolute
+                      right-0
+                      top-[calc(100%+12px)]
+                      z-[9999]
+                      w-[320px]
+                      overflow-hidden
+                      rounded-2xl
+                      border
+                      border-gray-100
+                      bg-white
+                      shadow-[0_10px_40px_rgba(0,0,0,0.15)]
+                    ">
+                    
+
+                    <div
+                      className="
+                      flex
+                      items-center
+                      gap-3
+                      border-b
+                      border-gray-100
+                      px-5
+                      py-5
+                    ">
+                      {/* Avatar */}
+
+                      <div
+                        className="
+                        flex
+                        h-12
+                        w-12
+                        shrink-0
+                        items-center
+                        justify-center
+                        rounded-full
+                        border
+                        border-gray-200
+                        bg-gray-50
+                        text-gray-500
+                      ">
+                        <User size={26} />
+                      </div>
+
+                      {/* Name / Email */}
+
+                      <div className="min-w-0">
+                        <h3
+                          className="
+                truncate
+                text-[17px]
+                font-semibold
+                text-gray-900
+              "
+                        >
+                          {user?.name || "Rajesh Kumar"}
+                        </h3>
+
+                        <p
+                          className="
+                mt-0.5
+                truncate
+                text-sm
+                text-gray-500
+              "
+                        >
+                          {user?.email}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="py-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowProfileMenu(false);
+                          router.push("https://dashboard.ooshasprep.com/profile");
+                        }}
+                        className="
+              flex
+              w-full
+              items-center
+              gap-4
+              px-5
+              py-3.5
+              text-left
+              text-[16px]
+              text-gray-700
+              transition
+              hover:bg-orange-50
+              hover:text-[#F36C45]
+            "
+                      >
+                        <User size={22} strokeWidth={1.8} />
+
+                        <span>My Profile</span>
+                      </button>
+
+                      {/* DASHBOARD */}
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowProfileMenu(false);
+
+                          window.location.href =
+                            "https://dashboard.ooshasprep.com";
+                        }}
+                        className="
+              flex
+              w-full
+              items-center
+              gap-4
+              px-5
+              py-3.5
+              text-left
+              text-[16px]
+              text-gray-700
+              transition
+              hover:bg-orange-50
+              hover:text-[#F36C45]
+            "
+                      >
+                        <LayoutDashboard size={22} strokeWidth={1.8} />
+
+                        <span>Dashboard</span>
+                      </button>
+
+
+                    </div>
+
+                    {/* ================= LOGOUT ================= */}
+
+                    <div
+                      className="
+            border-t
+            border-gray-100
+            p-2
+          "
+                    >
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowProfileMenu(false);
+
+                          // Your logout logic here
+                          // logout();
+
+                           axiosInstance.get('logout')
+                          // router.push("/auth");
+                        }}
+                        className="
+              flex
+              w-full
+              items-center
+              gap-4
+              rounded-xl
+              px-4
+              py-3
+              text-left
+              text-[16px]
+              text-red-500
+              transition
+              hover:bg-red-50
+            "
+                      >
+                        <LogOut size={22} strokeWidth={1.8} />
+
+                        <span>Logout</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+</div>
+
           </div>
         </div>
       </nav>
@@ -602,124 +903,129 @@ export function Navbar({ Data }: any) {
                               </motion.div>
                             )} */}
                             {mobileDropdown === item.name && (
-  <motion.div
-    initial={{ height: 0, opacity: 0 }}
-    animate={{ height: "auto", opacity: 1 }}
-    exit={{ height: 0, opacity: 0 }}
-    className="pl-4 pr-2 overflow-hidden"
-  >
-    {item.dropdownItems?.map((sub: any) => {
-      const hasSublinks = sub.sublink && sub.sublink.length > 0;
-      const isSubOpen = mobileSubDropdown === sub.slug;
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "auto", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                className="pl-4 pr-2 overflow-hidden"
+                              >
+                                {item.dropdownItems?.map((sub: any) => {
+                                  const hasSublinks =
+                                    sub.sublink && sub.sublink.length > 0;
+                                  const isSubOpen =
+                                    mobileSubDropdown === sub.slug;
 
-      return (
-        <div key={sub.slug}>
-          <div className="flex items-center">
-            <Link
-              href={`/${sub.slug}`}
-              onClick={handleLinkClick}
-              className="flex-1 flex gap-3 py-3 px-3 rounded-xl hover:bg-orange-50 group"
-            >
-              <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-gray-50 group-hover:bg-orange-100 transition-colors">
-                {sub.img ? (
-                  <Image
-                    src={sub.img}
-                    alt={sub.name}
-                    width={28}
-                    height={28}
-                    className="object-contain"
-                  />
-                ) : (
-                  <GraduationCap
-                    size={18}
-                    className="text-[#F36C45]"
-                  />
-                )}
-              </div>
+                                  return (
+                                    <div key={sub.slug}>
+                                      <div className="flex items-center">
+                                        <Link
+                                          href={`/${sub.slug}`}
+                                          onClick={handleLinkClick}
+                                          className="flex-1 flex gap-3 py-3 px-3 rounded-xl hover:bg-orange-50 group"
+                                        >
+                                          <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-gray-50 group-hover:bg-orange-100 transition-colors">
+                                            {sub.img ? (
+                                              <Image
+                                                src={sub.img}
+                                                alt={sub.name}
+                                                width={28}
+                                                height={28}
+                                                className="object-contain"
+                                              />
+                                            ) : (
+                                              <GraduationCap
+                                                size={18}
+                                                className="text-[#F36C45]"
+                                              />
+                                            )}
+                                          </div>
 
-              <div className="flex-1 min-w-0">
-                <div className="font-medium text-sm group-hover:text-[#F36C45] transition-colors">
-                  {sub.name}
-                </div>
+                                          <div className="flex-1 min-w-0">
+                                            <div className="font-medium text-sm group-hover:text-[#F36C45] transition-colors">
+                                              {sub.name}
+                                            </div>
 
-                {sub.description && (
-                  <div className="text-xs text-gray-500 truncate">
-                    {sub.description}
-                  </div>
-                )}
-              </div>
-            </Link>
+                                            {sub.description && (
+                                              <div className="text-xs text-gray-500 truncate">
+                                                {sub.description}
+                                              </div>
+                                            )}
+                                          </div>
+                                        </Link>
 
-            {hasSublinks && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
+                                        {hasSublinks && (
+                                          <button
+                                            type="button"
+                                            onClick={(e) => {
+                                              e.preventDefault();
+                                              e.stopPropagation();
 
-                  setMobileSubDropdown(
-                    isSubOpen ? null : sub.slug
-                  );
-                }}
-                className="p-3 rounded-lg"
-              >
-                <ChevronRight
-                  size={18}
-                  className={`text-gray-800 transition-transform ${
-                    isSubOpen ? "rotate-90" : ""
-                  }`}
-                />
-              </button>
-            )}
-          </div>
+                                              setMobileSubDropdown(
+                                                isSubOpen ? null : sub.slug,
+                                              );
+                                            }}
+                                            className="p-3 rounded-lg"
+                                          >
+                                            <ChevronRight
+                                              size={18}
+                                              className={`text-gray-800 transition-transform ${
+                                                isSubOpen ? "rotate-90" : ""
+                                              }`}
+                                            />
+                                          </button>
+                                        )}
+                                      </div>
 
-          {hasSublinks && isSubOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="ml-12 space-y-0.5 border-l-2 border-orange-200 pl-3 mb-2 overflow-hidden"
-            >
-              {sub.sublink.map((subSub: any) => (
-                <Link
-                  key={subSub.slug}
-                  href={`/${subSub.slug}`}
-                  onClick={handleLinkClick}
-                  className="flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-orange-50/50 text-sm text-gray-600 hover:text-[#F36C45] transition-all"
-                >
-                  <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0">
-                    {subSub.img ? (
-                      <Image
-                        src={subSub.img}
-                        alt={subSub.name}
-                        width={16}
-                        height={16}
-                        className="object-contain"
-                      />
-                    ) : (
-                      <ChevronRight
-                        size={12}
-                        className="text-gray-600"
-                      />
-                    )}
-                  </div>
+                                      {hasSublinks && isSubOpen && (
+                                        <motion.div
+                                          initial={{ height: 0, opacity: 0 }}
+                                          animate={{
+                                            height: "auto",
+                                            opacity: 1,
+                                          }}
+                                          exit={{ height: 0, opacity: 0 }}
+                                          className="ml-12 space-y-0.5 border-l-2 border-orange-200 pl-3 mb-2 overflow-hidden"
+                                        >
+                                          {sub.sublink.map((subSub: any) => (
+                                            <Link
+                                              key={subSub.slug}
+                                              href={`/${subSub.slug}`}
+                                              onClick={handleLinkClick}
+                                              className="flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-orange-50/50 text-sm text-gray-600 hover:text-[#F36C45] transition-all"
+                                            >
+                                              <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0">
+                                                {subSub.img ? (
+                                                  <Image
+                                                    src={subSub.img}
+                                                    alt={subSub.name}
+                                                    width={16}
+                                                    height={16}
+                                                    className="object-contain"
+                                                  />
+                                                ) : (
+                                                  <ChevronRight
+                                                    size={12}
+                                                    className="text-gray-600"
+                                                  />
+                                                )}
+                                              </div>
 
-                  <span>{subSub.name}</span>
+                                              <span>{subSub.name}</span>
 
-                  {subSub.badge && (
-                    <span className="text-[8px] px-1.5 py-px rounded-full bg-blue-50 text-blue-600 font-medium">
-                      {subSub.badge}
-                    </span>
-                  )}
-                </Link>
-              ))}
-            </motion.div>
-          )}
-        </div>
-      );
-    })}
-  </motion.div>
-)}
+                                              {subSub.badge && (
+                                                <span className="text-[8px] px-1.5 py-px rounded-full bg-blue-50 text-blue-600 font-medium">
+                                                  {subSub.badge}
+                                                </span>
+                                              )}
+                                            </Link>
+                                          ))}
+                                        </motion.div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                              </motion.div>
+                            )}
                           </AnimatePresence>
                         </>
                       ) : (
@@ -740,7 +1046,7 @@ export function Navbar({ Data }: any) {
                 <div className="mt-10 space-y-4">
                   <a
                     href="tel:+919166146538"
-                    className="flex items-center justify-center gap-3 w-full py-4 bg-gray-50 hover:bg-gray-100 rounded-2xl font-medium"
+                    className="flex items-center justify-center gap-3 w-full py-4 hover:bg-gray-100 rounded-2xl font-medium"
                   >
                     <Phone className="text-[#F36C45]" />
                     +91 9166146538

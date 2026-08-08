@@ -2863,7 +2863,12 @@ export const pageData: any = {
                   {
                     name : "subtitle",
                     label : "Subtitle",
-                    type : "textarea"
+                    type : "editor"
+                  },
+                  {
+                    name : "url",
+                    label : "Url",
+                    type : "text"
                   },
                   {
                     name: "buttontext",

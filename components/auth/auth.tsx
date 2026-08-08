@@ -34,6 +34,10 @@ export default function Auth({ toggleDrawer }: any) {
     //     }
     // }, [ReferalFromUrl]);
 
+    useEffect(()=> {
+        // logout();
+    },[])
+
     const validatePhone = (value: string) => /^[6-9]\d{9}$/.test(value);
     const validateName = (value: string) => /^[A-Za-z ]{2,}$/.test(value);
     const validateEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);

@@ -335,7 +335,7 @@ function Banner({ finalCtaSection, Image }: any) {
           {/* Call to Action Button */}
           {finalCtaSection?.buttontext && 
            <button
-            onClick={() => router.push("/auth")}
+            onClick={() => router.push(finalCtaSection?.url ? finalCtaSection?.url :"/auth")}
             className="flex-shrink-0 flex items-center gap-2 bg-white text-[#FF6A13] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap"
           >
             {finalCtaSection?.buttontext || "Enroll Now"}
