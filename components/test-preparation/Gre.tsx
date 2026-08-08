@@ -41,7 +41,7 @@ function AIStudySection({ aiStudySection }: { aiStudySection: any }) {
             {aiStudySection.sectionSubtitle}
           </p>
         </div>
-
+      
         <div className="relative p-1 sm:p-2">
           {aiStudySection.aiFeatures?.map((feature: any, index: number) => (
             <FeatureCard key={index} feature={feature} index={index} />
@@ -579,6 +579,8 @@ function DashboardSection({ dashboardData }: { dashboardData: any }) {
 }
 
 export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
+
+  // console.log(pageInfo.seoMeta.duplicateOf ,'page data',slug);
   const [currentSlide, setCurrentSlide] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [showTestDates, setShowTestDates] = useState(false);
@@ -622,8 +624,10 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
     let mounted = true;
     const displayStudents = async () => {
       try {
-        const data = await getStudent(slug || "", 1, 8);
-        // console.log(data.data, 'klkjoijoijoij')
+        let qeury = pageInfo?.seoMeta?.duplicateOf !== "" ? pageInfo.seoMeta.duplicateOf : slug;
+        
+        const data = await getStudent(qeury || "", 1, 8);
+        
         if (mounted) setstudentsData(data.data || []);
       } catch (err) {
         console.error(err);

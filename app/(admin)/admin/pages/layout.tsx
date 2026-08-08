@@ -19,13 +19,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${notoSans.className}`} suppressHydrationWarning>
-        <div className="min-h-screen flex bg-gray-50">
+        <div className="h-[100vh] overflow-hidden flex bg-gray-50">
           <Sidebar />
 
           <div className="flex-1 flex flex-col">
-            {/* Content */}
             <Nav />
-            {children}
+            <div className="overflow-auto">
+              {children}
+            </div>
           </div>
         </div>
       </body>

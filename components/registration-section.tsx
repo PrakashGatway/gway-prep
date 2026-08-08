@@ -184,21 +184,6 @@ const FORM_CONFIG: FormConfigType = {
       ]
     },
     {
-      name: "purpose",
-      label: "Purpose",
-      type: "select",
-      required: false,
-      step: 2,
-      grid: "full",
-      options: [
-        { value: "", label: "Select purpose" },
-        { value: "Study Abroad", label: "Study Abroad" },
-        { value: "Job / PR Visa", label: "Job / PR Visa" },
-        { value: "MBA Admission", label: "MBA Admission" },
-        { value: "English Proficiency", label: "English Proficiency" }
-      ]
-    },
-    {
       name: "targetScore",
       label: "Target Score",
       type: "text",
@@ -207,15 +192,6 @@ const FORM_CONFIG: FormConfigType = {
       step: 2,
       grid: "full",
       icon: Target
-    },
-    {
-      name: "examDate",
-      label: "Exam Date",
-      type: "date",
-      required: false,
-      step: 2,
-      grid: "full",
-      icon: CalendarIcon
     },
     {
       name: "attempts",
@@ -259,21 +235,6 @@ const FORM_CONFIG: FormConfigType = {
         { value: "Speaking", label: "Speaking", icon: MessageSquare },
         { value: "Verbal", label: "Verbal", icon: Hash },
         { value: "Quant/Math", label: "Quant/Math", icon: Calculator }
-      ]
-    },
-    {
-      name: "batchType",
-      label: "Preferred Batch",
-      type: "select",
-      required: false,
-      step: 3,
-      grid: "full",
-      options: [
-        { value: "", label: "Select batch type" },
-        { value: "Weekday Morning", label: "Weekday Morning" },
-        { value: "Weekday Evening", label: "Weekday Evening" },
-        { value: "Weekend", label: "Weekend" },
-        { value: "Online", label: "Online" }
       ]
     },
     {

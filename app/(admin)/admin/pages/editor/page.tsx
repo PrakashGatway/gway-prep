@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -11,6 +12,8 @@ import {
   Trash2,
   Copy,
   X,
+  List,
+  LayoutGrid,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import axiosInstance from "@/app/lib/axios";
@@ -28,6 +31,8 @@ const Page = () => {
   const [page, setPage] = useState(1);
   const limit = 10;
 
+  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
+
   const [pagination, setPagination] = useState({
     page: 1,
     totalPages: 1,
@@ -36,12 +41,13 @@ const Page = () => {
     hasPrevPage: false,
   });
 
-  // Duplicate modal state
+  
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
   const [duplicatePage, setDuplicatePage] = useState<any>(null);
   const [newPageName, setNewPageName] = useState("");
   const [newPageSlug, setNewPageSlug] = useState("");
 
+  
   useEffect(() => {
     const timeout = setTimeout(() => {
       fetchPages();
@@ -59,7 +65,6 @@ const Page = () => {
       );
 
       setPages(res.data.data || []);
-      console.log(res.data)
       setPagination(res.data?.pagination);
     } catch (err) {
       console.log(err);
@@ -74,37 +79,46 @@ const Page = () => {
     try {
       setDuplicating(true);
 
-      // Correct API endpoint: POST /api/admin/pageInfo/[name]
       await axiosInstance.post(
         `/admin/pageInfo/${duplicatePage.name.toLowerCase()}`,
         {
           name: newPageName,
           slug: newPageSlug,
-          duplicateOf : duplicatePage.name.toLowerCase()
+          duplicateOf: duplicatePage.name.toLowerCase(),
         }
       );
 
       toast.success("Page duplicated successfully!");
+
       setShowDuplicateModal(false);
       setDuplicatePage(null);
       setNewPageName("");
       setNewPageSlug("");
-      
-      // Refresh the page list
+
       fetchPages();
     } catch (err: any) {
       console.error("Duplicate error:", err);
-      toast.error(err.response?.data?.message || "Failed to duplicate page");
+
+      toast.error(
+        err.response?.data?.message || "Failed to duplicate page"
+      );
     } finally {
       setDuplicating(false);
     }
   };
 
-  const openDuplicateModal = (pageItem: any, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click
+  const openDuplicateModal = (
+    pageItem: any,
+    e: React.MouseEvent
+  ) => {
+    e.stopPropagation();
+
     setDuplicatePage(pageItem);
     setNewPageName(`${pageItem.name} (Copy)`);
-    setNewPageSlug(`${pageItem.slug || pageItem.name.toLowerCase()}-copy`);
+    setNewPageSlug(
+      `${pageItem.slug || pageItem.name.toLowerCase()}-copy`
+    );
+
     setShowDuplicateModal(true);
   };
 
@@ -116,46 +130,57 @@ const Page = () => {
   };
 
   
-  const openDeleteModal = async (pageItem: any, e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click
+  const openDeleteModal = async (
+    pageItem: string,
+    e: React.MouseEvent
+  ) => {
+    e.stopPropagation();
 
-    // 1. Show confirmation alert
-    const confirmDelete = window.confirm(`Are you sure you want to delete "${pageItem}"?`);
-    
-    // 2. Exit function if the user clicks "Cancel"
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete "${pageItem}"?`
+    );
+
     if (!confirmDelete) return;
 
     try {
-      // 3. Make the API request if confirmed
       const response = await axiosInstance.delete(
         `/admin/pageInfo/${pageItem}`
       );
-      
-      console.log(response, 'response');
-      
-      // 4. Show success toast (Changed from .error to .success)
-      toast.success("Page deleted successfully!");
-      fetchPages();
 
+      console.log(response, "response");
+
+      toast.success("Page deleted successfully!");
+
+      fetchPages();
     } catch (error) {
       console.log(error, "delete error");
+
       toast.error("Failed to delete the page.");
     }
-};
+  };
 
   
   return (
     <div className="min-h-screen bg-gray-50 p-6">
-      {/* Header */}
+
+
       <div className="flex flex-col lg:flex-row justify-between gap-5 items-center mb-8">
-        <div>
-          <h1 className="text-3xl font-bold">Pages</h1>
+
+        {/* Title */}
+        <div className="w-full lg:w-auto">
+          <h1 className="text-3xl font-bold text-gray-900">
+            Pages
+          </h1>
+
           <p className="text-gray-500 mt-1">
-            Manage all website pages ({pagination?.total})
+            Manage all website pages ({pagination?.total || 0})
           </p>
         </div>
 
+        {/* Header Actions */}
         <div className="flex gap-3 w-full lg:w-auto">
+
+          {/* Search */}
           <div className="relative flex-1 lg:w-80">
             <Search
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -170,13 +195,46 @@ const Page = () => {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2 border rounded-xl bg-white focus:ring-2 focus:ring-orange-500 outline-none"
+              className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl bg-white focus:ring-2 focus:ring-orange-500 outline-none"
             />
           </div>
 
+          {/* View Toggle */}
+          <div className="flex items-center bg-white border border-gray-200 rounded-xl p-1">
+
+            {/* List */}
+            <button
+              onClick={() => setViewMode("list")}
+              className={`h-10 w-10 rounded-lg flex items-center justify-center transition ${
+                viewMode === "list"
+                  ? "bg-orange-500 text-white"
+                  : "text-gray-500 hover:bg-orange-50"
+              }`}
+              title="List view"
+            >
+              <List size={19} />
+            </button>
+
+            {/* Grid */}
+            <button
+              onClick={() => setViewMode("grid")}
+              className={`h-10 w-10 rounded-lg flex items-center justify-center transition ${
+                viewMode === "grid"
+                  ? "bg-orange-500 text-white"
+                  : "text-gray-500 hover:bg-orange-50"
+              }`}
+              title="Grid view"
+            >
+              <LayoutGrid size={19} />
+            </button>
+          </div>
+
+          {/* Create */}
           <button
-            onClick={() => router.push("/admin/pages/editor/new")}
-            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 rounded-xl"
+            onClick={() =>
+              router.push("/admin/pages/editor/new")
+            }
+            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-xl transition"
           >
             <Plus size={18} />
             Create
@@ -184,118 +242,363 @@ const Page = () => {
         </div>
       </div>
 
-      {/* Cards */}
       {loading ? (
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+
+        /* ================= LOADING ================= */
+        <div
+          className={
+            viewMode === "grid"
+              ? "grid md:grid-cols-2 xl:grid-cols-3 gap-5"
+              : "bg-white rounded-2xl border border-gray-200 overflow-hidden"
+          }
+        >
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-36 rounded-2xl bg-white animate-pulse" />
+            <div
+              key={i}
+              className={
+                viewMode === "grid"
+                  ? "h-40 rounded-2xl bg-white animate-pulse"
+                  : "h-20 border-b border-gray-100 bg-white animate-pulse"
+              }
+            />
           ))}
         </div>
+
       ) : (
         <>
-          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {pages.map((pageItem) => (
-              <div
-                key={pageItem._id}
-                onClick={() =>
-                  router.push(`/admin/pages/editor/${pageItem.slug}`)
-                }
-                className="group bg-white rounded-2xl border p-6 shadow-sm hover:shadow-lg transition cursor-pointer"
-              >
-                <div className="flex justify-between">
-                  <div>
-                    <h2 className="font-semibold text-xl">{pageItem.name}</h2>
-                    <p className="text-gray-500 mt-2">
-                      Manage page content & SEO
-                    </p>
-                    <div className="mt-5">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          pageItem.seoMeta?.isPublished
-                            ? "bg-green-100 text-green-700"
-                            : "bg-yellow-100 text-yellow-700"
-                        }`}
-                      >
-                        {pageItem.seoMeta?.isPublished ? "Published" : "Draft"}
-                      </span>
-                    </div>
-                  </div>
+        
+          {viewMode === "grid" && (
+            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
 
-                  <div className="flex gap-2">
-                    <button
-                      onClick={(e) => openDuplicateModal(pageItem, e)}
-                      className="h-12 w-12 rounded-xl bg-blue-50 flex items-center justify-center hover:bg-blue-500 transition 
-                      group/btn"
-                      title="Duplicate page"
-                    >
-                      <Copy className="text-blue-600 group-hover/btn:text-white transition" size={18} />
-                    </button>
-                    <div className="h-12 w-12 rounded-xl bg-orange-50 flex items-center justify-center group-hover:bg-orange-500 
-                    transition">
-                      <Edit className="group-hover:text-white" size={18} />
+              {pages.map((pageItem) => (
+                <div
+                  key={pageItem._id}
+                  onClick={() =>
+                    router.push(
+                      `/admin/pages/editor/${pageItem.slug}`
+                    )
+                  }
+                  className="group bg-white rounded-2xl border border-gray-200 p-6 shadow-sm hover:shadow-lg hover:border-orange-200 transition cursor-pointer"
+                >
+                  <div className="flex justify-between gap-4">
+
+                    {/* Page Information */}
+                    <div className="min-w-0">
+
+                      <div className="flex items-center gap-3">
+
+                        {/* Icon */}
+                        <div className="h-11 w-11 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+                          <FileText
+                            size={20}
+                            className="text-orange-500"
+                          />
+                        </div>
+
+                        <div className="min-w-0">
+                          <h2 className="font-semibold text-lg text-gray-900 truncate">
+                            {pageItem.name}
+                          </h2>
+
+                          <p className="text-sm text-gray-500 mt-0.5 truncate">
+                            /{pageItem.slug}
+                          </p>
+                        </div>
+                      </div>
+
+                      <p className="text-gray-500 text-sm mt-5">
+                        Manage page content & SEO
+                      </p>
+
+                      {/* Status */}
+                      <div className="mt-5">
+                        <span
+                          className={`inline-flex px-3 py-1.5 rounded-full text-xs font-medium ${
+                            pageItem.seoMeta?.isPublished
+                              ? "bg-green-100 text-green-700"
+                              : "bg-yellow-100 text-yellow-700"
+                          }`}
+                        >
+                          {pageItem.seoMeta?.isPublished
+                            ? "Published"
+                            : "Draft"}
+                        </span>
+                      </div>
                     </div>
-                    <div onClick={(e) => openDeleteModal(pageItem.name,e)} className="h-12 w-12 rounded-xl bg-red-50 flex items-center justify-center hover:bg-red-500 hover:text-white
-                    transition">
-                      <Trash2 className="" size={18} /> 
+
+                    {/* Actions */}
+                    <div
+                      className="flex flex-col gap-2 shrink-0"
+                      onClick={(e) =>
+                        e.stopPropagation()
+                      }
+                    >
+
+                      {/* Duplicate */}
+                      <button
+                        onClick={(e) =>
+                          openDuplicateModal(
+                            pageItem,
+                            e
+                          )
+                        }
+                        className="h-10 w-10 rounded-xl bg-blue-50 flex items-center justify-center hover:bg-blue-500 transition group/btn"
+                        title="Duplicate page"
+                      >
+                        <Copy
+                          className="text-blue-600 group-hover/btn:text-white transition"
+                          size={17}
+                        />
+                      </button>
+
+                      {/* Edit */}
+                      <button
+                        onClick={() =>
+                          router.push(
+                            `/admin/pages/editor/${pageItem.slug}`
+                          )
+                        }
+                        className="h-10 w-10 rounded-xl bg-orange-50 flex items-center justify-center hover:bg-orange-500 transition group/btn"
+                        title="Edit page"
+                      >
+                        <Edit
+                          className="text-orange-500 group-hover/btn:text-white transition"
+                          size={17}
+                        />
+                      </button>
+
+                      {/* Delete */}
+                      <button
+                        onClick={(e) =>
+                          openDeleteModal(
+                            pageItem.name,
+                            e
+                          )
+                        }
+                        className="h-10 w-10 rounded-xl bg-red-50 flex items-center justify-center hover:bg-red-500 hover:text-white transition"
+                        title="Delete page"
+                      >
+                        <Trash2 size={17} />
+                      </button>
                     </div>
                   </div>
                 </div>
+              ))}
+            </div>
+          )}
+
+          {viewMode === "list" && (
+            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
+
+              {/* List Header */}
+              <div className="hidden md:grid grid-cols-[1fr_180px_150px_150px] gap-4 px-6 py-4 bg-gray-50 border-b border-gray-200 text-xs font-semibold uppercase tracking-wide text-gray-500">
+                <div>Page</div>
+                <div>Slug</div>
+                <div>Status</div>
+                <div className="text-right">
+                  Actions
+                </div>
               </div>
-            ))}
-          </div>
+
+              {/* List Items */}
+              {pages.map((pageItem, index) => (
+                <div
+                  key={pageItem._id}
+                  onClick={() =>
+                    router.push(
+                      `/admin/pages/editor/${pageItem.slug}`
+                    )
+                  }
+                  className={`group grid grid-cols-1 md:grid-cols-[1fr_180px_150px_150px] gap-4 items-center px-6 py-5 hover:bg-orange-50/40 transition cursor-pointer ${
+                    index !== pages.length - 1
+                      ? "border-b border-gray-100"
+                      : ""
+                  }`}
+                >
+
+                  {/* Page */}
+                  <div className="flex items-center gap-4 min-w-0">
+
+                    <div className="h-11 w-11 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
+                      <FileText
+                        size={20}
+                        className="text-orange-500"
+                      />
+                    </div>
+
+                    <div className="min-w-0">
+                      <h2 className="font-semibold text-gray-900 truncate">
+                        {pageItem.name}
+                      </h2>
+
+                      <p className="text-sm text-gray-500 truncate">
+                        Manage page content & SEO
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Slug */}
+                  <div className="text-sm text-gray-500 truncate">
+                    /{pageItem.slug}
+                  </div>
+
+                  {/* Status */}
+                  <div>
+                    <span
+                      className={`inline-flex px-3 py-1.5 rounded-full text-xs font-medium ${
+                        pageItem.seoMeta?.isPublished
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
+                      }`}
+                    >
+                      {pageItem.seoMeta?.isPublished
+                        ? "Published"
+                        : "Draft"}
+                    </span>
+                  </div>
+
+                  {/* Actions */}
+                  <div
+                    className="flex justify-end gap-2"
+                    onClick={(e) =>
+                      e.stopPropagation()
+                    }
+                  >
+
+                    {/* Duplicate */}
+                    <button
+                      onClick={(e) =>
+                        openDuplicateModal(
+                          pageItem,
+                          e
+                        )
+                      }
+                      className="h-10 w-10 rounded-xl bg-blue-50 flex items-center justify-center hover:bg-blue-500 transition group/btn"
+                      title="Duplicate"
+                    >
+                      <Copy
+                        size={17}
+                        className="text-blue-600 group-hover/btn:text-white"
+                      />
+                    </button>
+
+                    {/* Edit */}
+                    <button
+                      onClick={() =>
+                        router.push(
+                          `/admin/pages/editor/${pageItem.slug}`
+                        )
+                      }
+                      className="h-10 w-10 rounded-xl bg-orange-50 flex items-center justify-center hover:bg-orange-500 transition group/btn"
+                      title="Edit"
+                    >
+                      <Edit
+                        size={17}
+                        className="text-orange-500 group-hover/btn:text-white"
+                      />
+                    </button>
+
+                    {/* Delete */}
+                    <button
+                      onClick={(e) =>
+                        openDeleteModal(
+                          pageItem.name,
+                          e
+                        )
+                      }
+                      className="h-10 w-10 rounded-xl bg-red-50 flex items-center justify-center hover:bg-red-500 hover:text-white transition"
+                      title="Delete"
+                    >
+                      <Trash2 size={17} />
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
 
           {pages.length === 0 && (
-            <div className="bg-white rounded-xl border p-16 text-center mt-8">
-              <h3 className="text-xl font-semibold">No Pages Found</h3>
-              <p className="text-gray-500 mt-2">Try another search.</p>
+            <div className="bg-white rounded-2xl border border-gray-200 p-16 text-center mt-8">
+              <div className="h-14 w-14 rounded-2xl bg-orange-50 mx-auto flex items-center justify-center">
+                <FileText
+                  size={25}
+                  className="text-orange-500"
+                />
+              </div>
+
+              <h3 className="text-xl font-semibold mt-4">
+                No Pages Found
+              </h3>
+
+              <p className="text-gray-500 mt-2">
+                Try another search.
+              </p>
             </div>
           )}
         </>
       )}
 
-      {/* Pagination */}
-      {!loading && pagination.totalPages > 1 && (
-        <div className="flex flex-wrap justify-center items-center gap-2 mt-10">
-          <button
-            disabled={!pagination.hasPrevPage}
-            onClick={() => setPage((p) => p - 1)}
-            className="h-10 px-4 border rounded-lg disabled:opacity-40"
-          >
-            <ChevronLeft size={18} />
-          </button>
+      {!loading &&
+        pagination &&
+        pagination.totalPages > 1 && (
+          <div className="flex flex-wrap justify-center items-center gap-2 mt-10">
 
-          {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(
-            (item) => (
+            {/* Previous */}
+            <button
+              disabled={!pagination.hasPrevPage}
+              onClick={() =>
+                setPage((p) => p - 1)
+              }
+              className="h-10 px-4 border border-gray-200 bg-white rounded-lg disabled:opacity-40 hover:bg-orange-50 transition"
+            >
+              <ChevronLeft size={18} />
+            </button>
+
+            {/* Pages */}
+            {Array.from(
+              {
+                length: pagination.totalPages,
+              },
+              (_, i) => i + 1
+            ).map((item) => (
               <button
                 key={item}
                 onClick={() => setPage(item)}
                 className={`h-10 w-10 rounded-lg border transition ${
                   item === pagination.page
                     ? "bg-orange-500 text-white border-orange-500"
-                    : "bg-white hover:bg-orange-50"
+                    : "bg-white border-gray-200 hover:bg-orange-50"
                 }`}
               >
                 {item}
               </button>
-            )
-          )}
+            ))}
 
-          <button
-            disabled={!pagination.hasNextPage}
-            onClick={() => setPage((p) => p + 1)}
-            className="h-10 px-4 border rounded-lg disabled:opacity-40"
-          >
-            <ChevronRight size={18} />
-          </button>
-        </div>
-      )}
+            {/* Next */}
+            <button
+              disabled={!pagination.hasNextPage}
+              onClick={() =>
+                setPage((p) => p + 1)
+              }
+              className="h-10 px-4 border border-gray-200 bg-white rounded-lg disabled:opacity-40 hover:bg-orange-50 transition"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        )}
 
-      {/* Duplicate Modal */}
       {showDuplicateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+
           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+
+            {/* Modal Header */}
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold">Duplicate Page</h3>
+
+              <h3 className="text-xl font-bold">
+                Duplicate Page
+              </h3>
+
               <button
                 onClick={closeDuplicateModal}
                 className="p-1 hover:bg-gray-100 rounded-lg transition"
@@ -304,52 +607,81 @@ const Page = () => {
               </button>
             </div>
 
+            {/* Page Info */}
             <p className="text-gray-600 mb-4">
-              Duplicating: <span className="font-semibold">{duplicatePage?.name}</span>
+              Duplicating:{" "}
+              <span className="font-semibold">
+                {duplicatePage?.name}
+              </span>
             </p>
 
+            {/* Form */}
             <div className="space-y-4">
+
+              {/* Page Name */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   New Page Name *
                 </label>
+
                 <input
                   type="text"
                   value={newPageName}
-                  onChange={(e) => setNewPageName(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none"
+                  onChange={(e) =>
+                    setNewPageName(e.target.value)
+                  }
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none"
                   placeholder="Enter new page name"
                 />
               </div>
 
+              {/* Page Slug */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   New Page Slug *
                 </label>
+
                 <input
                   type="text"
                   value={newPageSlug}
-                  onChange={(e) => setNewPageSlug(e.target.value.toLowerCase().replace(/\s+/g, '_'))}
-                  className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none"
+                  onChange={(e) =>
+                    setNewPageSlug(
+                      e.target.value
+                        .toLowerCase()
+                        .replace(/\s+/g, "_")
+                    )
+                  }
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500 outline-none"
                   placeholder="Enter new page slug"
                 />
+
                 <p className="text-xs text-gray-500 mt-1">
-                  Slug will be used in the URL: /{newPageSlug || "page-slug"}
+                  Slug will be used in the URL: /{" "}
+                  {newPageSlug || "page-slug"}
                 </p>
               </div>
             </div>
 
+            {/* Buttons */}
             <div className="flex gap-3 mt-6">
+
+              {/* Cancel */}
               <button
                 onClick={closeDuplicateModal}
-                className="flex-1 py-2 border rounded-xl hover:bg-gray-50 transition"
+                className="flex-1 py-2.5 border border-gray-200 rounded-xl hover:bg-gray-50 transition"
               >
                 Cancel
               </button>
+
+              {/* Duplicate */}
               <button
                 onClick={handleDuplicate}
-                disabled={!newPageName.trim() || !newPageSlug.trim() || duplicating}
-                className="flex-1 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                disabled={
+                  !newPageName.trim() ||
+                  !newPageSlug.trim() ||
+                  duplicating
+                }
+                className="flex-1 py-2.5 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 {duplicating ? (
                   <>
@@ -381,10 +713,6 @@ export default Page;
 
 
 
-
-
-
-
 // "use client";
 
 // import React, { useEffect, useState } from "react";
@@ -396,15 +724,19 @@ export default Page;
 //   ChevronRight,
 //   FileText,
 //   Trash2,
+//   Copy,
+//   X,
 // } from "lucide-react";
 // import { useRouter } from "next/navigation";
 // import axiosInstance from "@/app/lib/axios";
+// import toast from "react-hot-toast";
 
 // const Page = () => {
 //   const router = useRouter();
 
 //   const [pages, setPages] = useState<any[]>([]);
 //   const [loading, setLoading] = useState(false);
+//   const [duplicating, setDuplicating] = useState(false);
 
 //   const [search, setSearch] = useState("");
 
@@ -419,6 +751,12 @@ export default Page;
 //     hasPrevPage: false,
 //   });
 
+//   // Duplicate modal state
+//   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
+//   const [duplicatePage, setDuplicatePage] = useState<any>(null);
+//   const [newPageName, setNewPageName] = useState("");
+//   const [newPageSlug, setNewPageSlug] = useState("");
+
 //   useEffect(() => {
 //     const timeout = setTimeout(() => {
 //       fetchPages();
@@ -431,25 +769,100 @@ export default Page;
 //     try {
 //       setLoading(true);
 
-//       // const res = await axiosInstance
-//       const res = await axiosInstance(`/admin/pageInfo?search=${search}&page=${page}&limit=${limit}`);
+//       const res = await axiosInstance(
+//         `/admin/pageInfo?search=${search}&page=${page}&limit=${limit}`
+//       );
 
 //       setPages(res.data.data || []);
+//       console.log(res.data)
 //       setPagination(res.data?.pagination);
 //     } catch (err) {
-//       // console.log(err);
+//       console.log(err);
 //     } finally {
 //       setLoading(false);
 //     }
 //   };
 
+//   const handleDuplicate = async () => {
+//     if (!duplicatePage) return;
+
+//     try {
+//       setDuplicating(true);
+
+//       // Correct API endpoint: POST /api/admin/pageInfo/[name]
+//       await axiosInstance.post(
+//         `/admin/pageInfo/${duplicatePage.name.toLowerCase()}`,
+//         {
+//           name: newPageName,
+//           slug: newPageSlug,
+//           duplicateOf : duplicatePage.name.toLowerCase()
+//         }
+//       );
+
+//       toast.success("Page duplicated successfully!");
+//       setShowDuplicateModal(false);
+//       setDuplicatePage(null);
+//       setNewPageName("");
+//       setNewPageSlug("");
+      
+//       // Refresh the page list
+//       fetchPages();
+//     } catch (err: any) {
+//       console.error("Duplicate error:", err);
+//       toast.error(err.response?.data?.message || "Failed to duplicate page");
+//     } finally {
+//       setDuplicating(false);
+//     }
+//   };
+
+//   const openDuplicateModal = (pageItem: any, e: React.MouseEvent) => {
+//     e.stopPropagation(); // Prevent card click
+//     setDuplicatePage(pageItem);
+//     setNewPageName(`${pageItem.name} (Copy)`);
+//     setNewPageSlug(`${pageItem.slug || pageItem.name.toLowerCase()}-copy`);
+//     setShowDuplicateModal(true);
+//   };
+
+//   const closeDuplicateModal = () => {
+//     setShowDuplicateModal(false);
+//     setDuplicatePage(null);
+//     setNewPageName("");
+//     setNewPageSlug("");
+//   };
+
+  
+//   const openDeleteModal = async (pageItem: any, e: React.MouseEvent) => {
+//     e.stopPropagation(); // Prevent card click
+
+//     // 1. Show confirmation alert
+//     const confirmDelete = window.confirm(`Are you sure you want to delete "${pageItem}"?`);
+    
+//     // 2. Exit function if the user clicks "Cancel"
+//     if (!confirmDelete) return;
+
+//     try {
+//       // 3. Make the API request if confirmed
+//       const response = await axiosInstance.delete(
+//         `/admin/pageInfo/${pageItem}`
+//       );
+      
+//       console.log(response, 'response');
+      
+//       // 4. Show success toast (Changed from .error to .success)
+//       toast.success("Page deleted successfully!");
+//       fetchPages();
+
+//     } catch (error) {
+//       console.log(error, "delete error");
+//       toast.error("Failed to delete the page.");
+//     }
+// };
+
+  
 //   return (
 //     <div className="min-h-screen bg-gray-50 p-6">
-
 //       {/* Header */}
-
 //       <div className="flex flex-col lg:flex-row justify-between gap-5 items-center mb-8">
-
 //         <div>
 //           <h1 className="text-3xl font-bold">Pages</h1>
 //           <p className="text-gray-500 mt-1">
@@ -458,9 +871,7 @@ export default Page;
 //         </div>
 
 //         <div className="flex gap-3 w-full lg:w-auto">
-
 //           <div className="relative flex-1 lg:w-80">
-
 //             <Search
 //               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
 //               size={18}
@@ -485,66 +896,34 @@ export default Page;
 //             <Plus size={18} />
 //             Create
 //           </button>
-
 //         </div>
-
 //       </div>
 
-//       {/* Stats */}
-
-//       {/* <div className="mb-6">
-//         <div className="bg-white rounded-xl border p-4 shadow-sm inline-flex items-center gap-3">
-//           <FileText className="text-orange-500" />
-//           <div>
-//             <p className="text-sm text-gray-500">Total Pages</p>
-//             <h2 className="text-2xl font-bold">
-//               {pagination?.total}
-//             </h2>
-//           </div>
-//         </div>
-//       </div> */}
-
 //       {/* Cards */}
-
 //       {loading ? (
 //         <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
-
 //           {Array.from({ length: 6 }).map((_, i) => (
-//             <div
-//               key={i}
-//               className="h-36 rounded-2xl bg-white animate-pulse"
-//             />
+//             <div key={i} className="h-36 rounded-2xl bg-white animate-pulse" />
 //           ))}
-
 //         </div>
 //       ) : (
 //         <>
 //           <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-
 //             {pages.map((pageItem) => (
 //               <div
 //                 key={pageItem._id}
 //                 onClick={() =>
-//                   router.push(
-//                     `/admin/pages/editor/${pageItem.name.toLowerCase()}`
-//                   )
+//                   router.push(`/admin/pages/editor/${pageItem.slug}`)
 //                 }
 //                 className="group bg-white rounded-2xl border p-6 shadow-sm hover:shadow-lg transition cursor-pointer"
 //               >
 //                 <div className="flex justify-between">
-
 //                   <div>
-
-//                     <h2 className="font-semibold text-xl">
-//                       {pageItem.name}
-//                     </h2>
-
+//                     <h2 className="font-semibold text-xl">{pageItem.name}</h2>
 //                     <p className="text-gray-500 mt-2">
 //                       Manage page content & SEO
 //                     </p>
-
 //                     <div className="mt-5">
-
 //                       <span
 //                         className={`px-3 py-1 rounded-full text-xs font-medium ${
 //                           pageItem.seoMeta?.isPublished
@@ -552,44 +931,46 @@ export default Page;
 //                             : "bg-yellow-100 text-yellow-700"
 //                         }`}
 //                       >
-//                         {pageItem.seoMeta?.isPublished
-//                           ? "Published"
-//                           : "Draft"}
+//                         {pageItem.seoMeta?.isPublished ? "Published" : "Draft"}
 //                       </span>
-
 //                     </div>
-
 //                   </div>
 
-//                   <div className="h-12 w-12 rounded-xl bg-orange-50 flex items-center justify-center group-hover:bg-orange-500 transition">
-//                     <Edit className="group-hover:text-white" />
-//                     {/* <Trash2 /> */}
+//                   <div className="flex gap-2">
+//                     <button
+//                       onClick={(e) => openDuplicateModal(pageItem, e)}
+//                       className="h-12 w-12 rounded-xl bg-blue-50 flex items-center justify-center hover:bg-blue-500 transition 
+//                       group/btn"
+//                       title="Duplicate page"
+//                     >
+//                       <Copy className="text-blue-600 group-hover/btn:text-white transition" size={18} />
+//                     </button>
+//                     <div className="h-12 w-12 rounded-xl bg-orange-50 flex items-center justify-center group-hover:bg-orange-500 
+//                     transition">
+//                       <Edit className="group-hover:text-white" size={18} />
+//                     </div>
+//                     <div onClick={(e) => openDeleteModal(pageItem.name,e)} className="h-12 w-12 rounded-xl bg-red-50 flex items-center justify-center hover:bg-red-500 hover:text-white
+//                     transition">
+//                       <Trash2 className="" size={18} /> 
+//                     </div>
 //                   </div>
-
 //                 </div>
 //               </div>
 //             ))}
-
 //           </div>
 
 //           {pages.length === 0 && (
 //             <div className="bg-white rounded-xl border p-16 text-center mt-8">
-//               <h3 className="text-xl font-semibold">
-//                 No Pages Found
-//               </h3>
-//               <p className="text-gray-500 mt-2">
-//                 Try another search.
-//               </p>
+//               <h3 className="text-xl font-semibold">No Pages Found</h3>
+//               <p className="text-gray-500 mt-2">Try another search.</p>
 //             </div>
 //           )}
 //         </>
 //       )}
 
 //       {/* Pagination */}
-
 //       {!loading && pagination.totalPages > 1 && (
 //         <div className="flex flex-wrap justify-center items-center gap-2 mt-10">
-
 //           <button
 //             disabled={!pagination.hasPrevPage}
 //             onClick={() => setPage((p) => p - 1)}
@@ -598,22 +979,21 @@ export default Page;
 //             <ChevronLeft size={18} />
 //           </button>
 
-//           {Array.from(
-//             { length: pagination.totalPages },
-//             (_, i) => i + 1
-//           ).map((item) => (
-//             <button
-//               key={item}
-//               onClick={() => setPage(item)}
-//               className={`h-10 w-10 rounded-lg border transition ${
-//                 item === pagination.page
-//                   ? "bg-orange-500 text-white border-orange-500"
-//                   : "bg-white hover:bg-orange-50"
-//               }`}
-//             >
-//               {item}
-//             </button>
-//           ))}
+//           {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map(
+//             (item) => (
+//               <button
+//                 key={item}
+//                 onClick={() => setPage(item)}
+//                 className={`h-10 w-10 rounded-lg border transition ${
+//                   item === pagination.page
+//                     ? "bg-orange-500 text-white border-orange-500"
+//                     : "bg-white hover:bg-orange-50"
+//                 }`}
+//               >
+//                 {item}
+//               </button>
+//             )
+//           )}
 
 //           <button
 //             disabled={!pagination.hasNextPage}
@@ -622,11 +1002,97 @@ export default Page;
 //           >
 //             <ChevronRight size={18} />
 //           </button>
+//         </div>
+//       )}
 
+//       {/* Duplicate Modal */}
+//       {showDuplicateModal && (
+//         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+//           <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
+//             <div className="flex justify-between items-center mb-4">
+//               <h3 className="text-xl font-bold">Duplicate Page</h3>
+//               <button
+//                 onClick={closeDuplicateModal}
+//                 className="p-1 hover:bg-gray-100 rounded-lg transition"
+//               >
+//                 <X size={20} />
+//               </button>
+//             </div>
+
+//             <p className="text-gray-600 mb-4">
+//               Duplicating: <span className="font-semibold">{duplicatePage?.name}</span>
+//             </p>
+
+//             <div className="space-y-4">
+//               <div>
+//                 <label className="block text-sm font-medium text-gray-700 mb-1">
+//                   New Page Name *
+//                 </label>
+//                 <input
+//                   type="text"
+//                   value={newPageName}
+//                   onChange={(e) => setNewPageName(e.target.value)}
+//                   className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none"
+//                   placeholder="Enter new page name"
+//                 />
+//               </div>
+
+//               <div>
+//                 <label className="block text-sm font-medium text-gray-700 mb-1">
+//                   New Page Slug *
+//                 </label>
+//                 <input
+//                   type="text"
+//                   value={newPageSlug}
+//                   onChange={(e) => setNewPageSlug(e.target.value.toLowerCase().replace(/\s+/g, '_'))}
+//                   className="w-full px-4 py-2 border rounded-xl focus:ring-2 focus:ring-orange-500 outline-none"
+//                   placeholder="Enter new page slug"
+//                 />
+//                 <p className="text-xs text-gray-500 mt-1">
+//                   Slug will be used in the URL: /{newPageSlug || "page-slug"}
+//                 </p>
+//               </div>
+//             </div>
+
+//             <div className="flex gap-3 mt-6">
+//               <button
+//                 onClick={closeDuplicateModal}
+//                 className="flex-1 py-2 border rounded-xl hover:bg-gray-50 transition"
+//               >
+//                 Cancel
+//               </button>
+//               <button
+//                 onClick={handleDuplicate}
+//                 disabled={!newPageName.trim() || !newPageSlug.trim() || duplicating}
+//                 className="flex-1 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+//               >
+//                 {duplicating ? (
+//                   <>
+//                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+//                     Duplicating...
+//                   </>
+//                 ) : (
+//                   <>
+//                     <Copy size={18} />
+//                     Duplicate
+//                   </>
+//                 )}
+//               </button>
+//             </div>
+//           </div>
 //         </div>
 //       )}
 //     </div>
 //   );
 // };
+
 // export default Page;
+
+
+
+
+
+
+
+
 
