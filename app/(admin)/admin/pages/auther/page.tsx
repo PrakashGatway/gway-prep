@@ -1,13 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-// import {
-//   createAuthor,
-//   getAuthors,
-//   updateAuthor,
-//   deleteAuthor,
-// } from "@/app/services/api";
-
 import {
   Plus,
   Trash2,
@@ -21,9 +14,15 @@ import {
   Save,
 } from "lucide-react";
 
-import CKEditorComponent from "../../components/ckEditor";
+// import CKEditorComponent from "../../components/ckEditor";
 import axiosInstance from "@/app/lib/axios";
+import dynamic from 'next/dynamic';
 
+// Load the problematic component ONLY on the client side
+const CKEditorComponent = dynamic(
+  () => import("../../components/ckEditor"),
+  { ssr: false }
+);
 interface Author {
   _id?: string;
   name: string;
