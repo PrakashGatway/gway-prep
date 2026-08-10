@@ -497,7 +497,7 @@ useEffect(() => {
                 <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-bold text-neutral-600">
                   {data.author?.charAt(0)?.toUpperCase() || "A"}
                 </div>
-                <span className="font-medium text-neutral-700">
+                <span className="font-medium text-neutral-700 cursor-pointer" onClick={() => router.push(`/auther/${data?.authslug || 'sakshi-taneja'}`)}>
                   {data.author || "Anonymous"}
                 </span>
               </div>

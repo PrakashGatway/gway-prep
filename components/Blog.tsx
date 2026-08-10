@@ -632,7 +632,7 @@ export default function BlogPage({
                         />
 
                         <div className="text-xs">
-                          <p className="font-semibold text-[#1f2430]">
+                          <p className="font-semibold text-[#1f2430]" onClick={() => router.push(`/auther/${featuredBlog?.authslug || 'sakshi-taneja'}`)}>
                             By{" "}
                             {featuredBlog.author ||
                               "Admin"}

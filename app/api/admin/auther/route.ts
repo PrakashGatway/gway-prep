@@ -77,32 +77,48 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 }
 
 
-export async function GET(req: NextRequest): Promise<NextResponse> {
+export async function GET(req: NextRequest): Promise<Response> {
   try {
     await connectDB();
 
-    
     const { searchParams } = new URL(req.url);
     const slug = searchParams.get("slug");
+
+    console.log(slug, "author slug");
+
     let author;
 
     if (slug) {
-    //   return NextResponse.json({ error: "Slug parameter is required" }, { status: 400 });
-     author = await AuthorModel.findOne({ slug: slug.toLowerCase() });
+      // Get single author by slug
+      author = await AuthorModel.findOne({
+        slug: slug.toLowerCase(),
+      });
+    } else {
+      // Get all authors
+      author = await AuthorModel.find();
     }
 
-     author = await AuthorModel.find();
-
-    if (!author) {
-      return NextResponse.json({ error: "Author not found" }, { status: 404 });
+    if (!author || (Array.isArray(author) && author.length === 0)) {
+      return NextResponse.json(
+        { error: "Author not found" },
+        { status: 404 }
+      );
     }
 
-    return NextResponse.json({ data: author }, { status: 200 });
+    return NextResponse.json(
+      { data: author },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("[GET_AUTHOR]", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
 }
+
 
 export async function PUT(req: NextRequest): Promise<NextResponse> {
   const token = req.cookies.get("adminToken")?.value;

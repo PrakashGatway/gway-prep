@@ -56,7 +56,6 @@ const emptyAuthor: Author = {
 };
 
 const AuthorPage = () => {
-  const [authors, setAuthors] = useState<Author[]>([]);
   const [showForm, setShowForm] = useState(false);
 
   const [formData, setFormData] = useState<Author>(emptyAuthor);
@@ -68,6 +67,7 @@ const AuthorPage = () => {
   const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
 
 
+  const [authors, setAuthors] = useState<Author[]>([]);
   const fetchAuthors = async () => {
     try {
       setFetchLoading(true);

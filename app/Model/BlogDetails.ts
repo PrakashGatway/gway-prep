@@ -19,6 +19,7 @@ export interface IBlogDetail extends Document {
   count ?: string;
   tags: string[];
   author: string;
+  authslug : string;
   publishedDate: Date;
   comments: IComment[];
   isPublished: boolean;
@@ -71,6 +72,7 @@ const BlogSchema = new Schema<IBlogDetail>(
       default: "Admin",
       trim: true,
     },
+    authslug: String,
 
     publishedDate: {
       type: Date,

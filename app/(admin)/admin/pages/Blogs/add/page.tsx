@@ -7,6 +7,7 @@ import { pageData } from "@/app/lib/pageData";
 import { getBlogCategory, getBlogBySlug } from "@/app/services/api";
 import { slugify } from "@/app/lib/slug";
 import { useRouter, useSearchParams } from "next/navigation";
+import axiosInstance from "@/app/lib/axios";
 
 const CKEditorComponent = dynamic(() => import("../../../components/ckEditor"), {
   ssr: false,
@@ -26,6 +27,28 @@ const BlogFormContent = () => {
   const [loading, setLoading] = useState(false);
   const formData = pageData.blogdetails;
 
+  const [authors, setAuthors] = useState<any[]>([]);
+  const fetchAuthors = async () => {
+    try {
+      
+
+      const res = await axiosInstance.get('/admin/auther');
+
+      console.log("Authors:", res.data);
+
+      setAuthors(res?.data.data || []);
+    } catch (error) {
+      console.error("Failed to fetch authors:", error);
+    } finally {
+      console.log(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchAuthors();
+  }, []);
+
+  
   // Fetch categories and blog if editing
   useEffect(() => {
     const fetchData = async () => {
@@ -59,6 +82,8 @@ const BlogFormContent = () => {
     };
     fetchData();
   }, [editSlug]);
+
+
 
   const handleInputChange = (sectionName: string, fieldName: string, value: any) => {
     setValues((prev) => {
@@ -114,6 +139,45 @@ const BlogFormContent = () => {
 
     const baseInputClasses =
       "w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all";
+
+      if (field.name === "author") {
+  const selectedAuthorSlug =
+    sectionValues.authslug ||
+    authors.find((author: any) => author.name === value)?.slug ||
+    "";
+
+  return (
+    <select
+      value={selectedAuthorSlug}
+      className={baseInputClasses}
+      onChange={(e) => {
+        const selectedAuthor = authors.find(
+          (author: any) => author.slug === e.target.value
+        );
+
+        handleInputChange(
+          sectionName,
+          "author",
+          selectedAuthor?.name || ""
+        );
+
+        handleInputChange(
+          sectionName,
+          "authslug",
+          selectedAuthor?.slug || ""
+        );
+      }}
+    >
+      <option value="">Select Author</option>
+
+      {authors.map((author: any) => (
+        <option key={author.slug} value={author.slug}>
+          {author.name}
+        </option>
+      ))}
+    </select>
+  );
+}
 
     if (field.name === "category") {
       return (
