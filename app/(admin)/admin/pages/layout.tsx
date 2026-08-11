@@ -3,6 +3,8 @@ import "@/app/globals.css";
 import { Noto_Sans } from "next/font/google";
 import Sidebar from "../components/sidebar";
 import Nav from "../components/nav";
+import { redirect } from "next/navigation";
+import { getSession } from "@/app/lib/auth";
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
@@ -11,11 +13,27 @@ const notoSans = Noto_Sans({
   display: "swap",
 });
 
-export default function RootLayout({
+// export default function RootLayout({
+//   children,
+// }: Readonly<{
+//   children: React.ReactNode;
+// }>) {
+
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await getSession();
+
+  console.log(session,"session");
+
+  if (!session) {
+    redirect("/admin");
+  }
+
+
   return (
     <html lang="en">
       <body className={`${notoSans.className}`} suppressHydrationWarning>

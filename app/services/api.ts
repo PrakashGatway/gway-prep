@@ -1,3 +1,10 @@
+
+
+
+
+
+
+
 import axiosInstance from "../lib/axios";
 
 export const createStudent = async (data: any) => {
@@ -32,28 +39,8 @@ export const deleteBlogCategory = async (id: string) => {
     return res.data;
 };
 
-// export const getPageInfo = async (id: string) => {
-//     const res = await axiosInstance.get(`/admin/pageInfo/${encodeURIComponent(id)}`);
-//     return res.data.data || [];
-// };
 
-// export const getPageInfo = async (id: string) => {
-//     // console.log(id)
-//   if (!id) {
-//     console.error("getPageInfo Error: 'id' parameter is missing or empty.");
-//     return [];
-//   }
-//   try {
-//     const res = await axiosInstance.get(`/admin/pageInfo/${encodeURIComponent(id)}`);
-//     // console.log(res,'res data')
-//     return res?.data?.data || [];
-//   } catch (error) {
-//     console.error("API Call Failed:", error);
-//     throw error;
-//   }
-// };
 
-// app\services\api.ts
 export const getPageInfo = async (id: string) => {
     
   if (!id || id === 'undefined') {

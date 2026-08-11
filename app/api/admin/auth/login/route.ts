@@ -40,23 +40,31 @@ export async function POST(req: NextRequest): Promise<NextResponse>{
         const token  = signToken({userID : user._id.toString(), role : user.role});
 
         const response = NextResponse.json(
-            {message : "Login Successful",user},
+            {success : true, message : "Login Successful", user},
             {status : 200}
         );
 
+        // response.cookies.set("adminToken", token, {
+        //     httpOnly : true,
+        //     secure : process.env.NODE_ENV === "development",
+        //     sameSite : "lax",
+        //     maxAge : 60*60*24*7,
+        //     path : "/"
+        // })
+
         response.cookies.set("adminToken", token, {
-            httpOnly : true,
-            secure : process.env.NODE_ENV === "development",
-            sameSite : "lax",
-            maxAge : 60*60*24*7,
-            path : "/"
-        })
-        
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax",
+            maxAge: 60 * 60 * 24 * 7,
+            path: "/",
+        });
+                
         return response;
     } catch (error) {
         console.error("[LOGIN]",error);
         return NextResponse.json(
-            {error : `Server error: ${error}`},
+            {success: false, error : `Server error: ${error}`},
             {status : 500}
         )
     }

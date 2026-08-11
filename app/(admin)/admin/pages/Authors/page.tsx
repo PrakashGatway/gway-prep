@@ -216,6 +216,7 @@ const AuthorPage = () => {
   
 
   const handleEdit = (author: Author) => {
+    console.log(author,"oijoij")
     setEditingId(author._id || null);
 
     setFormData({

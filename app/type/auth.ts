@@ -16,10 +16,14 @@ export interface loginFormData {
 }
 
 export interface loginResponse {
-    success : boolean;
-    adminToken? : string;
-    user? : AdminUser;
-    error? : string;
+  success: boolean;
+  message?: string;
+  error?: string;
+  user?: {
+    id: string;
+    email: string;
+    role: string;
+  };
 }
 
 export interface AuthState {

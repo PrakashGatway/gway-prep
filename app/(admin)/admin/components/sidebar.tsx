@@ -1,9 +1,10 @@
 
 
 
+
 "use client";
 
-import React, { useEffect, useState } from "react";
+
 import {
   Home,
   Users,
@@ -24,41 +25,32 @@ const Sidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const [isAuthChecked, setIsAuthChecked] = useState(false);
+  const handleLogout = async () => {
+  try {
+    await fetch("/api/admin/auth/logout", {
+      method: "POST",
+    });
 
-  // ✅ Get cookie helper
-  const getCookie = (name: string) => {
-    if (typeof document === "undefined") return null;
-    const match = document.cookie?.match(
-      new RegExp("(^| )" + name + "=([^;]+)")
-    );
-    return match ? match[2] : null;
-  };
-
-  // ✅ Auth Guard
-  useEffect(() => {
-    const token = getCookie("adminToken");
-    // console.log("Admin token:", token); // Debug log
-    // if (!token) {
-    //   router.push("/admin"); // redirect to login
-    // } else {
-    //   setIsAuthChecked(true);
-    // }not 
-  }, [router]);
+    router.replace("/admin");
+    router.refresh();
+  } catch (error) {
+    console.error("Logout error:", error);
+  }
+};
 
   // ✅ Logout Function
-  const handleLogout = () => {
-    document.cookie = "adminToken=; path=/; max-age=0";
-    document.cookie = "role=; path=/; max-age=0";
-    router.push("/admin");
-  };
+  // const handleLogout = () => {
+  //   document.cookie = "adminToken=; path=/; max-age=0";
+  //   document.cookie = "role=; path=/; max-age=0";
+  //   router.push("/admin");
+  // };
 
   const navItems: NavItem[] = [
     { icon: <Home size={18} />, label: "Dashboard", href: "/admin/pages/dashboard" },
     { icon: <Users size={18} />, label: "Students", href: "/admin/pages/student" },
     { icon: <FileEditIcon size={18} />, label: "Editor", href: "/admin/pages/editor" },
     { icon: <File size={18} />, label: "Blog", href: "/admin/pages/Blogs" },
-    { icon: <BookUser size={18} />, label: "Auther", href: "/admin/pages/auther"}
+    { icon: <BookUser size={18} />, label: "Authors", href: "/admin/pages/Authors"}
   ];
 
   // if (!isAuthChecked) return null;
