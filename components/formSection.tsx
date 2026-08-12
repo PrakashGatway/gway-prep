@@ -628,18 +628,23 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
                       <>
                         {
                         field.label &&
-                         <label className="block text-sm text-gray-700 mb-1">
+                        <label className="block text-sm text-gray-700 mb-1">
                           {field.label}
                           {field.required && <span className="text-red-500 ml-1">*</span>}
-                         </label>
+                        </label>
                         }
                         <div className="relative">
                           <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                           <input
                             name={field.name}
                             type="tel"
+                            inputMode="numeric"
+                            maxLength={10}
                             value={formData[field.name] as string || ""}
-                            onChange={(e) => updateField(field.name, e.target.value)}
+                            onChange={(e) => {
+                              const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 10);
+                              updateField(field.name, digitsOnly);
+                            }}
                             className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
                               hasError ? 'border-red-500' : 'border-gray-200'
                             }`}

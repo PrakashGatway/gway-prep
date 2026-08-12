@@ -25,6 +25,7 @@ import { getStudent } from "@/app/services/api";
 import Image from "next/image";
 import { StudentsSlider } from "../3dslider";
 import { useRouter } from "next/navigation";
+import PopupModal from "../popupModel";
 
 function AIStudySection({ aiStudySection }: { aiStudySection: any }) {
   return (
@@ -41,7 +42,7 @@ function AIStudySection({ aiStudySection }: { aiStudySection: any }) {
             {aiStudySection.sectionSubtitle}
           </p>
         </div>
-      
+
         <div className="relative p-1 sm:p-2">
           {aiStudySection.aiFeatures?.map((feature: any, index: number) => (
             <FeatureCard key={index} feature={feature} index={index} />
@@ -115,7 +116,7 @@ function GreSection({
   whatIsGreSection,
   cta_banner,
   slug,
-  img
+  img,
 }: any) {
   const greData = {
     header: {
@@ -151,11 +152,8 @@ function GreSection({
 
   return (
     <section className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8 md:py-12 text-[#2d2d2d] bg-white">
-     
-
       {/* Main Content Body */}
       <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4 sm:gap-6 md:gap-8 items-start mb-6 md:mb-8 lg:mb-10">
-        
         <div className="flex items-center gap-1 text-[#541e5c] justify-center ">
           {/* <span className="text-2xl sm:text-3xl md:text-5xl font-extrabold -mt-2 animate-pulse">
             *
@@ -164,14 +162,8 @@ function GreSection({
             {slug || "gre"}
           </h3>
           <span className="text-base sm:text-lg font-bold self-start mt-1 sm:mt-2">®</span> */}
-          
-          
-          <img
-            src={img}
-            alt="Img"
-            className=" object-contain"
-          />
-          
+
+          <img src={img} alt="Img" className=" object-contain" />
         </div>
 
         {/* Right Side Introduction */}
@@ -185,13 +177,15 @@ function GreSection({
           {/* <p className="text-gray-600 text-sm sm:text-base leading-relaxed text-justify">
             {whatIsGreSection?.description || greData.main_content.introduction}
           </p> */}
-          
-          <p 
+
+          <p
             className="text-gray-600 text-sm sm:text-base leading-relaxed text-justify"
-            dangerouslySetInnerHTML={{ __html: whatIsGreSection?.description || greData.main_content.introduction }}
+            dangerouslySetInnerHTML={{
+              __html:
+                whatIsGreSection?.description ||
+                greData.main_content.introduction,
+            }}
           />
-
-
         </div>
       </div>
 
@@ -230,8 +224,7 @@ function GreSection({
         )}
       </div>
 
-
-       {/* Top Banner */}
+      {/* Top Banner */}
       <div
         className="w-full bg-[#f06437] text-white rounded-2xl md:rounded-[30px]
          px-4 sm:px-6 md:px-12  py-4 sm:py-2 md:py-4 flex relative mt-18
@@ -474,7 +467,9 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
         <div className="text-center mb-6 sm:mb-10 md:mb-12">
           <h2 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold">
             {resourcesData?.title.split("||")[0]}
-            <span className="text-primary">{resourcesData?.title.split("||")[1]}</span>
+            <span className="text-primary">
+              {resourcesData?.title.split("||")[1]}
+            </span>
           </h2>
           {/* <div
           className="text-left text-2xl md:text-3xl lg:text-4xl font-bold"
@@ -512,7 +507,10 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
                   {item.button}
                 </button>
                 <button className="w-9 h-9 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-full border-2 border-[#FFC29C] flex items-center justify-center text-[#F5632A] transition hover:bg-[#F5632A] hover:text-white flex-shrink-0">
-                  <ArrowRight size={16} className="sm:w-[20px] sm:h-[20px] md:w-[28px] md:h-[28px]" />
+                  <ArrowRight
+                    size={16}
+                    className="sm:w-[20px] sm:h-[20px] md:w-[28px] md:h-[28px]"
+                  />
                 </button>
               </div>
             </div>
@@ -528,8 +526,10 @@ function DashboardSection({ dashboardData }: { dashboardData: any }) {
   const router = useRouter();
 
   return (
-    <section className="relative overflow-hidden bg-gradient-to-r from-[#FF5B36] via-[#FF7656] to-[#FDB19B]
-     py-8 sm:py-10 md:py-12 px-3 sm:px-4 mb-14">
+    <section
+      className="relative overflow-hidden bg-gradient-to-r from-[#FF5B36] via-[#FF7656] to-[#FDB19B]
+     py-8 sm:py-10 md:py-12 px-3 sm:px-4 mb-14"
+    >
       <div className="mx-auto max-w-7xl">
         <div className="grid items-center gap-6 sm:gap-8 lg:grid-cols-2">
           {/* Left Content */}
@@ -579,7 +579,6 @@ function DashboardSection({ dashboardData }: { dashboardData: any }) {
 }
 
 export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
-
   // console.log(pageInfo.seoMeta.duplicateOf ,'page data',slug);
   const [currentSlide, setCurrentSlide] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -619,15 +618,16 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
     pageInfo?.sections?.["what-is-gre-section"]?.fields || {};
 
   const [studentsData, setstudentsData] = useState<any[]>([]);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
 
   useEffect(() => {
     let mounted = true;
     const displayStudents = async () => {
       try {
-        let qeury = pageInfo?.seoMeta?.duplicateOf !== "" ? pageInfo.seoMeta.duplicateOf : slug;
-        
+        let qeury = pageInfo?.seoMeta?.duplicateOf || slug;
+
         const data = await getStudent(qeury || "", 1, 8);
-        
+
         if (mounted) setstudentsData(data.data || []);
       } catch (err) {
         console.error(err);
@@ -703,52 +703,55 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
 
   return (
     <>
-      <section className="relative bg-[#FDF4EF] overflow-visible" style={{"scrollbarWidth":'none'}}>
+      <section
+        className="relative bg-[#FDF4EF] overflow-visible"
+        style={{ scrollbarWidth: "none" }}
+      >
         <div className="max-w-7xl mx-auto py-8 sm:py-10 lg:py-12">
           {/* Heading */}
           <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-10 text-center">
-            {/* <div
-              className="
-                flex items-center flex-col
-                [&>h1]:text-2xl
-                sm:[&>h1]:text-3xl
-                md:[&>h1]:text-4xl
-                lg:[&>h1]:text-5xl
-                [&>h1]:font-bold
-                [&>h1]:leading-tight
-                [&>h1]:tracking-tight
-                [&>h1]:px-2
-              "
-              dangerouslySetInnerHTML={{
-                __html: heroSection.title || "",
-              }}
-            /> */}
-
-             <h1 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
-                  {heroSection.title?.split("||")[0]}
-                  <span className="text-primary">{heroSection.title?.split("||")[1]}</span>
-                  {heroSection.title?.split("||")[2]}
-                </h1>
+            <h1 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
+              {heroSection.title?.split("||")[0]}
+              <span className="text-primary">
+                {heroSection.title?.split("||")[1]}
+              </span>
+              {heroSection.title?.split("||")[2]}
+            </h1>
 
             <p className="mt-2 text-sm sm:text-base md:text-lg leading-6 sm:leading-7 md:leading-8 px-2">
               {heroSection.paragraph}
             </p>
           </div>
           <StudentsSlider data={studentsData || []} />
+
+          <div className="bg-transparent flex flex-col sm:flex-row items-center justify-center pt-4 gap-4 max-w-2xl mx-auto">
+            <button 
+              onClick={()=> setIsPopupOpen(true)}
+            className="bg-[#FF7324] hover:bg-[#e05f1b] rounded-2xl px-6 py-3.5 flex items-center justify-center gap-2 transition-all w-full sm:w-auto font-bold text-white text-base sm:text-lg shadow-[0_10px_25px_-5px_rgba(255,115,36,0.3)]">
+              {heroSection?.ctaButtonText || "Calculate My GRE Score"} →
+            </button>
+
+            <button
+              onClick={() => router.push("/auth")}
+              style={{
+                backgroundColor: studentsData?.[0]?.colorCode || "#555",
+              }}
+              className="border border-white/30 hover:bg-white/10 rounded-2xl px-6 py-3.5 flex items-center justify-center transition-all w-full sm:w-auto font-semibold text-white text-base sm:text-lg bg-transparent"
+            >
+              Take Mock Test
+            </button>
+          </div>
+          
+          <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen}/>
+
         </div>
 
-        <div className=" md:absolute left-1/2 bottom-0 md:-translate-x-1/2 md:translate-y-1/2 w-[95%] sm:w-full max-w-xl mx-auto
+        {/* <div className=" md:absolute left-1/2 bottom-0 md:-translate-x-1/2 md:translate-y-1/2 w-[95%] sm:w-full max-w-xl mx-auto
          px-2 sm:px-2 z-20 pb-4 md:p-0 ">
           <div className="bg-[#F86C43] rounded-2xl flex flex-col sm:flex-row items-center justify-between px-3 sm:px-4 py-2 sm:py-2 gap-2 sm:gap-0">
             
             <div className="flex items-center gap-3 sm:gap-5">
-              {/* <div 
-               style={{ backgroundColor: studentsData?.[0]?.colorCode || "#555" }}
-               className={`w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0`}>
-                <span className="text-white text-base sm:text-lg font-bold uppercase">
-                  {slug}
-                </span>
-              </div> */}
+             
 
               <span className="text-white font-bold text-sm sm:text-lg md:text-lg">
                 {heroSection?.ctaButtonText || "Full Courses starts at $99"}
@@ -765,13 +768,9 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
                 Explore Courses
               </span>
 
-              {/* <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white flex items-center justify-center">
-                <ChevronRight className="text-[#424242]" size={16} />
-              </span> */}
             </button>
           </div>
-        </div>
-        
+        </div> */}
       </section>
 
       <GreForm studentsData={studentsData} formSection={Registrations} />
@@ -829,7 +828,8 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
       <section className="relative overflow-hidden bg-gradient-to-b from-[#fdf0eb] to-white py-8 sm:pt-12 md:pt-12 px-3 sm:px-4">
         <div className="flex justify-center items-center flex-col max-w-6xl mx-auto">
           <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-extrabold text-center">
-            {scoreGuaranteeSection?.title?.split("||")[0] || "What is"} <br className="sm:hidden" />
+            {scoreGuaranteeSection?.title?.split("||")[0] || "What is"}{" "}
+            <br className="sm:hidden" />
             <p className="text-[#f06437]">
               {scoreGuaranteeSection?.title?.split("||")[1] || "GRE?"}
             </p>
@@ -860,10 +860,8 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
         <PricingSection plans={pricingData.pricing_plans} />
       </section>
 
-
       {/* Official Questions Section */}
       <section className=" relative w-full flex items-center justify-center bg-gradient-to-r from-[#F1AA94] to-[#EE653C] my-18">
-        
         <div className="flex flex-col lg:flex-row p-4 sm:p-6 lg:p-10 justify-end items-center mx-auto pt-10 sm:pt-16 lg:pt-20 bg-cover bg-center bg-no-repeat">
           <div className="absolute left-50 hidden lg:block lg:w-[40%] z-10 rounded-full">
             <img src="/Gre/laptop.png" alt="img" className="w-full" />
@@ -898,9 +896,3 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
     </>
   );
 }
-
-
-
-
-
-
