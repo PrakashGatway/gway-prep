@@ -263,7 +263,7 @@ const BlogFormContent = () => {
           <select
             value={value}
             className={baseInputClasses}
-            onChange={(e) => handleInputChange(sectionName, field.name, e.target.value === 'true')}
+            onChange={(e) => handleInputChange(sectionName, field.name, e.target.value)}
           >
             <option value="">Select {field.label}</option>
             {field.option?.map((opt: any, i: number) => (

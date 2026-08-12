@@ -16,7 +16,9 @@ export function Footer({ Data = [] }: FooterProps) {
 
 const courseData = React.useMemo(
   () => Data?.filter((item: any) => {
-    return item?.seoMeta?.template?.toLowerCase() === "preparation" && !item?.seoMeta?.duplicateOf;
+    return item?.seoMeta?.template?.toLowerCase() === "preparation" && 
+           !item?.seoMeta?.duplicateOf &&
+           item?.seoMeta?.isPublished === true;
   }) || [],
   [Data],
 );
@@ -26,7 +28,9 @@ const courseData = React.useMemo(
   const courseData1 = React.useMemo(
     () =>
       Data?.filter(
-        (item: any) => item?.seoMeta?.template?.toLowerCase() === "examdetails",
+        (item: any) => 
+          item?.seoMeta?.template?.toLowerCase() === "examdetails" &&
+          item?.seoMeta?.isPublished === true,
       ) || [],
     [Data],
   );

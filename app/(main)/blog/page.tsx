@@ -166,9 +166,7 @@ export default async function BlogPage({
     queryParams.set("category", category);
   }
 
-  /**
-   * Default pagination response
-   */
+  
   let blogsData = {
     data: [],
     currentPage: page,
@@ -177,12 +175,10 @@ export default async function BlogPage({
     itemsPerPage: 10,
   };
 
-  /**
-   * Fetch Blogs
-   */
+  
   try {
     const response = await axiosInstance.get(
-      `/admin/blogs?${queryParams.toString()}`
+      `/admin/blogs?${queryParams.toString()}&isPublished=true`
     );
 
     blogsData = response?.data || blogsData;

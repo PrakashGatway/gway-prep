@@ -15,6 +15,7 @@ import {
 import { pageData } from "@/app/lib/pageData";
 import { getPageInfo, getStudent } from "@/app/services/api";
 import { slugify } from "@/app/lib/slug";
+import axiosInstance from "@/app/lib/axios";
 
 const CKEditorComponent = dynamic(() => import("./ckEditor"), {
   ssr: false,
@@ -71,7 +72,7 @@ console.log(slug); // Output: gmat-coaching-in-jaipur
     ogDescription: "",
     ogImage: "",
     canonicalUrl: "",
-    isPublished: false,
+    isPublished: true,
     publishedAt: "",
     template: "",
   });
@@ -110,7 +111,12 @@ console.log(slug); // Output: gmat-coaching-in-jaipur
 
     const getData = async () => {
       try {
-        const res = await getPageInfo(slug);
+        // const res = await getPageInfo(slug);
+        const api = await axiosInstance.get(
+        `/admin/pageInfo/${slug}`
+      )
+
+        const res = api.data.data;
         // console.log("Fetched page data:", res);
 
         if (res.seoMeta) {
@@ -121,7 +127,7 @@ console.log(slug); // Output: gmat-coaching-in-jaipur
         const key = Object.keys(pageData).find(
           (k) => pageData[k].name === res.seoMeta?.template,
         );
-        console.log(key,'key')
+        
         if (key) {
           setFormData(pageData[key]);
           console.log(pageData[key],'key');

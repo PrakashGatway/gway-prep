@@ -35,7 +35,7 @@ const notoSans = Noto_Sans({
 export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const NavData = await getPages("30");
+  const NavData = await getPages("300");
 
   return (
     <html lang="en" className={inter.variable}>

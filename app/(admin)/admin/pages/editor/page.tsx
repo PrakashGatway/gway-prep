@@ -60,7 +60,7 @@ const Page = () => {
     try {
       setLoading(true);
 
-      const res = await axiosInstance(
+      const res = await axiosInstance.get(
         `/admin/pageInfo?search=${search}&page=${page}&limit=${limit}`
       );
 

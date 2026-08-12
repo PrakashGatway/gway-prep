@@ -108,16 +108,15 @@ export async function generateMetadata({
   };
 }
 
+
 export default async function PreparationPage({ params }: PageProps) {
   const { slug } = await params;
 
-  // // 1. Decode the text twice to remove %2520 and %20
+  
   const cleanText = decodeURIComponent(decodeURIComponent(slug));
-
-  // // 2. Convert spaces to hyphens for the URL slug
   const rowtext = cleanText.toLowerCase().replace(/\s+/g, "-");
 
-  console.log(rowtext); // Output: gmat-coaching-in-jaipur
+  console.log(rowtext);
 
   if (!rowtext || rowtext.toLowerCase() === "home") {
     redirect("/");

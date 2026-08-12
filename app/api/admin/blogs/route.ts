@@ -13,20 +13,26 @@ export async function GET(req: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
     const search = searchParams.get("search") || "";
+    const isPublishedParam = searchParams.get('isPublished');
+    const isPublished = isPublishedParam === 'true' ? true : isPublishedParam === 'false' ? false : undefined;
 
     const skip = (page - 1) * limit;
 
     // 🔍 Search query
-    const query = search
-      ? {
-          $or: [
-            { title: { $regex: search, $options: "i" } },
-            { description: { $regex: search, $options: "i" } },
-            { category: { $regex: search, $options: "i" } }
-          ],
-        }
-      : {};
+    // Build query: include search regexes and/or isPublished filter when provided
+    const orClauses: any[] = [];
+    if (search) {
+      orClauses.push({ title: { $regex: search, $options: "i" } });
+      orClauses.push({ description: { $regex: search, $options: "i" } });
+      orClauses.push({ category: { $regex: search, $options: "i" } });
+    }
+    if (typeof isPublished !== 'undefined') {
+      orClauses.push({ isPublished });
+    }
 
+    const query = orClauses.length ? { $or: orClauses } : {};
+
+      console.log('isPublished',query);
     const blogs = await Blog.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)

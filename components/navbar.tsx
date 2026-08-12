@@ -73,7 +73,9 @@ React.useEffect(() => {
   const NAVDATA1 = React.useMemo(
     () =>
       Data?.filter(
-        (item: any) => item?.seoMeta?.template?.toLowerCase() === "examdetails",
+        (item: any) =>
+          item?.seoMeta?.template?.toLowerCase() === "examdetails" &&
+          item?.seoMeta?.isPublished === true
       ) || [],
     [Data],
   );
@@ -81,7 +83,9 @@ React.useEffect(() => {
   const NAVDATA = React.useMemo(
     () =>
       Data?.filter(
-        (item: any) => item?.seoMeta?.template?.toLowerCase() === "preparation",
+        (item: any) =>
+          item?.seoMeta?.template?.toLowerCase() === "preparation" &&
+          item?.seoMeta?.isPublished === true
       ) || [],
     [Data],
   );
