@@ -132,7 +132,7 @@ export const pageData: any = {
             label: "Courses heading",
             type: "text",
             required: true,
-            placeholder : "Trusted by 50,000+ Students Globally"
+            placeholder: "Trusted by 50,000+ Students Globally",
           },
           {
             name: "title",
@@ -2021,7 +2021,7 @@ export const pageData: any = {
               {
                 name: "description",
                 label: "Description",
-                type: "editor"
+                type: "editor",
               },
               {
                 name: "type",
@@ -2197,10 +2197,9 @@ export const pageData: any = {
             placeholder: "Full courses starts at $99",
             value: "Full Courses starts at $99",
           },
-
         ],
       },
-      
+
       {
         name: "from-section",
         label: "From section",
@@ -2231,7 +2230,7 @@ export const pageData: any = {
           },
         ],
       },
-      
+
       {
         name: "cta-banner-section",
         label: "CTA Banner",
@@ -2763,7 +2762,7 @@ export const pageData: any = {
       },
     ],
   },
-  
+
   ExamDetails: {
     name: "ExamDetails",
     description: "Create and manage Exam Infomation.",
@@ -2796,6 +2795,18 @@ export const pageData: any = {
             placeholder: "Admin",
           },
           {
+            name: "url",
+            label: "Button Url",
+            type: "text",
+            placeholder: "http://ooshasprep.com/auth",
+          },
+          {
+            name: "buttonText",
+            label: "Button Text",
+            type: "text",
+            placeholder: "Enroll Now",
+          },
+          {
             name: "image",
             label: "Featured Image",
             type: "file",
@@ -2803,7 +2814,7 @@ export const pageData: any = {
           },
         ],
       },
-      
+
       {
         name: "exam-data",
         label: "Exam Data",
@@ -2814,7 +2825,6 @@ export const pageData: any = {
             type: "repeater",
             max: 3,
             fields: [
-              
               {
                 name: "content_heading",
                 label: "Content Heading",
@@ -2836,13 +2846,13 @@ export const pageData: any = {
                     type: "text",
                   },
                   {
-                    name : "answer",
-                    label : "Answer",
-                    type : "textarea"
-                  }
+                    name: "answer",
+                    label: "Answer",
+                    type: "textarea",
+                  },
                 ],
               },
-              
+
               {
                 name: "Image",
                 label: "Banner Image",
@@ -2861,24 +2871,23 @@ export const pageData: any = {
                     type: "text",
                   },
                   {
-                    name : "subtitle",
-                    label : "Subtitle",
-                    type : "editor"
+                    name: "subtitle",
+                    label: "Subtitle",
+                    type: "editor",
                   },
                   {
-                    name : "url",
-                    label : "Url",
-                    type : "text"
+                    name: "url",
+                    label: "Url",
+                    type: "text",
                   },
                   {
                     name: "buttontext",
-                    label : "Button Text",
-                    type : "text"
+                    label: "Button Text",
+                    type: "text",
                   },
-                  
                 ],
               },
-              
+
               {
                 name: "question",
                 label: "Question Title",
@@ -2896,7 +2905,7 @@ export const pageData: any = {
                     label: "Value",
                     type: "text",
                   },
-                   {
+                  {
                     name: "label",
                     label: "Label",
                     type: "text",
@@ -2909,18 +2918,11 @@ export const pageData: any = {
                     option: ["text", "radio"],
                   },
                 ],
-              }
+              },
             ],
           },
         ],
       },
-
     ],
   },
-
 };
-
-
-
-
-

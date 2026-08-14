@@ -42,7 +42,7 @@ const ExamDetails = ({ pagedata }: any) => {
   const [activeSection, setActiveSection] = useState<string>("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-
+  const Router = useRouter();
 
   const toc = useMemo(() => {
     return examData.map((item: any, index: number) => ({
@@ -101,45 +101,63 @@ const ExamDetails = ({ pagedata }: any) => {
   return (
     
       <main className="relative flex flex-col">
-        <div className="relative max-w-[100vw] overflow-hidden mx-auto h-[30rem] px-2 sm:px-10 py-10 flex items-center justify-center">
-          <div
-            className="absolute bg-primary w-full h-[35rem] left-0 -top-[100px]"
-            style={{
-              borderRadius: "0 0 50% 50%/0 0 100% 100%",
-              transform: "scaleX(2.4)",
-            }}
-          ></div>
+        
+        <div className="relative w-full overflow-hidden bg-primary/40 px-4 sm:px-8 lg:px-12 py-8 sm:py-10">
+  <div className="relative z-10 mx-auto max-w-[1500px] bg-white px-5 sm:px-8 lg:px-12 py-8 sm:py-10">
 
-          <div className="flex md:flex-col lg:flex-row bg-white rounded overflow-hidden w-full h-[100%] z-50 mt-20">
-            <div className="p-6 flex items-start gap-4 flex-col w-full lg:w-1/2">
-              <div>
-                <h1 className="text-3xl font-bold text-slate-900">
-                  {basicInfo?.title}
-                </h1>
-                {basicInfo?.subtitle && (
-                  // <div
-                  //   className="text-gray-600 mt-2 text-justify"
-                  //   dangerouslySetInnerHTML={{
-                  //     __html: basicInfo.subtitle,
-                  //   }}
-                  // />
-                  
-                    <EditorContent content_data={basicInfo.subtitle} />
-                )}
-              </div>
-            </div>
-            <div className="hidden lg:block lg:w-full h-[26rem] p-2">
-              <img
-                src={
-                  basicInfo?.image ||
-                  "https://res.cloudinary.com/drsainihk/image/upload/v1784546671/cway-admin/rx2e0kmbnawefickyvqr.webp"
-                }
-                alt={`${basicInfo?.title} logo`}
-                className="h-full w-full object-cover bg-white rounded-xl"
-              />
-            </div>
-          </div>
+    {/* Top Hero Content */}
+    <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+
+      {/* Left Image */}
+      <div className="w-full lg:w-[52%]">
+        <div className="overflow-hidden ">
+          <img
+            src={
+              basicInfo?.image ||
+              "https://res.cloudinary.com/drsainihk/image/upload/v1784546671/cway-admin/rx2e0kmbnawefickyvqr.webp"
+            }
+            alt={`${basicInfo?.title || "Hero"} image`}
+            className="w-full h-[220px] sm:h-[300px] lg:h-[285px] object-contain"
+          />
         </div>
+      </div>
+
+      {/* Right Content */}
+      <div className="w-full lg:w-[48%] flex flex-col items-start">
+        {/* <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-primary">
+          {basicInfo?.title.split('||')[0]}
+          <span className="text-black">
+          {basicInfo?.title.split('||')[1]}
+          </span>
+        </h1> */}
+        <h1 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold md:leading:7 text-primary lg:leading-14">
+          {basicInfo.title?.split("||")[0]}
+          <span className="text-black">{basicInfo.title?.split("||")[1]}</span>
+          {basicInfo.title?.split("||")[2]}
+        </h1>
+
+        <button
+          type="button"
+          onClick={() => Router.push(basicInfo?.url || `/auth`)}
+          className="mt-6 inline-flex items-center justify-center bg-primary px-7 py-2 text-base sm:text-lg font-semibold text-white transition-all duration-300 hover:opacity-90"
+        >
+          {/* Explore Now */}
+          {basicInfo?.buttonText || "Explore Now"}
+        </button>
+      </div>
+    </div>
+
+
+    {basicInfo?.subtitle && (
+      <div className="mt-8 max-w-7xl">
+        <div className="text-base sm:text-lg leading-7 text-slate-700">
+          <EditorContent content_data={basicInfo.subtitle} />
+        </div>
+      </div>
+    )}
+
+  </div>
+</div>
 
         <div className="sticky top-20 z-40 bg-white border-b shadow-sm">
           <div className=" mx-auto px-4">
@@ -154,7 +172,7 @@ const ExamDetails = ({ pagedata }: any) => {
               </button>
             </div> */}
 
-            {/* Desktop Navigation */}
+
             <div
               className=" flex items-center gap-6 py-1 whitespace-nowrap overflow-auto"
               style={{
@@ -196,10 +214,11 @@ const ExamDetails = ({ pagedata }: any) => {
                 </ul>
               </div>
             )} */}
+
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 py-8">
+        <div className="max-w-7xl mx-auto px-4 py-8 overflow">
           <div className="grid lg:grid-cols-[1fr_320px] gap-10">
             {/* Main */}
             <div className="space-y-0">
