@@ -134,7 +134,7 @@ export function Hero({ data, student }: HeroProps) {
                   whileHover={{ scale: 1.03, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setIsPopupOpen(true)}
-                  className="group relative flex items-center justify-center gap-2.5 bg-[#F36C45] text-white rounded-2xl py-4 px-8 text-base sm:text-lg font-semibold transition-all duration-300 overflow-hidden"
+                  className="group cursor-pointer relative flex items-center justify-center gap-2.5 bg-[#F36C45] text-white rounded-2xl py-4 px-8 text-base sm:text-lg font-semibold transition-all duration-300 overflow-hidden"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-[#e05a34] to-[#ff8a65] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <span className="relative flex items-center gap-2.5">

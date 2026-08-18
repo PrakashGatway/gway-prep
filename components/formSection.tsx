@@ -576,7 +576,7 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
                               e.target.style.borderColor = hasError ? '#ef4444' : '#e5e7eb';
                               e.target.style.boxShadow = 'none';
                             }}
-                            placeholder={field.placeholder}
+                            // placeholder={field.placeholder}
                             required={field.required}
                           />
                         </div>
@@ -614,7 +614,7 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
                               e.target.style.borderColor = hasError ? '#ef4444' : '#e5e7eb';
                               e.target.style.boxShadow = 'none';
                             }}
-                            placeholder={field.placeholder}
+                            // placeholder={field.placeholder}
                             required={field.required}
                           />
                         </div>
@@ -657,7 +657,7 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
                               e.target.style.borderColor = hasError ? '#ef4444' : '#e5e7eb';
                               e.target.style.boxShadow = 'none';
                             }}
-                            placeholder={field.placeholder}
+                            // placeholder={field.placeholder}
                             required={field.required}
                           />
                         </div>
@@ -695,7 +695,7 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
                               e.target.style.borderColor = hasError ? '#ef4444' : '#e5e7eb';
                               e.target.style.boxShadow = 'none';
                             }}
-                            placeholder={field.placeholder}
+                            // placeholder={field.placeholder}
                             required={field.required}
                           />
                         </div>

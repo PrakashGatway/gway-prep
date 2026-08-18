@@ -150,13 +150,13 @@ export function PartnerSection() {
             </div>
 
             {/* Social Media */}
-            <div className="flex items-center gap-4 pt-6">
+            {/* <div className="flex items-center gap-4 pt-6">
               <span className="text-2xl font-bold">Follow Us</span>
               <Facebook className="w-6 h-6 cursor-pointer hover:text-[#f26e46] transition-colors" />
               <Twitter className="w-6 h-6 cursor-pointer hover:text-[#f26e46] transition-colors" />
               <Instagram className="w-6 h-6 cursor-pointer hover:text-[#f26e46] transition-colors" />
               <Youtube className="w-6 h-6 cursor-pointer hover:text-[#f26e46] transition-colors" />
-            </div>
+            </div> */}
           </div>
 
           {/* Right Column: Inquiry Form */}

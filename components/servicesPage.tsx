@@ -79,7 +79,7 @@ function HeroSection({ data }: { data: any }) {
           );
         })()}
 
-          <p className="mt-4 max-w-xl text-base md:text-lg leading-7 md:leading-8 ">
+          <p className="mt-4 max-w-xl text-justify text-base md:text-lg leading-7 md:leading-8 ">
             {data?.fields?.subtitle}
           </p>
         </motion.div>
@@ -457,7 +457,7 @@ function EnvironmentSection({ data }: { data: any }) {
           <div className="flex justify-center md:justify-end mt-2 md:mt-4">
             <button
              onClick={() => Router.push("/auth")}
-             className="rounded-full bg-[#F2643D] hover:bg-[#e45b33] transition-all text-white font-semibold px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base">
+             className="rounded-full cursor-pointer bg-[#F2643D] hover:bg-[#e45b33] transition-all text-white font-semibold px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base">
               {buttonText}
             </button>
           </div>
@@ -510,7 +510,7 @@ interface EnvironmentCardProps {
 
 export function EnvironmentCard({ title, image, className }: EnvironmentCardProps) {
   return (
-    <div className={`group relative cursor-pointer overflow-hidden rounded-lg bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-transform duration-1000 ease-in-out hover:scale-105 ${className}`}>
+    <div className={`group relative overflow-hidden rounded-lg bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-transform duration-1000 ease-in-out hover:scale-105 ${className}`}>
   {/* Image with dimming effect via opacity */} 
   <Image 
     src={image} 
