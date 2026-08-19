@@ -40,7 +40,8 @@ export default async function RootLayout({
         <div className="h-[100vh] overflow-hidden flex bg-gray-50">
           <Sidebar />
 
-          <div className="flex-1 flex flex-col">
+          <div className="flex-1 flex flex-col overflow-y-auto ml-64">
+            {/* Content */}
             <Nav />
             <div className="overflow-auto">
               {children}

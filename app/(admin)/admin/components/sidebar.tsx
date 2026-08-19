@@ -50,13 +50,14 @@ const Sidebar = () => {
     { icon: <Users size={18} />, label: "Students", href: "/admin/pages/student" },
     { icon: <FileEditIcon size={18} />, label: "Editor", href: "/admin/pages/editor" },
     { icon: <File size={18} />, label: "Blog", href: "/admin/pages/Blogs" },
-    { icon: <BookUser size={18} />, label: "Authors", href: "/admin/pages/Authors"}
+    { icon: <BookUser size={18} />, label: "Authors", href: "/admin/pages/Authors"},
+    { icon: <File size={18} />, label: "Support Articles", href: "/admin/pages/support-articles" },
   ];
 
   // if (!isAuthChecked) return null;
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+    <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-gray-200 bg-white">
       <div className="h-auto flex items-center flex-col p-6 border-b border-gray-100">
         <img
           src="/image/logo.png"
