@@ -40,36 +40,36 @@ export function Navbar({ Data }: any) {
     null,
   );
 
-  
-const [showProfileMenu, setShowProfileMenu] = React.useState(false);
 
-const profileMenuRef = React.useRef<HTMLDivElement>(null);
+  const [showProfileMenu, setShowProfileMenu] = React.useState(false);
 
-// Close dropdown when clicking outside
-React.useEffect(() => {
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      profileMenuRef.current &&
-      !profileMenuRef.current.contains(
-        event.target as Node
-      )
-    ) {
-      setShowProfileMenu(false);
-    }
-  };
+  const profileMenuRef = React.useRef<HTMLDivElement>(null);
 
-  document.addEventListener(
-    "mousedown",
-    handleClickOutside
-  );
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(
+          event.target as Node
+        )
+      ) {
+        setShowProfileMenu(false);
+      }
+    };
 
-  return () => {
-    document.removeEventListener(
+    document.addEventListener(
       "mousedown",
       handleClickOutside
     );
-  };
-});
+
+    return () => {
+      document.removeEventListener(
+        "mousedown",
+        handleClickOutside
+      );
+    };
+  });
   const NAVDATA1 = React.useMemo(
     () =>
       Data?.filter(
@@ -90,6 +90,7 @@ React.useEffect(() => {
     [Data],
   );
 
+
   const navItems = React.useMemo(
     () => [
       { name: "Home", href: "/", icon: null },
@@ -100,22 +101,31 @@ React.useEffect(() => {
         icon: GraduationCap,
         dropdownItems: NAVDATA.filter(
           (subItem: any) => !subItem?.seoMeta?.duplicateOf,
-        ).map((item: any) => ({
-          name: item.seoMeta.navTitle,
-          img: item?.seoMeta?.navIcon,
-          slug: item.seoMeta.canonicalUrl,
-          description: item.seoMeta.navSubtitle,
-          badge: item.seoMeta?.badge || null,
-          sublink: NAVDATA.filter(
-            (subItem: any) => subItem?.seoMeta?.duplicateOf === item?.name,
-          ).map((ele: any) => ({
-            name: ele.seoMeta.navTitle,
-            img: ele?.seoMeta?.navIcon,
-            slug: ele.seoMeta.canonicalUrl,
-            description: ele.seoMeta.navSubtitle,
-            badge: ele.seoMeta?.badge || null,
-          })),
-        })),
+        ).map((item: any) => {
+          console.log(item, "dekho2")
+          return ({
+            name: item.seoMeta.navTitle,
+            img: item?.seoMeta?.navIcon,
+            slug: item.seoMeta.canonicalUrl,
+            description: item.seoMeta.navSubtitle,
+            badge: item.seoMeta?.badge || null,
+            sublink: NAVDATA.filter(
+              (subItem: any) =>
+                subItem?.seoMeta?.duplicateOf
+                  ?.toLowerCase()
+                  .includes(item?.name?.toLowerCase())
+            ).map((ele: any) => {
+
+              return ({
+                name: ele.seoMeta.navTitle,
+                img: ele?.seoMeta?.navIcon,
+                slug: ele.seoMeta.canonicalUrl,
+                description: ele.seoMeta.navSubtitle,
+                badge: ele.seoMeta?.badge || null,
+              })
+            }),
+          })
+        }),
       },
       { name: "About Us", href: "/about", icon: null },
       { name: "Services", href: "/services", icon: null },
@@ -180,11 +190,10 @@ React.useEffect(() => {
   return (
     <>
       <nav
-        className={`sticky top-0 left-0 right-0 z-[500] transition-all duration-300 ${
-          scrolled
+        className={`sticky top-0 left-0 right-0 z-[500] transition-all duration-300 ${scrolled
             ? "bg-white/90 backdrop-blur-xl shadow-lg border-b border-gray-100"
             : "bg-white/95 backdrop-blur-sm"
-        }`}
+          }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-3">
@@ -216,19 +225,17 @@ React.useEffect(() => {
                   <Link
                     href={item.href}
                     className={`flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium rounded-2xl transition-all duration-200
-                      ${
-                        activeDropdown === item.name
-                          ? "text-[#F36C45] bg-orange-50"
-                          : "text-gray-600 hover:text-[#F36C45] hover:bg-orange-50/70"
+                      ${activeDropdown === item.name
+                        ? "text-[#F36C45] bg-orange-50"
+                        : "text-gray-600 hover:text-[#F36C45] hover:bg-orange-50/70"
                       }`}
                   >
                     <span>{item.name}</span>
                     {item.hasDropdown && (
                       <ChevronDown
                         size={16}
-                        className={`transition-transform duration-200 ${
-                          activeDropdown === item.name ? "rotate-180" : ""
-                        }`}
+                        className={`transition-transform duration-200 ${activeDropdown === item.name ? "rotate-180" : ""
+                          }`}
                       />
                     )}
                   </Link>
@@ -264,11 +271,10 @@ React.useEffect(() => {
                                 >
                                   <Link
                                     href={`/${dd.slug}`}
-                                    className={`group flex items-center gap-3 px-4 py-3 transition-all ${
-                                      isActive
+                                    className={`group flex items-center gap-3 px-4 py-3 transition-all ${isActive
                                         ? "bg-white shadow-sm"
                                         : "hover:bg-white/80"
-                                    }`}
+                                      }`}
                                     onClick={closeDesktopDropdown}
                                   >
                                     <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-white shadow-sm">
@@ -291,11 +297,10 @@ React.useEffect(() => {
                                     <div className="flex-1 min-w-0">
                                       <div className="flex items-center gap-2">
                                         <span
-                                          className={`font-medium text-sm transition-colors ${
-                                            isActive
+                                          className={`font-medium text-sm transition-colors ${isActive
                                               ? "text-[#F36C45]"
                                               : "text-gray-800 group-hover:text-[#F36C45]"
-                                          }`}
+                                            }`}
                                         >
                                           {dd.name}
                                         </span>
@@ -315,11 +320,10 @@ React.useEffect(() => {
                                     {hasSub ? (
                                       <ChevronRight
                                         size={16}
-                                        className={`flex-shrink-0 transition-colors ${
-                                          isActive
+                                        className={`flex-shrink-0 transition-colors ${isActive
                                             ? "text-[#F36C45]"
                                             : "text-gray-300 group-hover:text-[#F36C45]"
-                                        }`}
+                                          }`}
                                       />
                                     ) : (
                                       <ArrowRight
@@ -345,6 +349,8 @@ React.useEffect(() => {
                                 className="border-l border-gray-100 bg-white w-[300px] max-h-[520px] overflow-y-auto"
                               >
                                 {item.dropdownItems?.map((dd: any) => {
+
+
                                   if (
                                     dd.slug === activeSubDropdown &&
                                     dd.sublink?.length > 0
@@ -466,13 +472,13 @@ React.useEffect(() => {
 
             </div> */}
 
-<div className="hidden lg:flex items-center gap-4">
-  
- <a
+            <div className="hidden lg:flex items-center gap-4">
+
+              <a
                 href="tel:+919166146538"
                 className="flex items-center gap-2.5 px-4 py-1.5 rounded-2xl hover:bg-gray-100 transition-all group"
               >
-                
+
                 <div>
                   <div className="text-xs text-gray-400 flex items-center gap-2">
                     {" "}
@@ -483,11 +489,11 @@ React.useEffect(() => {
                   </div>
                 </div>
               </a>
-            {!user?.email ? (
+              {!user?.email ? (
 
-              <button
-                onClick={() => router.push("/auth")}
-                className="
+                <button
+                  onClick={() => router.push("/auth")}
+                  className="
       px-6 py-2.5
       rounded-2xl
       bg-gradient-to-r
@@ -502,18 +508,18 @@ React.useEffect(() => {
       transition-all
       active:scale-95
     "
-              >
-                <User size={18} />
-                Get Started
-              </button>
-            ) : (
-              <div ref={profileMenuRef} className="relative">
-                {/* ================= PROFILE BUTTON ================= */}
+                >
+                  <User size={18} />
+                  Get Started
+                </button>
+              ) : (
+                <div ref={profileMenuRef} className="relative">
+                  {/* ================= PROFILE BUTTON ================= */}
 
-                <button
-                  type="button"
-                  onClick={() => setShowProfileMenu((prev) => !prev)}
-                  className="
+                  <button
+                    type="button"
+                    onClick={() => setShowProfileMenu((prev) => !prev)}
+                    className="
         flex
         items-center
         gap-2
@@ -527,10 +533,10 @@ React.useEffect(() => {
         hover:shadow-orange-500/30
         active:scale-95
       ">
-        
 
-                  <div
-                    className="
+
+                    <div
+                      className="
           flex
           h-10
           w-10
@@ -540,26 +546,26 @@ React.useEffect(() => {
           bg-white
           text-gray-700
         "
-                  >
-                    <UserCircle size={24} />
-                  </div>
+                    >
+                      <UserCircle size={24} />
+                    </div>
 
-                  {/* CHEVRON */}
+                    {/* CHEVRON */}
 
-                  {/* {showProfileMenu ? (
+                    {/* {showProfileMenu ? (
                     <ChevronUp size={17} className="text-white " />
                   ) : (
                     <ChevronDown size={17} className="text-white" />
                   )} */}
-                  <ChevronDown size={17} className={`text-white ${showProfileMenu ? '-rotate-180':'rotate-0'} duration-300 ease-in-out`} />
-                  
-                </button>
+                    <ChevronDown size={17} className={`text-white ${showProfileMenu ? '-rotate-180' : 'rotate-0'} duration-300 ease-in-out`} />
+
+                  </button>
 
 
 
-                {showProfileMenu && (
-                  <div
-                    className="
+                  {showProfileMenu && (
+                    <div
+                      className="
                       absolute
                       right-0
                       top-[calc(100%+12px)]
@@ -572,10 +578,10 @@ React.useEffect(() => {
                       bg-white
                       shadow-[0_10px_40px_rgba(0,0,0,0.15)]
                     ">
-                    
 
-                    <div
-                      className="
+
+                      <div
+                        className="
                       flex
                       items-center
                       gap-3
@@ -584,10 +590,10 @@ React.useEffect(() => {
                       px-5
                       py-5
                     ">
-                      {/* Avatar */}
+                        {/* Avatar */}
 
-                      <div
-                        className="
+                        <div
+                          className="
                         flex
                         h-12
                         w-12
@@ -600,44 +606,44 @@ React.useEffect(() => {
                         bg-gray-50
                         text-gray-500
                       ">
-                        <User size={26} />
-                      </div>
+                          <User size={26} />
+                        </div>
 
-                      {/* Name / Email */}
+                        {/* Name / Email */}
 
-                      <div className="min-w-0">
-                        <h3
-                          className="
+                        <div className="min-w-0">
+                          <h3
+                            className="
                 truncate
                 text-[17px]
                 font-semibold
                 text-gray-900
               "
-                        >
-                          {user?.name || "Rajesh Kumar"}
-                        </h3>
+                          >
+                            {user?.name || "Rajesh Kumar"}
+                          </h3>
 
-                        <p
-                          className="
+                          <p
+                            className="
                 mt-0.5
                 truncate
                 text-sm
                 text-gray-500
               "
-                        >
-                          {user?.email}
-                        </p>
+                          >
+                            {user?.email}
+                          </p>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="py-2">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setShowProfileMenu(false);
-                          router.push("https://dashboard.ooshasprep.com/profile");
-                        }}
-                        className="
+                      <div className="py-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowProfileMenu(false);
+                            router.push("https://dashboard.ooshasprep.com/profile");
+                          }}
+                          className="
               flex
               w-full
               items-center
@@ -651,23 +657,23 @@ React.useEffect(() => {
               hover:bg-orange-50
               hover:text-[#F36C45]
             "
-                      >
-                        <User size={22} strokeWidth={1.8} />
+                        >
+                          <User size={22} strokeWidth={1.8} />
 
-                        <span>My Profile</span>
-                      </button>
+                          <span>My Profile</span>
+                        </button>
 
-                      {/* DASHBOARD */}
+                        {/* DASHBOARD */}
 
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setShowProfileMenu(false);
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowProfileMenu(false);
 
-                          window.location.href =
-                            "https://dashboard.ooshasprep.com";
-                        }}
-                        className="
+                            window.location.href =
+                              "https://dashboard.ooshasprep.com";
+                          }}
+                          className="
               flex
               w-full
               items-center
@@ -681,36 +687,36 @@ React.useEffect(() => {
               hover:bg-orange-50
               hover:text-[#F36C45]
             "
-                      >
-                        <LayoutDashboard size={22} strokeWidth={1.8} />
+                        >
+                          <LayoutDashboard size={22} strokeWidth={1.8} />
 
-                        <span>Dashboard</span>
-                      </button>
+                          <span>Dashboard</span>
+                        </button>
 
 
-                    </div>
+                      </div>
 
-                    {/* ================= LOGOUT ================= */}
+                      {/* ================= LOGOUT ================= */}
 
-                    <div
-                      className="
+                      <div
+                        className="
             border-t
             border-gray-100
             p-2
           "
-                    >
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setShowProfileMenu(false);
+                      >
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShowProfileMenu(false);
 
-                          // Your logout logic here
-                          // logout();
+                            // Your logout logic here
+                            // logout();
 
-                           axiosInstance.get('logout')
-                          // router.push("/auth");
-                        }}
-                        className="
+                            axiosInstance.get('logout')
+                            // router.push("/auth");
+                          }}
+                          className="
               flex
               w-full
               items-center
@@ -724,18 +730,18 @@ React.useEffect(() => {
               transition
               hover:bg-red-50
             "
-                      >
-                        <LogOut size={22} strokeWidth={1.8} />
+                        >
+                          <LogOut size={22} strokeWidth={1.8} />
 
-                        <span>Logout</span>
-                      </button>
+                          <span>Logout</span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            )}
+                  )}
+                </div>
+              )}
 
-</div>
+            </div>
 
           </div>
         </div>
@@ -811,9 +817,8 @@ React.useEffect(() => {
                               {item.name}
                             </span>
                             <ChevronDown
-                              className={`transition-transform ${
-                                mobileDropdown === item.name ? "rotate-180" : ""
-                              }`}
+                              className={`transition-transform ${mobileDropdown === item.name ? "rotate-180" : ""
+                                }`}
                             />
                           </button>
 
@@ -972,9 +977,8 @@ React.useEffect(() => {
                                           >
                                             <ChevronRight
                                               size={18}
-                                              className={`text-gray-800 transition-transform ${
-                                                isSubOpen ? "rotate-90" : ""
-                                              }`}
+                                              className={`text-gray-800 transition-transform ${isSubOpen ? "rotate-90" : ""
+                                                }`}
                                             />
                                           </button>
                                         )}
