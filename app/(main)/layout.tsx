@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
 };
 
-export const revalidate = 600;
+// export const revalidate = 600;
 
 const inter = Inter({
   subsets: ["latin"],
@@ -36,6 +36,8 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const NavData = await getPages("300");
+
+  
 
   return (
     <html lang="en" className={inter.variable}>

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import {connectDB} from "@/app/lib/db"
 import CategoryDetail from "@/app/Model/Category";
+import { success } from "zod";
 
 
 
@@ -96,6 +97,121 @@ export async function GET(request: NextRequest) {
             {
                 success: false,
                 message: "Failed to fetch categories.",
+            },
+            { status: 500 }
+        );
+    }
+}
+
+export  async function PUT(request: NextRequest){
+    try{
+        await connectDB()
+        const {searchParams} =  request.nextUrl
+        const Oldslug = searchParams.get("slug")
+
+        const body = await request.json()
+
+     const {name,description,slug} = body
+
+        if(!Oldslug){
+            return NextResponse.json({
+                success: false,
+                message : "slug is mandatory.."
+            },{
+                status : 400
+            })
+        }
+
+        const category = await CategoryDetail.findOne({slug:Oldslug})
+
+        if(!category){
+            return NextResponse.json({
+                success : false,
+                message : "category not found..."
+            },{
+                status : 404
+            })
+        }
+
+        category.name = name
+        category.description = description
+        category.slug = slug
+
+         await category.save();
+
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Category updated successfully",
+                data: category,
+            },
+            { status: 200 }
+        );
+    }
+    catch (error) {
+        console.error("UPDATE CATEGORY ERROR:", error);
+
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Failed to update category",
+            },
+            { status: 500 }
+        );
+    }
+}
+
+
+export async function DELETE(request: NextRequest) {
+    try {
+        await connectDB();
+
+        const { searchParams } = new URL(request.url);
+        const slug = searchParams.get("slug");
+
+        if (!slug) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Category id is required",
+                },
+                { status: 400 }
+            );
+        }
+
+        const category = await CategoryDetail.findOne({slug});
+
+        if (!category) {
+            return NextResponse.json(
+                {
+                    success: false,
+                    message: "Category not found",
+                },
+                { status: 404 }
+            );
+        }
+
+        await CategoryDetail.findOneAndDelete({slug});
+
+        return NextResponse.json(
+            {
+                success: true,
+                message: "Category deleted successfully",
+            },
+            { status: 200 }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "DELETE CATEGORY ERROR:",
+            error
+        );
+
+        return NextResponse.json(
+            {
+                success: false,
+                message: "Failed to delete category",
             },
             { status: 500 }
         );

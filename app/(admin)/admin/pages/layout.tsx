@@ -5,6 +5,7 @@ import Sidebar from "../components/sidebar";
 import Nav from "../components/nav";
 import { redirect } from "next/navigation";
 import { getSession } from "@/app/lib/auth";
+import { Toaster } from "react-hot-toast";
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
@@ -45,6 +46,12 @@ export default async function RootLayout({
             <Nav />
             <div className="overflow-auto">
               {children}
+                <Toaster
+                    position="top-right"
+                    toastOptions={{
+                        duration: 3000,
+                    }}
+                />
             </div>
           </div>
         </div>
