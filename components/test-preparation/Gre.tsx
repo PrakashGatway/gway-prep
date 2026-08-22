@@ -722,6 +722,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
               {heroSection.paragraph}
             </p>
           </div>
+          
           <StudentsSlider data={studentsData || []} />
 
           <div className="bg-transparent flex flex-col sm:flex-row items-center justify-center pt-4 gap-4 max-w-2xl mx-auto">

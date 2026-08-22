@@ -11,11 +11,13 @@ import {
   Edit,
   ChevronDown,
   ChevronUp,
+  ChevronLeft,
 } from "lucide-react";
 import { pageData } from "@/app/lib/pageData";
 import { getPageInfo, getStudent } from "@/app/services/api";
 import { slugify } from "@/app/lib/slug";
 import axiosInstance from "@/app/lib/axios";
+import { useRouter } from "next/navigation";
 
 const CKEditorComponent = dynamic(() => import("./ckEditor"), {
   ssr: false,
@@ -49,13 +51,8 @@ interface GeneralInfo {
 const EditorForm = ({ rawText }: PageProps) => {
 
 
-// 1. Decode the text twice to remove %2520 and %20
 const cleanText = decodeURIComponent(decodeURIComponent(rawText));
-
-// 2. Convert spaces to hyphens for the URL slug
 const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
-
-console.log(slug); // Output: gmat-coaching-in-jaipur
 
   const [selectedKey, setSelectedKey] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState<string | null>(null);
@@ -82,6 +79,7 @@ console.log(slug); // Output: gmat-coaching-in-jaipur
   const [temp, setTemp] = useState("");
   const [formData, setFormData] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
+  const Router = useRouter();
 
   // Fetch students
   useEffect(() => {
@@ -459,8 +457,7 @@ console.log(slug); // Output: gmat-coaching-in-jaipur
       setLoading(false);
     }
   };
-
-  // Validate form before submit
+  
   const validateForm = () => {
     if (formData?.sections) {
       for (const section of formData.sections) {
@@ -486,7 +483,6 @@ console.log(slug); // Output: gmat-coaching-in-jaipur
     return true;
   };
 
-  // Helper function to render group fields
   const renderGroupField = (
     field: any,
     sectionName: string,
@@ -657,7 +653,6 @@ console.log(slug); // Output: gmat-coaching-in-jaipur
     }
   };
 
-  // Field Render - Updated with nested repeater support
   const renderField = (
     field: any,
     sectionName: string,
@@ -968,7 +963,6 @@ console.log(slug); // Output: gmat-coaching-in-jaipur
     }
   };
 
-  // Helper to render nested field values
   const renderNestedField = (
     field: any,
     sectionName: string,
@@ -1147,7 +1141,6 @@ console.log(slug); // Output: gmat-coaching-in-jaipur
     }
   };
 
-  // Submit Handler - Updated to handle nested data properly
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -1215,7 +1208,6 @@ console.log(slug); // Output: gmat-coaching-in-jaipur
     }
   };
 
-  // New Page Template Selection
   if (slug === "new" && !selectedKey) {
     return (
       <div className="p-8">
@@ -1301,14 +1293,25 @@ console.log(slug); // Output: gmat-coaching-in-jaipur
                 </span>
               )}
             </div>
+            <div className="flex items-cetner gap-2">
+              
+            <button
+              onClick={() => Router.back()}
+              className="bg-red-600 text-white px-3 py-2 rounded flex items-center hover:bg-red-700 transition-colors "
+            >
+              <ChevronLeft />
+              Back
+            </button>
+
             <button
               onClick={handleSubmit}
               disabled={loading}
-              className="bg-blue-600 text-white px-6 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700 transition-colors disabled:opacity-50"
+              className="bg-blue-600 text-white px-3 py-2 rounded flex items-center gap-2 hover:bg-blue-700 transition-colors disabled:opacity-50"
             >
               <Save size={18} />
               {loading ? "Saving..." : "Save Page"}
             </button>
+            </div>
           </div>
         </div>
 

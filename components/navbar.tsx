@@ -40,7 +40,6 @@ export function Navbar({ Data }: any) {
     null,
   );
 
-
   const [showProfileMenu, setShowProfileMenu] = React.useState(false);
 
   const profileMenuRef = React.useRef<HTMLDivElement>(null);
@@ -50,24 +49,16 @@ export function Navbar({ Data }: any) {
     const handleClickOutside = (event: MouseEvent) => {
       if (
         profileMenuRef.current &&
-        !profileMenuRef.current.contains(
-          event.target as Node
-        )
+        !profileMenuRef.current.contains(event.target as Node)
       ) {
         setShowProfileMenu(false);
       }
     };
 
-    document.addEventListener(
-      "mousedown",
-      handleClickOutside
-    );
+    document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   });
   const NAVDATA1 = React.useMemo(
@@ -75,7 +66,7 @@ export function Navbar({ Data }: any) {
       Data?.filter(
         (item: any) =>
           item?.seoMeta?.template?.toLowerCase() === "examdetails" &&
-          item?.seoMeta?.isPublished === true
+          item?.seoMeta?.isPublished === true,
       ) || [],
     [Data],
   );
@@ -85,11 +76,10 @@ export function Navbar({ Data }: any) {
       Data?.filter(
         (item: any) =>
           item?.seoMeta?.template?.toLowerCase() === "preparation" &&
-          item?.seoMeta?.isPublished === true
+          item?.seoMeta?.isPublished === true,
       ) || [],
     [Data],
   );
-
 
   const navItems = React.useMemo(
     () => [
@@ -102,29 +92,27 @@ export function Navbar({ Data }: any) {
         dropdownItems: NAVDATA.filter(
           (subItem: any) => !subItem?.seoMeta?.duplicateOf,
         ).map((item: any) => {
-          console.log(item, "dekho2")
-          return ({
+          console.log(item, "dekho2");
+          return {
             name: item.seoMeta.navTitle,
             img: item?.seoMeta?.navIcon,
             slug: item.seoMeta.canonicalUrl,
             description: item.seoMeta.navSubtitle,
             badge: item.seoMeta?.badge || null,
-            sublink: NAVDATA.filter(
-              (subItem: any) =>
-                subItem?.seoMeta?.duplicateOf
-                  ?.toLowerCase()
-                  .includes(item?.name?.toLowerCase())
+            sublink: NAVDATA.filter((subItem: any) =>
+              subItem?.seoMeta?.duplicateOf
+                ?.toLowerCase()
+                .includes(item?.name?.toLowerCase()),
             ).map((ele: any) => {
-
-              return ({
+              return {
                 name: ele.seoMeta.navTitle,
                 img: ele?.seoMeta?.navIcon,
                 slug: ele.seoMeta.canonicalUrl,
                 description: ele.seoMeta.navSubtitle,
                 badge: ele.seoMeta?.badge || null,
-              })
+              };
             }),
-          })
+          };
         }),
       },
       { name: "About Us", href: "/about", icon: null },
@@ -190,10 +178,11 @@ export function Navbar({ Data }: any) {
   return (
     <>
       <nav
-        className={`sticky top-0 left-0 right-0 z-[500] transition-all duration-300 ${scrolled
+        className={`sticky top-0 left-0 right-0 z-[500] transition-all duration-300 ${
+          scrolled
             ? "bg-white/90 backdrop-blur-xl shadow-lg border-b border-gray-100"
             : "bg-white/95 backdrop-blur-sm"
-          }`}
+        }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between py-3">
@@ -208,6 +197,15 @@ export function Navbar({ Data }: any) {
                 priority
               />
             </Link>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsOpen(true)}
+              className="lg:hidden p-3 hover:bg-gray-100 rounded-2xl transition-colors"
+              aria-label="Open menu"
+            >
+              <Menu size={26} className="text-gray-700" />
+            </button>
 
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center gap-1">
@@ -225,17 +223,19 @@ export function Navbar({ Data }: any) {
                   <Link
                     href={item.href}
                     className={`flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium rounded-2xl transition-all duration-200
-                      ${activeDropdown === item.name
-                        ? "text-[#F36C45] bg-orange-50"
-                        : "text-gray-600 hover:text-[#F36C45] hover:bg-orange-50/70"
+                      ${
+                        activeDropdown === item.name
+                          ? "text-[#F36C45] bg-orange-50"
+                          : "text-gray-600 hover:text-[#F36C45] hover:bg-orange-50/70"
                       }`}
                   >
                     <span>{item.name}</span>
                     {item.hasDropdown && (
                       <ChevronDown
                         size={16}
-                        className={`transition-transform duration-200 ${activeDropdown === item.name ? "rotate-180" : ""
-                          }`}
+                        className={`transition-transform duration-200 ${
+                          activeDropdown === item.name ? "rotate-180" : ""
+                        }`}
                       />
                     )}
                   </Link>
@@ -271,10 +271,11 @@ export function Navbar({ Data }: any) {
                                 >
                                   <Link
                                     href={`/${dd.slug}`}
-                                    className={`group flex items-center gap-3 px-4 py-3 transition-all ${isActive
+                                    className={`group flex items-center gap-3 px-4 py-3 transition-all ${
+                                      isActive
                                         ? "bg-white shadow-sm"
                                         : "hover:bg-white/80"
-                                      }`}
+                                    }`}
                                     onClick={closeDesktopDropdown}
                                   >
                                     <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-white shadow-sm">
@@ -297,10 +298,11 @@ export function Navbar({ Data }: any) {
                                     <div className="flex-1 min-w-0">
                                       <div className="flex items-center gap-2">
                                         <span
-                                          className={`font-medium text-sm transition-colors ${isActive
+                                          className={`font-medium text-sm transition-colors ${
+                                            isActive
                                               ? "text-[#F36C45]"
                                               : "text-gray-800 group-hover:text-[#F36C45]"
-                                            }`}
+                                          }`}
                                         >
                                           {dd.name}
                                         </span>
@@ -320,10 +322,11 @@ export function Navbar({ Data }: any) {
                                     {hasSub ? (
                                       <ChevronRight
                                         size={16}
-                                        className={`flex-shrink-0 transition-colors ${isActive
+                                        className={`flex-shrink-0 transition-colors ${
+                                          isActive
                                             ? "text-[#F36C45]"
                                             : "text-gray-300 group-hover:text-[#F36C45]"
-                                          }`}
+                                        }`}
                                       />
                                     ) : (
                                       <ArrowRight
@@ -349,8 +352,6 @@ export function Navbar({ Data }: any) {
                                 className="border-l border-gray-100 bg-white w-[300px] max-h-[520px] overflow-y-auto"
                               >
                                 {item.dropdownItems?.map((dd: any) => {
-
-
                                   if (
                                     dd.slug === activeSubDropdown &&
                                     dd.sublink?.length > 0
@@ -473,12 +474,10 @@ export function Navbar({ Data }: any) {
             </div> */}
 
             <div className="hidden lg:flex items-center gap-4">
-
               <a
                 href="tel:+919166146538"
                 className="flex items-center gap-2.5 px-4 py-1.5 rounded-2xl hover:bg-gray-100 transition-all group"
               >
-
                 <div>
                   <div className="text-xs text-gray-400 flex items-center gap-2">
                     {" "}
@@ -490,62 +489,57 @@ export function Navbar({ Data }: any) {
                 </div>
               </a>
               {!user?.email ? (
-
                 <button
                   onClick={() => router.push("/auth")}
                   className="
-      px-6 py-2.5
-      rounded-2xl
-      bg-gradient-to-r
-      from-[#F36C45]
-      to-orange-500
-      text-white
-      font-medium
-      flex items-center
-      gap-2
-      hover:shadow-xl
-      hover:shadow-orange-500/30
-      transition-all
-      active:scale-95
-    "
+                    px-6 py-2.5
+                    rounded-2xl
+                    bg-gradient-to-r
+                    from-[#F36C45]
+                    to-orange-500
+                    text-white
+                    font-medium
+                    flex items-center
+                    gap-2
+                    hover:shadow-xl
+                    hover:shadow-orange-500/30
+                    transition-all
+                    active:scale-95
+                  "
                 >
                   <User size={18} />
                   Get Started
                 </button>
               ) : (
                 <div ref={profileMenuRef} className="relative">
-                  {/* ================= PROFILE BUTTON ================= */}
-
                   <button
                     type="button"
                     onClick={() => setShowProfileMenu((prev) => !prev)}
                     className="
-        flex
-        items-center
-        gap-2
-        rounded-full
-        bg-gradient-to-r
-        from-orange-500
-        to-[#F36C45]
-        pr-2
-        transition-all
-        hover:shadow-lg
-        hover:shadow-orange-500/30
-        active:scale-95
-      ">
-
-
+                      flex
+                      items-center
+                      gap-2
+                      rounded-full
+                      bg-gradient-to-r
+                      from-orange-500
+                      to-[#F36C45]
+                      pr-2
+                      transition-all
+                      hover:shadow-lg
+                      hover:shadow-orange-500/30
+                      active:scale-95
+                    ">
                     <div
                       className="
-          flex
-          h-10
-          w-10
-          items-center
-          justify-center
-          rounded-full
-          bg-white
-          text-gray-700
-        "
+                        flex
+                        h-10
+                        w-10
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-white
+                        text-gray-700
+                      "
                     >
                       <UserCircle size={24} />
                     </div>
@@ -557,11 +551,11 @@ export function Navbar({ Data }: any) {
                   ) : (
                     <ChevronDown size={17} className="text-white" />
                   )} */}
-                    <ChevronDown size={17} className={`text-white ${showProfileMenu ? '-rotate-180' : 'rotate-0'} duration-300 ease-in-out`} />
-
+                    <ChevronDown
+                      size={17}
+                      className={`text-white ${showProfileMenu ? "-rotate-180" : "rotate-0"} duration-300 ease-in-out`}
+                    />
                   </button>
-
-
 
                   {showProfileMenu && (
                     <div
@@ -577,9 +571,8 @@ export function Navbar({ Data }: any) {
                       border-gray-100
                       bg-white
                       shadow-[0_10px_40px_rgba(0,0,0,0.15)]
-                    ">
-
-
+                    "
+                    >
                       <div
                         className="
                       flex
@@ -589,7 +582,8 @@ export function Navbar({ Data }: any) {
                       border-gray-100
                       px-5
                       py-5
-                    ">
+                    "
+                      >
                         {/* Avatar */}
 
                         <div
@@ -605,31 +599,29 @@ export function Navbar({ Data }: any) {
                         border-gray-200
                         bg-gray-50
                         text-gray-500
-                      ">
+                      "
+                        >
                           <User size={26} />
                         </div>
-
-                        {/* Name / Email */}
 
                         <div className="min-w-0">
                           <h3
                             className="
-                truncate
-                text-[17px]
-                font-semibold
-                text-gray-900
-              "
-                          >
+                            truncate
+                            text-[17px]
+                            font-semibold
+                            text-gray-900
+                          ">
                             {user?.name || "Rajesh Kumar"}
                           </h3>
 
                           <p
                             className="
-                mt-0.5
-                truncate
-                text-sm
-                text-gray-500
-              "
+                            mt-0.5
+                            truncate
+                            text-sm
+                            text-gray-500
+                          "
                           >
                             {user?.email}
                           </p>
@@ -641,7 +633,9 @@ export function Navbar({ Data }: any) {
                           type="button"
                           onClick={() => {
                             setShowProfileMenu(false);
-                            router.push("https://dashboard.ooshasprep.com/profile");
+                            router.push(
+                              "https://dashboard.ooshasprep.com/profile",
+                            );
                           }}
                           className="
               flex
@@ -692,18 +686,16 @@ export function Navbar({ Data }: any) {
 
                           <span>Dashboard</span>
                         </button>
-
-
                       </div>
 
                       {/* ================= LOGOUT ================= */}
 
                       <div
                         className="
-            border-t
-            border-gray-100
-            p-2
-          "
+                          border-t
+                          border-gray-100
+                          p-2
+                        "
                       >
                         <button
                           type="button"
@@ -711,9 +703,9 @@ export function Navbar({ Data }: any) {
                             setShowProfileMenu(false);
 
                             // Your logout logic here
-                            // logout();
+                            logout();
 
-                            axiosInstance.get('logout')
+                            // axiosInstance.get('logout')
                             // router.push("/auth");
                           }}
                           className="
@@ -740,9 +732,7 @@ export function Navbar({ Data }: any) {
                   )}
                 </div>
               )}
-
             </div>
-
           </div>
         </div>
       </nav>
@@ -817,8 +807,9 @@ export function Navbar({ Data }: any) {
                               {item.name}
                             </span>
                             <ChevronDown
-                              className={`transition-transform ${mobileDropdown === item.name ? "rotate-180" : ""
-                                }`}
+                              className={`transition-transform ${
+                                mobileDropdown === item.name ? "rotate-180" : ""
+                              }`}
                             />
                           </button>
 
@@ -977,8 +968,9 @@ export function Navbar({ Data }: any) {
                                           >
                                             <ChevronRight
                                               size={18}
-                                              className={`text-gray-800 transition-transform ${isSubOpen ? "rotate-90" : ""
-                                                }`}
+                                              className={`text-gray-800 transition-transform ${
+                                                isSubOpen ? "rotate-90" : ""
+                                              }`}
                                             />
                                           </button>
                                         )}

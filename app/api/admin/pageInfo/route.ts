@@ -3,7 +3,6 @@ import { connectDB } from "@/app/lib/db";
 import PageData from "@/app/Model/PageData";
 import { slugify } from "@/app/lib/slug";
 
-
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
     await connectDB();
@@ -16,12 +15,21 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     const skip = (page - 1) * limit;
 
-    const filter = search
-      ? {
-          name: {
+    const filter = search ? {
+         $or :[
+           {name: {
             $regex: search,
             $options: "i",
-          },
+          }},
+          {slug: {
+            $regex : search,
+            $options : "i"
+          }},
+          {"seoMeta.navTitle" : {
+            $regex : search,
+            $options : "i"
+          }}
+        ]
         }
       : {};
 
@@ -30,6 +38,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         .select("name slug seoMeta")
         .skip(skip)
         .limit(limit)
+        .sort({ createdAt: -1 })
         .lean(),
       PageData.countDocuments(filter),
     ]);
@@ -47,7 +56,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
           hasPrevPage: page > 1,
         },
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("[PAGES GET]", error);
@@ -56,24 +65,24 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       {
         error: `Server ${error}`,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
     const body = await req.json();
 
-    const { name, description,template, seoMeta, sections, extraDetails } = body;
+    const { name, description, template, seoMeta, sections, extraDetails } = body;
 
-      // console.log( name ,"name")
-    // 1. Add validation fallback since schema validation is commented out
-    if (!name || typeof name !== 'string') {
+    if (!name || typeof name !== "string") {
       return NextResponse.json(
-        { error: "Required field 'name' is missing or invalid in the request body." },
-        { status: 400 }
+        {
+          error:
+            "Required field 'name' is missing or invalid in the request body.",
+        },
+        { status: 400 },
       );
     }
 
@@ -86,13 +95,13 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     if (existing) {
       return NextResponse.json(
         { error: `Page "${name}" already exists. Use PUT to update.` },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
     const page = await PageData.create({
       name: lowerName,
-      slug : slugify(name), 
+      slug: slugify(name),
       template: template,
       description,
       seoMeta,
@@ -102,11 +111,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json(
       { message: "Page created.", data: page },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("[PAGES POST]", error);
-    return NextResponse.json({ error: `Server error: ${error instanceof Error ? error.message : error}` }, { status: 500 });
+    return NextResponse.json(
+      {
+        error: `Server error: ${error instanceof Error ? error.message : error}`,
+      },
+      { status: 500 },
+    );
   }
 }
-

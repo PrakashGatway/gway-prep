@@ -1,6 +1,3 @@
-
-
-
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/app/lib/db";
 import PageData from "@/app/Model/PageData";
@@ -13,14 +10,11 @@ type Params = {
 
 const parseBoolean = (value: string | null): boolean | undefined => {
   if (value === null) return undefined;
-
   if (value === "true") return true;
   if (value === "false") return false;
 
   return undefined;
 };
-
-
 
 export async function GET(
   req: NextRequest,
@@ -58,10 +52,7 @@ export async function GET(
       );
     }
 
-    query.$or = [
-      { name: name.toLowerCase() },
-      { slug: name.toLowerCase() },
-    ];
+    query.$or = [{ name: name.toLowerCase() }, { slug: name.toLowerCase() }];
 
     page = await PageData.findOne(query).lean();
 
@@ -94,8 +85,6 @@ export async function GET(
   }
 }
 
-
-
 export async function POST(
   req: NextRequest,
   { params }: Params,
@@ -121,10 +110,7 @@ export async function POST(
     }
 
     const sourcePage = await PageData.findOne({
-      $or: [
-        { name: name.toLowerCase() },
-        { slug: name.toLowerCase() },
-      ],
+      $or: [{ name: name.toLowerCase() }, { slug: name.toLowerCase() }],
     }).lean();
 
     if (!sourcePage) {
@@ -137,10 +123,7 @@ export async function POST(
     }
 
     const alreadyExists = await PageData.findOne({
-      $or: [
-        { name: newName },
-        { slug: newSlug },
-      ],
+      $or: [{ name: newName }, { slug: newSlug }],
     }).lean();
 
     if (alreadyExists) {
@@ -152,20 +135,12 @@ export async function POST(
       );
     }
 
-    const {
-      _id,
-      __v,
-      createdAt,
-      updatedAt,
-      ...sourceData
-    } = sourcePage as any;
+    const { _id, __v, createdAt, updatedAt, ...sourceData } = sourcePage as any;
 
     const duplicatedPage = await PageData.create({
       ...sourceData,
-
       name: newName,
       slug: newSlug,
-
       seoMeta: {
         ...(sourcePage.seoMeta || {}),
         name: newName,
@@ -194,8 +169,6 @@ export async function POST(
   }
 }
 
-
-
 export async function PUT(
   req: NextRequest,
   { params }: Params,
@@ -207,12 +180,7 @@ export async function PUT(
 
     const body = await req.json();
 
-    const {
-      sections,
-      extraDetails,
-      seoMeta,
-      ...rest
-    } = body;
+    const { sections, extraDetails, seoMeta, ...rest } = body;
 
     const setPayload: Record<string, any> = {
       ...rest,
@@ -237,10 +205,7 @@ export async function PUT(
     }
 
     const existingPage = await PageData.findOne({
-      $or: [
-        { slug: name.toLowerCase() },
-        { name: name.toLowerCase() },
-      ],
+      $or: [{ slug: name.toLowerCase() }, { name: name.toLowerCase() }],
     }).lean();
 
     if (!existingPage) {
@@ -283,8 +248,6 @@ export async function PUT(
   }
 }
 
-
-
 export async function DELETE(
   _req: NextRequest,
   { params }: Params,
@@ -295,10 +258,7 @@ export async function DELETE(
     await connectDB();
 
     const page = await PageData.findOne({
-      $or: [
-        { name: name.toLowerCase() },
-        { slug: name.toLowerCase() },
-      ],
+      $or: [{ name: name.toLowerCase() }, { slug: name.toLowerCase() }],
     }).lean();
 
     if (!page) {
@@ -334,11 +294,6 @@ export async function DELETE(
 
 
 
-
-
-
-
-
 // import { NextRequest, NextResponse } from "next/server";
 // import { connectDB } from "@/app/lib/db";
 // import PageData from "@/app/Model/PageData";
@@ -349,7 +304,6 @@ export async function DELETE(
 //     isPublished ?: boolean;
 //   }>;
 // };
-
 
 // export async function GET(
 //   _req: NextRequest,
@@ -408,7 +362,6 @@ export async function DELETE(
 //     );
 //   }
 // }
-
 
 // export async function POST(
 //   req: NextRequest,
@@ -500,7 +453,6 @@ export async function DELETE(
 //   }
 // }
 
-
 // export async function PUT(
 //   req: NextRequest,
 //   { params }: Params,
@@ -569,7 +521,6 @@ export async function DELETE(
 //   }
 // }
 
-
 // export async function DELETE(
 //   _req: NextRequest,
 //   { params }: Params,
@@ -578,7 +529,6 @@ export async function DELETE(
 //     const { name } = await params;
 //     await connectDB();
 
-    
 //     const page = await PageData.findOne({
 //       $or: [{ name: name.toLowerCase() }, { slug: name.toLowerCase() }],
 //     }).lean();
@@ -604,8 +554,3 @@ export async function DELETE(
 //     );
 //   }
 // }
-
-
-
-
-

@@ -79,12 +79,11 @@ const Page = () => {
     try {
       setDuplicating(true);
 
-      await axiosInstance.post(
-        `/admin/pageInfo/${duplicatePage.name.toLowerCase()}`,
+      await axiosInstance.post(`/admin/pageInfo/${duplicatePage.name.toLowerCase()}`,
         {
           name: newPageName,
           slug: newPageSlug,
-          duplicateOf: duplicatePage.name.toLowerCase(),
+          duplicateOf: duplicatePage.seoMeta.duplicateOf || duplicatePage.name.toLowerCase(),
         }
       );
 
@@ -112,6 +111,8 @@ const Page = () => {
     e: React.MouseEvent
   ) => {
     e.stopPropagation();
+
+    console.log('page Item',pageItem);
 
     setDuplicatePage(pageItem);
     setNewPageName(`${pageItem.name} (Copy)`);
@@ -231,11 +232,9 @@ const Page = () => {
 
           {/* Create */}
           <button
-            onClick={() =>
-              router.push("/admin/pages/editor/new")
-            }
-            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-xl transition"
-          >
+            onClick={() => router.push("/admin/pages/editor/new") }
+            className="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-xl transition">
+              
             <Plus size={18} />
             Create
           </button>
