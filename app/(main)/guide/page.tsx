@@ -4,9 +4,9 @@ import GuidePage from "@/components/guide";
 
 
 
-export default async function Page({ Searchparams }) {
+export default async function Page({ searchParams }) {
 
-    const { params } = await Searchparams
+    const { params } = await searchParams
 
     const page = Number(params.page)
     const search = params.search || "";
