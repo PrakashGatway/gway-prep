@@ -16,7 +16,6 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  // // 1. Decode the text twice to remove %2520 and %20
   const cleanText = decodeURIComponent(decodeURIComponent(slug));
 
   // // 2. Convert spaces to hyphens for the URL slug
@@ -34,6 +33,18 @@ export async function generateMetadata({
   }
 
   const data = await getPageInfo(rowtext);
+  const seoMeta = data?.seoMeta;
+
+  if (!data || !seoMeta || Object.keys(seoMeta).length === 0) {
+    return {
+      title: "No Data Found",
+      description: "Preparation material not found",
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
 
   const seo = data?.seoMeta || {};
 

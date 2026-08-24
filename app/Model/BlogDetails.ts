@@ -1,43 +1,27 @@
+
+
+
 import mongoose, { Schema, Document } from "mongoose";
 
-// Comment Interface
-interface IComment {
-  name: string;
-  // email: string;
-  message: string;
-  createdAt?: Date;
-}
-
-// Blog Interface
-export interface IBlogDetail extends Document {
+export interface IBlog extends Document {
   title: string;
   slug: string;
-  content: string;
-  excerpt?: string;
-  image: string;
   category: string;
-  count ?: string;
   tags: string[];
-  author: string;
-  authslug : string;
-  publishedDate: Date;
-  comments: IComment[];
-  isPublished: boolean;
+  image : string;
   metaTitle?: string;
   metaDescription?: string;
+  isPublished: boolean;
+  blog_details: any;
 }
 
-const CommentSchema = new Schema<IComment>(
+const BlogSchema = new Schema<IBlog>(
   {
-    name: { type: String, required: true, trim: true },
-    message: { type: String, required: true, trim: true },
-  },
-  { timestamps: true }
-);
-
-const BlogSchema = new Schema<IBlogDetail>(
-  {
-    title: { type: String, required: true, trim: true },
+    title: {
+      type: String,
+      required: true,
+      trim: true,
+    },
 
     slug: {
       type: String,
@@ -47,54 +31,156 @@ const BlogSchema = new Schema<IBlogDetail>(
       trim: true,
     },
 
-    content: { type: String, required: true },
-
-    excerpt: { type: String, trim: true },
-
-    image: {
+    category: {
       type: String,
-      default: "/image/Blogdetaile-img.jpg",
+      required: true,
+      trim: true,
     },
-
-    count : {
-      type: String, default : 1000 
-    },
-
-    category: { type: String, required: true, trim: true },
 
     tags: {
       type: [String],
       default: [],
     },
 
-    author: {
+    metaTitle: {
       type: String,
-      default: "Admin",
+      default: "",
       trim: true,
     },
-    authslug: String,
 
-    publishedDate: {
-      type: Date,
-      default: Date.now,
+    metaDescription: {
+      type: String,
+      default: "",
+      trim: true,
     },
-
+    image: {
+      type : String,
+      default : "",
+    },
     isPublished: {
       type: Boolean,
       default: true,
     },
 
-    comments: {
-      type: [CommentSchema],
+    blog_details: {
+      type: [Schema.Types.Mixed],
       default: [],
     },
-
-    // SEO
-    metaTitle: { type: String, trim: true },
-    metaDescription: { type: String, trim: true },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
+// export default mongoose.models.BlogDetail ||
+//   mongoose.model<IBlog>("BlogDetail", BlogSchema);
+
+
 export default mongoose.models.BlogDetail ||
-  mongoose.model<IBlogDetail>("BlogDetail", BlogSchema);
+  mongoose.model<IBlog>("BlogDetail", BlogSchema);
+
+
+
+
+
+
+// import mongoose, { Schema, Document } from "mongoose";
+
+// // Comment Interface
+// interface IComment {
+//   name: string;
+//   // email: string;
+//   message: string;
+//   createdAt?: Date;
+// }
+
+// // Blog Interface
+// export interface IBlogDetail extends Document {
+//   title: string;
+//   slug: string;
+//   content: string;
+//   excerpt?: string;
+//   image: string;
+//   category: string;
+//   count ?: string;
+//   tags: string[];
+//   author: string;
+//   authslug : string;
+//   publishedDate: Date;
+//   comments: IComment[];
+//   isPublished: boolean;
+//   metaTitle?: string;
+//   metaDescription?: string;
+// }
+
+// const CommentSchema = new Schema<IComment>(
+//   {
+//     name: { type: String, required: true, trim: true },
+//     message: { type: String, required: true, trim: true },
+//   },
+//   { timestamps: true }
+// );
+
+// const BlogSchema = new Schema<IBlogDetail>(
+//   {
+//     title: { type: String, required: true, trim: true },
+
+//     slug: {
+//       type: String,
+//       required: true,
+//       unique: true,
+//       index: true,
+//       trim: true,
+//     },
+
+//     content: { type: String, required: true },
+
+//     excerpt: { type: String, trim: true },
+
+//     image: {
+//       type: String,
+//       default: "/image/Blogdetaile-img.jpg",
+//     },
+
+//     count : {
+//       type: String, default : 1000 
+//     },
+
+//     category: { type: String, required: true, trim: true },
+
+//     tags: {
+//       type: [String],
+//       default: [],
+//     },
+
+//     author: {
+//       type: String,
+//       default: "Admin",
+//       trim: true,
+//     },
+//     authslug: String,
+
+//     publishedDate: {
+//       type: Date,
+//       default: Date.now,
+//     },
+
+//     isPublished: {
+//       type: Boolean,
+//       default: true,
+//     },
+
+//     comments: {
+//       type: [CommentSchema],
+//       default: [],
+//     },
+
+//     // SEO
+//     metaTitle: { type: String, trim: true },
+//     metaDescription: { type: String, trim: true },
+//   },
+//   { timestamps: true }
+// );
+
+// export default mongoose.models.BlogDetail ||
+//   mongoose.model<IBlogDetail>("BlogDetail", BlogSchema);

@@ -19,7 +19,7 @@ import { Banerhome } from "@/components/banerhome";
 import { getPageInfo, getPages, getStudent } from "../services/api";
 export const dynamic = "force-dynamic";
 
-const SITE_URL = "https://ooshasprep.com";
+const SITE_URL = "https://www.ooshasprep.com";
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getPageInfo("home");

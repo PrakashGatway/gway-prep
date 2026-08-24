@@ -8,7 +8,6 @@ const EditorContent = ({ content_data }: EditorContentProps) => {
   const sanitizeContent = (html: string): string => {
     if (!html) return "";
 
-    // SSR / non-browser guard
     if (typeof window === "undefined" || typeof DOMParser === "undefined") {
       return html;
     }
@@ -213,7 +212,6 @@ const EditorContent = ({ content_data }: EditorContentProps) => {
 
             [&_img]:rounded-xl
             [&_img]:my-6
-
           "
           dangerouslySetInnerHTML={{
             __html: sanitizeContent(content_data),

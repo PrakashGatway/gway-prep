@@ -92,7 +92,7 @@ export function Navbar({ Data }: any) {
         dropdownItems: NAVDATA.filter(
           (subItem: any) => !subItem?.seoMeta?.duplicateOf,
         ).map((item: any) => {
-          console.log(item, "dekho2");
+          
           return {
             name: item.seoMeta.navTitle,
             img: item?.seoMeta?.navIcon,

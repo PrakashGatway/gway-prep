@@ -298,40 +298,19 @@ export const pageData: any = {
             required: false,
             placeholder: "Admin",
           },
+          // {
+          //   name: "image",
+          //   label: "Featured Image",
+          //   type: "file",
+          //   accept: "image/*",
+          // },
+
           {
-            name: "image",
-            label: "Featured Image",
+            name: "Image",
+            label: "Main Image",
             type: "file",
             accept: "image/*",
           },
-        ],
-      },
-      {
-        name: "content-section",
-        label: "Content",
-        require: true,
-        fields: [
-          {
-            name: "excerpt",
-            label: "Short Description",
-            type: "textarea",
-            required: false,
-            placeholder: "Short summary of blog",
-          },
-          {
-            name: "content",
-            label: "Blog Content",
-            type: "editor",
-            required: true,
-            placeholder: "Write full blog content...",
-          },
-        ],
-      },
-      {
-        name: "seo-section",
-        label: "SEO Settings",
-        require: false,
-        fields: [
           {
             name: "metaTitle",
             label: "Meta Title",
@@ -346,13 +325,7 @@ export const pageData: any = {
             required: false,
             placeholder: "SEO description",
           },
-        ],
-      },
-      {
-        name: "publish-section",
-        label: "Publish Settings",
-        require: false,
-        fields: [
+
           {
             name: "isPublished",
             label: "Publish Status",
@@ -365,6 +338,108 @@ export const pageData: any = {
             label: "Publish Date",
             type: "date",
             required: false,
+          },
+        ],
+      },
+      {
+        name: "blog_details",
+        label: "Blog Details",
+        type: "repeater",
+        max: 3,
+        fields: [
+          {
+            name: "content_heading",
+            label: "Content Heading",
+            type: "text",
+          },
+          {
+            name: "content_data",
+            label: "Content Data",
+            type: "editor",
+          },
+          {
+            name: "faq",
+            label: "FAQ",
+            type: "repeater",
+            fields: [
+              {
+                name: "question",
+                label: "Question",
+                type: "text",
+              },
+              {
+                name: "answer",
+                label: "Answer",
+                type: "textarea",
+              },
+            ],
+          },
+
+          {
+            name: "Image",
+            label: "Banner Image",
+            type: "file",
+            accept: "image/*",
+          },
+
+          {
+            name: "Banner",
+            label: "Banner",
+            type: "repeater",
+            fields: [
+              {
+                name: "title",
+                label: "Title",
+                type: "text",
+              },
+              {
+                name: "subtitle",
+                label: "Subtitle",
+                type: "editor",
+              },
+              {
+                name: "url",
+                label: "Url",
+                type: "text",
+              },
+              {
+                name: "buttontext",
+                label: "Button Text",
+                type: "text",
+              },
+            ],
+          },
+
+          {
+            name: "question",
+            label: "Question Title",
+            type: "text",
+            required: true,
+            placeholder: "Enter Question",
+          },
+          {
+            name: "options",
+            label: "Options",
+            type: "repeater",
+            fields: [
+              {
+                name: "value",
+                label: "Value",
+                type: "text",
+              },
+              {
+                name: "label",
+                label: "Label",
+                type: "text",
+              },
+              {
+                name: "type",
+                label: "Input Type",
+                type: "select",
+                required: true,
+                option: ["text", "radio"],
+              },
+            ],
           },
         ],
       },

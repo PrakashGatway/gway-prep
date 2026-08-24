@@ -2,7 +2,7 @@ import About from "@/components/About";
 import { getPageInfo } from "@/app/services/api";
 import { Metadata } from "next";
 
-const SITE_URL = "https://ooshasprep.com";
+const SITE_URL = "https://www.ooshasprep.com";
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getPageInfo("about");
@@ -120,7 +120,7 @@ export default async function AboutPage() {
 // import { getPageInfo } from "@/app/services/api";
 // import { Metadata } from "next";
 
-// const SITE_URL = "https://ooshasprep.com"; 
+// const SITE_URL = "https://www.ooshasprep.com"; 
 
 // export async function generateMetadata(): Promise<Metadata> {
 //   const data = await getPageInfo("about");

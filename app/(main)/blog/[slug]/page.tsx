@@ -9,7 +9,7 @@ interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-const SITE_URL = "https://ooshasprep.com";
+const SITE_URL = "https://www.ooshasprep.com";
 
 async function getBlogData(slug: string) {
   try {
@@ -23,11 +23,10 @@ async function getBlogData(slug: string) {
 
 async function getRelatedBlogs() {
   try {
-    const response = await axiosInstance.get(
-      `/admin/blogs?page=1&limit=4`
-    );
-
+    
+    const response = await axiosInstance.get(`/admin/blogs?page=1&limit=4`);
     return response.data?.data || [];
+
   } catch (error) {
     console.error("Related blogs fetch error:", error);
     return [];
@@ -284,7 +283,7 @@ export default async function BlogDetailsPage({
 //     notFound();
 //   }
 
-//   const SITE_URL = "https://ooshasprep.com";
+//   const SITE_URL = "https://www.ooshasprep.com";
 
 //   const breadcrumbSchema = {
 //     "@context": "https://schema.org",

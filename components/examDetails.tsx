@@ -1,10 +1,3 @@
-
-
-
-
-
-
-
 "use client";
 
 import React, { useMemo, useState, useEffect, useRef } from "react";
@@ -20,25 +13,27 @@ import {
   Mail,
   Phone,
   User,
-  CircleX,ChevronLeft, ChevronRight, BarChart, PieChart,
+  CircleX,
+  ChevronLeft,
+  ChevronRight,
+  BarChart,
+  PieChart,
   LucideChevronLeftSquare,
-  LucideChevronRight
+  LucideChevronRight,
 } from "lucide-react";
 import FormSection from "./formSection";
 import EditorContent from "./editorContent";
 import PopupModal from "./popupModel";
 import axiosInstance from "@/app/lib/axios";
 
-
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 
-
 const ExamDetails = ({ pagedata }: any) => {
-
   // console.log(pagedata,"page data")
   const basicInfo = pagedata?.sections?.["basic-info"]?.fields;
-  const examData = pagedata?.sections?.["exam-data"]?.fields?.exam_details || [];
+  const examData =
+    pagedata?.sections?.["exam-data"]?.fields?.exam_details || [];
   const [activeSection, setActiveSection] = useState<string>("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
@@ -55,7 +50,6 @@ const ExamDetails = ({ pagedata }: any) => {
     }));
   }, [examData]);
 
-  
   useEffect(() => {
     const handleScroll = () => {
       let currentActive = "";
@@ -99,70 +93,60 @@ const ExamDetails = ({ pagedata }: any) => {
   };
 
   return (
-    
-      <main className="relative flex flex-col">
-        
-        <div className="relative w-full overflow-hidden bg-primary/40 px-4 sm:px-8 lg:px-12 py-8 sm:py-10">
-  <div className="relative z-10 mx-auto max-w-[1500px] bg-white px-5 sm:px-8 lg:px-12 py-8 sm:py-10">
+    <main className="relative flex flex-col">
+      <div className="relative w-full overflow-hidden bg-primary/40 px-4 sm:px-8 lg:px-12 py-8 sm:py-10">
+        <div className="relative z-10 mx-auto max-w-[1500px] bg-white px-5 sm:px-8 lg:px-12 py-8 sm:py-10">
+          {/* Top Hero Content */}
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+            {/* Left Image */}
+            <div className="w-full lg:w-[52%]">
+              <div className="overflow-hidden ">
+                <img
+                  src={
+                    basicInfo?.image ||
+                    "https://res.cloudinary.com/drsainihk/image/upload/v1784546671/cway-admin/rx2e0kmbnawefickyvqr.webp"
+                  }
+                  alt={`${basicInfo?.title || "Hero"} image`}
+                  className="w-full h-[220px] sm:h-[300px] lg:h-[285px] object-contain"
+                />
+              </div>
+            </div>
 
-    {/* Top Hero Content */}
-    <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+            {/* Right Content */}
+            <div className="w-full lg:w-[48%] flex flex-col items-start">
+              <h1 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold md:leading:7 text-primary lg:leading-14">
+                {basicInfo.title?.split("||")[0]}
+                <span className="text-black">
+                  {basicInfo.title?.split("||")[1]}
+                </span>
+                {basicInfo.title?.split("||")[2]}
+              </h1>
 
-      {/* Left Image */}
-      <div className="w-full lg:w-[52%]">
-        <div className="overflow-hidden ">
-          <img
-            src={
-              basicInfo?.image ||
-              "https://res.cloudinary.com/drsainihk/image/upload/v1784546671/cway-admin/rx2e0kmbnawefickyvqr.webp"
-            }
-            alt={`${basicInfo?.title || "Hero"} image`}
-            className="w-full h-[220px] sm:h-[300px] lg:h-[285px] object-contain"
-          />
+              <button
+                type="button"
+                onClick={() => Router.push(basicInfo?.url || `/auth`)}
+                className="mt-6 inline-flex items-center justify-center bg-primary px-7 py-2 text-base sm:text-lg font-semibold text-white transition-all duration-300 hover:opacity-90"
+              >
+                {/* Explore Now */}
+                {basicInfo?.buttonText || "Explore Now"}
+              </button>
+            </div>
+          </div>
+
+          {basicInfo?.subtitle && (
+            <div className="mt-8 max-w-7xl">
+              <div className="text-base sm:text-lg leading-7 text-slate-700">
+                <EditorContent content_data={basicInfo.subtitle} />
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Right Content */}
-      <div className="w-full lg:w-[48%] flex flex-col items-start">
-        {/* <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-primary">
-          {basicInfo?.title.split('||')[0]}
-          <span className="text-black">
-          {basicInfo?.title.split('||')[1]}
-          </span>
-        </h1> */}
-        <h1 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold md:leading:7 text-primary lg:leading-14">
-          {basicInfo.title?.split("||")[0]}
-          <span className="text-black">{basicInfo.title?.split("||")[1]}</span>
-          {basicInfo.title?.split("||")[2]}
-        </h1>
-
-        <button
-          type="button"
-          onClick={() => Router.push(basicInfo?.url || `/auth`)}
-          className="mt-6 inline-flex items-center justify-center bg-primary px-7 py-2 text-base sm:text-lg font-semibold text-white transition-all duration-300 hover:opacity-90"
-        >
-          {/* Explore Now */}
-          {basicInfo?.buttonText || "Explore Now"}
-        </button>
-      </div>
-    </div>
-
-
-    {basicInfo?.subtitle && (
-      <div className="mt-8 max-w-7xl">
-        <div className="text-base sm:text-lg leading-7 text-slate-700">
-          <EditorContent content_data={basicInfo.subtitle} />
-        </div>
-      </div>
-    )}
-
-  </div>
-</div>
-
-        <div className="sticky top-20 z-40 bg-white border-b shadow-sm">
-          <div className=" mx-auto px-4">
-            {/* Mobile Toggle */}
-            {/* <div className="lg:hidden flex items-center justify-between py-3">
+      <div className="sticky top-20 z-40 bg-white border-b shadow-sm">
+        <div className=" mx-auto px-4">
+          {/* Mobile Toggle */}
+          {/* <div className="lg:hidden flex items-center justify-between py-3">
               <span className="font-semibold text-sm">Table of Contents</span>
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -172,29 +156,28 @@ const ExamDetails = ({ pagedata }: any) => {
               </button>
             </div> */}
 
+          <div
+            className=" flex items-center gap-6 py-1 whitespace-nowrap overflow-auto"
+            style={{
+              scrollbarWidth: "none",
+            }}
+          >
+            {toc.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`whitespace-nowrap text-sm font-medium transition-colors relative py-2 ${
+                  activeSection === item.id
+                    ? "text-[#F26E46] border-b-2 border-[#F26E46]"
+                    : "text-gray-600 hover:text-[#F26E46]"
+                }`}
+              >
+                {item.title}
+              </button>
+            ))}
+          </div>
 
-            <div
-              className=" flex items-center gap-6 py-1 whitespace-nowrap overflow-auto"
-              style={{
-                scrollbarWidth: "none",
-              }}
-            >
-              {toc.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => scrollToSection(item.id)}
-                  className={`whitespace-nowrap text-sm font-medium transition-colors relative py-2 ${
-                    activeSection === item.id
-                      ? "text-[#F26E46] border-b-2 border-[#F26E46]"
-                      : "text-gray-600 hover:text-[#F26E46]"
-                  }`}
-                >
-                  {item.title}
-                </button>
-              ))}
-            </div>
-
-            {/* {isMobileMenuOpen && (
+          {/* {isMobileMenuOpen && (
               <div className="lg:hidden py-4 border-t">
                 <ul className="space-y-3">
                   {toc.map((item) => (
@@ -214,67 +197,72 @@ const ExamDetails = ({ pagedata }: any) => {
                 </ul>
               </div>
             )} */}
-
-          </div>
         </div>
+      </div>
 
-        <div className="max-w-7xl mx-auto px-4 py-8 overflow">
-          <div className="grid lg:grid-cols-[1fr_320px] gap-10">
-            {/* Main */}
-            <div className="space-y-0">
-              {examData.map((section: any, index: number) => (
-                <div
-                  key={index}
-                  ref={(el) => {
-                    sectionRefs.current[`section-${index}`] = el;
-                  }}
-                  id={`section-${index}`}
-                  className="bg-white lg:p-6 scroll-mt-20"
-                >
-                  {/* Section Title */}
-                  {section?.content_heading && (
-                    <h2 className="text-2xl font-bold text-[#00306a] mb-6">
-                      {section.content_heading}
+      <div className="max-w-7xl mx-auto px-4 py-8 overflow">
+        <div className="grid lg:grid-cols-[1fr_320px] gap-10">
+          {/* Main */}
+          <div className="space-y-0">
+            {examData.map((section: any, index: number) => (
+              <div
+                key={index}
+                ref={(el) => {
+                  sectionRefs.current[`section-${index}`] = el;
+                }}
+                id={`section-${index}`}
+                className="bg-white lg:p-6 scroll-mt-20"
+              >
+                {/* Section Title */}
+                {section?.content_heading && (
+                  <h2 className="text-2xl font-bold text-[#00306a] mb-6">
+                    {section.content_heading}
+                  </h2>
+                )}
+
+                {section.content_data && (
+                  <EditorContent content_data={section.content_data} />
+                )}
+
+                {section.faq?.length > 0 && (
+                  <div className="mt-8">
+                    <h2 className="text-2xl font-bold mb-6 text-[#183153]">
+                      Frequently Asked Questions
                     </h2>
+
+                    {section.faq.map((faq: any, i: number) => (
+                      <FAQItem
+                        key={i}
+                        question={faq.question}
+                        answer={faq.answer}
+                      />
+                    ))}
+                  </div>
+                )}
+
+                {section &&
+                  Array.isArray(section?.Banner) &&
+                  section.Banner.length > 0 && (
+                    <Banner
+                      finalCtaSection={section.Banner[0]}
+                      Image={section.Image}
+                    />
                   )}
 
-                  {section.content_data && (
-                    <EditorContent content_data={section.content_data} />
-                  )}
-
-                  {section.faq?.length > 0 && (
-                    <div className="mt-8">
-                      <h2 className="text-2xl font-bold mb-6 text-[#183153]">
-                        Frequently Asked Questions
-                      </h2>
-
-                      {section.faq.map((faq: any, i: number) => (
-                        <FAQItem
-                          key={i}
-                          question={faq.question}
-                          answer={faq.answer}
-                        />
-                      ))}
-                    </div>
-                  )}
-
-                  {section &&
-                  Array.isArray(section?.Banner) && section.Banner.length > 0 
-                  && <Banner finalCtaSection={section.Banner[0]} Image={section.Image}/>}
-
-                  {section.question && <QuizCard section={section} pagedata={pagedata} />}
-                </div>
-              ))}
-            </div>
-
-            {/* Sidebar */}
-            <aside className="hidden lg:block sticky top-38 h-fit">
-              <LeadForm />
-            </aside>
+                {section.question && (
+                  <QuizCard section={section} pagedata={pagedata} />
+                )}
+              </div>
+            ))}
           </div>
+
+          {/* Sidebar */}
+          <aside className="hidden lg:block sticky top-38 h-fit">
+            <LeadForm />
+          </aside>
         </div>
-      </main>
-    
+      </div>
+    </main>
   );
 };
 
@@ -304,35 +292,37 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
   );
 }
 
-
 function Banner({ finalCtaSection, Image }: any) {
   const router = useRouter();
 
   return (
     <section className="relative overflow-hidden flex items-center py-6 mt-8 ">
       {/* Main Orange Banner Container */}
-      <div className=" w-full mx-auto bg-[#FF6A13] rounded-[24px] overflow-hidden 
+      <div
+        className=" w-full mx-auto bg-[#FF6A13] rounded-[24px] overflow-hidden 
       flex flex-col md:flex-row items-center justify-between p-6 md:p-8 gap-6 min-h-[160px]"
       >
         {/* Left Side: Animated Character Image */}
-        {Image && <motion.div
-          initial={{ x: "-150%", opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{
-            type: "spring",
-            stiffness: 60,
-            damping: 15,
-            duration: 1,
-          }}
-          className="flex-shrink-0 z-10 w-[180px] md:w-[220px] md:absolute md:left-8 md:bottom-0"
-        >
-           <img
-            src={Image || "/footer.png"}
-            alt="Student reading on beanbag"
-            className="w-full h-auto object-contain block"
-          />
-        </motion.div>}
+        {Image && (
+          <motion.div
+            initial={{ x: "-150%", opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{
+              type: "spring",
+              stiffness: 60,
+              damping: 15,
+              duration: 1,
+            }}
+            className="flex-shrink-0 z-10 w-[180px] md:w-[220px] md:absolute md:left-8 md:bottom-0"
+          >
+            <img
+              src={Image || "/footer.png"}
+              alt="Student reading on beanbag"
+              className="w-full h-auto object-contain block"
+            />
+          </motion.div>
+        )}
 
         <motion.div
           initial={{ opacity: 0 }}
@@ -352,34 +342,37 @@ function Banner({ finalCtaSection, Image }: any) {
           </div>
 
           {/* Call to Action Button */}
-          {finalCtaSection?.buttontext && 
-           <button
-            onClick={() => router.push(finalCtaSection?.url ? finalCtaSection?.url :"/auth")}
-            className="flex-shrink-0 flex items-center gap-2 bg-white text-[#FF6A13] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap"
-          >
-            {finalCtaSection?.buttontext || "Enroll Now"}
-            <svg
-              xmlns="http://w3.org"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth={2.5}
-              stroke="currentColor"
-              className="w-4 h-4"
+          {finalCtaSection?.buttontext && (
+            <button
+              onClick={() =>
+                router.push(
+                  finalCtaSection?.url ? finalCtaSection?.url : "/auth",
+                )
+              }
+              className="flex-shrink-0 flex items-center gap-2 bg-white text-[#FF6A13] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M13.5 4.5l6.75 6.75-6.75 6.75M19.5 12H9"
-              />
-            </svg>
-          </button>
-          }
+              {finalCtaSection?.buttontext || "Enroll Now"}
+              <svg
+                xmlns="http://w3.org"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={2.5}
+                stroke="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M13.5 4.5l6.75 6.75-6.75 6.75M19.5 12H9"
+                />
+              </svg>
+            </button>
+          )}
         </motion.div>
       </div>
     </section>
   );
 }
-
 
 // function QuizCard({ section ,pagedata}: any) {
 //   const [answer, setAnswer] = useState("");
@@ -390,7 +383,7 @@ function Banner({ finalCtaSection, Image }: any) {
 //   const [apiResponse, setApiResponse] = useState<any>(null);
 //   const [isLoading, setIsLoading] = useState(false);
 //   const slug = pagedata?.seoMeta;
-  
+
 //   console.log(slug,"section")
 //   useEffect(() => {
 //     if (isPopupOpen) {
@@ -439,8 +432,8 @@ function Banner({ finalCtaSection, Image }: any) {
 //       });
 
 //       // Determine if answer is correct based on API response or local check
-//       const isAnswerCorrect = response.data?.isCorrect !== undefined 
-//         ? response.data.isCorrect 
+//       const isAnswerCorrect = response.data?.isCorrect !== undefined
+//         ? response.data.isCorrect
 //         : selectedOption === correctAnswer;
 
 //       setIsCorrect(isAnswerCorrect);
@@ -449,7 +442,7 @@ function Banner({ finalCtaSection, Image }: any) {
 
 //     } catch (error: any) {
 //       console.error("Failed to submit question analytics", error);
-      
+
 //       // Handle error response
 //       setApiResponse({
 //         error: true,
@@ -483,12 +476,12 @@ function Banner({ finalCtaSection, Image }: any) {
 //   return (
 //     <>
 //       <div className="mt-8 bg-[#FFF8F5] rounded-2xl p-6">
-//         <PopupModal 
-//           isPopupOpen={isPopupOpen} 
+//         <PopupModal
+//           isPopupOpen={isPopupOpen}
 //           setIsPopupOpen={setIsPopupOpen}
 //           onClose={handlePopupClose}
 //         />
-        
+
 //         <div className="flex items-center gap-2 mb-4">
 //           <CircleHelp className="text-[#F26E46]" />
 //           <h3 className="font-bold text-xl">Quick Question</h3>
@@ -546,7 +539,7 @@ function Banner({ finalCtaSection, Image }: any) {
 //           <div className="mt-6">
 //             <div className="flex items-center gap-3">
 //               <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-//                 <div className="h-full bg-[#F26E46] rounded-full animate-pulse" 
+//                 <div className="h-full bg-[#F26E46] rounded-full animate-pulse"
 //                      style={{ width: '100%' }} />
 //               </div>
 //               <span className="text-sm text-gray-600 whitespace-nowrap">
@@ -559,7 +552,7 @@ function Banner({ finalCtaSection, Image }: any) {
 //         <button
 //           onClick={handleSubmit}
 //           disabled={isLoading || submitted}
-//           className={`mt-6 bg-[#F26E46] text-white px-6 py-3 rounded-xl transition-colors 
+//           className={`mt-6 bg-[#F26E46] text-white px-6 py-3 rounded-xl transition-colors
 //             ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:bg-[#E05D35]'}
 //             disabled:opacity-50 disabled:cursor-not-allowed
 //           `}
@@ -578,7 +571,7 @@ function Banner({ finalCtaSection, Image }: any) {
 //         {/* API Response Display */}
 //         {apiResponse && !isLoading && (
 //           <div className={`mt-5 p-4 rounded-lg border ${
-//             apiResponse.error 
+//             apiResponse.error
 //               ? 'bg-red-50 border-red-200 text-red-700'
 //               : 'bg-green-50 border-green-200 text-green-700'
 //           }`}>
@@ -593,7 +586,7 @@ function Banner({ finalCtaSection, Image }: any) {
 //                   {apiResponse.error ? 'Error' : 'Success'}
 //                 </p>
 //                 <p className="text-sm mt-1">{apiResponse.message}</p>
-                
+
 //                 {/* Show API response details if available */}
 //                 {apiResponse.data && (
 //                   <div className="mt-2 text-xs bg-white/50 p-2 rounded border border-gray-100">
@@ -605,7 +598,7 @@ function Banner({ finalCtaSection, Image }: any) {
 //                     </details>
 //                   </div>
 //                 )}
-                
+
 //                 {apiResponse.status && (
 //                   <p className="text-xs mt-1 opacity-70">Status: {apiResponse.status}</p>
 //                 )}
@@ -650,22 +643,24 @@ function Banner({ finalCtaSection, Image }: any) {
 //   );
 // }
 
-
-
 // Chart Components
 const SimpleBarChart = ({ data }: { data: any[] }) => {
-  const maxClicks = Math.max(...data.map(item => item.totalClicks), 1);
-  
+  const maxClicks = Math.max(...data.map((item) => item.totalClicks), 1);
+
   return (
     <div className="mt-6 bg-white rounded-xl p-4 border border-gray-100">
       <div className="flex items-center gap-2 mb-3">
         <BarChart size={16} className="text-[#F26E46]" />
-        <h4 className="text-sm font-semibold text-gray-700">Response Distribution</h4>
+        <h4 className="text-sm font-semibold text-gray-700">
+          Response Distribution
+        </h4>
       </div>
       <div className="space-y-3">
         {data.map((item, idx) => (
           <div key={idx} className="flex items-center gap-3">
-            <span className="text-sm font-medium text-gray-600 w-44">{item.option}</span>
+            <span className="text-sm font-medium text-gray-600 w-44">
+              {item.option}
+            </span>
             <div className="flex-1 h-7 bg-gray-100 rounded-full overflow-hidden relative">
               <motion.div
                 initial={{ width: 0 }}
@@ -675,7 +670,7 @@ const SimpleBarChart = ({ data }: { data: any[] }) => {
                 style={{ width: `${(item.totalClicks / maxClicks) * 100}%` }}
               />
               <span className="absolute inset-0 flex items-center px-3 text-xs font-medium text-gray-600">
-                {item.totalClicks} {item.totalClicks === 1 ? 'click' : 'clicks'}
+                {item.totalClicks} {item.totalClicks === 1 ? "click" : "clicks"}
               </span>
             </div>
           </div>
@@ -685,12 +680,11 @@ const SimpleBarChart = ({ data }: { data: any[] }) => {
   );
 };
 
-
-
 const StatisticsCard = ({ data }: { data: any[] }) => {
   const totalClicks = data.reduce((sum, item) => sum + item.totalClicks, 0);
-  const mostVoted = data.reduce((max, item) => 
-    item.totalClicks > max.totalClicks ? item : max, data[0]
+  const mostVoted = data.reduce(
+    (max, item) => (item.totalClicks > max.totalClicks ? item : max),
+    data[0],
   );
 
   return (
@@ -722,16 +716,16 @@ function QuizCard({ section, pagedata }: any) {
   const slug = pagedata?.seoMeta;
 
   // Mock API response for demo - replace with your actual data
-  const [mockApiData,setmockApiData] = useState({});
+  const [mockApiData, setmockApiData] = useState({});
 
   useEffect(() => {
     if (isPopupOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = "unset";
     };
   }, [isPopupOpen]);
 
@@ -744,7 +738,7 @@ function QuizCard({ section, pagedata }: any) {
     // console.log(section.options,"section.options")
 
     const correctAnswer = section.options.find(
-      (option: any) => option.value !== ""
+      (option: any) => option.value !== "",
     )?.value;
 
     if (!correctAnswer || correctAnswer === undefined) {
@@ -756,7 +750,7 @@ function QuizCard({ section, pagedata }: any) {
     setApiResponse(null);
 
     try {
-      const response = await axiosInstance.post('/admin/questionAnalytics', {
+      const response = await axiosInstance.post("/admin/questionAnalytics", {
         pageSlug: slug?.canonicalUrl,
         sectionKey: "exam-data",
         question: section.question,
@@ -765,38 +759,43 @@ function QuizCard({ section, pagedata }: any) {
 
       // Use mock data for demonstration
       // Replace with: setApiResponse(response.data)
-      
+
       setmockApiData(response?.data);
       setApiResponse({
         data: mockApiData,
         status: response.status,
-        message: response.data?.message || "Successfully submitted your answer!"
+        message:
+          response.data?.message || "Successfully submitted your answer!",
       });
 
-
-      // const isAnswerCorrect = response.data?.isCorrect !== undefined 
-      //   ? response.data.isCorrect 
+      // const isAnswerCorrect = response.data?.isCorrect !== undefined
+      //   ? response.data.isCorrect
       //   : selectedOption === correctAnswer;
 
-      const isAnswerCorrect = selectedOption?.toString().trim() === correctAnswer?.toString().trim();
+      const isAnswerCorrect =
+        selectedOption?.toString().trim() === correctAnswer?.toString().trim();
 
-
-      console.log(mockApiData,"mockApiData",response?.data,selectedOption,correctAnswer);
+      console.log(
+        mockApiData,
+        "mockApiData",
+        response?.data,
+        selectedOption,
+        correctAnswer,
+      );
 
       setIsCorrect(isAnswerCorrect);
       setAnswer(correctAnswer);
       setSubmitted(true);
       setShowResults(true);
-
     } catch (error: any) {
       console.error("Failed to submit question analytics", error);
-      
+
       // Use mock data on error as well
       setApiResponse({
         error: false,
         data: mockApiData,
         message: "Successfully submitted your answer!",
-        status: 200
+        status: 200,
       });
 
       const isAnswerCorrect = selectedOption === correctAnswer;
@@ -804,7 +803,6 @@ function QuizCard({ section, pagedata }: any) {
       setAnswer(correctAnswer);
       setSubmitted(true);
       setShowResults(true);
-
     } finally {
       setIsLoading(false);
     }
@@ -837,13 +835,13 @@ function QuizCard({ section, pagedata }: any) {
   return (
     <>
       <div className="mt-8 bg-gradient-to-br from-[#FFF8F5] to-white rounded-2xl p-6 shadow-lg border border-orange-100/50">
-        <PopupModal 
-          isPopupOpen={isPopupOpen} 
+        <PopupModal
+          isPopupOpen={isPopupOpen}
           setIsPopupOpen={setIsPopupOpen}
           onClose={handlePopupClose}
           login={true}
         />
-        
+
         <div className="flex items-center gap-2 mb-6">
           <div className="bg-[#F26E46]/10 p-2 rounded-xl">
             <CircleHelp className="text-[#F26E46]" size={22} />
@@ -856,7 +854,9 @@ function QuizCard({ section, pagedata }: any) {
           </span>
         </div>
 
-        <p className="font-medium text-gray-800 mb-6 leading-relaxed">{section.question}</p>
+        <p className="font-medium text-gray-800 mb-6 leading-relaxed">
+          {section.question}
+        </p>
 
         <div className="space-y-3">
           {section.options.map((option: any, i: number) => {
@@ -867,10 +867,12 @@ function QuizCard({ section, pagedata }: any) {
                   whileHover={!submitted ? { scale: 1.01 } : {}}
                   whileTap={!submitted ? { scale: 0.98 } : {}}
                   className={`flex items-center gap-3 border-2 rounded-xl p-4 cursor-pointer transition-all duration-200
-                    ${selectedOption === option.label 
-                      ? 'border-[#F26E46] bg-[#FFF0EA] shadow-md' 
-                      : 'border-gray-200 hover:border-[#F26E46]/50 hover:bg-orange-50/50'}
-                    ${submitted ? 'opacity-60 cursor-not-allowed' : ''}
+                    ${
+                      selectedOption === option.label
+                        ? "border-[#F26E46] bg-[#FFF0EA] shadow-md"
+                        : "border-gray-200 hover:border-[#F26E46]/50 hover:bg-orange-50/50"
+                    }
+                    ${submitted ? "opacity-60 cursor-not-allowed" : ""}
                   `}
                 >
                   <input
@@ -923,9 +925,9 @@ function QuizCard({ section, pagedata }: any) {
           <div className="mt-6">
             <div className="flex items-center gap-3">
               <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                <motion.div 
+                <motion.div
                   className="h-full bg-gradient-to-r from-[#F26E46] to-orange-400 rounded-full"
-                  animate={{ width: ['0%', '100%'] }}
+                  animate={{ width: ["0%", "100%"] }}
                   transition={{ duration: 2, repeat: Infinity }}
                 />
               </div>
@@ -943,15 +945,31 @@ function QuizCard({ section, pagedata }: any) {
             whileHover={!isLoading && !submitted ? { scale: 1.02 } : {}}
             whileTap={!isLoading && !submitted ? { scale: 0.98 } : {}}
             className={`flex-1 bg-gradient-to-r from-[#F26E46] to-orange-500 text-white px-6 py-3 rounded-xl transition-all duration-200
-              ${isLoading ? 'opacity-70 cursor-not-allowed' : 'hover:shadow-lg hover:shadow-orange-200'}
+              ${isLoading ? "opacity-70 cursor-not-allowed" : "hover:shadow-lg hover:shadow-orange-200"}
               disabled:opacity-50 disabled:cursor-not-allowed
             `}
           >
             {isLoading ? (
               <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                <svg
+                  className="animate-spin h-4 w-4 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
                 </svg>
                 Submitting...
               </span>
@@ -960,7 +978,9 @@ function QuizCard({ section, pagedata }: any) {
                 <CheckCircle2 size={18} />
                 Submitted
               </span>
-            ) : 'Submit Answer'}
+            ) : (
+              "Submit Answer"
+            )}
           </motion.button>
 
           {submitted && (
@@ -975,7 +995,7 @@ function QuizCard({ section, pagedata }: any) {
           )}
         </div>
 
-        {/* Results Slider */}
+
         {submitted && showResults && apiResponse && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1067,24 +1087,23 @@ function QuizCard({ section, pagedata }: any) {
                 ))}
               </div> */}
 
-                <div className="flex justify-end gap-1 mt-4">
-                  <button className="flex bg-primary px-2 py-1 rounded shadow-sm text-white" onClick={() => {setIsPopupOpen(true);}}>
-                    More Quiz <LucideChevronRight />
-                  </button>
-                  
-                </div>
+              <div className="flex justify-end gap-1 mt-4">
+                <button
+                  className="flex bg-primary px-2 py-1 rounded shadow-sm text-white"
+                  onClick={() => {
+                    setIsPopupOpen(true);
+                  }}
+                >
+                  More Quiz <LucideChevronRight />
+                </button>
+              </div>
             </div>
-
           </motion.div>
         )}
       </div>
     </>
   );
 }
-
-
-
-
 
 const FORM_CONFIG: any = {
   steps: [
@@ -1144,7 +1163,7 @@ const FORM_CONFIG: any = {
         { value: "TOEFL", label: "TOEFL" },
         { value: "PET", label: "PET" },
         { value: "SAT", label: "SAT" },
-        { value: "other", label: "Other"}
+        { value: "other", label: "Other" },
       ],
     },
     {
@@ -1173,7 +1192,7 @@ const FORM_CONFIG: any = {
     variant: "primary",
     size: "large",
     position: "bottom",
-    totalStep : 1,
+    totalStep: 1,
     onSuccess: {
       message: "Thank you! We will contact you shortly.",
       redirect: "/thank-you",
@@ -1197,11 +1216,8 @@ const LeadForm = () => {
       <h3 className="text-center text-lg md:text-xl font-semibold mb-2 text-neutral-900">
         Speak to an Expert
       </h3>
-      <FormSection 
-        FORM_CONFIG={FORM_CONFIG} 
-        onFormSubmit={handleFormSubmit}
-      />
-      
+      <FormSection FORM_CONFIG={FORM_CONFIG} onFormSubmit={handleFormSubmit} />
+
       {formSubmitted && (
         <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
           <p className="text-green-700 text-sm text-center">
@@ -1212,7 +1228,3 @@ const LeadForm = () => {
     </div>
   );
 };
-
-
-
-

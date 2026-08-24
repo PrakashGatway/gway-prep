@@ -9,7 +9,7 @@ import {
 import type { Metadata } from "next";
 import axiosInstance from "@/app/lib/axios";
 
-const SITE_URL = "https://ooshasprep.com";
+const SITE_URL = "https://www.ooshasprep.com";
 
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -251,7 +251,7 @@ export default async function BlogPage({
 // import { Metadata } from "next";
 // import axiosInstance from "@/app/lib/axios";
 
-// const SITE_URL = "https://ooshasprep.com";
+// const SITE_URL = "https://www.ooshasprep.com";
 
 // export async function generateMetadata(): Promise<Metadata> {
 //   const data = await getPageInfo("blog");

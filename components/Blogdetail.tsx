@@ -1,3 +1,4 @@
+
 // app/blog/[id]/page.tsx
 "use client";
 
@@ -18,11 +19,47 @@ import FormSection from "./formSection";
 import axiosInstance from "@/app/lib/axios";
 import axios from "axios";
 
-// Types
+// ─── Types ───
+interface FAQ {
+  question: string;
+  answer: string;
+}
+
+interface Option {
+  value: string;
+  label: string;
+  type: string;
+}
+
+interface Banner {
+  title: string;
+  subtitle: string;
+  url: string;
+  buttontext: string;
+}
+
+interface BlogDetail {
+  content_heading: string;
+  content_data: string;
+  faq: FAQ[];
+  Image: string;
+  Banner: Banner[];
+  question: string;
+  options: Option[];
+  answer: string;
+  value: string;
+  label: string;
+  type: string;
+  title: string;
+  subtitle: string;
+  url: string;
+  buttontext: string;
+}
+
 interface BlogData {
   _id?: string;
   title: string;
-  content: string;
+  content?: string;
   image: string;
   category: string;
   author: string;
@@ -31,6 +68,12 @@ interface BlogData {
   slug?: string;
   tags?: string[];
   count?: number;
+  blog_details: BlogDetail[];
+  metaTitle?: string;
+  metaDescription?: string;
+  isPublished?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 interface BlogDetailPageProps {
@@ -139,15 +182,12 @@ const FORM_CONFIG: any = {
 const LeadForm = () => {
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-6">
-      {/* <h3 className="text-center text-lg md:text-xl font-semibold mb-6 text-neutral-900">
-        Speak to an Expert
-      </h3> */}
       <FormSection FORM_CONFIG={FORM_CONFIG} />
     </div>
   );
 };
 
-// Blog Card Component
+// ─── Blog Card Component ───
 const BlogCard = ({
   post,
   onClick,
@@ -182,13 +222,11 @@ const BlogCard = ({
   </article>
 );
 
-
+// ─── Table of Contents ───
 const getHeadingId = (heading: string) => {
-  // Simply use the heading text as the ID, matching what's set in useLayoutEffect
   return `heading-${heading}`;
 };
 
-// Table of Contents Component
 const TableOfContents = ({
   headings,
   activeHeading,
@@ -201,45 +239,32 @@ const TableOfContents = ({
   const [isOpen, setIsOpen] = useState(open || false);
 
   const scrollToHeading = (heading: string) => {
-    // Try multiple strategies to find and scroll to the heading
     const strategies = [
-      // Strategy 1: Direct ID match (matching the useLayoutEffect pattern)
-      () => {
-        const id = `heading-${heading}`;
-        console.log("Trying ID:", id);
-        return document.getElementById(id);
-      },
-      // Strategy 2: Find by exact text content in h2
+      () => document.getElementById(`heading-${heading}`),
       () => {
         const allH2 = document.querySelectorAll('.blog-html h2, article h2');
-        console.log("Searching h2 elements:", allH2.length);
         for (const h2 of allH2) {
           if (h2.textContent?.trim() === heading.trim()) {
-            console.log("Found h2 by exact text:", heading);
             return h2;
           }
         }
         return null;
       },
-      // Strategy 3: Case-insensitive text match
       () => {
         const allH2 = document.querySelectorAll('.blog-html h2, article h2');
         const headingLower = heading.toLowerCase().trim();
         for (const h2 of allH2) {
           if (h2.textContent?.toLowerCase().trim() === headingLower) {
-            console.log("Found h2 by case-insensitive text:", heading);
             return h2;
           }
         }
         return null;
       },
-      // Strategy 4: Partial text match
       () => {
         const allH2 = document.querySelectorAll('.blog-html h2, article h2');
         const headingLower = heading.toLowerCase().trim();
         for (const h2 of allH2) {
           if (h2.textContent?.toLowerCase().trim().includes(headingLower)) {
-            console.log("Found h2 by partial text:", heading);
             return h2;
           }
         }
@@ -247,27 +272,21 @@ const TableOfContents = ({
       }
     ];
 
-    // Try each strategy
     let foundElement = null;
     for (const strategy of strategies) {
       foundElement = strategy();
-      if (foundElement) {
-        console.log("Element found:", foundElement);
-        break;
-      }
+      if (foundElement) break;
     }
 
     if (foundElement) {
-      // Use scrollIntoView with smooth behavior
       foundElement.scrollIntoView({
         behavior: 'smooth',
         block: 'start',
         inline: 'nearest'
       });
       
-      // Add a small delay to adjust for fixed headers
       setTimeout(() => {
-        const headerOffset = 80; // Adjust this value based on your header height
+        const headerOffset = 80;
         const elementPosition = foundElement!.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
         
@@ -276,11 +295,8 @@ const TableOfContents = ({
           behavior: 'smooth'
         });
       }, 100);
-    } else {
-      console.log("No element found for heading:", heading);
     }
     
-    // Close mobile menu after clicking
     if (window.innerWidth < 768) {
       setIsOpen(false);
     }
@@ -322,76 +338,146 @@ const TableOfContents = ({
   );
 };
 
-// Main Component
-export default function BlogDetailPage({
-  blog,
-  loading,
-  res,
-  slug
-}: BlogDetailPageProps) {
+// ─── Render Blog Content from blog_details ───
+const renderBlogContent = (blogDetails: BlogDetail[]) => {
+  if (!blogDetails || blogDetails.length === 0) return null;
+
+  return blogDetails.map((detail, index) => {
+    const sections = [];
+
+    // Content heading
+    if (detail.content_heading) {
+      sections.push(
+        <h2 key={`heading-${index}`} id={`heading-${detail.content_heading}`}>
+          {detail.content_heading}
+        </h2>
+      );
+    }
+
+    // Content data (HTML)
+    if (detail.content_data) {
+      sections.push(
+        <div
+          key={`content-${index}`}
+          dangerouslySetInnerHTML={{ __html: detail.content_data }}
+        />
+      );
+    }
+
+    // Question block
+    if (detail.question && detail.options) {
+      sections.push(
+        <div key={`question-${index}`} className="my-6 p-6 bg-neutral-50 rounded-xl border border-neutral-200">
+          <h4 className="text-lg font-semibold text-neutral-800 mb-4">
+            {detail.question}
+          </h4>
+          <div className="space-y-2">
+            {detail.options.map((option, optIndex) => (
+              <label
+                key={optIndex}
+                className="flex items-center gap-3 p-3 bg-white rounded-lg border border-neutral-200 cursor-pointer hover:border-[#F86C43] transition-colors"
+              >
+                <input
+                  type="radio"
+                  name={`question-${index}`}
+                  value={option.value}
+                  className="w-4 h-4 text-[#F86C43] focus:ring-[#F86C43]"
+                />
+                <span className="text-neutral-700">
+                  {option.value}. {option.label}
+                </span>
+              </label>
+            ))}
+          </div>
+          <button
+            className="mt-4 px-6 py-2 bg-[#F86C43] text-white rounded-lg hover:bg-[#e05a32] transition-colors"
+            onClick={(e) => {
+              const selected = document.querySelector(
+                `input[name="question-${index}"]:checked`
+              ) as HTMLInputElement;
+              if (selected) {
+                const isCorrect = selected.value === detail.answer;
+                alert(isCorrect ? "✅ Correct!" : "❌ Incorrect. Try again!");
+              } else {
+                alert("Please select an answer first.");
+              }
+            }}
+          >
+            Check Answer
+          </button>
+        </div>
+      );
+    }
+
+    // FAQs
+    if (detail.faq && detail.faq.length > 0) {
+      const [faq] = detail.faq; // Use first FAQ or map all
+      sections.push(
+        <div key={`faq-${index}`} className="my-6 p-6 bg-blue-50 rounded-xl border border-blue-100">
+          <h4 className="text-lg font-semibold text-neutral-800 mb-2">
+            💡 Quick FAQ
+          </h4>
+          <p className="font-medium text-neutral-700">{faq.question}</p>
+          <p className="text-neutral-600 mt-1">{faq.answer}</p>
+        </div>
+      );
+    }
+
+    // Banner
+    if (detail.Banner && detail.Banner.length > 0) {
+      const banner = detail.Banner[0];
+      sections.push(
+        <div key={`banner-${index}`} className="my-6 p-8 bg-gradient-to-r from-[#F86C43] to-[#e05a32] rounded-xl text-white text-center">
+          <h3 className="text-2xl font-bold mb-3">{banner.title}</h3>
+          <div
+            className="text-white/90 mb-4"
+            dangerouslySetInnerHTML={{ __html: banner.subtitle }}
+          />
+          {banner.url && (
+            <a
+              href={banner.url}
+              className="inline-block px-8 py-3 bg-white text-[#F86C43] font-semibold rounded-lg hover:bg-neutral-100 transition-colors"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {banner.buttontext || "Learn More"}
+            </a>
+          )}
+        </div>
+      );
+    }
+
+    return <div key={index} className="blog-section">{sections}</div>;
+  });
+};
+
+// ─── Main Component ───
+export default function BlogDetailPage({ blog, loading, res, slug }: BlogDetailPageProps) {
   const router = useRouter();
   const [headings, setHeadings] = useState<string[]>([]);
   const [activeHeading, setActiveHeading] = useState<string>("");
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // Extract headings from content and add IDs
+  // Extract headings from blog_details
   useLayoutEffect(() => {
-    if (blog?.data?.content) {
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = blog.data.content;
-
-      // Find all h2 tags and extract text
-      const h2Elements = tempDiv.querySelectorAll("h2");
+    if (blog?.data?.blog_details && blog.data.blog_details.length > 0) {
       const headingTexts: string[] = [];
-
-      h2Elements.forEach((h2, index) => {
-        const text = h2.textContent?.trim() || `Section ${index + 1}`;
-        headingTexts.push(text);
-
-        // Add ID to h2 for scrolling - using exact text as ID
-        const id = `heading-${text}`;
-        h2.id = id;
+      
+      blog.data.blog_details.forEach((detail) => {
+        if (detail.content_heading) {
+          headingTexts.push(detail.content_heading);
+        }
       });
 
       setHeadings(headingTexts);
 
-      // Update content with new IDs
+      // Build the full HTML content from blog_details
       if (contentRef.current) {
-        contentRef.current.innerHTML = tempDiv.innerHTML;
+        // We'll render using the renderBlogContent function
+        // The contentRef will be populated with the rendered content
       }
     }
   }, [blog]);
-
-  
-  
-const blogcount = async (currentCount: number, slug: string) => { 
-  try { 
-    
-    const response = await axiosInstance.put(`/admin/blogs/${slug}`, { 
-      count: currentCount + 1 
-    });
-    return response.data;
-  } catch (error) { 
-    console.error('Error incrementing blog count:', error); 
-  } 
-};
-
-
-useEffect(() => {
-  
-  if (!blog?.data?.slug) return;
-
-  const timer = setTimeout(() => { 
-    const currentCount = blog?.data?.count || 1000;
-    const blogSlug = blog?.data?.slug;
-    
-    blogcount(currentCount, blogSlug); 
-  }, 10 * 1000); 
-
-  return () => clearTimeout(timer);
-
-}, [blog?.data?.slug]); 
-
 
   // Intersection Observer for active heading
   useEffect(() => {
@@ -413,7 +499,6 @@ useEffect(() => {
       },
     );
 
-    // Observe all heading elements
     headings.forEach((heading) => {
       const element = document.getElementById(`heading-${heading}`);
       if (element) {
@@ -423,6 +508,31 @@ useEffect(() => {
 
     return () => observer.disconnect();
   }, [headings]);
+
+  // Blog count increment
+  const blogcount = async (currentCount: number, slug: string) => { 
+    try {
+      const nextCount = Number(currentCount) + 1;
+      const response = await axiosInstance.put(`/admin/blogs/${slug}`, {
+        count: nextCount
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error incrementing blog count:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (!blog?.data?.slug) return;
+
+    const timer = setTimeout(() => { 
+      const currentCount = blog?.data?.count || 1000;
+      const blogSlug = blog?.data?.slug;
+      blogcount(currentCount, blogSlug); 
+    }, 10 * 1000); 
+
+    return () => clearTimeout(timer);
+  }, [blog?.data?.slug]);
 
   // Loading state
   if (loading) {
@@ -451,6 +561,7 @@ useEffect(() => {
   }
 
   const data = blog.data;
+  const blogDetails = data.blog_details || [];
 
   return (
     <div className="bg-neutral-50 min-h-screen">
@@ -497,7 +608,7 @@ useEffect(() => {
                 <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-bold text-neutral-600">
                   {data.author?.charAt(0)?.toUpperCase() || "A"}
                 </div>
-                <span className="font-medium text-neutral-700 cursor-pointer" onClick={() => router.push(`/auther/${data?.authslug || 'sakshi-taneja'}`)}>
+                <span className="font-medium text-neutral-700">
                   {data.author || "Anonymous"}
                 </span>
               </div>
@@ -515,7 +626,7 @@ useEffect(() => {
 
             {/* Table of Contents - Desktop */}
             {headings.length > 0 && (
-              <div className="mb-8 ">
+              <div className="mb-8">
                 <TableOfContents
                   headings={headings}
                   activeHeading={activeHeading}
@@ -524,123 +635,135 @@ useEffect(() => {
               </div>
             )}
 
-            {/* Blog Content */}
-
+            {/* Blog Content Styles */}
             <style>{`
-        .blog-html table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            font-size: 15px;
-            overflow-x: auto !important;
-        }
+              .blog-html table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 20px 0;
+                font-size: 15px;
+                overflow-x: auto !important;
+              }
 
-        .blog-html table {
-          width: 100%;
-          table-layout: fixed;
-          border-collapse: collapse;
-        }
+              .blog-html table {
+                width: 100%;
+                table-layout: fixed;
+                border-collapse: collapse;
+              }
 
-        .blog-html table td,
-        .blog-html table th {
-          width: 50%;
-          padding: 12px;
-          border: 1px solid #e5e7eb;
-          word-break: break-word;
-          vertical-align: top;
-        }
+              .blog-html table td,
+              .blog-html table th {
+                width: 50%;
+                padding: 12px;
+                border: 1px solid #e5e7eb;
+                word-break: break-word;
+                vertical-align: top;
+              }
 
-            .blog-html th,
-            .blog-html td {
-              border: 1px solid #e5e7eb;
-            }
+              .blog-html th,
+              .blog-html td {
+                border: 1px solid #e5e7eb;
+              }
 
-            .blog-html th {
-              background: #F46C44;
-              text-align: center;
-              color: white;
-              font-weight: 600;
-            }
-                  .blog-html tr {
-              text-align: center;
-            }
-                    .blog-html table * p {
-              padding: 10px;
-            }
-            
+              .blog-html th {
+                background: #F46C44;
+                text-align: center;
+                color: white;
+                font-weight: 600;
+              }
+              .blog-html tr {
+                text-align: center;
+              }
+              .blog-html table * p {
+                padding: 10px;
+              }
 
-            .blog-html tr:nth-child(even) {
-              background-color: #f3ebeb;
-              
-            }
-            .blog-html h2 {
-              font-size: 26px;
-              margin: 28px 0 12px;
-              font-weight: 700;
-              color: #00306a
-            }
+              .blog-html tr:nth-child(even) {
+                background-color: #f3ebeb;
+              }
+              .blog-html h2 {
+                font-size: 26px;
+                margin: 28px 0 12px;
+                font-weight: 700;
+                color: #00306a;
+              }
 
-            .blog-html h2 * {
-              font-size: 26px;
-              margin: 28px 0 12px;
-              font-weight: 700;
-              color: #00306a
-            }
+              .blog-html h2 * {
+                font-size: 26px;
+                margin: 28px 0 12px;
+                font-weight: 700;
+                color: #00306a;
+              }
 
-            .blog-html h3 {
-              font-size: 20px;
-              margin: 22px 0 10px;
-              font-weight: 600;
-              color: #00306a
+              .blog-html h3 {
+                font-size: 20px;
+                margin: 22px 0 10px;
+                font-weight: 600;
+                color: #00306a;
+              }
 
-            }
+              .blog-html h4 {
+                font-size: 18px;
+                margin: 18px 0 8px;
+                font-weight: 600;
+              }
 
-            .blog-html h4 {
-              font-size: 18px;
-              margin: 18px 0 8px;
-              font-weight: 600;
-            }
+              .blog-html * a {
+                color: #240dbd;
+              }
 
-            .blog-html * a {
-              color: #240dbd;
-            }
+              .blog-html p {
+                line-height: 1.8;
+              }
 
-            .blog-html p {
-              line-height: 1.8;
-            }
+              .blog-html ul {
+                margin-left: 22px;
+                list-style: disc;
+              }
 
-            .blog-html ul {
-              margin-left: 22px;
-              list-style: disc;
-            }
+              .blog-html ol {
+                margin-left: 22px;
+                list-style: decimal;
+              }
 
-            .blog-html ol {
-              margin-left: 22px;
-              list-style: decimal;
-            }
+              .blog-html li {
+                margin: 6px 0;
+              }
 
-            .blog-html li {
-              margin: 6px 0;
-            }
+              .blog-html figure.table {
+                overflow-x: auto;
+                margin: 20px 0;
+              }
 
-            .blog-html figure.table {
-              overflow-x: auto;
-              margin: 20px 0;
-            }
-
-            .blog-html strong {
-              font-weight: 600;
-            }
+              .blog-html strong {
+                font-weight: 600;
+              }
               html {
-              scroll-behavior: smooth;
-            }
-          `}</style>
+                scroll-behavior: smooth;
+              }
+            `}</style>
 
+            {/* Blog Content - Rendered from blog_details */}
             <article
               ref={contentRef}
-              dangerouslySetInnerHTML={{__html : blog.data.content}}
               className="blog-html prose prose-lg max-w-none text-neutral-700 leading-relaxed"
-            />
+            >
+              {renderBlogContent(blogDetails)}
+            </article>
+
+            {/* Tags */}
+            {data.tags && data.tags.length > 0 && (
+              <div className="mt-8 flex flex-wrap gap-2">
+                {data.tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-neutral-100 text-neutral-600 text-sm rounded-full"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
 
             {/* Related Posts Section */}
             {res && res.length > 0 && (
@@ -682,13 +805,6 @@ useEffect(() => {
     </div>
   );
 }
-
-
-
-
-
-
-
 
 
 
@@ -880,6 +996,11 @@ useEffect(() => {
 // );
 
 
+// const getHeadingId = (heading: string) => {
+//   // Simply use the heading text as the ID, matching what's set in useLayoutEffect
+//   return `heading-${heading}`;
+// };
+
 // // Table of Contents Component
 // const TableOfContents = ({
 //   headings,
@@ -891,31 +1012,91 @@ useEffect(() => {
 //   open?: any;
 // }) => {
 //   const [isOpen, setIsOpen] = useState(open || false);
-//   const [isMobile, setIsMobile] = useState(false);
 
-//   useEffect(() => {
-//     const checkMobile = () => {
-//       setIsMobile(window.innerWidth < 768);
-//     };
-//     checkMobile();
-//     window.addEventListener("resize", checkMobile);
-//     return () => window.removeEventListener("resize", checkMobile);
-//   }, []);
+//   const scrollToHeading = (heading: string) => {
+//     // Try multiple strategies to find and scroll to the heading
+//     const strategies = [
+//       // Strategy 1: Direct ID match (matching the useLayoutEffect pattern)
+//       () => {
+//         const id = `heading-${heading}`;
+//         console.log("Trying ID:", id);
+//         return document.getElementById(id);
+//       },
+//       // Strategy 2: Find by exact text content in h2
+//       () => {
+//         const allH2 = document.querySelectorAll('.blog-html h2, article h2');
+//         console.log("Searching h2 elements:", allH2.length);
+//         for (const h2 of allH2) {
+//           if (h2.textContent?.trim() === heading.trim()) {
+//             console.log("Found h2 by exact text:", heading);
+//             return h2;
+//           }
+//         }
+//         return null;
+//       },
+//       // Strategy 3: Case-insensitive text match
+//       () => {
+//         const allH2 = document.querySelectorAll('.blog-html h2, article h2');
+//         const headingLower = heading.toLowerCase().trim();
+//         for (const h2 of allH2) {
+//           if (h2.textContent?.toLowerCase().trim() === headingLower) {
+//             console.log("Found h2 by case-insensitive text:", heading);
+//             return h2;
+//           }
+//         }
+//         return null;
+//       },
+//       // Strategy 4: Partial text match
+//       () => {
+//         const allH2 = document.querySelectorAll('.blog-html h2, article h2');
+//         const headingLower = heading.toLowerCase().trim();
+//         for (const h2 of allH2) {
+//           if (h2.textContent?.toLowerCase().trim().includes(headingLower)) {
+//             console.log("Found h2 by partial text:", heading);
+//             return h2;
+//           }
+//         }
+//         return null;
+//       }
+//     ];
 
-//   const handleHeadingClick = (heading: string) => {
-//     const element = document.getElementById(`heading-${heading}`);
-//     if (element) {
-//       const headerOffset = 80;
-//       const elementPosition = element.getBoundingClientRect().top;
-//       const offsetPosition =
-//         elementPosition + window.pageYOffset - headerOffset;
-
-//       window.scrollTo({
-//         top: offsetPosition,
-//         behavior: "smooth",
-//       });
+//     // Try each strategy
+//     let foundElement = null;
+//     for (const strategy of strategies) {
+//       foundElement = strategy();
+//       if (foundElement) {
+//         console.log("Element found:", foundElement);
+//         break;
+//       }
 //     }
-//     setIsOpen(false);
+
+//     if (foundElement) {
+//       // Use scrollIntoView with smooth behavior
+//       foundElement.scrollIntoView({
+//         behavior: 'smooth',
+//         block: 'start',
+//         inline: 'nearest'
+//       });
+      
+//       // Add a small delay to adjust for fixed headers
+//       setTimeout(() => {
+//         const headerOffset = 80; // Adjust this value based on your header height
+//         const elementPosition = foundElement!.getBoundingClientRect().top;
+//         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+        
+//         window.scrollTo({
+//           top: offsetPosition,
+//           behavior: 'smooth'
+//         });
+//       }, 100);
+//     } else {
+//       console.log("No element found for heading:", heading);
+//     }
+    
+//     // Close mobile menu after clicking
+//     if (window.innerWidth < 768) {
+//       setIsOpen(false);
+//     }
 //   };
 
 //   if (headings.length === 0) return null;
@@ -939,7 +1120,7 @@ useEffect(() => {
 //         {headings.map((heading, index) => (
 //           <button
 //             key={index}
-//             onClick={() => handleHeadingClick(heading)}
+//             onClick={() => scrollToHeading(heading)}
 //             className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all hover:bg-neutral-50 hover:text-[#F86C43] ${
 //               activeHeading === heading
 //                 ? "bg-[#F86C43]/10 text-[#F86C43] font-medium border-l-2 border-[#F86C43]"
@@ -955,12 +1136,7 @@ useEffect(() => {
 // };
 
 // // Main Component
-// export default function BlogDetailPage({
-//   blog,
-//   loading,
-//   res,
-//   slug
-// }: BlogDetailPageProps) {
+// export default function BlogDetailPage({ blog, loading, res, slug }: BlogDetailPageProps) {
 //   const router = useRouter();
 //   const [headings, setHeadings] = useState<string[]>([]);
 //   const [activeHeading, setActiveHeading] = useState<string>("");
@@ -980,7 +1156,7 @@ useEffect(() => {
 //         const text = h2.textContent?.trim() || `Section ${index + 1}`;
 //         headingTexts.push(text);
 
-//         // Add ID to h2 for scrolling
+//         // Add ID to h2 for scrolling - using exact text as ID
 //         const id = `heading-${text}`;
 //         h2.id = id;
 //       });
@@ -997,15 +1173,16 @@ useEffect(() => {
   
   
 // const blogcount = async (currentCount: number, slug: string) => { 
-//   try { 
-    
-//     const response = await axiosInstance.put(`/admin/blogs/${slug}`, { 
-//       count: currentCount + 1 
+//   try {
+//     const nextCount = Number(currentCount) + 1;
+
+//     const response = await axiosInstance.put(`/admin/blogs/${slug}`, {
+//       count: nextCount
 //     });
 //     return response.data;
-//   } catch (error) { 
-//     console.error('Error incrementing blog count:', error); 
-//   } 
+//   } catch (error) {
+//     console.error('Error incrementing blog count:', error);
+//   }
 // };
 
 
@@ -1129,7 +1306,7 @@ useEffect(() => {
 //                 <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-bold text-neutral-600">
 //                   {data.author?.charAt(0)?.toUpperCase() || "A"}
 //                 </div>
-//                 <span className="font-medium text-neutral-700">
+//                 <span className="font-medium text-neutral-700 cursor-pointer" onClick={() => router.push(`/auther/${data?.authslug || 'sakshi-taneja'}`)}>
 //                   {data.author || "Anonymous"}
 //                 </span>
 //               </div>
@@ -1270,6 +1447,7 @@ useEffect(() => {
 
 //             <article
 //               ref={contentRef}
+//               dangerouslySetInnerHTML={{__html : blog.data.content}}
 //               className="blog-html prose prose-lg max-w-none text-neutral-700 leading-relaxed"
 //             />
 
@@ -1313,3 +1491,14 @@ useEffect(() => {
 //     </div>
 //   );
 // }
+
+
+
+
+
+
+
+
+
+
+

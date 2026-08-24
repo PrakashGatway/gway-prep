@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import ServicesPage from "@/components/servicesPage";
 import { getPageInfo } from "@/app/services/api";
 
-const SITE_URL = "https://ooshasprep.com";
+const SITE_URL = "https://www.ooshasprep.com";
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getPageInfo("services");

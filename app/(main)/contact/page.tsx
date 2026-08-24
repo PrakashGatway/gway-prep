@@ -2,7 +2,7 @@ import ContactUs from "@/components/contactUs";
 import { getPageInfo } from "@/app/services/api";
 
 const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://ooshasprep.com";
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.ooshasprep.com";
 
 export async function generateMetadata() {
   const data = await getPageInfo("contactus");
