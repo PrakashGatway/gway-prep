@@ -708,9 +708,9 @@ const BlogFormContent = () => {
                       onChange={(e) => {
                         updateRootField("title", e.target.value);
                         // Auto-generate slug if not editing
-                        if (!editSlug) {
-                          updateRootField("slug", slugify(e.target.value));
-                        }
+                        // if (!editSlug) {
+                        //   updateRootField("slug", slugify(e.target.value));
+                        // }
                       }}
                     />
                     {errors.title && (
