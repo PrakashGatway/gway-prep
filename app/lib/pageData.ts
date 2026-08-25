@@ -298,15 +298,8 @@ export const pageData: any = {
             required: false,
             placeholder: "Admin",
           },
-          // {
-          //   name: "image",
-          //   label: "Featured Image",
-          //   type: "file",
-          //   accept: "image/*",
-          // },
-
           {
-            name: "Image",
+            name: "image",
             label: "Main Image",
             type: "file",
             accept: "image/*",

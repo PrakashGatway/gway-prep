@@ -25,7 +25,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
         
     const { 
-      fullName, 
+      name, 
       email, 
       phone, 
       mobile, 
@@ -35,7 +35,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     } = data || {}; 
 
     const leadPayload = {
-      fullName: fullName,
+      fullName: name,
       email: email,
       phone: phone || mobile,
       coursePreference: interest,

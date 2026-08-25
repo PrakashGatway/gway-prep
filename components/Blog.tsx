@@ -280,12 +280,7 @@ export default function BlogPage({
     setSearch(filters.search || "");
   }, [filters.search]);
 
-  /**
-   * Update URL filters
-   *
-   * Example:
-   * /blog?search=ielts&category=exam&page=2
-   */
+  
   const updateUrl = (
     values: {
       search?: string;
@@ -352,12 +347,7 @@ export default function BlogPage({
     });
   };
 
-  /**
-   * Search debounce
-   *
-   * If you want search only after pressing the button,
-   * remove this effect.
-   */
+  
   useEffect(() => {
     const currentSearch = filters.search || "";
 
@@ -382,9 +372,7 @@ export default function BlogPage({
     router.push(`/blog/${blogSlug}`);
   };
 
-  /**
-   * Pagination numbers
-   */
+  
   const getPaginationNumbers = () => {
     const currentPage = pagination.currentPage;
     const totalPages = pagination.totalPages;
@@ -455,21 +443,17 @@ export default function BlogPage({
     });
   };
 
-  /**
-   * Clear all filters
-   */
+  
   const clearFilters = () => {
     router.push(pathname);
   };
 
-  // Featured blog
-  const featuredBlog =
-    blogs.length > 0 ? blogs[0] : null;
+  const featuredBlog = blogs.length > 0 ? blogs[0] : null;
 
-  // Latest blogs
-  const latestBlogs =
-    blogs.length > 1 ? blogs.slice(1) : [];
+  const latestBlogs = blogs.length > 1 ? blogs.slice(1) : [];
+  console.log(featuredBlog, 'blog');
 
+  
   return (
     <div className="min-h-screen bg-white text-[#1f2430]">
       {/* Hero */}
@@ -621,7 +605,7 @@ export default function BlogPage({
                     </h3>
 
                     <p className="mb-4 text-sm leading-relaxed text-gray-500">
-                      {featuredBlog.excerpt}
+                      {featuredBlog.excerpt || featuredBlog?.metaDescription}
                     </p>
 
                     <div className="flex items-center justify-between">
@@ -698,16 +682,14 @@ export default function BlogPage({
                     </h3>
 
                     <p className="mb-3 text-[13px] leading-relaxed text-gray-500">
-                      {post.excerpt}
+                      {post.excerpt || post?.metaDescription}
                     </p>
 
                     <div className="flex items-center gap-4 text-[11px] text-gray-400">
                       <span className="flex items-center gap-1">
                         <Calendar size={11} />
 
-                        {post.publishedDate
-                          ?.split("T")[0] ||
-                          "2026-07-07"}
+                        {post.publishedDate?.split("T")[0] || "2026-07-07"}
                       </span>
                     </div>
                   </article>

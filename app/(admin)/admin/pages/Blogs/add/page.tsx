@@ -10,13 +10,13 @@ import {
   Trash2,
   ChevronDown,
   ChevronUp,
-  Upload,
   X,
 } from "lucide-react";
 import { getBlogCategory, getBlogBySlug } from "@/app/services/api";
 import { useRouter, useSearchParams } from "next/navigation";
 import { pageData } from "@/app/lib/pageData";
 import { slugify } from "@/app/lib/slug";
+import axiosInstance from "@/app/lib/axios";
 
 const CKEditorComponent = dynamic(
   () => import("../../../components/ckEditor"),
@@ -73,6 +73,7 @@ interface BlogForm {
   metaTitle: string;
   metaDescription: string;
   isPublished: boolean;
+  publishedDate?: string;
   blog_details: BlogDetail[];
   author?: string;
   authslug?: string;
@@ -123,6 +124,7 @@ const defaultForm: BlogForm = {
   metaTitle: "",
   metaDescription: "",
   isPublished: true,
+  publishedDate: "",
   blog_details: [],
   author: "",
   authslug: "",
@@ -141,6 +143,24 @@ const BlogFormContent = () => {
     "basic-info",
   );
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [authors, setAuthors] = useState<any[]>([]);
+
+  const formData = pageData.blogdetails;
+
+  // Fetch authors
+  const fetchAuthors = async () => {
+    try {
+      const res = await axiosInstance.get('/admin/auther');
+      console.log("Authors:", res.data);
+      setAuthors(res?.data.data || []);
+    } catch (error) {
+      console.error("Failed to fetch authors:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAuthors();
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -169,6 +189,7 @@ const BlogFormContent = () => {
               blogData.isPublished === false || blogData.isPublished === "false"
                 ? false
                 : true,
+            publishedDate: blogData.publishedDate || "",
             blog_details: Array.isArray(blogData.blog_details)
               ? blogData.blog_details.map(normalizeBlogDetail)
               : [],
@@ -230,7 +251,6 @@ const BlogFormContent = () => {
       ...prev,
       [field]: value,
     }));
-    // Clear error for this field if it exists
     if (errors[field]) {
       setErrors((prev) => {
         const newErrors = { ...prev };
@@ -247,12 +267,10 @@ const BlogFormContent = () => {
   ) => {
     setValues((prev) => {
       const details = [...prev.blog_details];
-
       details[detailIndex] = {
         ...details[detailIndex],
         [field]: value,
       };
-
       return {
         ...prev,
         blog_details: details,
@@ -264,7 +282,6 @@ const BlogFormContent = () => {
   const uploadRootImage = async (file: File) => {
     try {
       setLoading(true);
-
       const data = new FormData();
       data.append("file", file);
 
@@ -306,12 +323,10 @@ const BlogFormContent = () => {
     detailIndex: number,
   ) => {
     const file = e.target.files?.[0];
-
     if (!file) return;
 
     try {
       setLoading(true);
-
       const data = new FormData();
       data.append("file", file);
 
@@ -340,7 +355,6 @@ const BlogFormContent = () => {
       ...prev,
       blog_details: [...prev.blog_details, createBlogDetail()],
     }));
-
     setActiveDetail(values.blog_details.length);
   };
 
@@ -349,19 +363,16 @@ const BlogFormContent = () => {
       ...prev,
       blog_details: prev.blog_details.filter((_, i) => i !== index),
     }));
-
     setActiveDetail(null);
   };
 
   const addFAQ = (detailIndex: number) => {
     setValues((prev) => {
       const details = [...prev.blog_details];
-
       details[detailIndex] = {
         ...details[detailIndex],
         faq: [...(details[detailIndex]?.faq || []), createFAQ()],
       };
-
       return {
         ...prev,
         blog_details: details,
@@ -372,12 +383,10 @@ const BlogFormContent = () => {
   const removeFAQ = (detailIndex: number, faqIndex: number) => {
     setValues((prev) => {
       const details = [...prev.blog_details];
-
       details[detailIndex] = {
         ...details[detailIndex],
         faq: details[detailIndex].faq.filter((_, index) => index !== faqIndex),
       };
-
       return {
         ...prev,
         blog_details: details,
@@ -394,17 +403,14 @@ const BlogFormContent = () => {
     setValues((prev) => {
       const details = [...prev.blog_details];
       const faq = [...details[detailIndex].faq];
-
       faq[faqIndex] = {
         ...faq[faqIndex],
         [field]: value,
       };
-
       details[detailIndex] = {
         ...details[detailIndex],
         faq,
       };
-
       return {
         ...prev,
         blog_details: details,
@@ -415,12 +421,10 @@ const BlogFormContent = () => {
   const addBanner = (detailIndex: number) => {
     setValues((prev) => {
       const details = [...prev.blog_details];
-
       details[detailIndex] = {
         ...details[detailIndex],
         Banner: [...(details[detailIndex]?.Banner || []), createBanner()],
       };
-
       return {
         ...prev,
         blog_details: details,
@@ -431,14 +435,12 @@ const BlogFormContent = () => {
   const removeBanner = (detailIndex: number, bannerIndex: number) => {
     setValues((prev) => {
       const details = [...prev.blog_details];
-
       details[detailIndex] = {
         ...details[detailIndex],
         Banner: details[detailIndex].Banner.filter(
           (_, index) => index !== bannerIndex,
         ),
       };
-
       return {
         ...prev,
         blog_details: details,
@@ -455,17 +457,14 @@ const BlogFormContent = () => {
     setValues((prev) => {
       const details = [...prev.blog_details];
       const banners = [...details[detailIndex].Banner];
-
       banners[bannerIndex] = {
         ...banners[bannerIndex],
         [field]: value,
       };
-
       details[detailIndex] = {
         ...details[detailIndex],
         Banner: banners,
       };
-
       return {
         ...prev,
         blog_details: details,
@@ -476,12 +475,10 @@ const BlogFormContent = () => {
   const addOption = (detailIndex: number) => {
     setValues((prev) => {
       const details = [...prev.blog_details];
-
       details[detailIndex] = {
         ...details[detailIndex],
         options: [...(details[detailIndex]?.options || []), createOption()],
       };
-
       return {
         ...prev,
         blog_details: details,
@@ -492,14 +489,12 @@ const BlogFormContent = () => {
   const removeOption = (detailIndex: number, optionIndex: number) => {
     setValues((prev) => {
       const details = [...prev.blog_details];
-
       details[detailIndex] = {
         ...details[detailIndex],
         options: details[detailIndex].options.filter(
           (_, index) => index !== optionIndex,
         ),
       };
-
       return {
         ...prev,
         blog_details: details,
@@ -516,17 +511,14 @@ const BlogFormContent = () => {
     setValues((prev) => {
       const details = [...prev.blog_details];
       const options = [...details[detailIndex].options];
-
       options[optionIndex] = {
         ...options[optionIndex],
         [field]: value,
       };
-
       details[detailIndex] = {
         ...details[detailIndex],
         options,
       };
-
       return {
         ...prev,
         blog_details: details,
@@ -557,7 +549,6 @@ const BlogFormContent = () => {
     e?.preventDefault();
 
     if (!validateForm()) {
-      // Scroll to the first error
       const firstErrorField = document.querySelector('.border-red-500');
       if (firstErrorField) {
         firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -577,6 +568,7 @@ const BlogFormContent = () => {
         metaTitle: values.metaTitle.trim(),
         metaDescription: values.metaDescription.trim(),
         isPublished: Boolean(values.isPublished),
+        publishedDate: values.publishedDate || "",
         blog_details: values.blog_details,
         author: values.author || "",
         authslug: values.authslug || "",
@@ -607,11 +599,9 @@ const BlogFormContent = () => {
       }
 
       alert(`Blog ${editSlug ? "updated" : "created"} successfully!`);
-
       router.push("/admin/pages/Blogs");
     } catch (error: any) {
       console.error(`Error ${editSlug ? "updating" : "creating"} blog:`, error);
-
       alert(
         error?.message || `Error ${editSlug ? "updating" : "creating"} blog`,
       );
@@ -621,33 +611,218 @@ const BlogFormContent = () => {
   };
 
   const inputClass =
-    "w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all";
+    "w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all";
 
   const inputErrorClass = (field: string) =>
     errors[field] ? "border-red-500 focus:ring-red-500" : "";
 
-  const sectionHeader = (name: string, label: string, required = false) => (
-    <div
-      onClick={() => setActiveSection(activeSection === name ? null : name)}
-      className="flex justify-between items-center p-5 cursor-pointer hover:bg-gray-50 rounded-2xl transition"
-    >
-      <div>
-        <span className="font-semibold text-gray-800">{label}</span>
+  // Dynamic field renderer based on pageData configuration
+  const renderField = (field: any, sectionName: string, customValue?: any, customOnChange?: (value: any) => void) => {
+    const value = customValue !== undefined ? customValue : (values as any)[field.name] || "";
+    const onChange = customOnChange || ((val: any) => updateRootField(field.name, val));
 
-        {required && (
-          <span className="ml-2 px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">
-            Required
-          </span>
+    // Handle author field with dropdown
+    if (field.name === "author") {
+      const selectedAuthorSlug = values.authslug || 
+        authors.find((author: any) => author.name === value)?.slug || "";
+
+      return (
+        <select
+          value={selectedAuthorSlug}
+          className={`${inputClass} ${inputErrorClass(field.name)}`}
+          onChange={(e) => {
+            const selectedAuthor = authors.find(
+              (author: any) => author.slug === e.target.value
+            );
+            updateRootField("author", selectedAuthor?.name || "");
+            updateRootField("authslug", selectedAuthor?.slug || "");
+          }}
+        >
+          <option value="">Select Author</option>
+          {authors.map((author: any) => (
+            <option key={author.slug} value={author.slug}>
+              {author.name}
+            </option>
+          ))}
+        </select>
+      );
+    }
+
+    // Handle category field - fetch from API
+    if (field.name === "category") {
+      return (
+        <select
+          value={value}
+          className={`${inputClass} ${inputErrorClass(field.name)}`}
+          onChange={(e) => updateRootField(field.name, e.target.value)}
+        >
+          <option value="">Select Category</option>
+          {categories.map((cat: any) => (
+            <option key={cat._id} value={cat.name}>
+              {cat.name}
+            </option>
+          ))}
+        </select>
+      );
+    }
+
+    // Handle tags field
+    if (field.name === "tags") {
+      return (
+        <input
+          type="text"
+          value={Array.isArray(value) ? value.join(", ") : value}
+          className={`${inputClass} ${inputErrorClass(field.name)}`}
+          onChange={(e) => {
+            const arr = e.target.value.split(",").map(s => s.trim()).filter(s => s);
+            updateRootField(field.name, arr);
+          }}
+          placeholder={field.placeholder}
+        />
+      );
+    }
+
+    // Handle image upload (file type)
+    if (field.type === "file") {
+      return (
+        <div className="space-y-3">
+          <input
+            type="file"
+            accept={field.accept}
+            onChange={handleRootImageUpload}
+            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
+          />
+          {value && (
+            <div className="relative inline-block">
+              <img
+                src={value}
+                alt={field.label}
+                className="h-32 w-auto rounded-lg border object-cover"
+              />
+              <button
+                type="button"
+                onClick={removeRootImage}
+                className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    // Handle select dropdown
+    if (field.type === "select") {
+      return (
+        <select
+          value={String(value)}
+          className={`${inputClass} ${inputErrorClass(field.name)}`}
+          onChange={(e) => {
+            const val = e.target.value;
+            // Convert to boolean for isPublished
+            if (field.name === "isPublished") {
+              updateRootField(field.name, val === "true");
+            } else {
+              updateRootField(field.name, val);
+            }
+          }}
+        >
+          <option value="">Select {field.label}</option>
+          {field.option?.map((opt: any, i: number) => (
+            <option key={i} value={opt}>
+              {opt}
+            </option>
+          ))}
+        </select>
+      );
+    }
+
+    // Handle textarea
+    if (field.type === "textarea") {
+      return (
+        <textarea
+          value={value}
+          className={`${inputClass} ${inputErrorClass(field.name)}`}
+          rows={4}
+          onChange={(e) => updateRootField(field.name, e.target.value)}
+          placeholder={field.placeholder}
+        />
+      );
+    }
+
+    // Handle date
+    if (field.type === "date") {
+      return (
+        <input
+          type="date"
+          value={value}
+          className={`${inputClass} ${inputErrorClass(field.name)}`}
+          onChange={(e) => updateRootField(field.name, e.target.value)}
+        />
+      );
+    }
+
+    // Handle editor
+    if (field.type === "editor") {
+      return (
+        <CKEditorComponent
+          value={value}
+          onChange={(data: string) => updateRootField(field.name, data)}
+        />
+      );
+    }
+
+    // Default text input
+    return (
+      <input
+        type={field.type || "text"}
+        value={value}
+        disabled={field.name === "slug" && !!editSlug}
+        className={`${inputClass} ${inputErrorClass(field.name)} ${
+          field.name === "slug" && editSlug
+            ? "bg-gray-100 text-gray-500 cursor-not-allowed"
+            : ""
+        }`}
+        onChange={(e) => {
+          const val = e.target.value;
+          updateRootField(field.name, val);
+          // Auto-generate slug if title changes and not editing
+          if (field.name === "title" && !editSlug) {
+            updateRootField("slug", slugify(val));
+          }
+        }}
+        placeholder={field.placeholder}
+      />
+    );
+  };
+
+  // Render section fields from pageData
+  const renderSectionFields = (section: any) => {
+    return section.fields.map((field: any, index: number) => (
+      <div key={index}>
+        <label className="block text-sm font-medium mb-2">
+          {field.label}
+          {field.required && (
+            <span className="text-red-500 ml-1">*</span>
+          )}
+        </label>
+        {renderField(field, section.name)}
+        {errors[field.name] && (
+          <p className="text-red-500 text-sm mt-1">{errors[field.name]}</p>
         )}
       </div>
+    ));
+  };
 
-      {activeSection === name ? (
-        <ChevronUp size={20} className="text-gray-500" />
-      ) : (
-        <ChevronDown size={20} className="text-gray-500" />
-      )}
-    </div>
-  );
+  // Check if a section has a field with error
+  const sectionHasError = (sectionName: string) => {
+    const section = formData.sections.find((s: any) => s.name === sectionName);
+    if (!section) return false;
+    return section.fields.some((field: any) => errors[field.name]);
+  };
+
+  if (!formData) return <div className="p-8 text-center">Loading form data...</div>;
 
   return (
     <div className="max-w-7xl w-full mx-auto p-6 bg-gray-100 min-h-screen">
@@ -665,12 +840,9 @@ const BlogFormContent = () => {
 
               <div>
                 <h1 className="text-2xl font-bold">
-                  {editSlug ? "Edit Blog" : "Create New Blog"}
+                  {editSlug ? `Edit ${formData.name}` : `Create New ${formData.name}`}
                 </h1>
-
-                <p className="text-gray-600 mt-1">
-                  Create and manage dynamic blog content
-                </p>
+                <p className="text-gray-600 mt-1">{formData.description}</p>
               </div>
             </div>
 
@@ -678,845 +850,382 @@ const BlogFormContent = () => {
               type="button"
               onClick={() => handleSubmit()}
               disabled={loading}
-              className="bg-blue-600 text-white px-6 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700 transition-colors disabled:opacity-50"
+              className="bg-orange-600 text-white px-6 py-2 rounded-xl flex items-center gap-2 hover:bg-orange-700 transition-colors disabled:opacity-50"
             >
               <Save size={18} />
-
               {loading ? "Saving..." : editSlug ? "Update Blog" : "Save Blog"}
             </button>
           </div>
         </div>
 
         <div className="p-6 space-y-5">
-          {/* Basic Information Section */}
-          <div className="bg-white rounded-2xl shadow-sm border">
-            {sectionHeader("basic-info", "Basic Information", true)}
-
-            {activeSection === "basic-info" && (
-              <div className="border-t p-5">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Title <span className="text-red-500">*</span>
-                    </label>
-
-                    <input
-                      type="text"
-                      value={values.title}
-                      className={`${inputClass} ${inputErrorClass("title")}`}
-                      placeholder="Enter blog title"
-                      onChange={(e) => {
-                        updateRootField("title", e.target.value);
-                        // Auto-generate slug if not editing
-                        // if (!editSlug) {
-                        //   updateRootField("slug", slugify(e.target.value));
-                        // }
-                      }}
-                    />
-                    {errors.title && (
-                      <p className="text-red-500 text-sm mt-1">{errors.title}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Slug <span className="text-red-500">*</span>
-                    </label>
-
-                    <input
-                      type="text"
-                      value={values.slug}
-                      disabled={!!editSlug}
-                      className={`${inputClass} ${inputErrorClass("slug")} ${
-                        editSlug
-                          ? "bg-gray-100 text-gray-500 cursor-not-allowed"
-                          : ""
-                      }`}
-                      placeholder="enter-blog-slug"
-                      onChange={(e) => updateRootField("slug", e.target.value)}
-                    />
-                    {errors.slug && (
-                      <p className="text-red-500 text-sm mt-1">{errors.slug}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Category <span className="text-red-500">*</span>
-                    </label>
-
-                    <select
-                      value={values.category}
-                      className={`${inputClass} ${inputErrorClass("category")}`}
-                      onChange={(e) =>
-                        updateRootField("category", e.target.value)
-                      }
-                    >
-                      <option value="">Select Category</option>
-
-                      {categories.map((category: any) => (
-                        <option key={category._id} value={category.name}>
-                          {category.name}
-                        </option>
-                      ))}
-                    </select>
-                    {errors.category && (
-                      <p className="text-red-500 text-sm mt-1">{errors.category}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Tags
-                    </label>
-
-                    <input
-                      type="text"
-                      value={values.tags.join(", ")}
-                      className={inputClass}
-                      placeholder="GRE, IELTS, Study Abroad"
-                      onChange={(e) => {
-                        const tags = e.target.value
-                          .split(",")
-                          .map((tag) => tag.trim())
-                          .filter(Boolean);
-
-                        updateRootField("tags", tags);
-                      }}
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Meta Title
-                    </label>
-
-                    <input
-                      type="text"
-                      value={values.metaTitle}
-                      className={inputClass}
-                      placeholder="Enter meta title"
-                      onChange={(e) =>
-                        updateRootField("metaTitle", e.target.value)
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Published
-                    </label>
-
-                    <select
-                      value={values.isPublished ? "true" : "false"}
-                      className={inputClass}
-                      onChange={(e) =>
-                        updateRootField(
-                          "isPublished",
-                          e.target.value === "true",
-                        )
-                      }
-                    >
-                      <option value="true">Published</option>
-                      <option value="false">Draft</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Image
-                    </label>
-
-                    <div className="space-y-3">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleRootImageUpload}
-                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                      />
-
-                      {values.image && (
-                        <div className="relative inline-block">
-                          <img
-                            src={values.image}
-                            alt="Blog"
-                            className="h-32 w-auto rounded-lg border object-cover"
-                          />
-                          <button
-                            type="button"
-                            onClick={removeRootImage}
-                            className="absolute -top-2 -right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition"
-                          >
-                            <X size={16} />
-                          </button>
-                        </div>
+          
+          {formData.sections.map((section: any, idx: number) => {
+            
+            if (section.type === "repeater") {
+              return (
+                <div key={idx} className="bg-white rounded-2xl shadow-sm border">
+                  <div
+                    onClick={() =>
+                      setActiveSection(
+                        activeSection === section.name ? null : section.name,
+                      )
+                    }
+                    className="flex justify-between items-center p-5 cursor-pointer hover:bg-gray-50 rounded-2xl transition"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-semibold text-gray-800">{section.label}</span>
+                      <span className="px-2 py-0.5 bg-orange-100 text-orange-700 text-xs rounded">
+                        {values.blog_details.length} items
+                      </span>
+                      {sectionHasError(section.name) && (
+                        <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">
+                          Has errors
+                        </span>
                       )}
                     </div>
+                    {activeSection === section.name ? (
+                      <ChevronUp size={20} />
+                    ) : (
+                      <ChevronDown size={20} />
+                    )}
                   </div>
 
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium mb-2">
-                      Meta Description
-                    </label>
-
-                    <textarea
-                      value={values.metaDescription}
-                      className={inputClass}
-                      rows={4}
-                      placeholder="Enter meta description"
-                      onChange={(e) =>
-                        updateRootField("metaDescription", e.target.value)
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Blog Details Section */}
-          <div className="bg-white rounded-2xl shadow-sm border">
-            <div
-              onClick={() =>
-                setActiveSection(
-                  activeSection === "blog-details" ? null : "blog-details",
-                )
-              }
-              className="flex justify-between items-center p-5 cursor-pointer hover:bg-gray-50 rounded-2xl transition"
-            >
-              <div className="flex items-center gap-3">
-                <span className="font-semibold text-gray-800">
-                  Blog Details
-                </span>
-
-                <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs rounded">
-                  {values.blog_details.length} items
-                </span>
-              </div>
-
-              {activeSection === "blog-details" ? (
-                <ChevronUp size={20} />
-              ) : (
-                <ChevronDown size={20} />
-              )}
-            </div>
-
-            {activeSection === "blog-details" && (
-              <div className="border-t p-5 space-y-5">
-                {values.blog_details.length === 0 && (
-                  <div className="text-center py-10 border border-dashed rounded-xl text-gray-500">
-                    No blog detail sections added.
-                  </div>
-                )}
-
-                {values.blog_details.map((detail, detailIndex) => (
-                  <div
-                    key={detailIndex}
-                    className="border rounded-2xl bg-gray-50 overflow-hidden"
-                  >
-                    <div
-                      className="flex justify-between items-center p-4 bg-white border-b cursor-pointer"
-                      onClick={() =>
-                        setActiveDetail(
-                          activeDetail === detailIndex ? null : detailIndex,
-                        )
-                      }
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-semibold">
-                          {detailIndex + 1}
+                  {activeSection === section.name && (
+                    <div className="border-t p-5 space-y-5">
+                      {/* Blog Details Repeater */}
+                      {values.blog_details.length === 0 && (
+                        <div className="text-center py-10 border border-dashed rounded-xl text-gray-500">
+                          No blog detail sections added.
                         </div>
+                      )}
 
-                        <div>
-                          <h3 className="font-semibold">
-                            {detail.content_heading ||
-                              `Blog Detail ${detailIndex + 1}`}
-                          </h3>
-
-                          <p className="text-xs text-gray-500">
-                            Mixed content section
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-2">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removeBlogDetail(detailIndex);
-                          }}
-                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                      {values.blog_details.map((detail, detailIndex) => (
+                        <div
+                          key={detailIndex}
+                          className="border rounded-2xl bg-gray-50 overflow-hidden"
                         >
-                          <Trash2 size={18} />
-                        </button>
-
-                        {activeDetail === detailIndex ? (
-                          <ChevronUp size={20} />
-                        ) : (
-                          <ChevronDown size={20} />
-                        )}
-                      </div>
-                    </div>
-
-                    {activeDetail === detailIndex && (
-                      <div className="p-5 space-y-6">
-                        <div className="bg-white p-5 rounded-xl border">
-                          <h4 className="font-semibold mb-4">Content</h4>
-
-                          <div className="space-y-4">
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                Content Heading
-                              </label>
-
-                              <input
-                                type="text"
-                                value={detail.content_heading}
-                                className={inputClass}
-                                onChange={(e) =>
-                                  updateDetailField(
-                                    detailIndex,
-                                    "content_heading",
-                                    e.target.value,
-                                  )
-                                }
-                              />
+                          <div
+                            className="flex justify-between items-center p-4 bg-white border-b cursor-pointer"
+                            onClick={() =>
+                              setActiveDetail(
+                                activeDetail === detailIndex ? null : detailIndex,
+                              )
+                            }
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center font-semibold">
+                                {detailIndex + 1}
+                              </div>
+                              <div>
+                                <h3 className="font-semibold">
+                                  {detail.content_heading ||
+                                    `Blog Detail ${detailIndex + 1}`}
+                                </h3>
+                                <p className="text-xs text-gray-500">
+                                  Mixed content section
+                                </p>
+                              </div>
                             </div>
 
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                Content Data
-                              </label>
-
-                              <CKEditorComponent
-                                value={detail.content_data}
-                                onChange={(data: string) =>
-                                  updateDetailField(
-                                    detailIndex,
-                                    "content_data",
-                                    data,
-                                  )
-                                }
-                              />
-                            </div>
-
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                Image
-                              </label>
-
-                              <input
-                                type="file"
-                                accept="image/*"
-                                onChange={(e) => saveFile(e, detailIndex)}
-                                className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                              />
-
-                              {detail.Image && (
-                                <div className="mt-3">
-                                  <img
-                                    src={detail.Image}
-                                    alt="Blog"
-                                    className="h-32 w-auto rounded-lg border object-cover"
-                                  />
-                                </div>
+                            <div className="flex items-center gap-2">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeBlogDetail(detailIndex);
+                                }}
+                                className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                              >
+                                <Trash2 size={18} />
+                              </button>
+                              {activeDetail === detailIndex ? (
+                                <ChevronUp size={20} />
+                              ) : (
+                                <ChevronDown size={20} />
                               )}
                             </div>
                           </div>
+
+                          {activeDetail === detailIndex && (
+                            <div className="p-5 space-y-6">
+                              {/* Render blog detail fields from pageData */}
+                              {section.fields.map((field: any, fieldIdx: number) => {
+                                // Handle nested repeaters (faq, Banner, options)
+                                if (field.type === "repeater") {
+                                  return (
+                                    <div key={fieldIdx} className="bg-white p-5 rounded-xl border">
+                                      <div className="flex justify-between items-center mb-4">
+                                        <h4 className="font-semibold">{field.label}</h4>
+                                        <button
+                                          type="button"
+                                          onClick={() => {
+                                            if (field.name === "faq") addFAQ(detailIndex);
+                                            else if (field.name === "Banner") addBanner(detailIndex);
+                                            else if (field.name === "options") addOption(detailIndex);
+                                          }}
+                                          className="flex items-center gap-2 text-orange-600 font-medium"
+                                        >
+                                          <Plus size={16} />
+                                          Add {field.label}
+                                        </button>
+                                      </div>
+
+                                      <div className="space-y-4">
+                                        {(detail as any)[field.name]?.map((item: any, itemIndex: number) => (
+                                          <div
+                                            key={itemIndex}
+                                            className="p-4 border rounded-xl bg-gray-50 relative"
+                                          >
+                                            <button
+                                              type="button"
+                                              onClick={() => {
+                                                if (field.name === "faq") removeFAQ(detailIndex, itemIndex);
+                                                else if (field.name === "Banner") removeBanner(detailIndex, itemIndex);
+                                                else if (field.name === "options") removeOption(detailIndex, itemIndex);
+                                              }}
+                                              className="absolute top-2 right-2 p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                                            >
+                                              <Trash2 size={16} />
+                                            </button>
+
+                                            <div className={`grid grid-cols-1 md:grid-cols-${field.fields.length > 2 ? 3 : 2} gap-4 pr-10`}>
+                                              {field.fields.map((subField: any, subIdx: number) => {
+                                                const subValue = (item as any)[subField.name] || "";
+
+                                                if (subField.type === "editor") {
+                                                  return (
+                                                    <div key={subIdx} className={subIdx === 0 ? "md:col-span-2" : ""}>
+                                                      <label className="block text-sm font-medium mb-2">
+                                                        {subField.label}
+                                                      </label>
+                                                      <CKEditorComponent
+                                                        value={subValue}
+                                                        onChange={(data: string) => {
+                                                          if (field.name === "faq") {
+                                                            updateFAQ(detailIndex, itemIndex, subField.name as keyof FAQ, data);
+                                                          } else if (field.name === "Banner") {
+                                                            updateBanner(detailIndex, itemIndex, subField.name as keyof Banner, data);
+                                                          }
+                                                        }}
+                                                      />
+                                                    </div>
+                                                  );
+                                                }
+
+                                                if (subField.type === "textarea") {
+                                                  return (
+                                                    <div key={subIdx}>
+                                                      <label className="block text-sm font-medium mb-2">
+                                                        {subField.label}
+                                                      </label>
+                                                      <textarea
+                                                        value={subValue}
+                                                        className={inputClass}
+                                                        rows={3}
+                                                        onChange={(e) => {
+                                                          if (field.name === "faq") {
+                                                            updateFAQ(detailIndex, itemIndex, subField.name as keyof FAQ, e.target.value);
+                                                          }
+                                                        }}
+                                                      />
+                                                    </div>
+                                                  );
+                                                }
+
+                                                if (subField.type === "select") {
+                                                  return (
+                                                    <div key={subIdx}>
+                                                      <label className="block text-sm font-medium mb-2">
+                                                        {subField.label}
+                                                      </label>
+                                                      <select
+                                                        value={subValue}
+                                                        className={inputClass}
+                                                        onChange={(e) => {
+                                                          if (field.name === "options") {
+                                                            updateOption(detailIndex, itemIndex, subField.name as keyof Option, e.target.value);
+                                                          }
+                                                        }}
+                                                      >
+                                                        <option value="">Select Type</option>
+                                                        {subField.option?.map((opt: any, i: number) => (
+                                                          <option key={i} value={opt}>{opt}</option>
+                                                        ))}
+                                                      </select>
+                                                    </div>
+                                                  );
+                                                }
+
+                                                return (
+                                                  <div key={subIdx}>
+                                                    <label className="block text-sm font-medium mb-2">
+                                                      {subField.label}
+                                                    </label>
+                                                    <input
+                                                      type="text"
+                                                      value={subValue}
+                                                      className={inputClass}
+                                                      onChange={(e) => {
+                                                        if (field.name === "faq") {
+                                                          updateFAQ(detailIndex, itemIndex, subField.name as keyof FAQ, e.target.value);
+                                                        } else if (field.name === "Banner") {
+                                                          updateBanner(detailIndex, itemIndex, subField.name as keyof Banner, e.target.value);
+                                                        } else if (field.name === "options") {
+                                                          updateOption(detailIndex, itemIndex, subField.name as keyof Option, e.target.value);
+                                                        }
+                                                      }}
+                                                    />
+                                                  </div>
+                                                );
+                                              })}
+                                            </div>
+                                          </div>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  );
+                                }
+
+                                // Handle file upload for detail
+                                if (field.type === "file") {
+                                  return (
+                                    <div key={fieldIdx} className="bg-white p-5 rounded-xl border">
+                                      <h4 className="font-semibold mb-4">Image</h4>
+                                      <div className="space-y-3">
+                                        <input
+                                          type="file"
+                                          accept={field.accept}
+                                          onChange={(e) => saveFile(e, detailIndex)}
+                                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
+                                        />
+                                        {detail.Image && (
+                                          <div className="mt-3">
+                                            <img
+                                              src={detail.Image}
+                                              alt="Blog"
+                                              className="h-32 w-auto rounded-lg border object-cover"
+                                            />
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  );
+                                }
+
+                                // Regular field for blog detail
+                                return (
+                                  <div key={fieldIdx}>
+                                    <label className="block text-sm font-medium mb-2">
+                                      {field.label}
+                                      {field.required && (
+                                        <span className="text-red-500 ml-1">*</span>
+                                      )}
+                                    </label>
+                                    {field.type === "editor" ? (
+                                      <CKEditorComponent
+                                        value={(detail as any)[field.name] || ""}
+                                        onChange={(data: string) =>
+                                          updateDetailField(detailIndex, field.name, data)
+                                        }
+                                      />
+                                    ) : field.type === "textarea" ? (
+                                      <textarea
+                                        value={(detail as any)[field.name] || ""}
+                                        className={inputClass}
+                                        rows={4}
+                                        onChange={(e) =>
+                                          updateDetailField(detailIndex, field.name, e.target.value)
+                                        }
+                                        placeholder={field.placeholder}
+                                      />
+                                    ) : field.type === "select" ? (
+                                      <select
+                                        value={(detail as any)[field.name] || ""}
+                                        className={inputClass}
+                                        onChange={(e) =>
+                                          updateDetailField(detailIndex, field.name, e.target.value)
+                                        }
+                                      >
+                                        <option value="">Select {field.label}</option>
+                                        {field.option?.map((opt: any, i: number) => (
+                                          <option key={i} value={opt}>{opt}</option>
+                                        ))}
+                                      </select>
+                                    ) : (
+                                      <input
+                                        type={field.type || "text"}
+                                        value={(detail as any)[field.name] || ""}
+                                        className={inputClass}
+                                        onChange={(e) =>
+                                          updateDetailField(detailIndex, field.name, e.target.value)
+                                        }
+                                        placeholder={field.placeholder}
+                                      />
+                                    )}
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
                         </div>
+                      ))}
 
-                        <div className="bg-white p-5 rounded-xl border">
-                          <div className="flex justify-between items-center mb-4">
-                            <h4 className="font-semibold">FAQ</h4>
+                      <button
+                        type="button"
+                        onClick={addBlogDetail}
+                        className="w-full py-4 border-2 border-dashed border-orange-300 rounded-xl text-orange-600 hover:bg-orange-50 flex items-center justify-center gap-2 font-medium transition"
+                      >
+                        <Plus size={20} />
+                        Add Blog Detail Section
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            }
 
-                            <button
-                              type="button"
-                              onClick={() => addFAQ(detailIndex)}
-                              className="flex items-center gap-2 text-blue-600 font-medium"
-                            >
-                              <Plus size={16} />
-                              Add FAQ
-                            </button>
-                          </div>
-
-                          <div className="space-y-4">
-                            {detail.faq.map((faq, faqIndex) => (
-                              <div
-                                key={faqIndex}
-                                className="p-4 border rounded-xl bg-gray-50 relative"
-                              >
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    removeFAQ(detailIndex, faqIndex)
-                                  }
-                                  className="absolute top-2 right-2 p-2 text-red-500 hover:bg-red-50 rounded-lg"
-                                >
-                                  <Trash2 size={16} />
-                                </button>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pr-10">
-                                  <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                      Question
-                                    </label>
-
-                                    <input
-                                      type="text"
-                                      value={faq.question}
-                                      className={inputClass}
-                                      onChange={(e) =>
-                                        updateFAQ(
-                                          detailIndex,
-                                          faqIndex,
-                                          "question",
-                                          e.target.value,
-                                        )
-                                      }
-                                    />
-                                  </div>
-
-                                  <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                      Answer
-                                    </label>
-
-                                    <textarea
-                                      value={faq.answer}
-                                      className={inputClass}
-                                      rows={3}
-                                      onChange={(e) =>
-                                        updateFAQ(
-                                          detailIndex,
-                                          faqIndex,
-                                          "answer",
-                                          e.target.value,
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="bg-white p-5 rounded-xl border">
-                          <div className="flex justify-between items-center mb-4">
-                            <h4 className="font-semibold">Banner</h4>
-
-                            <button
-                              type="button"
-                              onClick={() => addBanner(detailIndex)}
-                              className="flex items-center gap-2 text-blue-600 font-medium"
-                            >
-                              <Plus size={16} />
-                              Add Banner
-                            </button>
-                          </div>
-
-                          <div className="space-y-4">
-                            {detail.Banner.map((banner, bannerIndex) => (
-                              <div
-                                key={bannerIndex}
-                                className="p-4 border rounded-xl bg-gray-50 relative"
-                              >
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    removeBanner(detailIndex, bannerIndex)
-                                  }
-                                  className="absolute top-2 right-2 p-2 text-red-500 hover:bg-red-50 rounded-lg"
-                                >
-                                  <Trash2 size={16} />
-                                </button>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pr-10">
-                                  <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                      Title
-                                    </label>
-
-                                    <input
-                                      type="text"
-                                      value={banner.title}
-                                      className={inputClass}
-                                      onChange={(e) =>
-                                        updateBanner(
-                                          detailIndex,
-                                          bannerIndex,
-                                          "title",
-                                          e.target.value,
-                                        )
-                                      }
-                                    />
-                                  </div>
-
-                                  <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                      URL
-                                    </label>
-
-                                    <input
-                                      type="text"
-                                      value={banner.url}
-                                      className={inputClass}
-                                      onChange={(e) =>
-                                        updateBanner(
-                                          detailIndex,
-                                          bannerIndex,
-                                          "url",
-                                          e.target.value,
-                                        )
-                                      }
-                                    />
-                                  </div>
-
-                                  <div className="md:col-span-2">
-                                    <label className="block text-sm font-medium mb-2">
-                                      Subtitle
-                                    </label>
-
-                                    <CKEditorComponent
-                                      value={banner.subtitle}
-                                      onChange={(data: string) =>
-                                        updateBanner(
-                                          detailIndex,
-                                          bannerIndex,
-                                          "subtitle",
-                                          data,
-                                        )
-                                      }
-                                    />
-                                  </div>
-
-                                  <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                      Button Text
-                                    </label>
-
-                                    <input
-                                      type="text"
-                                      value={banner.buttontext}
-                                      className={inputClass}
-                                      onChange={(e) =>
-                                        updateBanner(
-                                          detailIndex,
-                                          bannerIndex,
-                                          "buttontext",
-                                          e.target.value,
-                                        )
-                                      }
-                                    />
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="bg-white p-5 rounded-xl border">
-                          <div className="flex justify-between items-center mb-4">
-                            <h4 className="font-semibold">
-                              Question / Options
-                            </h4>
-
-                            <button
-                              type="button"
-                              onClick={() => addOption(detailIndex)}
-                              className="flex items-center gap-2 text-blue-600 font-medium"
-                            >
-                              <Plus size={16} />
-                              Add Option
-                            </button>
-                          </div>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                Question
-                              </label>
-
-                              <input
-                                type="text"
-                                value={detail.question}
-                                className={inputClass}
-                                onChange={(e) =>
-                                  updateDetailField(
-                                    detailIndex,
-                                    "question",
-                                    e.target.value,
-                                  )
-                                }
-                              />
-                            </div>
-
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                Answer
-                              </label>
-
-                              <input
-                                type="text"
-                                value={detail.answer}
-                                className={inputClass}
-                                onChange={(e) =>
-                                  updateDetailField(
-                                    detailIndex,
-                                    "answer",
-                                    e.target.value,
-                                  )
-                                }
-                              />
-                            </div>
-
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                Value
-                              </label>
-
-                              <input
-                                type="text"
-                                value={detail.value}
-                                className={inputClass}
-                                onChange={(e) =>
-                                  updateDetailField(
-                                    detailIndex,
-                                    "value",
-                                    e.target.value,
-                                  )
-                                }
-                              />
-                            </div>
-
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                Label
-                              </label>
-
-                              <input
-                                type="text"
-                                value={detail.label}
-                                className={inputClass}
-                                onChange={(e) =>
-                                  updateDetailField(
-                                    detailIndex,
-                                    "label",
-                                    e.target.value,
-                                  )
-                                }
-                              />
-                            </div>
-
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                Type
-                              </label>
-
-                              <select
-                                value={detail.type}
-                                className={inputClass}
-                                onChange={(e) =>
-                                  updateDetailField(
-                                    detailIndex,
-                                    "type",
-                                    e.target.value,
-                                  )
-                                }
-                              >
-                                <option value="text">Text</option>
-                                <option value="radio">Radio</option>
-                                <option value="checkbox">Checkbox</option>
-                                <option value="select">Select</option>
-                              </select>
-                            </div>
-                          </div>
-
-                          <div className="space-y-4">
-                            {detail.options.map((option, optionIndex) => (
-                              <div
-                                key={optionIndex}
-                                className="p-4 border rounded-xl bg-gray-50 relative"
-                              >
-                                <button
-                                  type="button"
-                                  onClick={() =>
-                                    removeOption(detailIndex, optionIndex)
-                                  }
-                                  className="absolute top-2 right-2 p-2 text-red-500 hover:bg-red-50 rounded-lg"
-                                >
-                                  <Trash2 size={16} />
-                                </button>
-
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pr-10">
-                                  <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                      Value
-                                    </label>
-
-                                    <input
-                                      type="text"
-                                      value={option.value}
-                                      className={inputClass}
-                                      onChange={(e) =>
-                                        updateOption(
-                                          detailIndex,
-                                          optionIndex,
-                                          "value",
-                                          e.target.value,
-                                        )
-                                      }
-                                    />
-                                  </div>
-
-                                  <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                      Label
-                                    </label>
-
-                                    <input
-                                      type="text"
-                                      value={option.label}
-                                      className={inputClass}
-                                      onChange={(e) =>
-                                        updateOption(
-                                          detailIndex,
-                                          optionIndex,
-                                          "label",
-                                          e.target.value,
-                                        )
-                                      }
-                                    />
-                                  </div>
-
-                                  <div>
-                                    <label className="block text-sm font-medium mb-2">
-                                      Type
-                                    </label>
-
-                                    <select
-                                      value={option.type}
-                                      className={inputClass}
-                                      onChange={(e) =>
-                                        updateOption(
-                                          detailIndex,
-                                          optionIndex,
-                                          "type",
-                                          e.target.value,
-                                        )
-                                      }
-                                    >
-                                      <option value="">Select Type</option>
-                                      <option value="text">Text</option>
-                                      <option value="radio">Radio</option>
-                                      <option value="checkbox">Checkbox</option>
-                                      <option value="select">Select</option>
-                                    </select>
-                                  </div>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="bg-white p-5 rounded-xl border">
-                          <h4 className="font-semibold mb-4">
-                            Additional Content
-                          </h4>
-
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                Title
-                              </label>
-
-                              <input
-                                type="text"
-                                value={detail.title}
-                                className={inputClass}
-                                onChange={(e) =>
-                                  updateDetailField(
-                                    detailIndex,
-                                    "title",
-                                    e.target.value,
-                                  )
-                                }
-                              />
-                            </div>
-
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                URL
-                              </label>
-
-                              <input
-                                type="text"
-                                value={detail.url}
-                                className={inputClass}
-                                onChange={(e) =>
-                                  updateDetailField(
-                                    detailIndex,
-                                    "url",
-                                    e.target.value,
-                                  )
-                                }
-                              />
-                            </div>
-
-                            <div className="md:col-span-2">
-                              <label className="block text-sm font-medium mb-2">
-                                Subtitle
-                              </label>
-
-                              <CKEditorComponent
-                                value={detail.subtitle}
-                                onChange={(data: string) =>
-                                  updateDetailField(
-                                    detailIndex,
-                                    "subtitle",
-                                    data,
-                                  )
-                                }
-                              />
-                            </div>
-
-                            <div>
-                              <label className="block text-sm font-medium mb-2">
-                                Button Text
-                              </label>
-
-                              <input
-                                type="text"
-                                value={detail.buttontext}
-                                className={inputClass}
-                                onChange={(e) =>
-                                  updateDetailField(
-                                    detailIndex,
-                                    "buttontext",
-                                    e.target.value,
-                                  )
-                                }
-                              />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+            // Regular section (basic-info)
+            return (
+              <div key={idx} className="bg-white rounded-2xl shadow-sm border">
+                <div
+                  onClick={() =>
+                    setActiveSection(
+                      activeSection === section.name ? null : section.name,
+                    )
+                  }
+                  className="flex justify-between items-center p-5 cursor-pointer hover:bg-gray-50 rounded-2xl transition"
+                >
+                  <div>
+                    <span className="font-semibold text-gray-800">{section.label}</span>
+                    {section.require && (
+                      <span className="ml-2 px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">
+                        Required
+                      </span>
+                    )}
+                    {sectionHasError(section.name) && (
+                      <span className="ml-2 px-2 py-0.5 bg-red-100 text-red-700 text-xs rounded">
+                        Has errors
+                      </span>
                     )}
                   </div>
-                ))}
+                  {activeSection === section.name ? (
+                    <ChevronUp size={20} className="text-gray-500" />
+                  ) : (
+                    <ChevronDown size={20} className="text-gray-500" />
+                  )}
+                </div>
 
-                <button
-                  type="button"
-                  onClick={addBlogDetail}
-                  className="w-full py-4 border-2 border-dashed border-blue-300 rounded-xl text-blue-600 hover:bg-blue-50 flex items-center justify-center gap-2 font-medium transition"
-                >
-                  <Plus size={20} />
-                  Add Blog Detail Section
-                </button>
+                {activeSection === section.name && (
+                  <div className="border-t p-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                      {renderSectionFields(section)}
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            );
+          })}
 
           <div className="flex justify-end gap-3 pt-2">
             <button
@@ -1531,10 +1240,9 @@ const BlogFormContent = () => {
               type="button"
               onClick={() => handleSubmit()}
               disabled={loading}
-              className="bg-blue-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-blue-700 disabled:opacity-50"
+              className="bg-orange-600 text-white px-6 py-3 rounded-xl flex items-center gap-2 hover:bg-orange-700 disabled:opacity-50"
             >
               <Save size={18} />
-
               {loading ? "Saving..." : editSlug ? "Update Blog" : "Save Blog"}
             </button>
           </div>
@@ -1551,8 +1259,6 @@ export default function BlogForm() {
     </Suspense>
   );
 }
-
-
 
 
 
@@ -1694,7 +1400,7 @@ export default function BlogForm() {
 //     const value = sectionValues[field.name] || "";
 
 //     const baseInputClasses =
-//       "w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all";
+//       "w-full p-3 border rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all";
 
 //       if (field.name === "author") {
 //   const selectedAuthorSlug =
@@ -1806,7 +1512,7 @@ export default function BlogForm() {
 //               type="file"
 //               accept={field.accept}
 //               onChange={(e) => saveFile(e, sectionName, field.name)}
-//               className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+//               className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
 //             />
 //             {value && (
 //               <img src={value} className="h-20 rounded-lg border" alt="Preview" />
@@ -1894,7 +1600,7 @@ export default function BlogForm() {
 //             <button
 //               onClick={handleSubmit}
 //               disabled={loading}
-//               className="bg-blue-600 text-white px-6 py-2 rounded-xl flex items-center gap-2 hover:bg-blue-700 transition-colors disabled:opacity-50"
+//               className="bg-orange-600 text-white px-6 py-2 rounded-xl flex items-center gap-2 hover:bg-orange-700 transition-colors disabled:opacity-50"
 //             >
 //               <Save size={18} />
 //               {loading ? "Saving..." : editSlug ? "Update Blog" : "Save Blog"}

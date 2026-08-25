@@ -11,8 +11,13 @@ export interface IBlog extends Document {
   image : string;
   metaTitle?: string;
   metaDescription?: string;
+  publishedDate?: Date;
   isPublished: boolean;
   blog_details: any;
+  author: string;
+  comments: any;
+  count : any;
+  authslug : string;
 }
 
 const BlogSchema = new Schema<IBlog>(
@@ -62,18 +67,35 @@ const BlogSchema = new Schema<IBlog>(
       default: true,
     },
 
+    count : {
+      type: String, default : 1000 
+    },
+    
+    author: {
+      type: String,
+      default: "Admin",
+      trim: true,
+    },
+    authslug: String,
+    publishedDate: {
+      type: Date,
+      default: Date.now,
+    },
     blog_details: {
       type: [Schema.Types.Mixed],
       default: [],
     },
+    comments: {
+      type: [Schema.Types.Mixed],
+      default: [],
+    }
   },
   {
     timestamps: true,
   }
 );
 
-// export default mongoose.models.BlogDetail ||
-//   mongoose.model<IBlog>("BlogDetail", BlogSchema);
+
 
 
 export default mongoose.models.BlogDetail ||
