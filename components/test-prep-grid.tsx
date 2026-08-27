@@ -30,13 +30,14 @@ export function TestPrepGrid({
   );
 
   const items =
-    DATA.length > 0
-      ? DATA.map((item: any) => ({
-          title: item.seoMeta.navTitle,
-          image: item?.seoMeta?.navIcon,
-          slug: item?.seoMeta?.canonicalUrl,
-        }))
-      : FALLBACK_ITEMS;
+    // DATA.length > 0
+    //   ? DATA.filter(ele => ele?.seoMeta?.template === "Preparation").map((item: any) => ({
+    //       title: item.seoMeta.navTitle,
+    //       image: item?.seoMeta?.navIcon,
+    //       slug: item?.seoMeta?.canonicalUrl,
+    //     }))
+    //   : 
+      FALLBACK_ITEMS;
 
   return (
     <section className="overflow-hidden">
@@ -54,8 +55,7 @@ export function TestPrepGrid({
           {/* Header */}
           <div className="max-w-3xl mx-auto text-center">
             <span className="inline-flex items-center rounded-full border border-orange-100 bg-orange-100 mt-2 px-5 py-2 text-sm font-semibold text-[#f26e46]">
-              ✦ {data.fields?.heading || "Trusted by 50,000+ Students Globally"}{" "}
-              ✦
+              ✦ {data.fields?.heading || "Trusted by 50,000+ Students Globally"}{" "}✦
             </span>
 
             <h3 className="mt-2 text-center text-xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
