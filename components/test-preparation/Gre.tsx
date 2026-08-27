@@ -844,14 +844,14 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
           {scoreGuaranteeSection.features?.map((ele: any, idx: number) => (
             <div
               key={idx}
-              className="text-black/80 flex flex-col relative isolate"
+              className="text-black/80 flex flex-col relative isolate "
             >
               <span className="absolute top-0 -left-2 h-12 sm:h-14 md:h-18 w-8 sm:w-10 md:w-12 bg-orange-600 rounded-2xl z-[-1]" />
-              <div className="p-4 sm:p-5 md:p-6 lg:p-8 bg-white border rounded-xl">
+              <div className="p-4 sm:p-5 md:p-6 lg:p-8 bg-white border rounded-xl h-54 overflow-auto">
                 <h3 className="font-bold text-base sm:text-lg md:text-xl mb-1 sm:mb-2">
                   {ele.title}
                 </h3>
-                <p className="text-gray-600 text-sm sm:text-base leading-relaxed">
+                <p className="text-gray-600 text-sm sm:text-base leading-relaxed overflow-auto ">
                   {ele.description}
                 </p>
               </div>

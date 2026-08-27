@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useMemo, useState } from "react";
@@ -21,251 +22,420 @@ import {
 
 const ORANGE = "#ff7a2a";
 const NAVY = "#0b1e3f";
-const LIGHT = "#f6f8fc";
+// Ascending band color ramp, light -> deep orange, used on the gauge chart.
+const BAND_COLORS = ["#ffe8d9", "#ffd0ad", "#ffb37a", "#ff9550", "#ff7a2a"];
 
 type FAQ = {
   question: string;
   answer: string;
 };
 
-const faqs: FAQ[] = [
-  {
-    question: "How accurate is the GRE score calculator?",
-    answer:
-      "The calculator provides an estimated GRE score based on the practice section results you enter. It is designed to give you a useful benchmark before taking the official GRE.",
-  },
-  {
-    question: "What is a good GRE score for graduate school?",
-    answer:
-      "A good GRE score depends on your target university, program and applicant pool. Competitive programs may expect stronger Quantitative and Verbal scores.",
-  },
-  {
-    question: "Does Ooshas Prep predict my admission chances?",
-    answer:
-      "The calculator provides a score-based indication of program competitiveness. Admission depends on many factors including academics, experience, essays, recommendations and the university.",
-  },
-  {
-    question: "How frequently should I use this calculator?",
-    answer:
-      "Use it after practice tests or major preparation milestones to track your progress and understand how your score is improving.",
-  },
-  {
-    question: "Can I use my calculator results for university planning?",
-    answer:
-      "Yes. Your estimated score can be used as an initial benchmark when researching universities and graduate programs.",
-  },
+type ExamType = "GRE" | "GMAT" | "SAT" | "TOEFL" | "IELTS" | "PTE";
+
+type ExamSection = {
+  id: string;
+  label: string;
+  min: number;
+  max: number;
+  step?: number; // increment allowed for this section, defaults to 1
+  // If set, this section is entered as a RAW score (e.g. IELTS Listening
+  // out of 40) and must be converted to a band/scaled score for totals.
+  // The UI also shows the converted value next to the raw input.
+  bandFromRaw?: (raw: number) => number;
+  bandUnitLabel?: string; // e.g. "Band" — label for the converted value
+};
+
+type PercentileBand = {
+  // Lowest total score (inclusive) that qualifies for this band.
+  threshold: number;
+  label: string;
+};
+
+type ExamConfig = {
+  label: string;
+  sections: ExamSection[];
+  scoreRange: { min: number; max: number };
+  // Ascending list of bands, e.g. [{threshold: 260, label: "65th"}, ...].
+  // Single source of truth for both the percentile lookup and the gauge chart.
+  percentileBands: PercentileBand[];
+  totalLabel: string;
+  // Converts raw section inputs into a real total score for this exam.
+  // This is exam-specific because not every exam's total is a simple sum
+  // (e.g. IELTS/PTE are averages, GMAT total isn't a linear sum of subsections).
+  computeTotal: (scores: Record<string, number>) => number;
+};
+
+// Rounds to the nearest multiple of `step` (e.g. step=0.5 -> nearest half point)
+function roundToStep(value: number, step: number) {
+  return Math.round(value / step) * step;
+}
+
+// Official IELTS rounding: overall band is the average of 4 sections, rounded
+// to the nearest whole or half band (.25 rounds up to .5, .75 rounds up to
+// the next whole band).
+function roundIELTSBand(avg: number) {
+  const whole = Math.floor(avg);
+  const remainder = avg - whole;
+  if (remainder < 0.25) return whole;
+  if (remainder < 0.75) return whole + 0.5;
+  return whole + 1;
+}
+
+// Approximate published IELTS Listening raw-score (out of 40) -> band
+// conversion table. Descending thresholds; first match wins.
+const LISTENING_RAW_TO_BAND: { min: number; band: number }[] = [
+  { min: 39, band: 9 },
+  { min: 37, band: 8.5 },
+  { min: 35, band: 8 },
+  { min: 32, band: 7.5 },
+  { min: 30, band: 7 },
+  { min: 26, band: 6.5 },
+  { min: 23, band: 6 },
+  { min: 18, band: 5.5 },
+  { min: 16, band: 5 },
+  { min: 13, band: 4.5 },
+  { min: 10, band: 4 },
+  { min: 8, band: 3.5 },
+  { min: 6, band: 3 },
+  { min: 4, band: 2.5 },
 ];
 
-const programs = [
-  {
-    title: "Top 10 Programs",
-    range: "325–340",
-    description: "Highly selective graduate programs",
-  },
-  {
-    title: "Top 50 Programs",
-    range: "315–324",
-    description: "Strong competitive universities",
-  },
-  {
-    title: "Top 100 Programs",
-    range: "300–314",
-    description: "Broad range of graduate options",
-  },
+// Approximate published IELTS Academic Reading raw-score (out of 40) -> band
+// conversion table. Descending thresholds; first match wins.
+const READING_RAW_TO_BAND: { min: number; band: number }[] = [
+  { min: 39, band: 9 },
+  { min: 37, band: 8.5 },
+  { min: 35, band: 8 },
+  { min: 33, band: 7.5 },
+  { min: 30, band: 7 },
+  { min: 27, band: 6.5 },
+  { min: 23, band: 6 },
+  { min: 19, band: 5.5 },
+  { min: 15, band: 5 },
+  { min: 13, band: 4.5 },
+  { min: 10, band: 4 },
+  { min: 8, band: 3.5 },
+  { min: 6, band: 3 },
 ];
 
-const testimonials = [
-  {
-    name: "Rahul",
-    score: "329",
-    text: "The calculator helped me understand where my score stood before I started shortlisting universities.",
-  },
-  {
-    name: "Neha",
-    score: "321",
-    text: "I used the score prediction after every mock test and could clearly see my progress.",
-  },
-  {
-    name: "Arjun",
-    score: "334",
-    text: "The program matching section made my university research much easier.",
-  },
-];
+function rawToBand(raw: number, table: { min: number; band: number }[]): number {
+  for (const row of table) {
+    if (raw >= row.min) return row.band;
+  }
+  return 0;
+}
 
-export default function GREScoreCalculatorPage() {
-  const [verbalCorrect, setVerbalCorrect] = useState(34);
-  const [verbalTotal, setVerbalTotal] = useState(40);
-  const [quantCorrect, setQuantCorrect] = useState(36);
-  const [quantTotal, setQuantTotal] = useState(40);
-  const [difficulty, setDifficulty] = useState(75);
+const listeningBandFromRaw = (raw: number) => rawToBand(raw, LISTENING_RAW_TO_BAND);
+const readingBandFromRaw = (raw: number) => rawToBand(raw, READING_RAW_TO_BAND);
+
+function defaultSectionValue(section: ExamSection) {
+  const step = section.step || 1;
+  const raw = section.min + (section.max - section.min) * 0.75;
+  return roundToStep(raw, step);
+}
+
+// Finds the highest band whose threshold is <= score.
+function getPercentileLabel(score: number, bands: PercentileBand[]) {
+  let label = bands[0]?.label ?? "";
+  for (const band of bands) {
+    if (score >= band.threshold) label = band.label;
+  }
+  return label;
+}
+
+const examConfigs: Record<ExamType, ExamConfig> = {
+  GRE: {
+    label: "GRE",
+    // Real GRE section scores are scaled 130-170, not raw 0-40 counts.
+    sections: [
+      { id: "verbal", label: "Verbal Reasoning", min: 130, max: 170 },
+      { id: "quant", label: "Quantitative Reasoning", min: 130, max: 170 },
+    ],
+    scoreRange: { min: 260, max: 340 },
+    percentileBands: [
+      { threshold: 260, label: "65th" },
+      { threshold: 310, label: "75th" },
+      { threshold: 315, label: "85th" },
+      { threshold: 320, label: "90th" },
+      { threshold: 325, label: "95th" },
+      { threshold: 330, label: "98th" },
+    ],
+    totalLabel: "/340",
+    // GRE total is simply verbal + quant.
+    computeTotal: (scores) => (scores.verbal ?? 130) + (scores.quant ?? 130),
+  },
+  GMAT: {
+    label: "GMAT",
+    // GMAT Focus Edition subsections are scaled 60-90 each.
+    sections: [
+      { id: "quant", label: "Quantitative", min: 60, max: 90 },
+      { id: "verbal", label: "Verbal", min: 60, max: 90 },
+      { id: "di", label: "Data Insights", min: 60, max: 90 },
+    ],
+    scoreRange: { min: 205, max: 805 },
+    percentileBands: [
+      { threshold: 205, label: "40th" },
+      { threshold: 600, label: "55th" },
+      { threshold: 650, label: "75th" },
+      { threshold: 700, label: "90th" },
+      { threshold: 750, label: "99th" },
+    ],
+    totalLabel: "/805",
+    // The official GMAT total isn't a direct sum of subsection scores (GMAC
+    // uses a proprietary conversion). We approximate it by scaling the
+    // average subsection performance (60-90) into the 205-805 total range,
+    // then rounding to the nearest 10, matching how GMAT totals are reported.
+    computeTotal: (scores) => {
+      const q = scores.quant ?? 60;
+      const v = scores.verbal ?? 60;
+      const di = scores.di ?? 60;
+      const avg = (q + v + di) / 3;
+      const raw = 205 + ((avg - 60) / (90 - 60)) * (805 - 205);
+      return roundToStep(raw, 10);
+    },
+  },
+  SAT: {
+    label: "SAT",
+    // Real SAT section scores are scaled 200-800 each.
+    sections: [
+      { id: "rw", label: "Reading & Writing", min: 200, max: 800 },
+      { id: "math", label: "Math", min: 200, max: 800 },
+    ],
+    scoreRange: { min: 400, max: 1600 },
+    percentileBands: [
+      { threshold: 400, label: "50th" },
+      { threshold: 1200, label: "75th" },
+      { threshold: 1300, label: "87th" },
+      { threshold: 1400, label: "94th" },
+      { threshold: 1500, label: "98th" },
+    ],
+    totalLabel: "/1600",
+    // SAT total is the sum of both section scores.
+    computeTotal: (scores) => (scores.rw ?? 200) + (scores.math ?? 200),
+  },
+  TOEFL: {
+    label: "TOEFL iBT",
+    sections: [
+      { id: "reading", label: "Reading", min: 0, max: 30 },
+      { id: "listening", label: "Listening", min: 0, max: 30 },
+      { id: "speaking", label: "Speaking", min: 0, max: 30 },
+      { id: "writing", label: "Writing", min: 0, max: 30 },
+    ],
+    scoreRange: { min: 0, max: 120 },
+    percentileBands: [
+      { threshold: 0, label: "40th" },
+      { threshold: 90, label: "60th" },
+      { threshold: 100, label: "80th" },
+      { threshold: 110, label: "90th" },
+      { threshold: 115, label: "95th" },
+    ],
+    totalLabel: "/120",
+    // TOEFL total is the sum of all four section scores.
+    computeTotal: (scores) =>
+      (scores.reading ?? 0) +
+      (scores.listening ?? 0) +
+      (scores.speaking ?? 0) +
+      (scores.writing ?? 0),
+  },
+  IELTS: {
+    label: "IELTS",
+    sections: [
+      // Listening & Reading are marked as a RAW score out of 40 questions,
+      // then converted to a 0-9 band via the official conversion tables.
+      {
+        id: "listening",
+        label: "Listening",
+        min: 0,
+        max: 40,
+        step: 1,
+        bandFromRaw: listeningBandFromRaw,
+        bandUnitLabel: "Band",
+      },
+      {
+        id: "reading",
+        label: "Reading",
+        min: 0,
+        max: 40,
+        step: 1,
+        bandFromRaw: readingBandFromRaw,
+        bandUnitLabel: "Band",
+      },
+      // Writing & Speaking are assessed directly against band descriptors,
+      // so they're entered as a band score (0-9, half-band increments).
+      { id: "writing", label: "Writing", min: 0, max: 9, step: 0.5 },
+      { id: "speaking", label: "Speaking", min: 0, max: 9, step: 0.5 },
+    ],
+    scoreRange: { min: 0, max: 9 },
+    percentileBands: [
+      { threshold: 0, label: "60th" },
+      { threshold: 7, label: "75th" },
+      { threshold: 7.5, label: "88th" },
+      { threshold: 8, label: "95th" },
+      { threshold: 8.5, label: "98th" },
+    ],
+    totalLabel: "/9",
+    // IELTS overall band is the AVERAGE of the four section BANDS (with
+    // Listening/Reading first converted from their raw scores), rounded
+    // using the official half/whole band rounding rule.
+    computeTotal: (scores) => {
+      const listeningBand = listeningBandFromRaw(scores.listening ?? 0);
+      const readingBand = readingBandFromRaw(scores.reading ?? 0);
+      const writingBand = scores.writing ?? 0;
+      const speakingBand = scores.speaking ?? 0;
+      const avg = (listeningBand + readingBand + writingBand + speakingBand) / 4;
+      return roundIELTSBand(avg);
+    },
+  },
+  PTE: {
+    label: "PTE Academic",
+    // Each PTE communicative skill is scored 10-90.
+    sections: [
+      { id: "speaking", label: "Speaking & Writing", min: 10, max: 90 },
+      { id: "reading", label: "Reading", min: 10, max: 90 },
+      { id: "listening", label: "Listening", min: 10, max: 90 },
+    ],
+    scoreRange: { min: 10, max: 90 },
+    percentileBands: [
+      { threshold: 10, label: "45th" },
+      { threshold: 65, label: "60th" },
+      { threshold: 72, label: "75th" },
+      { threshold: 79, label: "88th" },
+      { threshold: 85, label: "95th" },
+    ],
+    totalLabel: "/90",
+    // PTE's overall score is closely approximated by the average of the
+    // three communicative skill scores, not their sum.
+    computeTotal: (scores) => {
+      const avg =
+        ((scores.speaking ?? 10) + (scores.reading ?? 10) + (scores.listening ?? 10)) / 3;
+      return Math.round(avg);
+    },
+  },
+};
+
+
+type CalculatedResult = {
+  exam: ExamType;
+  scores: Record<string, number>;
+  totalScore: number;
+  percentile: string;
+};
+
+export default function ScoreCalculatorPage() {
+  const [selectedExam, setSelectedExam] = useState<ExamType>("GRE");
+  const [sectionScores, setSectionScores] = useState<Record<string, number>>({});
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
+  const [result, setResult] = useState<CalculatedResult | null>(null);
 
-  const score = useMemo(() => {
-    const verbalPercentage =
-      verbalTotal > 0 ? verbalCorrect / verbalTotal : 0;
+  const config = examConfigs[selectedExam];
 
-    const quantPercentage = quantTotal > 0 ? quantCorrect / quantTotal : 0;
+  // Initialize scores for the selected exam using each section's real min/max/step.
+  React.useEffect(() => {
+    const initial: Record<string, number> = {};
+    config.sections.forEach((s) => {
+      initial[s.id] = defaultSectionValue(s);
+    });
+    setSectionScores(initial);
+    setResult(null); 
+    
+  }, [selectedExam]);
 
-    const verbalScore = Math.round(130 + verbalPercentage * 40);
-    const quantScore = Math.round(130 + quantPercentage * 40);
+  const handleScoreChange = (sectionId: string, value: number) => {
+    const section = config.sections.find((s) => s.id === sectionId);
+    if (!section) return;
+    const step = section.step || 1;
+    const snapped = roundToStep(value, step);
+    const clamped = Math.min(section.max, Math.max(section.min, snapped));
+    setSectionScores((prev) => ({ ...prev, [sectionId]: clamped }));
+  };
 
-    return Math.min(340, verbalScore + quantScore);
-  }, [verbalCorrect, verbalTotal, quantCorrect, quantTotal]);
-
-  const percentile = useMemo(() => {
-    if (score >= 330) return "98+";
-    if (score >= 325) return "95+";
-    if (score >= 320) return "90+";
-    if (score >= 315) return "85+";
-    if (score >= 310) return "75+";
-    return "65+";
-  }, [score]);
+  const handleCalculate = () => {
+    const computed = config.computeTotal(sectionScores);
+    const totalScore = Math.min(
+      config.scoreRange.max,
+      Math.max(config.scoreRange.min, computed)
+    );
+    const percentile = getPercentileLabel(totalScore, config.percentileBands);
+    setResult({
+      exam: selectedExam,
+      scores: { ...sectionScores },
+      totalScore,
+      percentile,
+    });
+  };
 
   return (
     <main className="min-h-screen bg-[#fff] text-[#0b1e3f]">
-
       <Hero />
 
-      <PracticeForm
-        verbalCorrect={verbalCorrect}
-        verbalTotal={verbalTotal}
-        quantCorrect={quantCorrect}
-        quantTotal={quantTotal}
-        setVerbalCorrect={setVerbalCorrect}
-        setVerbalTotal={setVerbalTotal}
-        setQuantCorrect={setQuantCorrect}
-        setQuantTotal={setQuantTotal}
-      />
+      <div className="mx-auto max-w-6xl px-4 pb-4 pt-8">
+        <div className="flex flex-wrap justify-center gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
+          {(Object.keys(examConfigs) as ExamType[]).map((exam) => (
+            <button
+              key={exam}
+              onClick={() => setSelectedExam(exam)}
+              className={`rounded-lg px-5 py-2.5 text-sm font-bold transition ${
+                selectedExam === exam
+                  ? "bg-[#0b1e3f] text-white"
+                  : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              {examConfigs[exam].label}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <ScoreSection
-        score={score}
-        percentile={percentile}
-        difficulty={difficulty}
-        setDifficulty={setDifficulty}
-        verbalCorrect={verbalCorrect}
-        verbalTotal={verbalTotal}
-        quantCorrect={quantCorrect}
-        quantTotal={quantTotal}
+        config={config}
+        sectionScores={sectionScores}
+        onScoreChange={handleScoreChange}
+        onCalculate={handleCalculate}
+        result={result && result.exam === selectedExam ? result : null}
       />
 
-      {/* <ProgramMatching score={score} /> */}
+      <ScoreVisualizationSection
+        config={config}
+        result={result && result.exam === selectedExam ? result : null}
+      />
 
       <WhySection />
-
       <DifferenceSection />
-
       <BeyondNumberSection />
-
-      {/* <Testimonials /> */}
-
-      {/* <ReportSection score={score} /> */}
-
       <QuestionsSection />
-
-      <FAQSection
-        expandedFAQ={expandedFAQ}
-        setExpandedFAQ={setExpandedFAQ}
-      />
-
+      <FAQSection expandedFAQ={expandedFAQ} setExpandedFAQ={setExpandedFAQ} />
       <BottomCTA />
-
     </main>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* HEADER */
-/* -------------------------------------------------------------------------- */
-
-function Header() {
-  return (
-    <header className="sticky top-0 z-50 border-b border-white/10 bg-[#0b1e3f]/95 backdrop-blur">
-      <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-1.5">
-          <span className="text-sm font-extrabold tracking-tight text-white">
-            Ooshas
-          </span>
-
-          <span
-            className="text-sm font-extrabold"
-            style={{ color: ORANGE }}
-          >
-            Prep
-          </span>
-        </div>
-
-        <nav className="hidden items-center gap-6 text-[14px] font-medium text-white/80 md:flex">
-          <a href="#calculator" className="transition hover:text-white">
-            GRE Calculator
-          </a>
-          <a href="#programs" className="transition hover:text-white">
-            Grad School Match
-          </a>
-          <a href="#how-it-works" className="transition hover:text-white">
-            How It Works
-          </a>
-          <a href="#faq" className="transition hover:text-white">
-            FAQ
-          </a>
-          <a href="#contact" className="transition hover:text-white">
-            Contact
-          </a>
-        </nav>
-
-        <button
-          className="rounded-full px-4 py-2 text-[10px] font-bold text-white shadow-lg transition hover:scale-105"
-          style={{ background: ORANGE }}
-        >
-          Take Free Test
-        </button>
-      </div>
-    </header>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* HERO */
-/* -------------------------------------------------------------------------- */
-
 function Hero() {
   return (
     <section className="relative overflow-hidden bg-[#fcf3ed]">
-      {/* <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(40,78,140,.35),transparent_55%)]" /> */}
-
       <div className="relative mx-auto max-w-5xl px-4 pb-14 pt-16 text-center sm:px-6 lg:pb-20 lg:pt-20">
-        {/* <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange-300/20 bg-orange-400/10 px-3 py-1 
-        text-[10px] font-bold uppercase tracking-wider text-orange-300">
-          <Sparkles className="h-3 w-3" />
-          Free GRE Tool
-        </div> */}
-
-        <h1 className="mx-auto max-w-4xl text-3xl font-extrabold leading-tight  sm:text-4xl lg:text-5xl">
+        <h1 className="mx-auto max-w-4xl text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
           Free{" "}
           <span style={{ color: ORANGE }}>
-            GRE Score Calculator
+            Exam Score Calculator
           </span>{" "}
           & Grad School Predictor
         </h1>
-
-        <p className="mx-auto mt-5 max-w-2xl text-sm leading-6  sm:text-base">
-          Estimate your GRE score, understand your percentile, and discover
-          graduate programs that match your current performance.
+        <p className="mx-auto mt-5 max-w-2xl text-sm leading-6 sm:text-base">
+          Estimate your GRE, GMAT, SAT, TOEFL, IELTS, or PTE score, understand
+          your percentile, and discover programs that match your performance.
         </p>
-
         <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
           <a
             href="#calculator"
             className="inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5"
             style={{ background: ORANGE }}
           >
-            Calculate My GRE Score
+            Calculate My Score
             <ArrowRight className="h-4 w-4" />
           </a>
-
           <a
             href="#programs"
-            className="inline-flex items-center justify-center rounded-lg border border-black  px-6 py-3 text-sm font-semibold
-             transition hover:bg-white/10"
+            className="inline-flex items-center justify-center rounded-lg border border-black px-6 py-3 text-sm font-semibold transition hover:bg-white/10"
           >
             Explore Programs
           </a>
@@ -275,165 +445,29 @@ function Hero() {
   );
 }
 
-
-
-type PracticeProps = {
-  verbalCorrect: number;
-  verbalTotal: number;
-  quantCorrect: number;
-  quantTotal: number;
-  setVerbalCorrect: (value: number) => void;
-  setVerbalTotal: (value: number) => void;
-  setQuantCorrect: (value: number) => void;
-  setQuantTotal: (value: number) => void;
-};
-
-function PracticeForm({
-  verbalCorrect,
-  verbalTotal,
-  quantCorrect,
-  quantTotal,
-  setVerbalCorrect,
-  setVerbalTotal,
-  setQuantCorrect,
-  setQuantTotal,
-}: PracticeProps) {
-  return (
-    <section className="mt-7 px-4 pb-14">
-      <div className="mx-auto max-w-4xl rounded-2xl border border-slate-200 bg-white p-5 shadow-xl sm:p-7">
-        <div className="mb-5 flex items-start gap-3">
-          <div
-            className="mt-0.5 rounded-lg p-2"
-            style={{ background: "#fff0e8", color: ORANGE }}
-          >
-            <Target className="h-4 w-4" />
-          </div>
-
-          <div>
-            <h2 className="text-sm font-extrabold sm:text-base">
-              Get Your Free GRE Diagnostic & Study Plan
-            </h2>
-            <p className="mt-1 text-xm leading-5 text-slate-500">
-              Enter your latest practice results to get an instant estimate.
-            </p>
-          </div>
-        </div>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          <ScoreInput
-            label="Verbal Reasoning"
-            value={verbalCorrect}
-            total={verbalTotal}
-            setValue={setVerbalCorrect}
-            setTotal={setVerbalTotal}
-          />
-
-          <ScoreInput
-            label="Quantitative Reasoning"
-            value={quantCorrect}
-            total={quantTotal}
-            setValue={setQuantCorrect}
-            setTotal={setQuantTotal}
-          />
-        </div>
-
-        <button
-          className="mt-5 w-full rounded-lg py-3 text-sm font-bold text-white shadow-md transition hover:brightness-105"
-          style={{ background: ORANGE }}
-        >
-          Continue
-        </button>
-      </div>
-    </section>
-  );
-}
-
-function ScoreInput({
-  label,
-  value,
-  total,
-  setValue,
-  setTotal,
-}: {
-  label: string;
-  value: number;
-  total: number;
-  setValue: (value: number) => void;
-  setTotal: (value: number) => void;
-}) {
-  return (
-    <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <span className="text-xm font-bold text-slate-700">{label}</span>
-
-        <span className="text-[10px] font-semibold text-slate-400">
-          Practice Result
-        </span>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <label className="block">
-          <span className="mb-1 block text-[10px] font-semibold text-slate-500">
-            Correct Answers
-          </span>
-
-          <input
-            type="number"
-            min={0}
-            value={value}
-            onChange={(e) => setValue(Number(e.target.value))}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-bold outline-none focus:border-orange-400"
-          />
-        </label>
-
-        <label className="block">
-          <span className="mb-1 block text-[10px] font-semibold text-slate-500">
-            Total Questions
-          </span>
-
-          <input
-            type="number"
-            min={1}
-            value={total}
-            onChange={(e) => setTotal(Number(e.target.value))}
-            className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-bold outline-none focus:border-orange-400"
-          />
-        </label>
-      </div>
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* SCORE SECTION */
-/* -------------------------------------------------------------------------- */
-
 function ScoreSection({
-  score,
-  percentile,
-  difficulty,
-  setDifficulty,
-  verbalCorrect,
-  verbalTotal,
-  quantCorrect,
-  quantTotal,
+  config,
+  sectionScores,
+  onScoreChange,
+  onCalculate,
+  result,
 }: {
-  score: number;
-  percentile: string;
-  difficulty: number;
-  setDifficulty: (value: number) => void;
-  verbalCorrect: number;
-  verbalTotal: number;
-  quantCorrect: number;
-  quantTotal: number;
+  config: ExamConfig;
+  sectionScores: Record<string, number>;
+  onScoreChange: (id: string, value: number) => void;
+  onCalculate: () => void;
+  result: CalculatedResult | null;
 }) {
+  const displayTotal =
+    result && (Number.isInteger(result.totalScore) ? result.totalScore : result.totalScore.toFixed(1));
+
   return (
-    <section id="calculator" className="px-4 pb-20">
+    <section id="calculator" className="px-4 pb-16">
       <div className="mx-auto max-w-6xl">
         <SectionHeading
-          eyebrow="GRE SCORE CALCULATOR"
-          title="Convert Your Raw Score Into Your Real GRE Score"
-          description="Enter your practice performance and understand how your current results translate into an estimated GRE score."
+          eyebrow={`${config.label} SCORE CALCULATOR`}
+          title={`Convert Your Raw Score Into Your Real ${config.label} Score`}
+          description={`Enter your practice performance and click Calculate to see your estimated ${config.label} score.`}
         />
 
         <div className="mt-9 grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg lg:grid-cols-[1fr_360px]">
@@ -447,100 +481,136 @@ function ScoreSection({
                   Use your latest mock test for the best estimate.
                 </p>
               </div>
-
               <span className="rounded-full bg-orange-50 px-2.5 py-1 text-[9px] font-bold text-orange-500">
                 LIVE
               </span>
             </div>
 
-            <ResultRow
-              label="Verbal Reasoning"
-              value={`${verbalCorrect}/${verbalTotal}`}
-              percentage={
-                verbalTotal
-                  ? Math.round((verbalCorrect / verbalTotal) * 100)
-                  : 0
-              }
-            />
-
-            <ResultRow
-              label="Quantitative Reasoning"
-              value={`${quantCorrect}/${quantTotal}`}
-              percentage={
-                quantTotal
-                  ? Math.round((quantCorrect / quantTotal) * 100)
-                  : 0
-              }
-            />
-
-            <div className="mt-5 rounded-xl border border-slate-200 p-4">
-              <div className="mb-3 flex justify-between">
-                <div>
-                  <p className="text-xm font-bold">Question Difficulty</p>
-                  <p className="mt-1 text-[10px] text-slate-400">
-                    How challenging was your practice test?
-                  </p>
+            {config.sections.map((section) => {
+              const value = sectionScores[section.id] ?? section.min;
+              const percentage = Math.round(
+                ((value - section.min) / (section.max - section.min)) * 100
+              );
+              const step = section.step || 1;
+              const bandEquivalent = section.bandFromRaw ? section.bandFromRaw(value) : null;
+              return (
+                <div key={section.id} className="mb-4 rounded-xl border border-slate-200 p-4">
+                  <div className="mb-3 flex items-center justify-between">
+                    <span className="text-xm font-bold">
+                      {section.label}
+                      {section.bandFromRaw && (
+                        <span className="ml-1.5 font-normal text-slate-400">(out of {section.max})</span>
+                      )}
+                    </span>
+                    <span className="rounded bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">
+                      {value}
+                      <span className="text-slate-400"> / {section.max}</span>
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="range"
+                      min={section.min}
+                      max={section.max}
+                      step={step}
+                      value={value}
+                      onChange={(e) =>
+                        onScoreChange(section.id, Number(e.target.value))
+                      }
+                      className="flex-1 accent-orange-500"
+                    />
+                    <input
+                      type="number"
+                      min={section.min}
+                      max={section.max}
+                      step={step}
+                      value={value}
+                      onChange={(e) =>
+                        onScoreChange(section.id, Number(e.target.value))
+                      }
+                      className="w-16 rounded-lg border border-slate-200 px-2 py-1 text-center text-sm font-bold outline-none focus:border-orange-400"
+                    />
+                  </div>
+                  {/* <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
+                    <div
+                      className="h-full rounded-full transition-all"
+                      style={{
+                        width: `${Math.min(Math.max(percentage, 0), 100)}%`,
+                        background: ORANGE,
+                      }}
+                    />
+                  </div> */}
+                  {bandEquivalent !== null && (
+                    <p className="mt-2 text-[11px] font-semibold text-orange-500">
+                      ≈ {section.bandUnitLabel ?? "Band"} {bandEquivalent}
+                    </p>
+                  )}
                 </div>
-
-                <span className="text-xm font-bold text-orange-500">
-                  {difficulty}%
-                </span>
-              </div>
-
-              <input
-                type="range"
-                min={0}
-                max={100}
-                value={difficulty}
-                onChange={(e) => setDifficulty(Number(e.target.value))}
-                className="w-full accent-orange-500"
-              />
-            </div>
+              );
+            })}
 
             <button
-              className="mt-5 w-full rounded-lg py-3 text-xm font-bold text-white"
+              type="button"
+              onClick={onCalculate}
+              className="mt-5 w-full rounded-lg py-3 text-xm font-bold text-white transition hover:brightness-95"
               style={{ background: ORANGE }}
             >
-              Calculate My GRE Score
+              Calculate My Score
             </button>
           </div>
 
           <div className="relative flex flex-col justify-center bg-[#0b1e3f] p-7 text-white">
             <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-blue-500/10 blur-3xl" />
-
             <div className="relative">
-              <p className="text-center text-[10px] font-medium uppercase tracking-widest text-blue-200/60">
-                Your Estimated GRE Score
-              </p>
+              {!result ? (
+                <ResultPlaceholder />
+              ) : (
+                <>
+                  <p className="text-center text-[10px] font-medium uppercase tracking-widest text-blue-200/60">
+                    Your Estimated {config.label} Score
+                  </p>
+                  <div className="mt-4 text-center">
+                    <span className="text-6xl font-black tracking-tight">
+                      {displayTotal}
+                    </span>
+                    <span className="ml-1 text-sm font-semibold text-white/50">
+                      {config.totalLabel}
+                    </span>
+                  </div>
+                  <div className="mt-3 text-center">
+                    <span className="rounded-full bg-orange-500/15 px-3 py-1 text-[10px] font-bold text-orange-300">
+                      {result.percentile} Percentile
+                    </span>
+                  </div>
 
-              <div className="mt-4 text-center">
-                <span className="text-6xl font-black tracking-tight">
-                  {score}
-                </span>
+                  <div className="mt-8 space-y-4">
+                    {config.sections.map((section) => {
+                      const val = result.scores[section.id] ?? section.min;
+                      const pct = Math.round(
+                        ((val - section.min) / (section.max - section.min)) * 100
+                      );
+                      return (
+                        <ScoreMeter key={section.id} label={section.label} value={pct} />
+                      );
+                    })}
+                    <ScoreMeter
+                      label="Overall Performance"
+                      value={Math.round(
+                        ((result.totalScore - config.scoreRange.min) /
+                          (config.scoreRange.max - config.scoreRange.min)) *
+                          100
+                      )}
+                    />
+                  </div>
 
-                <span className="ml-1 text-sm font-semibold text-white/50">
-                  /340
-                </span>
-              </div>
-
-              <div className="mt-3 text-center">
-                <span className="rounded-full bg-orange-500/15 px-3 py-1 text-[10px] font-bold text-orange-300">
-                  {percentile} Percentile
-                </span>
-              </div>
-
-              <div className="mt-8 space-y-4">
-                <ScoreMeter label="Verbal Reasoning" value={verbalCorrect / Math.max(verbalTotal, 1) * 100} />
-                <ScoreMeter label="Quantitative Reasoning" value={quantCorrect / Math.max(quantTotal, 1) * 100} />
-                <ScoreMeter label="Overall Performance" value={Math.min((score / 340) * 100, 100)} />
-              </div>
-
-              <div className="mt-8 border-t border-white/10 pt-5 text-center">
-                <p className="text-[10px] leading-5 text-blue-100/60">
-                  Your estimated score is a planning benchmark and should not
-                  be considered an official GRE result.
-                </p>
-              </div>
+                  <div className="mt-8 border-t border-white/10 pt-5 text-center">
+                    <p className="text-[10px] leading-5 text-blue-100/60">
+                      Your estimated score is a planning benchmark and should not
+                      be considered an official result.
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -549,119 +619,92 @@ function ScoreSection({
   );
 }
 
-function ResultRow({
-  label,
-  value,
-  percentage,
-}: {
-  label: string;
-  value: string;
-  percentage: number;
-}) {
+function ResultPlaceholder() {
   return (
-    <div className="mb-4 rounded-xl border border-slate-200 p-4">
-      <div className="mb-3 flex items-center justify-between">
-        <span className="text-xm font-bold">{label}</span>
-
-        <span className="rounded bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">
-          {value}
-        </span>
+    <div className="text-center">
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-dashed border-white/20">
+        <Sparkles className="h-6 w-6 text-white/40" />
       </div>
-
-      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-        <div
-          className="h-full rounded-full transition-all"
-          style={{
-            width: `${Math.min(percentage, 100)}%`,
-            background: ORANGE,
-          }}
-        />
-      </div>
+      <p className="mt-4 text-sm font-bold text-white/80">No score yet</p>
+      <p className="mx-auto mt-2 max-w-[220px] text-[12px] leading-5 text-blue-100/60">
+        Enter your section scores on the left, then click{" "}
+        <span className="font-semibold text-orange-300">Calculate My Score</span> to
+        see your estimated result and charts.
+      </p>
     </div>
   );
 }
 
-function ScoreMeter({
-  label,
-  value,
-}: {
-  label: string;
-  value: number;
-}) {
+function ScoreMeter({ label, value }: { label: string; value: number }) {
+  const clamped = Math.min(Math.max(value, 0), 100);
   return (
     <div>
       <div className="mb-2 flex justify-between text-[10px]">
         <span className="text-white/70">{label}</span>
-        <span className="font-bold text-white">
-          {Math.round(value)}%
-        </span>
+        <span className="font-bold text-white">{Math.round(clamped)}%</span>
       </div>
-
       <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
         <div
           className="h-full rounded-full bg-orange-400 transition-all"
-          style={{ width: `${Math.min(value, 100)}%` }}
+          style={{ width: `${clamped}%` }}
         />
       </div>
     </div>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* PROGRAM MATCHING */
-/* -------------------------------------------------------------------------- */
+// ---------------------------------------------------------------------------
+// Score visualization: a bar chart comparing section scores, and a band/
+// percentile gauge showing where the total score falls on the exam's scale.
+// Only renders real data once the user has clicked Calculate.
+// ---------------------------------------------------------------------------
 
-function ProgramMatching({ score }: { score: number }) {
+function ScoreVisualizationSection({
+  config,
+  result,
+}: {
+  config: ExamConfig;
+  result: CalculatedResult | null;
+}) {
   return (
-    <section
-      id="programs"
-      className="bg-[#f6f8fc] px-4 pb-20"
-    >
+    <section className="px-4 pb-20">
       <div className="mx-auto max-w-6xl">
         <SectionHeading
-          eyebrow="PROGRAM MATCHING"
-          title="Which Grad Programs Match Your GRE Score?"
-          description={`Based on your estimated score of ${score}, here are the types of graduate programs you can explore.`}
+          eyebrow="SCORE BREAKDOWN"
+          title="See Your Score & Band, Visually"
+          description="A section-by-section chart of your practice scores, plus where your total score falls on the official band scale."
         />
-
-        <div className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-md">
-          <div className="flex items-center justify-between border-b border-slate-200 p-4">
-            <span className="text-xm font-bold">Your Current Range</span>
-
-            <button className="rounded-md bg-[#0b1e3f] px-3 py-2 text-[10px] font-bold text-white">
-              View More Programs
-            </button>
+        <div className="mt-9 grid gap-5 lg:grid-cols-2">
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+            <h3 className="text-sm font-extrabold">Section Score Chart</h3>
+            <p className="mt-1 text-[14px] text-slate-500">
+              Each bar shows how your entered score compares to that section's full range.
+            </p>
+            {result ? (
+              <SectionBarChart config={config} sectionScores={result.scores} />
+            ) : (
+              <ChartPlaceholder />
+            )}
           </div>
-
-          <div className="grid gap-0 md:grid-cols-3">
-            {programs.map((program, index) => (
-              <div
-                key={program.title}
-                className={`p-5 ${
-                  index !== programs.length - 1
-                    ? "border-b border-slate-200 md:border-b-0 md:border-r"
-                    : ""
-                }`}
-              >
-                <div className="mb-4 flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-orange-500">
-                    {program.title}
-                  </span>
-
-                  <GraduationCap className="h-4 w-4 text-slate-300" />
-                </div>
-
-                <p className="text-xl font-black">{program.range}</p>
-
-                <p className="mt-2 text-[14px] leading-5 text-slate-500">
-                  {program.description}
+          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+            <h3 className="text-sm font-extrabold">Total Score & Band Position</h3>
+            {result ? (
+              <>
+                <p className="mt-1 text-[14px] text-slate-500">
+                  Your {config.label} total of{" "}
+                  {Number.isInteger(result.totalScore) ? result.totalScore : result.totalScore.toFixed(1)}
+                  {" "}sits in the <span className="font-bold text-orange-500">{result.percentile} percentile</span> band.
                 </p>
-
-                <button className="mt-4 text-[10px] font-bold text-orange-500">
-                  Explore Programs →
-                </button>
-              </div>
-            ))}
+                <BandGaugeChart config={config} totalScore={result.totalScore} />
+              </>
+            ) : (
+              <>
+                <p className="mt-1 text-[14px] text-slate-500">
+                  Click Calculate My Score above to see where your total lands.
+                </p>
+                <ChartPlaceholder />
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -669,78 +712,293 @@ function ProgramMatching({ score }: { score: number }) {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* WHY SECTION */
-/* -------------------------------------------------------------------------- */
-
-function WhySection() {
-  return (<section className="bg-[#fcf3ed] px-4 py-16 text-[#0b1e3f]"> 
-  <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center"> 
-    <div> 
-      <div className="mb-4 inline-flex rounded-full bg-orange-500/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-orange-600"> 
-        More Than A Number 
-      </div> 
-      <h2 className="max-w-xl text-2xl font-extrabold leading-tight sm:text-3xl text-[#0b1e3f]"> 
-        Your Score Doesn't Stop Here — <br /> Practice For Real 
-      </h2> 
-      <p className="mt-5 max-w-xl text-sm leading-6 text-[#0b1e3f]/80"> 
-        Your GRE score is only one part of your graduate school journey. Use your results to identify weaknesses, improve your preparation, and build a stronger application strategy. 
-      </p> 
-      <ul className="mt-6 space-y-3"> 
-        {[ 
-          "Identify your strongest and weakest GRE sections", 
-          "Track progress across multiple practice tests", 
-          "Understand where your score stands", 
-          "Build a smarter graduate school shortlist", 
-        ].map((item) => ( 
-          <li key={item} className="flex items-center gap-3 text-xm text-[#0b1e3f]/90" > 
-            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500/15 text-orange-600"> 
-              <Check className="h-3 w-3" /> 
-            </span> 
-            {item} 
-          </li> 
-        ))} 
-      </ul> 
-      <button className="mt-7 rounded-lg px-5 py-3 text-xm font-bold text-white" style={{ background: ORANGE }} > 
-        Start Your Preparation 
-      </button> 
-    </div> 
-    <div className="grid grid-cols-2 gap-3"> 
-      {[ 
-        ["2,000+", "Students Tested"], 
-        ["10,000+", "Practice Results"], 
-        ["42 pts", "Average Improvement"], 
-        ["247", "Universities Explored"], 
-      ].map(([number, label]) => ( 
-        <div key={label} className="rounded-xl border border-[#0b1e3f]/10 bg-[#0b1e3f]/5 p-5" > 
-          <p className="text-xl font-black text-[#0b1e3f]">{number}</p> 
-          <p className="mt-1 text-[10px] text-[#0b1e3f]/60">{label}</p> 
-        </div> 
-      ))} 
-    </div> 
-  </div> 
-</section>
-
+function ChartPlaceholder() {
+  return (
+    <div className="mt-5 flex h-[220px] items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50">
+      <p className="max-w-[220px] text-center text-[12px] leading-5 text-slate-400">
+        Your chart will appear here once you calculate your score.
+      </p>
+    </div>
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* DIFFERENCE */
-/* -------------------------------------------------------------------------- */
+function SectionBarChart({
+  config,
+  sectionScores,
+}: {
+  config: ExamConfig;
+  sectionScores: Record<string, number>;
+}) {
+  const width = 600;
+  const height = 260;
+  const paddingLeft = 40;
+  const paddingRight = 20;
+  const paddingTop = 30;
+  const paddingBottom = 56;
+  const chartWidth = width - paddingLeft - paddingRight;
+  const chartHeight = height - paddingTop - paddingBottom;
+
+  const sections = config.sections;
+  const gap = 24;
+  const barWidth = (chartWidth - gap * (sections.length - 1)) / sections.length;
+
+  const gridLines = [0, 25, 50, 75, 100];
+
+  return (
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      className="mt-5 w-full"
+      role="img"
+      aria-label="Section score chart"
+    >
+      {/* Y-axis grid lines */}
+      {gridLines.map((pct) => {
+        const y = paddingTop + chartHeight - (pct / 100) * chartHeight;
+        return (
+          <g key={pct}>
+            <line
+              x1={paddingLeft}
+              x2={width - paddingRight}
+              y1={y}
+              y2={y}
+              stroke="#e2e8f0"
+              strokeWidth={1}
+            />
+            <text x={paddingLeft - 8} y={y + 3} textAnchor="end" fontSize={9} fill="#94a3b8">
+              {pct}%
+            </text>
+          </g>
+        );
+      })}
+
+      {/* Bars */}
+      {sections.map((section, i) => {
+        const value = sectionScores[section.id] ?? section.min;
+        const pct = Math.min(
+          100,
+          Math.max(0, ((value - section.min) / (section.max - section.min)) * 100)
+        );
+        const barHeight = (pct / 100) * chartHeight;
+        const x = paddingLeft + i * (barWidth + gap);
+        const y = paddingTop + chartHeight - barHeight;
+        const bandEquivalent = section.bandFromRaw ? section.bandFromRaw(value) : null;
+
+        return (
+          <g key={section.id}>
+            <rect
+              x={x}
+              y={y}
+              width={barWidth}
+              height={Math.max(barHeight, 2)}
+              rx={6}
+              fill={ORANGE}
+            />
+            <text
+              x={x + barWidth / 2}
+              y={y - 8}
+              textAnchor="middle"
+              fontSize={11}
+              fontWeight={700}
+              fill={NAVY}
+            >
+              {bandEquivalent !== null ? `${value} → ${bandEquivalent}` : value}
+            </text>
+            {wrapLabel(section.label).map((line, li) => (
+              <text
+                key={li}
+                x={x + barWidth / 2}
+                y={paddingTop + chartHeight + 16 + li * 12}
+                textAnchor="middle"
+                fontSize={10}
+                fill="#64748b"
+              >
+                {line}
+              </text>
+            ))}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+// Splits a section label onto up to two lines so it fits under a narrow bar.
+function wrapLabel(label: string): string[] {
+  if (label.length <= 12) return [label];
+  const words = label.split(" ");
+  const mid = Math.ceil(words.length / 2);
+  return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
+}
+
+function BandGaugeChart({
+  config,
+  totalScore,
+}: {
+  config: ExamConfig;
+  totalScore: number;
+}) {
+  const width = 600;
+  const height = 150;
+  const paddingLeft = 20;
+  const paddingRight = 20;
+  const barY = 46;
+  const barHeight = 28;
+  const trackWidth = width - paddingLeft - paddingRight;
+
+  const { min, max } = config.scoreRange;
+  const bands = config.percentileBands;
+  const boundaries = [...bands.map((b) => b.threshold), max];
+
+  const activeIndex = (() => {
+    let idx = 0;
+    bands.forEach((b, i) => {
+      if (totalScore >= b.threshold) idx = i;
+    });
+    return idx;
+  })();
+
+  const pointerX =
+    paddingLeft + ((totalScore - min) / (max - min)) * trackWidth;
+
+  return (
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      className="mt-5 w-full"
+      role="img"
+      aria-label="Total score band gauge"
+    >
+      {/* Band segments */}
+      {bands.map((band, i) => {
+        const segStart = boundaries[i];
+        const segEnd = boundaries[i + 1];
+        const segX = paddingLeft + ((segStart - min) / (max - min)) * trackWidth;
+        const segWidth = ((segEnd - segStart) / (max - min)) * trackWidth;
+        const segPct = (segWidth / trackWidth) * 100;
+        const isActive = i === activeIndex;
+
+        return (
+          <g key={band.label}>
+            <rect
+              x={segX}
+              y={barY}
+              width={Math.max(segWidth, 1)}
+              height={barHeight}
+              fill={BAND_COLORS[i % BAND_COLORS.length]}
+              stroke={isActive ? NAVY : "transparent"}
+              strokeWidth={isActive ? 2 : 0}
+              rx={4}
+            />
+            {segPct > 9 && (
+              <text
+                x={segX + segWidth / 2}
+                y={barY + barHeight + 16}
+                textAnchor="middle"
+                fontSize={9}
+                fontWeight={isActive ? 700 : 400}
+                fill={isActive ? NAVY : "#94a3b8"}
+              >
+                {band.label}
+              </text>
+            )}
+          </g>
+        );
+      })}
+
+      {/* Range end labels */}
+      <text x={paddingLeft} y={barY - 10} textAnchor="start" fontSize={9} fill="#94a3b8">
+        {min}
+      </text>
+      <text x={width - paddingRight} y={barY - 10} textAnchor="end" fontSize={9} fill="#94a3b8">
+        {max}
+      </text>
+
+      {/* Pointer marking the current total score */}
+      <line
+        x1={pointerX}
+        x2={pointerX}
+        y1={barY - 8}
+        y2={barY + barHeight + 8}
+        stroke={NAVY}
+        strokeWidth={2}
+      />
+      <polygon
+        points={`${pointerX - 6},${barY - 8} ${pointerX + 6},${barY - 8} ${pointerX},${barY - 18}`}
+        fill={NAVY}
+      />
+      <text
+        x={pointerX}
+        y={barY - 22}
+        textAnchor="middle"
+        fontSize={11}
+        fontWeight={700}
+        fill={NAVY}
+      >
+        {Number.isInteger(totalScore) ? totalScore : totalScore.toFixed(1)}
+      </text>
+    </svg>
+  );
+}
+
+function WhySection() {
+  return (
+    <section className="bg-[#fcf3ed] px-4 py-16 text-[#0b1e3f]">
+      <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center">
+        <div>
+          <div className="mb-4 inline-flex rounded-full bg-orange-500/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-orange-600">
+            More Than A Number
+          </div>
+          <h2 className="max-w-xl text-2xl font-extrabold leading-tight sm:text-3xl text-[#0b1e3f]">
+            Your Score Doesn't Stop Here — <br /> Practice For Real
+          </h2>
+          <p className="mt-5 max-w-xl text-sm leading-6 text-[#0b1e3f]/80">
+            Your exam score is only one part of your graduate school journey. Use your results to identify weaknesses, improve your preparation, and build a stronger application strategy.
+          </p>
+          <ul className="mt-6 space-y-3">
+            {[
+              "Identify your strongest and weakest sections",
+              "Track progress across multiple practice tests",
+              "Understand where your score stands",
+              "Build a smarter graduate school shortlist",
+            ].map((item) => (
+              <li key={item} className="flex items-center gap-3 text-xm text-[#0b1e3f]/90">
+                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500/15 text-orange-600">
+                  <Check className="h-3 w-3" />
+                </span>
+                {item}
+              </li>
+            ))}
+          </ul>
+          <button className="mt-7 rounded-lg px-5 py-3 text-xm font-bold text-white" style={{ background: ORANGE }}>
+            Start Your Preparation
+          </button>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            ["2,000+", "Students Tested"],
+            ["10,000+", "Practice Results"],
+            ["42 pts", "Average Improvement"],
+            ["247", "Universities Explored"],
+          ].map(([number, label]) => (
+            <div key={label} className="rounded-xl border border-[#0b1e3f]/10 bg-[#0b1e3f]/5 p-5">
+              <p className="text-xl font-black text-[#0b1e3f]">{number}</p>
+              <p className="mt-1 text-[10px] text-[#0b1e3f]/60">{label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
 
 function DifferenceSection() {
   return (
-    <section
-      id="how-it-works"
-      className="bg-white px-4 py-12"
-    >
+    <section id="how-it-works" className="bg-white px-4 py-12">
       <div className="mx-auto max-w-5xl">
         <SectionHeading
           eyebrow="OUR DIFFERENCE"
-          title="How Ooshas Prep's GRE Calculator Is Different"
+          title="How Ooshas Prep's Calculator Is Different"
           description="A simple calculator designed to give you useful insights beyond just a single number."
         />
-
         <div className="mt-9 overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
           <div className="grid grid-cols-[1.4fr_1fr_1fr_1fr] bg-[#0b1e3f] text-[10px] font-bold text-white">
             <div className="p-3">Feature</div>
@@ -748,7 +1006,6 @@ function DifferenceSection() {
             <div className="p-3 text-center">Basic Calculator</div>
             <div className="p-3 text-center">Random Predictor</div>
           </div>
-
           {[
             "Practice-based score estimate",
             "Section-level insights",
@@ -761,14 +1018,10 @@ function DifferenceSection() {
               key={item}
               className="grid grid-cols-[1.4fr_1fr_1fr_1fr] border-t border-slate-200 text-[14px]"
             >
-              <div className="p-3 font-semibold text-slate-700">
-                {item}
-              </div>
-
+              <div className="p-3 font-semibold text-slate-700">{item}</div>
               <div className="flex items-center justify-center bg-orange-50 p-3">
                 <Check className="h-4 w-4 text-orange-500" />
               </div>
-
               <div className="flex items-center justify-center p-3">
                 {index < 2 ? (
                   <Check className="h-4 w-4 text-emerald-500" />
@@ -776,7 +1029,6 @@ function DifferenceSection() {
                   <span className="text-slate-300">×</span>
                 )}
               </div>
-
               <div className="flex items-center justify-center p-3">
                 {index === 2 ? (
                   <Check className="h-4 w-4 text-emerald-500" />
@@ -792,50 +1044,23 @@ function DifferenceSection() {
   );
 }
 
-
 function BeyondNumberSection() {
   const features = [
-    {
-      icon: TrendingUp,
-      title: "Track Your Progress",
-      text: "Monitor score changes over multiple practice tests.",
-    },
-    {
-      icon: Target,
-      title: "Pinpoint Weak Areas",
-      text: "Understand which section needs more preparation.",
-    },
-    {
-      icon: GraduationCap,
-      title: "Explore Universities",
-      text: "Compare your score against graduate program ranges.",
-    },
-    {
-      icon: Trophy,
-      title: "Build Your Profile",
-      text: "Use your GRE score as part of your larger application plan.",
-    },
-    {
-      icon: MapPin,
-      title: "Find Your Fit",
-      text: "Discover programs that align with your goals.",
-    },
-    {
-      icon: Sparkles,
-      title: "Get Smarter Insights",
-      text: "Turn raw practice results into actionable information.",
-    },
+    { icon: TrendingUp, title: "Track Your Progress", text: "Monitor score changes over multiple practice tests." },
+    { icon: Target, title: "Pinpoint Weak Areas", text: "Understand which section needs more preparation." },
+    { icon: GraduationCap, title: "Explore Universities", text: "Compare your score against program ranges." },
+    { icon: Trophy, title: "Build Your Profile", text: "Use your score as part of your larger application plan." },
+    { icon: MapPin, title: "Find Your Fit", text: "Discover programs that align with your goals." },
+    { icon: Sparkles, title: "Get Smarter Insights", text: "Turn raw practice results into actionable information." },
   ];
-
   return (
     <section className="bg-[#fff] px-4 py-12">
       <div className="mx-auto max-w-6xl">
         <SectionHeading
           eyebrow="BEYOND THE NUMBER"
           title="Go Beyond the Number — Understand Your Score"
-          description="Your GRE result can tell you much more when combined with the right context."
+          description="Your result can tell you much more when combined with the right context."
         />
-
         <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {features.map(({ icon: Icon, title, text }) => (
             <div
@@ -845,12 +1070,8 @@ function BeyondNumberSection() {
               <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-orange-500">
                 <Icon className="h-4 w-4" />
               </div>
-
               <h3 className="text-sm font-extrabold">{title}</h3>
-
-              <p className="mt-2 text-[14px] leading-5 text-slate-500">
-                {text}
-              </p>
+              <p className="mt-2 text-[14px] leading-5 text-slate-500">{text}</p>
             </div>
           ))}
         </div>
@@ -858,110 +1079,6 @@ function BeyondNumberSection() {
     </section>
   );
 }
-
-/* -------------------------------------------------------------------------- */
-/* TESTIMONIALS */
-/* -------------------------------------------------------------------------- */
-
-function Testimonials() {
-  return (
-    <section className="bg-[#0b1e3f] px-4 py-16 text-white">
-      <div className="mx-auto max-w-6xl">
-        <SectionHeading
-          dark
-          eyebrow="REAL USERS"
-          title="Students Who Used Our GRE Tools"
-          description="See how students used their GRE results to improve their preparation."
-        />
-
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {testimonials.map((testimonial) => (
-            <div
-              key={testimonial.name}
-              className="rounded-xl border border-white/10 bg-white/5 p-5"
-            >
-              <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map((item) => (
-                  <Star
-                    key={item}
-                    className="h-3 w-3 fill-orange-400 text-orange-400"
-                  />
-                ))}
-              </div>
-
-              <p className="mt-4 text-xm leading-6 text-blue-100/75">
-                “{testimonial.text}”
-              </p>
-
-              <div className="mt-5 flex items-center justify-between border-t border-white/10 pt-4">
-                <div>
-                  <p className="text-xm font-bold">{testimonial.name}</p>
-                  <p className="mt-1 text-[9px] text-blue-100/40">
-                    GRE Student
-                  </p>
-                </div>
-
-                <span className="rounded-full bg-orange-400/10 px-2.5 py-1 text-[10px] font-bold text-orange-300">
-                  {testimonial.score}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* REPORT */
-/* -------------------------------------------------------------------------- */
-
-function ReportSection({ score }: { score: number }) {
-  return (
-    <section className="bg-white px-4 py-12">
-      <div className="mx-auto max-w-xl">
-        <SectionHeading
-          eyebrow="FREE SCORE REPORT"
-          title="Get a Free Detailed Score & Admissions Report"
-          description="Enter your email to receive a detailed summary of your estimated GRE performance."
-        />
-
-        <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-lg">
-          <label className="mb-4 block">
-            <span className="mb-2 block text-[10px] font-bold text-slate-600">
-              Your Email
-            </span>
-
-            <input
-              type="email"
-              placeholder="you@example.com"
-              className="w-full rounded-lg border border-slate-200 px-4 py-3 text-sm outline-none focus:border-orange-400"
-            />
-          </label>
-
-          <div className="mb-4 rounded-lg bg-slate-50 p-3">
-            <p className="text-[10px] text-slate-400">
-              Current estimated score
-            </p>
-            <p className="mt-1 text-lg font-black">{score}/340</p>
-          </div>
-
-          <button
-            className="w-full rounded-lg py-3 text-xm font-bold text-white"
-            style={{ background: ORANGE }}
-          >
-            Send My Free Report
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/* QUESTIONS */
-/* -------------------------------------------------------------------------- */
 
 function QuestionsSection() {
   return (
@@ -970,58 +1087,32 @@ function QuestionsSection() {
         <SectionHeading
           eyebrow="COMMUNITY"
           title="Student Questions & Comments"
-          description="Have a question about your GRE score? Ask our team and community."
+          description="Have a question about your score? Ask our team and community."
         />
-
         <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="grid gap-3 sm:grid-cols-2">
-            <input
-              placeholder="Your name"
-              className="rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400"
-            />
-
-            <input
-              placeholder="Email address"
-              className="rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400"
-            />
+            <input placeholder="Your name" className="rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400" />
+            <input placeholder="Email address" className="rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400" />
           </div>
-
-          <textarea
-            placeholder="Ask your question..."
-            rows={4}
-            className="mt-3 w-full resize-none rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400"
-          />
-
-          <button className="mt-3 rounded-lg bg-[#0b1e3f] px-5 py-3 text-xm font-bold text-white">
-            Post Question
-          </button>
+          <textarea placeholder="Ask your question..." rows={4} className="mt-3 w-full resize-none rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400" />
+          <button className="mt-3 rounded-lg bg-[#0b1e3f] px-5 py-3 text-xm font-bold text-white">Post Question</button>
         </div>
-
         <div className="mt-4 space-y-3">
           {[
             "How can I improve my Quant score?",
             "Is a 320 GRE score competitive?",
             "Which universities should I target?",
           ].map((question, index) => (
-            <div
-              key={question}
-              className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
-            >
+            <div key={question} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="flex gap-3">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0b1e3f] text-[10px] font-bold text-white">
                   {index + 1}
                 </div>
-
                 <div className="flex-1">
                   <p className="text-xm font-bold">{question}</p>
-                  <p className="mt-1 text-[10px] text-slate-400">
-                    Asked by GRE student
-                  </p>
+                  <p className="mt-1 text-[10px] text-slate-400">Asked by GRE student</p>
                 </div>
-
-                <button className="text-[10px] font-bold text-orange-500">
-                  Answer
-                </button>
+                <button className="text-[10px] font-bold text-orange-500">Answer</button>
               </div>
             </div>
           ))}
@@ -1031,10 +1122,6 @@ function QuestionsSection() {
   );
 }
 
-/* -------------------------------------------------------------------------- */
-/* FAQ */
-/* -------------------------------------------------------------------------- */
-
 function FAQSection({
   expandedFAQ,
   setExpandedFAQ,
@@ -1042,46 +1129,34 @@ function FAQSection({
   expandedFAQ: number | null;
   setExpandedFAQ: (value: number | null) => void;
 }) {
+  const faqs: FAQ[] = [
+    { question: "How accurate is the score calculator?", answer: "The calculator provides an estimated score based on the practice section results you enter. It is designed to give you a useful benchmark before taking the official exam." },
+    { question: "What is a good score for graduate school?", answer: "A good score depends on your target university, program and applicant pool. Competitive programs may expect stronger scores." },
+    { question: "Does Ooshas Prep predict my admission chances?", answer: "The calculator provides a score-based indication of program competitiveness. Admission depends on many factors including academics, experience, essays, recommendations and the university." },
+    { question: "How frequently should I use this calculator?", answer: "Use it after practice tests or major preparation milestones to track your progress and understand how your score is improving." },
+    { question: "Can I use my calculator results for university planning?", answer: "Yes. Your estimated score can be used as an initial benchmark when researching universities and graduate programs." },
+    { question: "Why are IELTS Listening and Reading entered out of 40?", answer: "IELTS Listening and Reading are marked as a raw score out of 40 questions, which is then converted to a 0-9 band using the official conversion table. Writing and Speaking are assessed directly against band descriptors, so they're entered as a band score." },
+  ];
   return (
     <section id="faq" className="bg-[#fff] px-4 pb-20">
       <div className="mx-auto max-w-3xl">
         <SectionHeading
           eyebrow=""
-          title="GRE Score Calculator — Frequently Asked Questions"
-          description="Everything you need to know about our GRE score calculator."
+          title="Score Calculator — Frequently Asked Questions"
+          description="Everything you need to know about our score calculator."
         />
-
         <div className="mt-8 space-y-2">
           {faqs.map((faq, index) => {
             const open = expandedFAQ === index;
-
             return (
-              <div
-                key={faq.question}
-                className="overflow-hidden rounded-lg border border-slate-200 bg-white"
-              >
-                <button
-                  onClick={() =>
-                    setExpandedFAQ(open ? null : index)
-                  }
-                  className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left"
-                >
-                  <span className="text-xm font-bold">
-                    {faq.question}
-                  </span>
-
-                  {open ? (
-                    <ChevronUp className="h-4 w-4 shrink-0 text-orange-500" />
-                  ) : (
-                    <ChevronDown className="h-4 w-4 shrink-0 text-orange-500" />
-                  )}
+              <div key={faq.question} className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+                <button onClick={() => setExpandedFAQ(open ? null : index)} className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left">
+                  <span className="text-xm font-bold">{faq.question}</span>
+                  {open ? <ChevronUp className="h-4 w-4 shrink-0 text-orange-500" /> : <ChevronDown className="h-4 w-4 shrink-0 text-orange-500" />}
                 </button>
-
                 {open && (
                   <div className="border-t border-slate-100 px-4 pb-4 pt-3">
-                    <p className="text-[14px] leading-5 text-slate-500">
-                      {faq.answer}
-                    </p>
+                    <p className="text-[14px] leading-5 text-slate-500">{faq.answer}</p>
                   </div>
                 )}
               </div>
@@ -1093,43 +1168,22 @@ function FAQSection({
   );
 }
 
-
-
 function BottomCTA() {
   return (
     <section id="contact" className="bg-white px-4 pb-5">
-      <div
-        className="mx-auto max-w-7xl overflow-hidden rounded-xl px-6 py-10 text-center sm:px-10"
-        style={{
-          background:
-            "linear-gradient(135deg, #ff7627 0%, #ff8b4d 100%)",
-        }}
-      >
-        <h2 className="text-xl font-black text-white sm:text-2xl">
-          Your Dream Grad School Is One Score Away
-        </h2>
-
+      <div className="mx-auto max-w-7xl overflow-hidden rounded-xl px-6 py-10 text-center sm:px-10" style={{ background: "linear-gradient(135deg, #ff7627 0%, #ff8b4d 100%)" }}>
+        <h2 className="text-xl font-black text-white sm:text-2xl">Your Dream Grad School Is One Score Away</h2>
         <p className="mx-auto mt-2 max-w-xl text-xm leading-5 text-white/80">
-          Understand your current GRE performance and take the next step
-          toward your graduate school goals.
+          Understand your current performance and take the next step toward your graduate school goals.
         </p>
-
         <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
-          <button className="rounded-lg bg-[#0b1e3f] px-5 py-3 text-xm font-bold text-white">
-            Calculate My Score
-          </button>
-
-          <button className="rounded-lg bg-white px-5 py-3 text-xm font-bold text-[#0b1e3f]">
-            Talk To An Expert
-          </button>
+          <a href="#calculator" className="rounded-lg bg-[#0b1e3f] px-5 py-3 text-xm font-bold text-white">Calculate My Score</a>
+          <button className="rounded-lg bg-white px-5 py-3 text-xm font-bold text-[#0b1e3f]">Talk To An Expert</button>
         </div>
       </div>
     </section>
   );
 }
-
-
-
 
 function SectionHeading({
   eyebrow,
@@ -1144,34 +1198,1862 @@ function SectionHeading({
 }) {
   return (
     <div className="mx-auto max-w-2xl text-center">
-      <span
-        className={`inline-flex rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-widest ${
-          dark
-            ? "bg-orange-400/10 text-orange-300"
-            : "bg-orange-50 text-orange-500"
-        }`}
-      >
+      {/* <span className={`inline-flex rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-widest ${dark ? "bg-orange-400/10 text-orange-300" : "bg-orange-50 text-orange-500"}`}>
         {eyebrow}
-      </span>
-
-      <h2
-        className={`mt-3 text-2xl font-extrabold leading-tight sm:text-3xl ${
-          dark ? "text-white" : "text-[#0b1e3f]"
-        }`}
-      >
-        {title}
-      </h2>
-
-      <p
-        className={`mt-3 text-xm leading-5 sm:text-sm ${
-          dark ? "text-blue-100/60" : "text-slate-500"
-        }`}
-      >
-        {description}
-      </p>
+      </span> */}
+      <h2 className={`mt-3 text-2xl font-extrabold leading-tight sm:text-3xl ${dark ? "text-white" : "text-[#0b1e3f]"}`}>{title}</h2>
+      <p className={`mt-3 text-xm leading-5 sm:text-sm ${dark ? "text-blue-100/60" : "text-slate-500"}`}>{description}</p>
     </div>
   );
 }
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, { useMemo, useState } from "react";
+// import {
+//   ArrowRight,
+//   Check,
+//   ChevronDown,
+//   ChevronUp,
+//   Clock3,
+//   GraduationCap,
+//   Info,
+//   MapPin,
+//   Search,
+//   Sparkles,
+//   Star,
+//   Target,
+//   TrendingUp,
+//   Trophy,
+//   Users,
+// } from "lucide-react";
+
+// const ORANGE = "#ff7a2a";
+// const NAVY = "#0b1e3f";
+// // Ascending band color ramp, light -> deep orange, used on the gauge chart.
+// const BAND_COLORS = ["#ffe8d9", "#ffd0ad", "#ffb37a", "#ff9550", "#ff7a2a"];
+
+// type FAQ = {
+//   question: string;
+//   answer: string;
+// };
+
+// type ExamType = "GRE" | "GMAT" | "SAT" | "TOEFL" | "IELTS" | "PTE";
+
+// type ExamSection = {
+//   id: string;
+//   label: string;
+//   min: number;
+//   max: number;
+//   step?: number; // increment allowed for this section, defaults to 1
+// };
+
+// type PercentileBand = {
+//   // Lowest total score (inclusive) that qualifies for this band.
+//   threshold: number;
+//   label: string;
+// };
+
+// type ExamConfig = {
+//   label: string;
+//   sections: ExamSection[];
+//   scoreRange: { min: number; max: number };
+//   // Ascending list of bands, e.g. [{threshold: 260, label: "65+"}, ...].
+//   // Single source of truth for both the percentile lookup and the gauge chart.
+//   percentileBands: PercentileBand[];
+//   totalLabel: string;
+//   // Converts raw section inputs into a real total score for this exam.
+//   // This is exam-specific because not every exam's total is a simple sum
+//   // (e.g. IELTS/PTE are averages, GMAT total isn't a linear sum of subsections).
+//   computeTotal: (scores: Record<string, number>) => number;
+// };
+
+// // Rounds to the nearest multiple of `step` (e.g. step=0.5 -> nearest half point)
+// function roundToStep(value: number, step: number) {
+//   return Math.round(value / step) * step;
+// }
+
+// // Official IELTS rounding: overall band is the average of 4 sections, rounded
+// // to the nearest whole or half band (.25 rounds up to .5, .75 rounds up to
+// // the next whole band).
+// function roundIELTSBand(avg: number) {
+//   const whole = Math.floor(avg);
+//   const remainder = avg - whole;
+//   if (remainder < 0.25) return whole;
+//   if (remainder < 0.75) return whole + 0.5;
+//   return whole + 1;
+// }
+
+// function defaultSectionValue(section: ExamSection) {
+//   const step = section.step || 1;
+//   const raw = section.min + (section.max - section.min) * 0.75;
+//   return roundToStep(raw, step);
+// }
+
+// // Finds the highest band whose threshold is <= score.
+// function getPercentileLabel(score: number, bands: PercentileBand[]) {
+//   let label = bands[0]?.label ?? "";
+//   for (const band of bands) {
+//     if (score >= band.threshold) label = band.label;
+//   }
+//   return label;
+// }
+
+// const examConfigs: Record<ExamType, ExamConfig> = {
+//   GRE: {
+//     label: "GRE",
+//     // Real GRE section scores are scaled 130-170, not raw 0-40 counts.
+//     sections: [
+//       { id: "verbal", label: "Verbal Reasoning", min: 130, max: 170 },
+//       { id: "quant", label: "Quantitative Reasoning", min: 130, max: 170 },
+//     ],
+//     scoreRange: { min: 260, max: 340 },
+//     percentileBands: [
+//       { threshold: 260, label: "65th" },
+//       { threshold: 310, label: "75th" },
+//       { threshold: 315, label: "85th" },
+//       { threshold: 320, label: "90th" },
+//       { threshold: 325, label: "95th" },
+//       { threshold: 330, label: "98th" },
+//     ],
+//     totalLabel: "/340",
+//     // GRE total is simply verbal + quant.
+//     computeTotal: (scores) => (scores.verbal ?? 130) + (scores.quant ?? 130),
+//   },
+//   GMAT: {
+//     label: "GMAT",
+//     // GMAT Focus Edition subsections are scaled 60-90 each.
+//     sections: [
+//       { id: "quant", label: "Quantitative", min: 60, max: 90 },
+//       { id: "verbal", label: "Verbal", min: 60, max: 90 },
+//       { id: "di", label: "Data Insights", min: 60, max: 90 },
+//     ],
+//     scoreRange: { min: 205, max: 805 },
+//     percentileBands: [
+//       { threshold: 205, label: "40th" },
+//       { threshold: 600, label: "55th" },
+//       { threshold: 650, label: "75th" },
+//       { threshold: 700, label: "90th" },
+//       { threshold: 750, label: "99th" },
+//     ],
+//     totalLabel: "/805",
+//     // The official GMAT total isn't a direct sum of subsection scores (GMAC
+//     // uses a proprietary conversion). We approximate it by scaling the
+//     // average subsection performance (60-90) into the 205-805 total range,
+//     // then rounding to the nearest 10, matching how GMAT totals are reported.
+//     computeTotal: (scores) => {
+//       const q = scores.quant ?? 60;
+//       const v = scores.verbal ?? 60;
+//       const di = scores.di ?? 60;
+//       const avg = (q + v + di) / 3;
+//       const raw = 205 + ((avg - 60) / (90 - 60)) * (805 - 205);
+//       return roundToStep(raw, 10);
+//     },
+//   },
+//   SAT: {
+//     label: "SAT",
+//     // Real SAT section scores are scaled 200-800 each.
+//     sections: [
+//       { id: "rw", label: "Reading & Writing", min: 200, max: 800 },
+//       { id: "math", label: "Math", min: 200, max: 800 },
+//     ],
+//     scoreRange: { min: 400, max: 1600 },
+//     percentileBands: [
+//       { threshold: 400, label: "50th" },
+//       { threshold: 1200, label: "75th" },
+//       { threshold: 1300, label: "87th" },
+//       { threshold: 1400, label: "94th" },
+//       { threshold: 1500, label: "98th" },
+//     ],
+//     totalLabel: "/1600",
+//     // SAT total is the sum of both section scores.
+//     computeTotal: (scores) => (scores.rw ?? 200) + (scores.math ?? 200),
+//   },
+//   TOEFL: {
+//     label: "TOEFL iBT",
+//     sections: [
+//       { id: "reading", label: "Reading", min: 0, max: 30 },
+//       { id: "listening", label: "Listening", min: 0, max: 30 },
+//       { id: "speaking", label: "Speaking", min: 0, max: 30 },
+//       { id: "writing", label: "Writing", min: 0, max: 30 },
+//     ],
+//     scoreRange: { min: 0, max: 120 },
+//     percentileBands: [
+//       { threshold: 0, label: "40th" },
+//       { threshold: 90, label: "60th" },
+//       { threshold: 100, label: "80th" },
+//       { threshold: 110, label: "90th" },
+//       { threshold: 115, label: "95th" },
+//     ],
+//     totalLabel: "/120",
+//     // TOEFL total is the sum of all four section scores.
+//     computeTotal: (scores) =>
+//       (scores.reading ?? 0) +
+//       (scores.listening ?? 0) +
+//       (scores.speaking ?? 0) +
+//       (scores.writing ?? 0),
+//   },
+//   IELTS: {
+//     label: "IELTS",
+//     // IELTS bands are scored in 0.5 increments.
+//     sections: [
+//       { id: "listening", label: "Listening", min: 0, max: 9, step: 0.5 },
+//       { id: "reading", label: "Reading", min: 0, max: 9, step: 0.5 },
+//       { id: "writing", label: "Writing", min: 0, max: 9, step: 0.5 },
+//       { id: "speaking", label: "Speaking", min: 0, max: 9, step: 0.5 },
+//     ],
+//     scoreRange: { min: 0, max: 9 },
+//     percentileBands: [
+//       { threshold: 0, label: "60th" },
+//       { threshold: 7, label: "75th" },
+//       { threshold: 7.5, label: "88th" },
+//       { threshold: 8, label: "95th" },
+//       { threshold: 8.5, label: "98th" },
+//     ],
+//     totalLabel: "/9",
+//     // IELTS overall band is the AVERAGE of the four sections, rounded using
+//     // the official half/whole band rounding rule — not a sum of the four.
+//     computeTotal: (scores) => {
+//       const avg =
+//         ((scores.listening ?? 0) +
+//           (scores.reading ?? 0) +
+//           (scores.writing ?? 0) +
+//           (scores.speaking ?? 0)) /
+//         4;
+//       return roundIELTSBand(avg);
+//     },
+//   },
+//   PTE: {
+//     label: "PTE Academic",
+//     // Each PTE communicative skill is scored 10-90.
+//     sections: [
+//       { id: "speaking", label: "Speaking & Writing", min: 10, max: 90 },
+//       { id: "reading", label: "Reading", min: 10, max: 90 },
+//       { id: "listening", label: "Listening", min: 10, max: 90 },
+//     ],
+//     scoreRange: { min: 10, max: 90 },
+//     percentileBands: [
+//       { threshold: 10, label: "45th" },
+//       { threshold: 65, label: "60th" },
+//       { threshold: 72, label: "75th" },
+//       { threshold: 79, label: "88th" },
+//       { threshold: 85, label: "95th" },
+//     ],
+//     totalLabel: "/90",
+//     // PTE's overall score is closely approximated by the average of the
+//     // three communicative skill scores, not their sum.
+//     computeTotal: (scores) => {
+//       const avg =
+//         ((scores.speaking ?? 10) + (scores.reading ?? 10) + (scores.listening ?? 10)) / 3;
+//       return Math.round(avg);
+//     },
+//   },
+// };
+
+// export default function ScoreCalculatorPage() {
+//   const [selectedExam, setSelectedExam] = useState<ExamType>("GRE");
+//   const [sectionScores, setSectionScores] = useState<Record<string, number>>({});
+//   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
+
+//   const config = examConfigs[selectedExam];
+
+//   // Initialize scores for the selected exam using each section's real min/max/step.
+//   React.useEffect(() => {
+//     const initial: Record<string, number> = {};
+//     config.sections.forEach((s) => {
+//       initial[s.id] = defaultSectionValue(s);
+//     });
+//     setSectionScores(initial);
+//     // eslint-disable-next-line react-hooks/exhaustive-deps
+//   }, [selectedExam]);
+
+//   const totalScore = useMemo(() => {
+//     const computed = config.computeTotal(sectionScores);
+//     // Safety clamp in case of rounding at the edges of the scale.
+//     return Math.min(config.scoreRange.max, Math.max(config.scoreRange.min, computed));
+//   }, [sectionScores, config]);
+
+//   const percentile = useMemo(() => {
+//     return getPercentileLabel(totalScore, config.percentileBands);
+//   }, [totalScore, config]);
+
+//   const handleScoreChange = (sectionId: string, value: number) => {
+//     const section = config.sections.find((s) => s.id === sectionId);
+//     if (!section) return;
+//     const step = section.step || 1;
+//     const snapped = roundToStep(value, step);
+//     const clamped = Math.min(section.max, Math.max(section.min, snapped));
+//     setSectionScores((prev) => ({ ...prev, [sectionId]: clamped }));
+//   };
+
+//   const displayTotal = Number.isInteger(totalScore) ? totalScore : totalScore.toFixed(1);
+
+//   return (
+//     <main className="min-h-screen bg-[#fff] text-[#0b1e3f]">
+//       <Hero />
+
+//       {/* Exam Selector */}
+//       <div className="mx-auto max-w-6xl px-4 pb-4 pt-8">
+//         <div className="flex flex-wrap justify-center gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
+//           {(Object.keys(examConfigs) as ExamType[]).map((exam) => (
+//             <button
+//               key={exam}
+//               onClick={() => setSelectedExam(exam)}
+//               className={`rounded-lg px-5 py-2.5 text-sm font-bold transition ${
+//                 selectedExam === exam
+//                   ? "bg-[#0b1e3f] text-white"
+//                   : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+//               }`}
+//             >
+//               {examConfigs[exam].label}
+//             </button>
+//           ))}
+//         </div>
+//       </div>
+
+//       <ScoreSection
+//         examType={selectedExam}
+//         config={config}
+//         sectionScores={sectionScores}
+//         onScoreChange={handleScoreChange}
+//         totalScore={totalScore}
+//         displayTotal={displayTotal}
+//         percentile={percentile}
+//       />
+
+//       <ScoreVisualizationSection
+//         config={config}
+//         sectionScores={sectionScores}
+//         totalScore={totalScore}
+//         percentile={percentile}
+//       />
+
+//       <WhySection />
+//       <DifferenceSection />
+//       <BeyondNumberSection />
+//       <QuestionsSection />
+//       <FAQSection expandedFAQ={expandedFAQ} setExpandedFAQ={setExpandedFAQ} />
+//       <BottomCTA />
+//     </main>
+//   );
+// }
+
+// function Hero() {
+//   return (
+//     <section className="relative overflow-hidden bg-[#fcf3ed]">
+//       <div className="relative mx-auto max-w-5xl px-4 pb-14 pt-16 text-center sm:px-6 lg:pb-20 lg:pt-20">
+//         <h1 className="mx-auto max-w-4xl text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
+//           Free{" "}
+//           <span style={{ color: ORANGE }}>
+//             Exam Score Calculator
+//           </span>{" "}
+//           & Grad School Predictor
+//         </h1>
+//         <p className="mx-auto mt-5 max-w-2xl text-sm leading-6 sm:text-base">
+//           Estimate your GRE, GMAT, SAT, TOEFL, IELTS, or PTE score, understand
+//           your percentile, and discover programs that match your performance.
+//         </p>
+//         <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+//           <a
+//             href="#calculator"
+//             className="inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5"
+//             style={{ background: ORANGE }}
+//           >
+//             Calculate My Score
+//             <ArrowRight className="h-4 w-4" />
+//           </a>
+//           <a
+//             href="#programs"
+//             className="inline-flex items-center justify-center rounded-lg border border-black px-6 py-3 text-sm font-semibold transition hover:bg-white/10"
+//           >
+//             Explore Programs
+//           </a>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function ScoreSection({
+//   examType,
+//   config,
+//   sectionScores,
+//   onScoreChange,
+//   totalScore,
+//   displayTotal,
+//   percentile,
+// }: {
+//   examType: ExamType;
+//   config: ExamConfig;
+//   sectionScores: Record<string, number>;
+//   onScoreChange: (id: string, value: number) => void;
+//   totalScore: number;
+//   displayTotal: string | number;
+//   percentile: string;
+// }) {
+//   return (
+//     <section id="calculator" className="px-4 pb-16">
+//       <div className="mx-auto max-w-6xl">
+//         <SectionHeading
+//           eyebrow={`${config.label} SCORE CALCULATOR`}
+//           title={`Convert Your Raw Score Into Your Real ${config.label} Score`}
+//           description={`Enter your practice performance and understand how your current results translate into an estimated ${config.label} score.`}
+//         />
+
+//         <div className="mt-9 grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg lg:grid-cols-[1fr_360px]">
+//           <div className="p-5 sm:p-7">
+//             <div className="mb-6 flex items-center justify-between">
+//               <div>
+//                 <h3 className="text-sm font-extrabold">
+//                   Enter Your Practice Test Results
+//                 </h3>
+//                 <p className="mt-1 text-[14px] text-slate-500">
+//                   Use your latest mock test for the best estimate.
+//                 </p>
+//               </div>
+//               <span className="rounded-full bg-orange-50 px-2.5 py-1 text-[9px] font-bold text-orange-500">
+//                 LIVE
+//               </span>
+//             </div>
+
+//             {config.sections.map((section) => {
+//               const value = sectionScores[section.id] ?? section.min;
+//               const percentage = Math.round(
+//                 ((value - section.min) / (section.max - section.min)) * 100
+//               );
+//               const step = section.step || 1;
+//               return (
+//                 <div key={section.id} className="mb-4 rounded-xl border border-slate-200 p-4">
+//                   <div className="mb-3 flex items-center justify-between">
+//                     <span className="text-xm font-bold">{section.label}</span>
+//                     <span className="rounded bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">
+//                       {value}
+//                       <span className="text-slate-400"> / {section.max}</span>
+//                     </span>
+//                   </div>
+//                   <div className="flex items-center gap-3">
+//                     <input
+//                       type="range"
+//                       min={section.min}
+//                       max={section.max}
+//                       step={step}
+//                       value={value}
+//                       onChange={(e) =>
+//                         onScoreChange(section.id, Number(e.target.value))
+//                       }
+//                       className="flex-1 accent-orange-500"
+//                     />
+//                     <input
+//                       type="number"
+//                       min={section.min}
+//                       max={section.max}
+//                       step={step}
+//                       value={value}
+//                       onChange={(e) =>
+//                         onScoreChange(section.id, Number(e.target.value))
+//                       }
+//                       className="w-16 rounded-lg border border-slate-200 px-2 py-1 text-center text-sm font-bold outline-none focus:border-orange-400"
+//                     />
+//                   </div>
+//                   <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
+//                     <div
+//                       className="h-full rounded-full transition-all"
+//                       style={{
+//                         width: `${Math.min(Math.max(percentage, 0), 100)}%`,
+//                         background: ORANGE,
+//                       }}
+//                     />
+//                   </div>
+//                 </div>
+//               );
+//             })}
+
+//             <button
+//               className="mt-5 w-full rounded-lg py-3 text-xm font-bold text-white"
+//               style={{ background: ORANGE }}
+//             >
+//               Calculate My Score
+//             </button>
+//           </div>
+
+//           <div className="relative flex flex-col justify-center bg-[#0b1e3f] p-7 text-white">
+//             <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-blue-500/10 blur-3xl" />
+//             <div className="relative">
+//               <p className="text-center text-[10px] font-medium uppercase tracking-widest text-blue-200/60">
+//                 Your Estimated {config.label} Score
+//               </p>
+//               <div className="mt-4 text-center">
+//                 <span className="text-6xl font-black tracking-tight">
+//                   {displayTotal}
+//                 </span>
+//                 <span className="ml-1 text-sm font-semibold text-white/50">
+//                   {config.totalLabel}
+//                 </span>
+//               </div>
+//               <div className="mt-3 text-center">
+//                 <span className="rounded-full bg-orange-500/15 px-3 py-1 text-[10px] font-bold text-orange-300">
+//                   {percentile} Percentile
+//                 </span>
+//               </div>
+
+//               <div className="mt-8 space-y-4">
+//                 {config.sections.map((section) => {
+//                   const val = sectionScores[section.id] ?? section.min;
+//                   const pct = Math.round(
+//                     ((val - section.min) / (section.max - section.min)) * 100
+//                   );
+//                   return (
+//                     <ScoreMeter key={section.id} label={section.label} value={pct} />
+//                   );
+//                 })}
+//                 <ScoreMeter
+//                   label="Overall Performance"
+//                   value={Math.round(
+//                     ((totalScore - config.scoreRange.min) /
+//                       (config.scoreRange.max - config.scoreRange.min)) *
+//                       100
+//                   )}
+//                 />
+//               </div>
+
+//               <div className="mt-8 border-t border-white/10 pt-5 text-center">
+//                 <p className="text-[10px] leading-5 text-blue-100/60">
+//                   Your estimated score is a planning benchmark and should not
+//                   be considered an official result.
+//                 </p>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function ScoreMeter({ label, value }: { label: string; value: number }) {
+//   const clamped = Math.min(Math.max(value, 0), 100);
+//   return (
+//     <div>
+//       <div className="mb-2 flex justify-between text-[10px]">
+//         <span className="text-white/70">{label}</span>
+//         <span className="font-bold text-white">{Math.round(clamped)}%</span>
+//       </div>
+//       <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+//         <div
+//           className="h-full rounded-full bg-orange-400 transition-all"
+//           style={{ width: `${clamped}%` }}
+//         />
+//       </div>
+//     </div>
+//   );
+// }
+
+// // ---------------------------------------------------------------------------
+// // Score visualization: a bar chart comparing section scores, and a band/
+// // percentile gauge showing where the total score falls on the exam's scale.
+// // ---------------------------------------------------------------------------
+
+// function ScoreVisualizationSection({
+//   config,
+//   sectionScores,
+//   totalScore,
+//   percentile,
+// }: {
+//   config: ExamConfig;
+//   sectionScores: Record<string, number>;
+//   totalScore: number;
+//   percentile: string;
+// }) {
+//   return (
+//     <section className="px-4 pb-20">
+//       <div className="mx-auto max-w-6xl">
+//         <SectionHeading
+//           eyebrow="SCORE BREAKDOWN"
+//           title="See Your Score & Band, Visually"
+//           description="A section-by-section chart of your practice scores, plus where your total score falls on the official band scale."
+//         />
+//         <div className="mt-9 grid gap-5 lg:grid-cols-2">
+//           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+//             <h3 className="text-sm font-extrabold">Section Score Chart</h3>
+//             <p className="mt-1 text-[14px] text-slate-500">
+//               Each bar shows how your entered score compares to that section's full range.
+//             </p>
+//             <SectionBarChart config={config} sectionScores={sectionScores} />
+//           </div>
+//           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+//             <h3 className="text-sm font-extrabold">Total Score & Band Position</h3>
+//             <p className="mt-1 text-[14px] text-slate-500">
+//               Your {config.label} total of {Number.isInteger(totalScore) ? totalScore : totalScore.toFixed(1)}
+//               {" "}sits in the <span className="font-bold text-orange-500">{percentile} percentile</span> band.
+//             </p>
+//             <BandGaugeChart config={config} totalScore={totalScore} />
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function SectionBarChart({
+//   config,
+//   sectionScores,
+// }: {
+//   config: ExamConfig;
+//   sectionScores: Record<string, number>;
+// }) {
+//   const width = 600;
+//   const height = 260;
+//   const paddingLeft = 40;
+//   const paddingRight = 20;
+//   const paddingTop = 30;
+//   const paddingBottom = 56;
+//   const chartWidth = width - paddingLeft - paddingRight;
+//   const chartHeight = height - paddingTop - paddingBottom;
+
+//   const sections = config.sections;
+//   const gap = 24;
+//   const barWidth = (chartWidth - gap * (sections.length - 1)) / sections.length;
+
+//   const gridLines = [0, 25, 50, 75, 100];
+
+//   return (
+//     <svg
+//       viewBox={`0 0 ${width} ${height}`}
+//       className="mt-5 w-full"
+//       role="img"
+//       aria-label="Section score chart"
+//     >
+//       {/* Y-axis grid lines */}
+//       {gridLines.map((pct) => {
+//         const y = paddingTop + chartHeight - (pct / 100) * chartHeight;
+//         return (
+//           <g key={pct}>
+//             <line
+//               x1={paddingLeft}
+//               x2={width - paddingRight}
+//               y1={y}
+//               y2={y}
+//               stroke="#e2e8f0"
+//               strokeWidth={1}
+//             />
+//             <text x={paddingLeft - 8} y={y + 3} textAnchor="end" fontSize={9} fill="#94a3b8">
+//               {pct}%
+//             </text>
+//           </g>
+//         );
+//       })}
+
+//       {/* Bars */}
+//       {sections.map((section, i) => {
+//         const value = sectionScores[section.id] ?? section.min;
+//         const pct = Math.min(
+//           100,
+//           Math.max(0, ((value - section.min) / (section.max - section.min)) * 100)
+//         );
+//         const barHeight = (pct / 100) * chartHeight;
+//         const x = paddingLeft + i * (barWidth + gap);
+//         const y = paddingTop + chartHeight - barHeight;
+
+//         return (
+//           <g key={section.id}>
+//             <rect
+//               x={x}
+//               y={y}
+//               width={barWidth}
+//               height={Math.max(barHeight, 2)}
+//               rx={6}
+//               fill={ORANGE}
+//             />
+//             <text
+//               x={x + barWidth / 2}
+//               y={y - 8}
+//               textAnchor="middle"
+//               fontSize={11}
+//               fontWeight={700}
+//               fill={NAVY}
+//             >
+//               {value}
+//             </text>
+//             {wrapLabel(section.label).map((line, li) => (
+//               <text
+//                 key={li}
+//                 x={x + barWidth / 2}
+//                 y={paddingTop + chartHeight + 16 + li * 12}
+//                 textAnchor="middle"
+//                 fontSize={10}
+//                 fill="#64748b"
+//               >
+//                 {line}
+//               </text>
+//             ))}
+//           </g>
+//         );
+//       })}
+//     </svg>
+//   );
+// }
+
+// // Splits a section label onto up to two lines so it fits under a narrow bar.
+// function wrapLabel(label: string): string[] {
+//   if (label.length <= 12) return [label];
+//   const words = label.split(" ");
+//   const mid = Math.ceil(words.length / 2);
+//   return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
+// }
+
+// function BandGaugeChart({
+//   config,
+//   totalScore,
+// }: {
+//   config: ExamConfig;
+//   totalScore: number;
+// }) {
+//   const width = 600;
+//   const height = 150;
+//   const paddingLeft = 20;
+//   const paddingRight = 20;
+//   const barY = 46;
+//   const barHeight = 28;
+//   const trackWidth = width - paddingLeft - paddingRight;
+
+//   const { min, max } = config.scoreRange;
+//   const bands = config.percentileBands;
+//   const boundaries = [...bands.map((b) => b.threshold), max];
+
+//   const activeIndex = (() => {
+//     let idx = 0;
+//     bands.forEach((b, i) => {
+//       if (totalScore >= b.threshold) idx = i;
+//     });
+//     return idx;
+//   })();
+
+//   const pointerX =
+//     paddingLeft + ((totalScore - min) / (max - min)) * trackWidth;
+
+//   return (
+//     <svg
+//       viewBox={`0 0 ${width} ${height}`}
+//       className="mt-5 w-full"
+//       role="img"
+//       aria-label="Total score band gauge"
+//     >
+//       {/* Band segments */}
+//       {bands.map((band, i) => {
+//         const segStart = boundaries[i];
+//         const segEnd = boundaries[i + 1];
+//         const segX = paddingLeft + ((segStart - min) / (max - min)) * trackWidth;
+//         const segWidth = ((segEnd - segStart) / (max - min)) * trackWidth;
+//         const segPct = (segWidth / trackWidth) * 100;
+//         const isActive = i === activeIndex;
+
+//         return (
+//           <g key={band.label}>
+//             <rect
+//               x={segX}
+//               y={barY}
+//               width={Math.max(segWidth, 1)}
+//               height={barHeight}
+//               fill={BAND_COLORS[i % BAND_COLORS.length]}
+//               stroke={isActive ? NAVY : "transparent"}
+//               strokeWidth={isActive ? 2 : 0}
+//               rx={4}
+//             />
+//             {segPct > 9 && (
+//               <text
+//                 x={segX + segWidth / 2}
+//                 y={barY + barHeight + 16}
+//                 textAnchor="middle"
+//                 fontSize={9}
+//                 fontWeight={isActive ? 700 : 400}
+//                 fill={isActive ? NAVY : "#94a3b8"}
+//               >
+//                 {band.label}
+//               </text>
+//             )}
+//           </g>
+//         );
+//       })}
+
+//       {/* Range end labels */}
+//       <text x={paddingLeft} y={barY - 10} textAnchor="start" fontSize={9} fill="#94a3b8">
+//         {min}
+//       </text>
+//       <text x={width - paddingRight} y={barY - 10} textAnchor="end" fontSize={9} fill="#94a3b8">
+//         {max}
+//       </text>
+
+//       {/* Pointer marking the current total score */}
+//       <line
+//         x1={pointerX}
+//         x2={pointerX}
+//         y1={barY - 8}
+//         y2={barY + barHeight + 8}
+//         stroke={NAVY}
+//         strokeWidth={2}
+//       />
+//       <polygon
+//         points={`${pointerX - 6},${barY - 8} ${pointerX + 6},${barY - 8} ${pointerX},${barY - 18}`}
+//         fill={NAVY}
+//       />
+//       <text
+//         x={pointerX}
+//         y={barY - 22}
+//         textAnchor="middle"
+//         fontSize={11}
+//         fontWeight={700}
+//         fill={NAVY}
+//       >
+//         {Number.isInteger(totalScore) ? totalScore : totalScore.toFixed(1)}
+//       </text>
+//     </svg>
+//   );
+// }
+
+// function WhySection() {
+//   return (
+//     <section className="bg-[#fcf3ed] px-4 py-16 text-[#0b1e3f]">
+//       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center">
+//         <div>
+//           <div className="mb-4 inline-flex rounded-full bg-orange-500/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-orange-600">
+//             More Than A Number
+//           </div>
+//           <h2 className="max-w-xl text-2xl font-extrabold leading-tight sm:text-3xl text-[#0b1e3f]">
+//             Your Score Doesn't Stop Here — <br /> Practice For Real
+//           </h2>
+//           <p className="mt-5 max-w-xl text-sm leading-6 text-[#0b1e3f]/80">
+//             Your exam score is only one part of your graduate school journey. Use your results to identify weaknesses, improve your preparation, and build a stronger application strategy.
+//           </p>
+//           <ul className="mt-6 space-y-3">
+//             {[
+//               "Identify your strongest and weakest sections",
+//               "Track progress across multiple practice tests",
+//               "Understand where your score stands",
+//               "Build a smarter graduate school shortlist",
+//             ].map((item) => (
+//               <li key={item} className="flex items-center gap-3 text-xm text-[#0b1e3f]/90">
+//                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500/15 text-orange-600">
+//                   <Check className="h-3 w-3" />
+//                 </span>
+//                 {item}
+//               </li>
+//             ))}
+//           </ul>
+//           <button className="mt-7 rounded-lg px-5 py-3 text-xm font-bold text-white" style={{ background: ORANGE }}>
+//             Start Your Preparation
+//           </button>
+//         </div>
+//         <div className="grid grid-cols-2 gap-3">
+//           {[
+//             ["2,000+", "Students Tested"],
+//             ["10,000+", "Practice Results"],
+//             ["42 pts", "Average Improvement"],
+//             ["247", "Universities Explored"],
+//           ].map(([number, label]) => (
+//             <div key={label} className="rounded-xl border border-[#0b1e3f]/10 bg-[#0b1e3f]/5 p-5">
+//               <p className="text-xl font-black text-[#0b1e3f]">{number}</p>
+//               <p className="mt-1 text-[10px] text-[#0b1e3f]/60">{label}</p>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function DifferenceSection() {
+//   return (
+//     <section id="how-it-works" className="bg-white px-4 py-12">
+//       <div className="mx-auto max-w-5xl">
+//         <SectionHeading
+//           eyebrow="OUR DIFFERENCE"
+//           title="How Ooshas Prep's Calculator Is Different"
+//           description="A simple calculator designed to give you useful insights beyond just a single number."
+//         />
+//         <div className="mt-9 overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
+//           <div className="grid grid-cols-[1.4fr_1fr_1fr_1fr] bg-[#0b1e3f] text-[10px] font-bold text-white">
+//             <div className="p-3">Feature</div>
+//             <div className="p-3 text-center">Ooshas Prep</div>
+//             <div className="p-3 text-center">Basic Calculator</div>
+//             <div className="p-3 text-center">Random Predictor</div>
+//           </div>
+//           {[
+//             "Practice-based score estimate",
+//             "Section-level insights",
+//             "Grad program matching",
+//             "Performance tracking",
+//             "Study recommendations",
+//             "Admission planning",
+//           ].map((item, index) => (
+//             <div
+//               key={item}
+//               className="grid grid-cols-[1.4fr_1fr_1fr_1fr] border-t border-slate-200 text-[14px]"
+//             >
+//               <div className="p-3 font-semibold text-slate-700">{item}</div>
+//               <div className="flex items-center justify-center bg-orange-50 p-3">
+//                 <Check className="h-4 w-4 text-orange-500" />
+//               </div>
+//               <div className="flex items-center justify-center p-3">
+//                 {index < 2 ? (
+//                   <Check className="h-4 w-4 text-emerald-500" />
+//                 ) : (
+//                   <span className="text-slate-300">×</span>
+//                 )}
+//               </div>
+//               <div className="flex items-center justify-center p-3">
+//                 {index === 2 ? (
+//                   <Check className="h-4 w-4 text-emerald-500" />
+//                 ) : (
+//                   <span className="text-slate-300">×</span>
+//                 )}
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function BeyondNumberSection() {
+//   const features = [
+//     { icon: TrendingUp, title: "Track Your Progress", text: "Monitor score changes over multiple practice tests." },
+//     { icon: Target, title: "Pinpoint Weak Areas", text: "Understand which section needs more preparation." },
+//     { icon: GraduationCap, title: "Explore Universities", text: "Compare your score against program ranges." },
+//     { icon: Trophy, title: "Build Your Profile", text: "Use your score as part of your larger application plan." },
+//     { icon: MapPin, title: "Find Your Fit", text: "Discover programs that align with your goals." },
+//     { icon: Sparkles, title: "Get Smarter Insights", text: "Turn raw practice results into actionable information." },
+//   ];
+//   return (
+//     <section className="bg-[#fff] px-4 py-12">
+//       <div className="mx-auto max-w-6xl">
+//         <SectionHeading
+//           eyebrow="BEYOND THE NUMBER"
+//           title="Go Beyond the Number — Understand Your Score"
+//           description="Your result can tell you much more when combined with the right context."
+//         />
+//         <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+//           {features.map(({ icon: Icon, title, text }) => (
+//             <div
+//               key={title}
+//               className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+//             >
+//               <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-orange-500">
+//                 <Icon className="h-4 w-4" />
+//               </div>
+//               <h3 className="text-sm font-extrabold">{title}</h3>
+//               <p className="mt-2 text-[14px] leading-5 text-slate-500">{text}</p>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function QuestionsSection() {
+//   return (
+//     <section className="bg-[#fcf3ed] px-4 py-12">
+//       <div className="mx-auto max-w-3xl">
+//         <SectionHeading
+//           eyebrow="COMMUNITY"
+//           title="Student Questions & Comments"
+//           description="Have a question about your score? Ask our team and community."
+//         />
+//         <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+//           <div className="grid gap-3 sm:grid-cols-2">
+//             <input placeholder="Your name" className="rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400" />
+//             <input placeholder="Email address" className="rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400" />
+//           </div>
+//           <textarea placeholder="Ask your question..." rows={4} className="mt-3 w-full resize-none rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400" />
+//           <button className="mt-3 rounded-lg bg-[#0b1e3f] px-5 py-3 text-xm font-bold text-white">Post Question</button>
+//         </div>
+//         <div className="mt-4 space-y-3">
+//           {[
+//             "How can I improve my Quant score?",
+//             "Is a 320 GRE score competitive?",
+//             "Which universities should I target?",
+//           ].map((question, index) => (
+//             <div key={question} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+//               <div className="flex gap-3">
+//                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0b1e3f] text-[10px] font-bold text-white">
+//                   {index + 1}
+//                 </div>
+//                 <div className="flex-1">
+//                   <p className="text-xm font-bold">{question}</p>
+//                   <p className="mt-1 text-[10px] text-slate-400">Asked by GRE student</p>
+//                 </div>
+//                 <button className="text-[10px] font-bold text-orange-500">Answer</button>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function FAQSection({
+//   expandedFAQ,
+//   setExpandedFAQ,
+// }: {
+//   expandedFAQ: number | null;
+//   setExpandedFAQ: (value: number | null) => void;
+// }) {
+//   const faqs: FAQ[] = [
+//     { question: "How accurate is the score calculator?", answer: "The calculator provides an estimated score based on the practice section results you enter. It is designed to give you a useful benchmark before taking the official exam." },
+//     { question: "What is a good score for graduate school?", answer: "A good score depends on your target university, program and applicant pool. Competitive programs may expect stronger scores." },
+//     { question: "Does Ooshas Prep predict my admission chances?", answer: "The calculator provides a score-based indication of program competitiveness. Admission depends on many factors including academics, experience, essays, recommendations and the university." },
+//     { question: "How frequently should I use this calculator?", answer: "Use it after practice tests or major preparation milestones to track your progress and understand how your score is improving." },
+//     { question: "Can I use my calculator results for university planning?", answer: "Yes. Your estimated score can be used as an initial benchmark when researching universities and graduate programs." },
+//   ];
+//   return (
+//     <section id="faq" className="bg-[#fff] px-4 pb-20">
+//       <div className="mx-auto max-w-3xl">
+//         <SectionHeading
+//           eyebrow=""
+//           title="Score Calculator — Frequently Asked Questions"
+//           description="Everything you need to know about our score calculator."
+//         />
+//         <div className="mt-8 space-y-2">
+//           {faqs.map((faq, index) => {
+//             const open = expandedFAQ === index;
+//             return (
+//               <div key={faq.question} className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+//                 <button onClick={() => setExpandedFAQ(open ? null : index)} className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left">
+//                   <span className="text-xm font-bold">{faq.question}</span>
+//                   {open ? <ChevronUp className="h-4 w-4 shrink-0 text-orange-500" /> : <ChevronDown className="h-4 w-4 shrink-0 text-orange-500" />}
+//                 </button>
+//                 {open && (
+//                   <div className="border-t border-slate-100 px-4 pb-4 pt-3">
+//                     <p className="text-[14px] leading-5 text-slate-500">{faq.answer}</p>
+//                   </div>
+//                 )}
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function BottomCTA() {
+//   return (
+//     <section id="contact" className="bg-white px-4 pb-5">
+//       <div className="mx-auto max-w-7xl overflow-hidden rounded-xl px-6 py-10 text-center sm:px-10" style={{ background: "linear-gradient(135deg, #ff7627 0%, #ff8b4d 100%)" }}>
+//         <h2 className="text-xl font-black text-white sm:text-2xl">Your Dream Grad School Is One Score Away</h2>
+//         <p className="mx-auto mt-2 max-w-xl text-xm leading-5 text-white/80">
+//           Understand your current performance and take the next step toward your graduate school goals.
+//         </p>
+//         <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
+//           <button className="rounded-lg bg-[#0b1e3f] px-5 py-3 text-xm font-bold text-white">Calculate My Score</button>
+//           <button className="rounded-lg bg-white px-5 py-3 text-xm font-bold text-[#0b1e3f]">Talk To An Expert</button>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function SectionHeading({
+//   eyebrow,
+//   title,
+//   description,
+//   dark = false,
+// }: {
+//   eyebrow: string;
+//   title: string;
+//   description: string;
+//   dark?: boolean;
+// }) {
+//   return (
+//     <div className="mx-auto max-w-2xl text-center">
+//       <span className={`inline-flex rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-widest ${dark ? "bg-orange-400/10 text-orange-300" : "bg-orange-50 text-orange-500"}`}>
+//         {eyebrow}
+//       </span>
+//       <h2 className={`mt-3 text-2xl font-extrabold leading-tight sm:text-3xl ${dark ? "text-white" : "text-[#0b1e3f]"}`}>{title}</h2>
+//       <p className={`mt-3 text-xm leading-5 sm:text-sm ${dark ? "text-blue-100/60" : "text-slate-500"}`}>{description}</p>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
+
+
+
+
+
+// "use client";
+
+// import React, { useMemo, useState } from "react";
+// import {
+//   ArrowRight,
+//   Check,
+//   ChevronDown,
+//   ChevronUp,
+//   Clock3,
+//   GraduationCap,
+//   Info,
+//   MapPin,
+//   Search,
+//   Sparkles,
+//   Star,
+//   Target,
+//   TrendingUp,
+//   Trophy,
+//   Users,
+// } from "lucide-react";
+
+// const ORANGE = "#ff7a2a";
+
+// type FAQ = {
+//   question: string;
+//   answer: string;
+// };
+
+// type PracticeProps = {
+//   verbalCorrect: number;
+//   verbalTotal: number;
+//   quantCorrect: number;
+//   quantTotal: number;
+//   setVerbalCorrect: (value: number) => void;
+//   setVerbalTotal: (value: number) => void;
+//   setQuantCorrect: (value: number) => void;
+//   setQuantTotal: (value: number) => void;
+// };
+
+
+// const faqs: FAQ[] = [
+//   {
+//     question: "How accurate is the GRE score calculator?",
+//     answer:
+//       "The calculator provides an estimated GRE score based on the practice section results you enter. It is designed to give you a useful benchmark before taking the official GRE.",
+//   },
+//   {
+//     question: "What is a good GRE score for graduate school?",
+//     answer:
+//       "A good GRE score depends on your target university, program and applicant pool. Competitive programs may expect stronger Quantitative and Verbal scores.",
+//   },
+//   {
+//     question: "Does Ooshas Prep predict my admission chances?",
+//     answer:
+//       "The calculator provides a score-based indication of program competitiveness. Admission depends on many factors including academics, experience, essays, recommendations and the university.",
+//   },
+//   {
+//     question: "How frequently should I use this calculator?",
+//     answer:
+//       "Use it after practice tests or major preparation milestones to track your progress and understand how your score is improving.",
+//   },
+//   {
+//     question: "Can I use my calculator results for university planning?",
+//     answer:
+//       "Yes. Your estimated score can be used as an initial benchmark when researching universities and graduate programs.",
+//   },
+// ];
+
+// export default function GREScoreCalculatorPage() {
+//   const [verbalCorrect, setVerbalCorrect] = useState(34);
+//   const [verbalTotal, setVerbalTotal] = useState(40);
+//   const [quantCorrect, setQuantCorrect] = useState(36);
+//   const [quantTotal, setQuantTotal] = useState(40);
+//   const [difficulty, setDifficulty] = useState(75);
+//   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
+
+//   const score = useMemo(() => {
+//     const verbalPercentage =
+//       verbalTotal > 0 ? verbalCorrect / verbalTotal : 0;
+
+//     const quantPercentage = quantTotal > 0 ? quantCorrect / quantTotal : 0;
+
+//     const verbalScore = Math.round(130 + verbalPercentage * 40);
+//     const quantScore = Math.round(130 + quantPercentage * 40);
+
+//     return Math.min(340, verbalScore + quantScore);
+//   }, [verbalCorrect, verbalTotal, quantCorrect, quantTotal]);
+
+//   const percentile = useMemo(() => {
+//     if (score >= 330) return "98+";
+//     if (score >= 325) return "95+";
+//     if (score >= 320) return "90+";
+//     if (score >= 315) return "85+";
+//     if (score >= 310) return "75+";
+//     return "65+";
+//   }, [score]);
+
+//   return (
+//     <main className="min-h-screen bg-[#fff] text-[#0b1e3f]">
+//       <Hero />
+
+//       <ScoreSection
+//         type={'gre'}
+//         score={score}
+//         percentile={percentile}
+//         difficulty={difficulty}
+//         setDifficulty={setDifficulty}
+//         verbalCorrect={verbalCorrect}
+//         verbalTotal={verbalTotal}
+//         quantCorrect={quantCorrect}
+//         quantTotal={quantTotal}
+//       />
+
+//       <WhySection />
+
+//       <DifferenceSection />
+
+//       <BeyondNumberSection />
+
+//       <QuestionsSection />
+
+//       <FAQSection
+//         expandedFAQ={expandedFAQ}
+//         setExpandedFAQ={setExpandedFAQ}
+//       />
+
+//       <BottomCTA />
+//     </main>
+//   );
+// }
+
+// function Hero() {
+//   return (
+//     <section className="relative overflow-hidden bg-[#fcf3ed]">
+//       {/* <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(40,78,140,.35),transparent_55%)]" /> */}
+
+//       <div className="relative mx-auto max-w-5xl px-4 pb-14 pt-16 text-center sm:px-6 lg:pb-20 lg:pt-20">
+//         {/* <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange-300/20 bg-orange-400/10 px-3 py-1 
+//         text-[10px] font-bold uppercase tracking-wider text-orange-300">
+//           <Sparkles className="h-3 w-3" />
+//           Free GRE Tool
+//         </div> */}
+
+//         <h1 className="mx-auto max-w-4xl text-3xl font-extrabold leading-tight  sm:text-4xl lg:text-5xl">
+//           Free{" "}
+//           <span style={{ color: ORANGE }}>
+//             GRE Score Calculator
+//           </span>{" "}
+//           & Grad School Predictor
+//         </h1>
+
+//         <p className="mx-auto mt-5 max-w-2xl text-sm leading-6  sm:text-base">
+//           Estimate your GRE score, understand your percentile, and discover
+//           graduate programs that match your current performance.
+//         </p>
+
+//         <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+//           <a
+//             href="#calculator"
+//             className="inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5"
+//             style={{ background: ORANGE }}
+//           >
+//             Calculate My GRE Score
+//             <ArrowRight className="h-4 w-4" />
+//           </a>
+
+//           <a
+//             href="#programs"
+//             className="inline-flex items-center justify-center rounded-lg border border-black  px-6 py-3 text-sm font-semibold
+//              transition hover:bg-white/10"
+//           >
+//             Explore Programs
+//           </a>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function ScoreSection({
+//   score,
+//   percentile,
+//   difficulty,
+//   setDifficulty,
+//   verbalCorrect,
+//   verbalTotal,
+//   quantCorrect,
+//   quantTotal,
+// }: {
+//   score: number;
+//   percentile: string;
+//   difficulty: number;
+//   setDifficulty: (value: number) => void;
+//   verbalCorrect: number;
+//   verbalTotal: number;
+//   quantCorrect: number;
+//   quantTotal: number;
+// }) {
+//   return (
+//     <section id="calculator" className="px-4 pb-20">
+//       <div className="mx-auto max-w-6xl">
+//         <SectionHeading
+//           eyebrow="GRE SCORE CALCULATOR"
+//           title="Convert Your Raw Score Into Your Real GRE Score"
+//           description="Enter your practice performance and understand how your current results translate into an estimated GRE score."
+//         />
+
+//         <div className="mt-9 grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg lg:grid-cols-[1fr_360px]">
+//           <div className="p-5 sm:p-7">
+//             <div className="mb-6 flex items-center justify-between">
+//               <div>
+//                 <h3 className="text-sm font-extrabold">
+//                   Enter Your Practice Test Results
+//                 </h3>
+//                 <p className="mt-1 text-[14px] text-slate-500">
+//                   Use your latest mock test for the best estimate.
+//                 </p>
+//               </div>
+
+//               <span className="rounded-full bg-orange-50 px-2.5 py-1 text-[9px] font-bold text-orange-500">
+//                 LIVE
+//               </span>
+//             </div>
+
+//             <ResultRow
+//               label="Verbal Reasoning"
+//               value={`${verbalCorrect}/${verbalTotal}`}
+//               percentage={
+//                 verbalTotal
+//                   ? Math.round((verbalCorrect / verbalTotal) * 100)
+//                   : 0
+//               }
+//             />
+
+//             <ResultRow
+//               label="Quantitative Reasoning"
+//               value={`${quantCorrect}/${quantTotal}`}
+//               percentage={
+//                 quantTotal
+//                   ? Math.round((quantCorrect / quantTotal) * 100)
+//                   : 0
+//               }
+//             />
+
+//             <div className="mt-5 rounded-xl border border-slate-200 p-4">
+//               <div className="mb-3 flex justify-between">
+//                 <div>
+//                   <p className="text-xm font-bold">Question Difficulty</p>
+//                   <p className="mt-1 text-[10px] text-slate-400">
+//                     How challenging was your practice test?
+//                   </p>
+//                 </div>
+
+//                 <span className="text-xm font-bold text-orange-500">
+//                   {difficulty}%
+//                 </span>
+//               </div>
+
+//               <input
+//                 type="range"
+//                 min={0}
+//                 max={100}
+//                 value={difficulty}
+//                 onChange={(e) => setDifficulty(Number(e.target.value))}
+//                 className="w-full accent-orange-500"
+//               />
+//             </div>
+
+//             <button
+//               className="mt-5 w-full rounded-lg py-3 text-xm font-bold text-white"
+//               style={{ background: ORANGE }}
+//             >
+//               Calculate My GRE Score
+//             </button>
+//           </div>
+
+//           <div className="relative flex flex-col justify-center bg-[#0b1e3f] p-7 text-white">
+//             <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-blue-500/10 blur-3xl" />
+
+//             <div className="relative">
+//               <p className="text-center text-[10px] font-medium uppercase tracking-widest text-blue-200/60">
+//                 Your Estimated GRE Score
+//               </p>
+
+//               <div className="mt-4 text-center">
+//                 <span className="text-6xl font-black tracking-tight">
+//                   {score}
+//                 </span>
+
+//                 <span className="ml-1 text-sm font-semibold text-white/50">
+//                   /340
+//                 </span>
+//               </div>
+
+//               <div className="mt-3 text-center">
+//                 <span className="rounded-full bg-orange-500/15 px-3 py-1 text-[10px] font-bold text-orange-300">
+//                   {percentile} Percentile
+//                 </span>
+//               </div>
+
+//               <div className="mt-8 space-y-4">
+//                 <ScoreMeter label="Verbal Reasoning" value={verbalCorrect / Math.max(verbalTotal, 1) * 100} />
+//                 <ScoreMeter label="Quantitative Reasoning" value={quantCorrect / Math.max(quantTotal, 1) * 100} />
+//                 <ScoreMeter label="Overall Performance" value={Math.min((score / 340) * 100, 100)} />
+//               </div>
+
+//               <div className="mt-8 border-t border-white/10 pt-5 text-center">
+//                 <p className="text-[10px] leading-5 text-blue-100/60">
+//                   Your estimated score is a planning benchmark and should not
+//                   be considered an official GRE result.
+//                 </p>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function ResultRow({
+//   label,
+//   value,
+//   percentage,
+// }: {
+//   label: string;
+//   value: string;
+//   percentage: number;
+// }) {
+//   return (
+//     <div className="mb-4 rounded-xl border border-slate-200 p-4">
+//       <div className="mb-3 flex items-center justify-between">
+//         <span className="text-xm font-bold">{label}</span>
+
+//         <span className="rounded bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">
+//           {value}
+//         </span>
+//       </div>
+
+//       <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+//         <div
+//           className="h-full rounded-full transition-all"
+//           style={{
+//             width: `${Math.min(percentage, 100)}%`,
+//             background: ORANGE,
+//           }}
+//         />
+//       </div>
+//     </div>
+//   );
+// }
+
+// function ScoreMeter({
+//   label,
+//   value,
+// }: {
+//   label: string;
+//   value: number;
+// }) {
+//   return (
+//     <div>
+//       <div className="mb-2 flex justify-between text-[10px]">
+//         <span className="text-white/70">{label}</span>
+//         <span className="font-bold text-white">
+//           {Math.round(value)}%
+//         </span>
+//       </div>
+
+//       <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+//         <div
+//           className="h-full rounded-full bg-orange-400 transition-all"
+//           style={{ width: `${Math.min(value, 100)}%` }}
+//         />
+//       </div>
+//     </div>
+//   );
+// }
+
+// function WhySection() {
+//   return (<section className="bg-[#fcf3ed] px-4 py-16 text-[#0b1e3f]"> 
+//   <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center"> 
+//     <div> 
+//       <div className="mb-4 inline-flex rounded-full bg-orange-500/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-orange-600"> 
+//         More Than A Number 
+//       </div> 
+//       <h2 className="max-w-xl text-2xl font-extrabold leading-tight sm:text-3xl text-[#0b1e3f]"> 
+//         Your Score Doesn't Stop Here — <br /> Practice For Real 
+//       </h2> 
+//       <p className="mt-5 max-w-xl text-sm leading-6 text-[#0b1e3f]/80"> 
+//         Your GRE score is only one part of your graduate school journey. Use your results to identify weaknesses, improve your preparation, and build a stronger application strategy. 
+//       </p> 
+//       <ul className="mt-6 space-y-3"> 
+//         {[ 
+//           "Identify your strongest and weakest GRE sections", 
+//           "Track progress across multiple practice tests", 
+//           "Understand where your score stands", 
+//           "Build a smarter graduate school shortlist", 
+//         ].map((item) => ( 
+//           <li key={item} className="flex items-center gap-3 text-xm text-[#0b1e3f]/90" > 
+//             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500/15 text-orange-600"> 
+//               <Check className="h-3 w-3" /> 
+//             </span> 
+//             {item} 
+//           </li> 
+//         ))} 
+//       </ul> 
+//       <button className="mt-7 rounded-lg px-5 py-3 text-xm font-bold text-white" style={{ background: ORANGE }} > 
+//         Start Your Preparation 
+//       </button> 
+//     </div> 
+//     <div className="grid grid-cols-2 gap-3"> 
+//       {[ 
+//         ["2,000+", "Students Tested"], 
+//         ["10,000+", "Practice Results"], 
+//         ["42 pts", "Average Improvement"], 
+//         ["247", "Universities Explored"], 
+//       ].map(([number, label]) => ( 
+//         <div key={label} className="rounded-xl border border-[#0b1e3f]/10 bg-[#0b1e3f]/5 p-5" > 
+//           <p className="text-xl font-black text-[#0b1e3f]">{number}</p> 
+//           <p className="mt-1 text-[10px] text-[#0b1e3f]/60">{label}</p> 
+//         </div> 
+//       ))} 
+//     </div> 
+//   </div> 
+// </section>
+
+//   );
+// }
+
+// function DifferenceSection() {
+//   return (
+//     <section
+//       id="how-it-works"
+//       className="bg-white px-4 py-12"
+//     >
+//       <div className="mx-auto max-w-5xl">
+//         <SectionHeading
+//           eyebrow="OUR DIFFERENCE"
+//           title="How Ooshas Prep's GRE Calculator Is Different"
+//           description="A simple calculator designed to give you useful insights beyond just a single number."
+//         />
+
+//         <div className="mt-9 overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
+//           <div className="grid grid-cols-[1.4fr_1fr_1fr_1fr] bg-[#0b1e3f] text-[10px] font-bold text-white">
+//             <div className="p-3">Feature</div>
+//             <div className="p-3 text-center">Ooshas Prep</div>
+//             <div className="p-3 text-center">Basic Calculator</div>
+//             <div className="p-3 text-center">Random Predictor</div>
+//           </div>
+
+//           {[
+//             "Practice-based score estimate",
+//             "Section-level insights",
+//             "Grad program matching",
+//             "Performance tracking",
+//             "Study recommendations",
+//             "Admission planning",
+//           ].map((item, index) => (
+//             <div
+//               key={item}
+//               className="grid grid-cols-[1.4fr_1fr_1fr_1fr] border-t border-slate-200 text-[14px]"
+//             >
+//               <div className="p-3 font-semibold text-slate-700">
+//                 {item}
+//               </div>
+
+//               <div className="flex items-center justify-center bg-orange-50 p-3">
+//                 <Check className="h-4 w-4 text-orange-500" />
+//               </div>
+
+//               <div className="flex items-center justify-center p-3">
+//                 {index < 2 ? (
+//                   <Check className="h-4 w-4 text-emerald-500" />
+//                 ) : (
+//                   <span className="text-slate-300">×</span>
+//                 )}
+//               </div>
+
+//               <div className="flex items-center justify-center p-3">
+//                 {index === 2 ? (
+//                   <Check className="h-4 w-4 text-emerald-500" />
+//                 ) : (
+//                   <span className="text-slate-300">×</span>
+//                 )}
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function BeyondNumberSection() {
+//   const features = [
+//     {
+//       icon: TrendingUp,
+//       title: "Track Your Progress",
+//       text: "Monitor score changes over multiple practice tests.",
+//     },
+//     {
+//       icon: Target,
+//       title: "Pinpoint Weak Areas",
+//       text: "Understand which section needs more preparation.",
+//     },
+//     {
+//       icon: GraduationCap,
+//       title: "Explore Universities",
+//       text: "Compare your score against graduate program ranges.",
+//     },
+//     {
+//       icon: Trophy,
+//       title: "Build Your Profile",
+//       text: "Use your GRE score as part of your larger application plan.",
+//     },
+//     {
+//       icon: MapPin,
+//       title: "Find Your Fit",
+//       text: "Discover programs that align with your goals.",
+//     },
+//     {
+//       icon: Sparkles,
+//       title: "Get Smarter Insights",
+//       text: "Turn raw practice results into actionable information.",
+//     },
+//   ];
+
+//   return (
+//     <section className="bg-[#fff] px-4 py-12">
+//       <div className="mx-auto max-w-6xl">
+//         <SectionHeading
+//           eyebrow="BEYOND THE NUMBER"
+//           title="Go Beyond the Number — Understand Your Score"
+//           description="Your GRE result can tell you much more when combined with the right context."
+//         />
+
+//         <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+//           {features.map(({ icon: Icon, title, text }) => (
+//             <div
+//               key={title}
+//               className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+//             >
+//               <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-orange-500">
+//                 <Icon className="h-4 w-4" />
+//               </div>
+
+//               <h3 className="text-sm font-extrabold">{title}</h3>
+
+//               <p className="mt-2 text-[14px] leading-5 text-slate-500">
+//                 {text}
+//               </p>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function QuestionsSection() {
+//   return (
+//     <section className="bg-[#fcf3ed] px-4 py-12">
+//       <div className="mx-auto max-w-3xl">
+//         <SectionHeading
+//           eyebrow="COMMUNITY"
+//           title="Student Questions & Comments"
+//           description="Have a question about your GRE score? Ask our team and community."
+//         />
+
+//         <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+//           <div className="grid gap-3 sm:grid-cols-2">
+//             <input
+//               placeholder="Your name"
+//               className="rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400"
+//             />
+
+//             <input
+//               placeholder="Email address"
+//               className="rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400"
+//             />
+//           </div>
+
+//           <textarea
+//             placeholder="Ask your question..."
+//             rows={4}
+//             className="mt-3 w-full resize-none rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400"
+//           />
+
+//           <button className="mt-3 rounded-lg bg-[#0b1e3f] px-5 py-3 text-xm font-bold text-white">
+//             Post Question
+//           </button>
+//         </div>
+
+//         <div className="mt-4 space-y-3">
+//           {[
+//             "How can I improve my Quant score?",
+//             "Is a 320 GRE score competitive?",
+//             "Which universities should I target?",
+//           ].map((question, index) => (
+//             <div
+//               key={question}
+//               className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+//             >
+//               <div className="flex gap-3">
+//                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0b1e3f] text-[10px] font-bold text-white">
+//                   {index + 1}
+//                 </div>
+
+//                 <div className="flex-1">
+//                   <p className="text-xm font-bold">{question}</p>
+//                   <p className="mt-1 text-[10px] text-slate-400">
+//                     Asked by GRE student
+//                   </p>
+//                 </div>
+
+//                 <button className="text-[10px] font-bold text-orange-500">
+//                   Answer
+//                 </button>
+//               </div>
+//             </div>
+//           ))}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function FAQSection({
+//   expandedFAQ,
+//   setExpandedFAQ,
+// }: {
+//   expandedFAQ: number | null;
+//   setExpandedFAQ: (value: number | null) => void;
+// }) {
+//   return (
+//     <section id="faq" className="bg-[#fff] px-4 pb-20">
+//       <div className="mx-auto max-w-3xl">
+//         <SectionHeading
+//           eyebrow=""
+//           title="GRE Score Calculator — Frequently Asked Questions"
+//           description="Everything you need to know about our GRE score calculator."
+//         />
+
+//         <div className="mt-8 space-y-2">
+//           {faqs.map((faq, index) => {
+//             const open = expandedFAQ === index;
+
+//             return (
+//               <div
+//                 key={faq.question}
+//                 className="overflow-hidden rounded-lg border border-slate-200 bg-white"
+//               >
+//                 <button
+//                   onClick={() =>
+//                     setExpandedFAQ(open ? null : index)
+//                   }
+//                   className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left"
+//                 >
+//                   <span className="text-xm font-bold">
+//                     {faq.question}
+//                   </span>
+
+//                   {open ? (
+//                     <ChevronUp className="h-4 w-4 shrink-0 text-orange-500" />
+//                   ) : (
+//                     <ChevronDown className="h-4 w-4 shrink-0 text-orange-500" />
+//                   )}
+//                 </button>
+
+//                 {open && (
+//                   <div className="border-t border-slate-100 px-4 pb-4 pt-3">
+//                     <p className="text-[14px] leading-5 text-slate-500">
+//                       {faq.answer}
+//                     </p>
+//                   </div>
+//                 )}
+//               </div>
+//             );
+//           })}
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function BottomCTA() {
+//   return (
+//     <section id="contact" className="bg-white px-4 pb-5">
+//       <div
+//         className="mx-auto max-w-7xl overflow-hidden rounded-xl px-6 py-10 text-center sm:px-10"
+//         style={{
+//           background:
+//             "linear-gradient(135deg, #ff7627 0%, #ff8b4d 100%)",
+//         }}
+//       >
+//         <h2 className="text-xl font-black text-white sm:text-2xl">
+//           Your Dream Grad School Is One Score Away
+//         </h2>
+
+//         <p className="mx-auto mt-2 max-w-xl text-xm leading-5 text-white/80">
+//           Understand your current GRE performance and take the next step
+//           toward your graduate school goals.
+//         </p>
+
+//         <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
+//           <button className="rounded-lg bg-[#0b1e3f] px-5 py-3 text-xm font-bold text-white">
+//             Calculate My Score
+//           </button>
+
+//           <button className="rounded-lg bg-white px-5 py-3 text-xm font-bold text-[#0b1e3f]">
+//             Talk To An Expert
+//           </button>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+// function SectionHeading({
+//   eyebrow,
+//   title,
+//   description,
+//   dark = false,
+// }: {
+//   eyebrow: string;
+//   title: string;
+//   description: string;
+//   dark?: boolean;
+// }) {
+//   return (
+//     <div className="mx-auto max-w-2xl text-center">
+//       <span
+//         className={`inline-flex rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-widest ${
+//           dark
+//             ? "bg-orange-400/10 text-orange-300"
+//             : "bg-orange-50 text-orange-500"
+//         }`}
+//       >
+//         {eyebrow}
+//       </span>
+
+//       <h2
+//         className={`mt-3 text-2xl font-extrabold leading-tight sm:text-3xl ${
+//           dark ? "text-white" : "text-[#0b1e3f]"
+//         }`}
+//       >
+//         {title}
+//       </h2>
+
+//       <p
+//         className={`mt-3 text-xm leading-5 sm:text-sm ${
+//           dark ? "text-blue-100/60" : "text-slate-500"
+//         }`}
+//       >
+//         {description}
+//       </p>
+//     </div>
+//   );
+// }
+
 
 
 
