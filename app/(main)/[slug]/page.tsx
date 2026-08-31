@@ -18,9 +18,9 @@ export async function generateMetadata({
 
   const cleanText = decodeURIComponent(decodeURIComponent(slug));
 
-  // // 2. Convert spaces to hyphens for the URL slug
   const rowtext = cleanText.toLowerCase().replace(/\s+/g, "-");
 
+  if (rowtext === 'favicon.ico') return {}; 
   if (!rowtext) {
     return {
       title: "No Data Found",

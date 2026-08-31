@@ -11,11 +11,11 @@ export function Consultants({ data, finalCtaSection }: any) {
   const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
-  // console.log("data faq", data);
+  
 
-  // 1. ADD THIS GUARD: Prevents the "reading fields of undefined" crash
+  
   if (!data || !data.fields) {
-    return null; // Or a loading spinner
+    return null; 
   }
 
   return (
@@ -28,16 +28,15 @@ export function Consultants({ data, finalCtaSection }: any) {
       </h2>
 
       <div className="space-y-2">
-        {/* 2. ADD OPTIONAL CHAINING and ensure items exists */}
+        
         {data.fields.items?.map((item: any, index: number) => (
           <div
-            // 3. IMPROVE KEY: If item has an ID, use it. Otherwise, index is okay here but ID is better.
             key={item.id || index}
             className="border-b border-gray-100 last:border-b-0"
           >
             <button
               onClick={() => toggle(index)}
-              className="flex items-center justify-between w-full py-4 text-left cursor-pointer" // Fixed "pointer" class to "cursor-pointer"
+              className="flex items-center justify-between w-full py-4 text-left cursor-pointer" 
             >
               <span className="font-medium text-primary text-lg md:text-xl">
                 {item.question}

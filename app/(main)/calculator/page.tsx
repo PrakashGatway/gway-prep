@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useMemo, useState } from "react";
@@ -19,6 +18,7 @@ import {
   Trophy,
   Users,
 } from "lucide-react";
+import { Consultants } from "@/components/destinations-consultants";
 
 const ORANGE = "#ff7a2a";
 const NAVY = "#0b1e3f";
@@ -37,10 +37,7 @@ type ExamSection = {
   label: string;
   min: number;
   max: number;
-  step?: number; // increment allowed for this section, defaults to 1
-  // If set, this section is entered as a RAW score (e.g. IELTS Listening
-  // out of 40) and must be converted to a band/scaled score for totals.
-  // The UI also shows the converted value next to the raw input.
+  step?: number;
   bandFromRaw?: (raw: number) => number;
   bandUnitLabel?: string; // e.g. "Band" — label for the converted value
 };
@@ -55,24 +52,15 @@ type ExamConfig = {
   label: string;
   sections: ExamSection[];
   scoreRange: { min: number; max: number };
-  // Ascending list of bands, e.g. [{threshold: 260, label: "65th"}, ...].
-  // Single source of truth for both the percentile lookup and the gauge chart.
   percentileBands: PercentileBand[];
   totalLabel: string;
-  // Converts raw section inputs into a real total score for this exam.
-  // This is exam-specific because not every exam's total is a simple sum
-  // (e.g. IELTS/PTE are averages, GMAT total isn't a linear sum of subsections).
   computeTotal: (scores: Record<string, number>) => number;
 };
 
-// Rounds to the nearest multiple of `step` (e.g. step=0.5 -> nearest half point)
 function roundToStep(value: number, step: number) {
   return Math.round(value / step) * step;
 }
 
-// Official IELTS rounding: overall band is the average of 4 sections, rounded
-// to the nearest whole or half band (.25 rounds up to .5, .75 rounds up to
-// the next whole band).
 function roundIELTSBand(avg: number) {
   const whole = Math.floor(avg);
   const remainder = avg - whole;
@@ -81,8 +69,6 @@ function roundIELTSBand(avg: number) {
   return whole + 1;
 }
 
-// Approximate published IELTS Listening raw-score (out of 40) -> band
-// conversion table. Descending thresholds; first match wins.
 const LISTENING_RAW_TO_BAND: { min: number; band: number }[] = [
   { min: 39, band: 9 },
   { min: 37, band: 8.5 },
@@ -100,8 +86,6 @@ const LISTENING_RAW_TO_BAND: { min: number; band: number }[] = [
   { min: 4, band: 2.5 },
 ];
 
-// Approximate published IELTS Academic Reading raw-score (out of 40) -> band
-// conversion table. Descending thresholds; first match wins.
 const READING_RAW_TO_BAND: { min: number; band: number }[] = [
   { min: 39, band: 9 },
   { min: 37, band: 8.5 },
@@ -118,14 +102,18 @@ const READING_RAW_TO_BAND: { min: number; band: number }[] = [
   { min: 6, band: 3 },
 ];
 
-function rawToBand(raw: number, table: { min: number; band: number }[]): number {
+function rawToBand(
+  raw: number,
+  table: { min: number; band: number }[],
+): number {
   for (const row of table) {
     if (raw >= row.min) return row.band;
   }
   return 0;
 }
 
-const listeningBandFromRaw = (raw: number) => rawToBand(raw, LISTENING_RAW_TO_BAND);
+const listeningBandFromRaw = (raw: number) =>
+  rawToBand(raw, LISTENING_RAW_TO_BAND);
 const readingBandFromRaw = (raw: number) => rawToBand(raw, READING_RAW_TO_BAND);
 
 function defaultSectionValue(section: ExamSection) {
@@ -161,7 +149,6 @@ const examConfigs: Record<ExamType, ExamConfig> = {
       { threshold: 330, label: "98th" },
     ],
     totalLabel: "/340",
-    // GRE total is simply verbal + quant.
     computeTotal: (scores) => (scores.verbal ?? 130) + (scores.quant ?? 130),
   },
   GMAT: {
@@ -181,10 +168,7 @@ const examConfigs: Record<ExamType, ExamConfig> = {
       { threshold: 750, label: "99th" },
     ],
     totalLabel: "/805",
-    // The official GMAT total isn't a direct sum of subsection scores (GMAC
-    // uses a proprietary conversion). We approximate it by scaling the
-    // average subsection performance (60-90) into the 205-805 total range,
-    // then rounding to the nearest 10, matching how GMAT totals are reported.
+
     computeTotal: (scores) => {
       const q = scores.quant ?? 60;
       const v = scores.verbal ?? 60;
@@ -196,7 +180,6 @@ const examConfigs: Record<ExamType, ExamConfig> = {
   },
   SAT: {
     label: "SAT",
-    // Real SAT section scores are scaled 200-800 each.
     sections: [
       { id: "rw", label: "Reading & Writing", min: 200, max: 800 },
       { id: "math", label: "Math", min: 200, max: 800 },
@@ -230,7 +213,6 @@ const examConfigs: Record<ExamType, ExamConfig> = {
       { threshold: 115, label: "95th" },
     ],
     totalLabel: "/120",
-    // TOEFL total is the sum of all four section scores.
     computeTotal: (scores) =>
       (scores.reading ?? 0) +
       (scores.listening ?? 0) +
@@ -240,8 +222,6 @@ const examConfigs: Record<ExamType, ExamConfig> = {
   IELTS: {
     label: "IELTS",
     sections: [
-      // Listening & Reading are marked as a RAW score out of 40 questions,
-      // then converted to a 0-9 band via the official conversion tables.
       {
         id: "listening",
         label: "Listening",
@@ -260,8 +240,7 @@ const examConfigs: Record<ExamType, ExamConfig> = {
         bandFromRaw: readingBandFromRaw,
         bandUnitLabel: "Band",
       },
-      // Writing & Speaking are assessed directly against band descriptors,
-      // so they're entered as a band score (0-9, half-band increments).
+
       { id: "writing", label: "Writing", min: 0, max: 9, step: 0.5 },
       { id: "speaking", label: "Speaking", min: 0, max: 9, step: 0.5 },
     ],
@@ -274,21 +253,19 @@ const examConfigs: Record<ExamType, ExamConfig> = {
       { threshold: 8.5, label: "98th" },
     ],
     totalLabel: "/9",
-    // IELTS overall band is the AVERAGE of the four section BANDS (with
-    // Listening/Reading first converted from their raw scores), rounded
-    // using the official half/whole band rounding rule.
+
     computeTotal: (scores) => {
       const listeningBand = listeningBandFromRaw(scores.listening ?? 0);
       const readingBand = readingBandFromRaw(scores.reading ?? 0);
       const writingBand = scores.writing ?? 0;
       const speakingBand = scores.speaking ?? 0;
-      const avg = (listeningBand + readingBand + writingBand + speakingBand) / 4;
+      const avg =
+        (listeningBand + readingBand + writingBand + speakingBand) / 4;
       return roundIELTSBand(avg);
     },
   },
   PTE: {
     label: "PTE Academic",
-    // Each PTE communicative skill is scored 10-90.
     sections: [
       { id: "speaking", label: "Speaking & Writing", min: 10, max: 90 },
       { id: "reading", label: "Reading", min: 10, max: 90 },
@@ -303,16 +280,16 @@ const examConfigs: Record<ExamType, ExamConfig> = {
       { threshold: 85, label: "95th" },
     ],
     totalLabel: "/90",
-    // PTE's overall score is closely approximated by the average of the
-    // three communicative skill scores, not their sum.
     computeTotal: (scores) => {
       const avg =
-        ((scores.speaking ?? 10) + (scores.reading ?? 10) + (scores.listening ?? 10)) / 3;
+        ((scores.speaking ?? 10) +
+          (scores.reading ?? 10) +
+          (scores.listening ?? 10)) /
+        3;
       return Math.round(avg);
     },
   },
 };
-
 
 type CalculatedResult = {
   exam: ExamType;
@@ -321,9 +298,67 @@ type CalculatedResult = {
   percentile: string;
 };
 
+
+  const faqs =  {
+      name: 'f&q',
+      template: 'Preparation',
+      label: 'FAQ',
+      fields: {
+        title: 'Frequently || Asked Questions  ',
+        items: [
+          {
+            answer: 'Our center is widely rated as the best GRE coaching in India because we offer expert physical classroom mentorship, personalized study planners, and a dedicated GRE preparation India simulation lab. We provide individual attention with strict batch limits, making us the top choice for students looking for high-quality classroom GRE coaching.',
+            question: 'Which is the best GRE coaching in India for offline classroom preparation?'
+          },
+          {
+            question: 'How can I access a realistic free GRE practice test?',
+            answer: 'You can take a high-quality free GRE practice test directly on our platform. Our entry-level gre mock test matches the official ETS exam interface exactly, giving you an accurate baseline score and helping you identify your structural strengths and weaknesses before you buy any premium test series.'
+          },
+          {
+            question: 'Does your GRE mock test series use a section-adaptive algorithm?',
+            answer: 'Yes, every full-length gre online mock test in our test series uses a true section-adaptive engine. This means the second section dynamically changes its difficulty based on your performance in the first section, perfectly matching the official shorter GRE format for highly accurate score predictions'
+          },
+          {
+            question: 'Where can I find the updated GRE syllabus 2026 and exam structure?',
+            answer: 'You can download the complete GRE syllabus 2026 and detailed gre exam pattern directly from our resources tab. Our syllabus guide breaks down every high-yield topic across the quantitative reasoning, verbal reasoning, and analytical writing sections so you can plan your daily study goals effectively.'
+          },
+          {
+            question: 'How do your online GRE classes help non-native English speakers with vocabulary?',
+            answer: ' Our gre online classes feature a dedicated verbal strategy kit built for non-native English speakers. Students gain access to context-based digital flashcards, reading speed drills, and section-specific gre verbal mock test online modules to confidently master high-frequency exam words.'
+          },
+          {
+            question: 'What is the current GRE exam fee in India for registration?',
+            answer: 'The standard gre exam fee in India is set globally by ETS. While checking your local center slots for gre registration india, you can view our platform\'s updated fee guide, which outlines current costs in Indian Rupees (INR) alongside any active exam voucher discounts.'
+          },
+          {
+            question: 'Why should I choose your test series over general GRE preparation online tools?',
+            answer: 'Unlike basic static quiz tools found across standard gre preparation online websites, our platform provides deep performance analytics. Every gre mock test triggers an automated error report detailing your time spent per question, accuracy tiers, and a national percentile rank comparison.'
+          },
+          {
+            question: 'Is Ooshas Prep good for GRE offline classroom coaching too?',
+            answer: 'Ooshas Prep is primarily an online GRE coaching platform, with live instructor-led sessions delivered virtually. This lets us keep costs lower than traditional classroom coaching while still giving you real-time mentor access — a good fit if you want structured guidance without commuting to a coaching center.'
+          },
+          {
+            question: 'Is there a free GRE practice test available?',
+            answer: 'Yes. We offer a free GRE diagnostic test that identifies your current score range and weak areas before you commit to a paid plan, so you know exactly what you need to work on.'
+          },
+          {
+            question: 'How long does it take to prepare for the GRE?',
+            answer: 'Most students see solid results with [6–10 weeks] of consistent preparation, though this depends on your starting score, target score, and available study time per week. Our diagnostic test helps build a realistic timeline for your specific situation.'
+          },
+          {
+            question: 'What is the GRE online coaching fee at Ooshas Prep in India?',
+            answer: 'Our GRE coaching fees are different based on the packages (starter, standard, and premium) and the extent of assistance opted by the candidate. Moreover, the fees might be altered depending upon a new batch start, discount offers, and other such factors. Hence, it will be appropriate to contact our admission counselors to get an exact fee structure.'
+          }
+        ]
+      }
+    };
+
 export default function ScoreCalculatorPage() {
   const [selectedExam, setSelectedExam] = useState<ExamType>("GRE");
-  const [sectionScores, setSectionScores] = useState<Record<string, number>>({});
+  const [sectionScores, setSectionScores] = useState<Record<string, number>>(
+    {},
+  );
   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
   const [result, setResult] = useState<CalculatedResult | null>(null);
 
@@ -336,8 +371,7 @@ export default function ScoreCalculatorPage() {
       initial[s.id] = defaultSectionValue(s);
     });
     setSectionScores(initial);
-    setResult(null); 
-    
+    setResult(null);
   }, [selectedExam]);
 
   const handleScoreChange = (sectionId: string, value: number) => {
@@ -353,7 +387,7 @@ export default function ScoreCalculatorPage() {
     const computed = config.computeTotal(sectionScores);
     const totalScore = Math.min(
       config.scoreRange.max,
-      Math.max(config.scoreRange.min, computed)
+      Math.max(config.scoreRange.min, computed),
     );
     const percentile = getPercentileLabel(totalScore, config.percentileBands);
     setResult({
@@ -403,7 +437,8 @@ export default function ScoreCalculatorPage() {
       <DifferenceSection />
       <BeyondNumberSection />
       <QuestionsSection />
-      <FAQSection expandedFAQ={expandedFAQ} setExpandedFAQ={setExpandedFAQ} />
+      {/* <FAQSection expandedFAQ={expandedFAQ} setExpandedFAQ={setExpandedFAQ} /> */}
+      <Consultants data={faqs} />
       <BottomCTA />
     </main>
   );
@@ -414,11 +449,8 @@ function Hero() {
     <section className="relative overflow-hidden bg-[#fcf3ed]">
       <div className="relative mx-auto max-w-5xl px-4 pb-14 pt-16 text-center sm:px-6 lg:pb-20 lg:pt-20">
         <h1 className="mx-auto max-w-4xl text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
-          Free{" "}
-          <span style={{ color: ORANGE }}>
-            Exam Score Calculator
-          </span>{" "}
-          & Grad School Predictor
+          Free <span style={{ color: ORANGE }}>Exam Score Calculator</span> &
+          Grad School Predictor
         </h1>
         <p className="mx-auto mt-5 max-w-2xl text-sm leading-6 sm:text-base">
           Estimate your GRE, GMAT, SAT, TOEFL, IELTS, or PTE score, understand
@@ -459,7 +491,10 @@ function ScoreSection({
   result: CalculatedResult | null;
 }) {
   const displayTotal =
-    result && (Number.isInteger(result.totalScore) ? result.totalScore : result.totalScore.toFixed(1));
+    result &&
+    (Number.isInteger(result.totalScore)
+      ? result.totalScore
+      : result.totalScore.toFixed(1));
 
   return (
     <section id="calculator" className="px-4 pb-16">
@@ -489,17 +524,24 @@ function ScoreSection({
             {config.sections.map((section) => {
               const value = sectionScores[section.id] ?? section.min;
               const percentage = Math.round(
-                ((value - section.min) / (section.max - section.min)) * 100
+                ((value - section.min) / (section.max - section.min)) * 100,
               );
               const step = section.step || 1;
-              const bandEquivalent = section.bandFromRaw ? section.bandFromRaw(value) : null;
+              const bandEquivalent = section.bandFromRaw
+                ? section.bandFromRaw(value)
+                : null;
               return (
-                <div key={section.id} className="mb-4 rounded-xl border border-slate-200 p-4">
+                <div
+                  key={section.id}
+                  className="mb-4 rounded-xl border border-slate-200 p-4"
+                >
                   <div className="mb-3 flex items-center justify-between">
                     <span className="text-xm font-bold">
                       {section.label}
                       {section.bandFromRaw && (
-                        <span className="ml-1.5 font-normal text-slate-400">(out of {section.max})</span>
+                        <span className="ml-1.5 font-normal text-slate-400">
+                          (out of {section.max})
+                        </span>
                       )}
                     </span>
                     <span className="rounded bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">
@@ -587,10 +629,15 @@ function ScoreSection({
                     {config.sections.map((section) => {
                       const val = result.scores[section.id] ?? section.min;
                       const pct = Math.round(
-                        ((val - section.min) / (section.max - section.min)) * 100
+                        ((val - section.min) / (section.max - section.min)) *
+                          100,
                       );
                       return (
-                        <ScoreMeter key={section.id} label={section.label} value={pct} />
+                        <ScoreMeter
+                          key={section.id}
+                          label={section.label}
+                          value={pct}
+                        />
                       );
                     })}
                     <ScoreMeter
@@ -598,15 +645,15 @@ function ScoreSection({
                       value={Math.round(
                         ((result.totalScore - config.scoreRange.min) /
                           (config.scoreRange.max - config.scoreRange.min)) *
-                          100
+                          100,
                       )}
                     />
                   </div>
 
                   <div className="mt-8 border-t border-white/10 pt-5 text-center">
                     <p className="text-[10px] leading-5 text-blue-100/60">
-                      Your estimated score is a planning benchmark and should not
-                      be considered an official result.
+                      Your estimated score is a planning benchmark and should
+                      not be considered an official result.
                     </p>
                   </div>
                 </>
@@ -628,8 +675,10 @@ function ResultPlaceholder() {
       <p className="mt-4 text-sm font-bold text-white/80">No score yet</p>
       <p className="mx-auto mt-2 max-w-[220px] text-[12px] leading-5 text-blue-100/60">
         Enter your section scores on the left, then click{" "}
-        <span className="font-semibold text-orange-300">Calculate My Score</span> to
-        see your estimated result and charts.
+        <span className="font-semibold text-orange-300">
+          Calculate My Score
+        </span>{" "}
+        to see your estimated result and charts.
       </p>
     </div>
   );
@@ -653,12 +702,6 @@ function ScoreMeter({ label, value }: { label: string; value: number }) {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Score visualization: a bar chart comparing section scores, and a band/
-// percentile gauge showing where the total score falls on the exam's scale.
-// Only renders real data once the user has clicked Calculate.
-// ---------------------------------------------------------------------------
-
 function ScoreVisualizationSection({
   config,
   result,
@@ -678,7 +721,8 @@ function ScoreVisualizationSection({
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
             <h3 className="text-sm font-extrabold">Section Score Chart</h3>
             <p className="mt-1 text-[14px] text-slate-500">
-              Each bar shows how your entered score compares to that section's full range.
+              Each bar shows how your entered score compares to that section's
+              full range.
             </p>
             {result ? (
               <SectionBarChart config={config} sectionScores={result.scores} />
@@ -687,15 +731,26 @@ function ScoreVisualizationSection({
             )}
           </div>
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-            <h3 className="text-sm font-extrabold">Total Score & Band Position</h3>
+            <h3 className="text-sm font-extrabold">
+              Total Score & Band Position
+            </h3>
             {result ? (
               <>
                 <p className="mt-1 text-[14px] text-slate-500">
                   Your {config.label} total of{" "}
-                  {Number.isInteger(result.totalScore) ? result.totalScore : result.totalScore.toFixed(1)}
-                  {" "}sits in the <span className="font-bold text-orange-500">{result.percentile} percentile</span> band.
+                  {Number.isInteger(result.totalScore)
+                    ? result.totalScore
+                    : result.totalScore.toFixed(1)}{" "}
+                  sits in the{" "}
+                  <span className="font-bold text-orange-500">
+                    {result.percentile} percentile
+                  </span>{" "}
+                  band.
                 </p>
-                <BandGaugeChart config={config} totalScore={result.totalScore} />
+                <BandGaugeChart
+                  config={config}
+                  totalScore={result.totalScore}
+                />
               </>
             ) : (
               <>
@@ -764,7 +819,13 @@ function SectionBarChart({
               stroke="#e2e8f0"
               strokeWidth={1}
             />
-            <text x={paddingLeft - 8} y={y + 3} textAnchor="end" fontSize={9} fill="#94a3b8">
+            <text
+              x={paddingLeft - 8}
+              y={y + 3}
+              textAnchor="end"
+              fontSize={9}
+              fill="#94a3b8"
+            >
               {pct}%
             </text>
           </g>
@@ -776,12 +837,17 @@ function SectionBarChart({
         const value = sectionScores[section.id] ?? section.min;
         const pct = Math.min(
           100,
-          Math.max(0, ((value - section.min) / (section.max - section.min)) * 100)
+          Math.max(
+            0,
+            ((value - section.min) / (section.max - section.min)) * 100,
+          ),
         );
         const barHeight = (pct / 100) * chartHeight;
         const x = paddingLeft + i * (barWidth + gap);
         const y = paddingTop + chartHeight - barHeight;
-        const bandEquivalent = section.bandFromRaw ? section.bandFromRaw(value) : null;
+        const bandEquivalent = section.bandFromRaw
+          ? section.bandFromRaw(value)
+          : null;
 
         return (
           <g key={section.id}>
@@ -822,7 +888,6 @@ function SectionBarChart({
   );
 }
 
-// Splits a section label onto up to two lines so it fits under a narrow bar.
 function wrapLabel(label: string): string[] {
   if (label.length <= 12) return [label];
   const words = label.split(" ");
@@ -871,7 +936,8 @@ function BandGaugeChart({
       {bands.map((band, i) => {
         const segStart = boundaries[i];
         const segEnd = boundaries[i + 1];
-        const segX = paddingLeft + ((segStart - min) / (max - min)) * trackWidth;
+        const segX =
+          paddingLeft + ((segStart - min) / (max - min)) * trackWidth;
         const segWidth = ((segEnd - segStart) / (max - min)) * trackWidth;
         const segPct = (segWidth / trackWidth) * 100;
         const isActive = i === activeIndex;
@@ -905,10 +971,22 @@ function BandGaugeChart({
       })}
 
       {/* Range end labels */}
-      <text x={paddingLeft} y={barY - 10} textAnchor="start" fontSize={9} fill="#94a3b8">
+      <text
+        x={paddingLeft}
+        y={barY - 10}
+        textAnchor="start"
+        fontSize={9}
+        fill="#94a3b8"
+      >
         {min}
       </text>
-      <text x={width - paddingRight} y={barY - 10} textAnchor="end" fontSize={9} fill="#94a3b8">
+      <text
+        x={width - paddingRight}
+        y={barY - 10}
+        textAnchor="end"
+        fontSize={9}
+        fill="#94a3b8"
+      >
         {max}
       </text>
 
@@ -951,7 +1029,9 @@ function WhySection() {
             Your Score Doesn't Stop Here — <br /> Practice For Real
           </h2>
           <p className="mt-5 max-w-xl text-sm leading-6 text-[#0b1e3f]/80">
-            Your exam score is only one part of your graduate school journey. Use your results to identify weaknesses, improve your preparation, and build a stronger application strategy.
+            Your exam score is only one part of your graduate school journey.
+            Use your results to identify weaknesses, improve your preparation,
+            and build a stronger application strategy.
           </p>
           <ul className="mt-6 space-y-3">
             {[
@@ -960,7 +1040,10 @@ function WhySection() {
               "Understand where your score stands",
               "Build a smarter graduate school shortlist",
             ].map((item) => (
-              <li key={item} className="flex items-center gap-3 text-xm text-[#0b1e3f]/90">
+              <li
+                key={item}
+                className="flex items-center gap-3 text-xm text-[#0b1e3f]/90"
+              >
                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500/15 text-orange-600">
                   <Check className="h-3 w-3" />
                 </span>
@@ -968,7 +1051,10 @@ function WhySection() {
               </li>
             ))}
           </ul>
-          <button className="mt-7 rounded-lg px-5 py-3 text-xm font-bold text-white" style={{ background: ORANGE }}>
+          <button
+            className="mt-7 rounded-lg px-5 py-3 text-xm font-bold text-white"
+            style={{ background: ORANGE }}
+          >
             Start Your Preparation
           </button>
         </div>
@@ -979,7 +1065,10 @@ function WhySection() {
             ["42 pts", "Average Improvement"],
             ["247", "Universities Explored"],
           ].map(([number, label]) => (
-            <div key={label} className="rounded-xl border border-[#0b1e3f]/10 bg-[#0b1e3f]/5 p-5">
+            <div
+              key={label}
+              className="rounded-xl border border-[#0b1e3f]/10 bg-[#0b1e3f]/5 p-5"
+            >
               <p className="text-xl font-black text-[#0b1e3f]">{number}</p>
               <p className="mt-1 text-[10px] text-[#0b1e3f]/60">{label}</p>
             </div>
@@ -1046,12 +1135,36 @@ function DifferenceSection() {
 
 function BeyondNumberSection() {
   const features = [
-    { icon: TrendingUp, title: "Track Your Progress", text: "Monitor score changes over multiple practice tests." },
-    { icon: Target, title: "Pinpoint Weak Areas", text: "Understand which section needs more preparation." },
-    { icon: GraduationCap, title: "Explore Universities", text: "Compare your score against program ranges." },
-    { icon: Trophy, title: "Build Your Profile", text: "Use your score as part of your larger application plan." },
-    { icon: MapPin, title: "Find Your Fit", text: "Discover programs that align with your goals." },
-    { icon: Sparkles, title: "Get Smarter Insights", text: "Turn raw practice results into actionable information." },
+    {
+      icon: TrendingUp,
+      title: "Track Your Progress",
+      text: "Monitor score changes over multiple practice tests.",
+    },
+    {
+      icon: Target,
+      title: "Pinpoint Weak Areas",
+      text: "Understand which section needs more preparation.",
+    },
+    {
+      icon: GraduationCap,
+      title: "Explore Universities",
+      text: "Compare your score against program ranges.",
+    },
+    {
+      icon: Trophy,
+      title: "Build Your Profile",
+      text: "Use your score as part of your larger application plan.",
+    },
+    {
+      icon: MapPin,
+      title: "Find Your Fit",
+      text: "Discover programs that align with your goals.",
+    },
+    {
+      icon: Sparkles,
+      title: "Get Smarter Insights",
+      text: "Turn raw practice results into actionable information.",
+    },
   ];
   return (
     <section className="bg-[#fff] px-4 py-12">
@@ -1071,7 +1184,9 @@ function BeyondNumberSection() {
                 <Icon className="h-4 w-4" />
               </div>
               <h3 className="text-sm font-extrabold">{title}</h3>
-              <p className="mt-2 text-[14px] leading-5 text-slate-500">{text}</p>
+              <p className="mt-2 text-[14px] leading-5 text-slate-500">
+                {text}
+              </p>
             </div>
           ))}
         </div>
@@ -1091,11 +1206,23 @@ function QuestionsSection() {
         />
         <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="grid gap-3 sm:grid-cols-2">
-            <input placeholder="Your name" className="rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400" />
-            <input placeholder="Email address" className="rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400" />
+            <input
+              placeholder="Your name"
+              className="rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400"
+            />
+            <input
+              placeholder="Email address"
+              className="rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400"
+            />
           </div>
-          <textarea placeholder="Ask your question..." rows={4} className="mt-3 w-full resize-none rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400" />
-          <button className="mt-3 rounded-lg bg-[#0b1e3f] px-5 py-3 text-xm font-bold text-white">Post Question</button>
+          <textarea
+            placeholder="Ask your question..."
+            rows={4}
+            className="mt-3 w-full resize-none rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400"
+          />
+          <button className="mt-3 rounded-lg bg-[#0b1e3f] px-5 py-3 text-xm font-bold text-white">
+            Post Question
+          </button>
         </div>
         <div className="mt-4 space-y-3">
           {[
@@ -1103,16 +1230,23 @@ function QuestionsSection() {
             "Is a 320 GRE score competitive?",
             "Which universities should I target?",
           ].map((question, index) => (
-            <div key={question} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div
+              key={question}
+              className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+            >
               <div className="flex gap-3">
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0b1e3f] text-[10px] font-bold text-white">
                   {index + 1}
                 </div>
                 <div className="flex-1">
                   <p className="text-xm font-bold">{question}</p>
-                  <p className="mt-1 text-[10px] text-slate-400">Asked by GRE student</p>
+                  <p className="mt-1 text-[10px] text-slate-400">
+                    Asked by GRE student
+                  </p>
                 </div>
-                <button className="text-[10px] font-bold text-orange-500">Answer</button>
+                <button className="text-[10px] font-bold text-orange-500">
+                  Answer
+                </button>
               </div>
             </div>
           ))}
@@ -1129,14 +1263,6 @@ function FAQSection({
   expandedFAQ: number | null;
   setExpandedFAQ: (value: number | null) => void;
 }) {
-  const faqs: FAQ[] = [
-    { question: "How accurate is the score calculator?", answer: "The calculator provides an estimated score based on the practice section results you enter. It is designed to give you a useful benchmark before taking the official exam." },
-    { question: "What is a good score for graduate school?", answer: "A good score depends on your target university, program and applicant pool. Competitive programs may expect stronger scores." },
-    { question: "Does Ooshas Prep predict my admission chances?", answer: "The calculator provides a score-based indication of program competitiveness. Admission depends on many factors including academics, experience, essays, recommendations and the university." },
-    { question: "How frequently should I use this calculator?", answer: "Use it after practice tests or major preparation milestones to track your progress and understand how your score is improving." },
-    { question: "Can I use my calculator results for university planning?", answer: "Yes. Your estimated score can be used as an initial benchmark when researching universities and graduate programs." },
-    { question: "Why are IELTS Listening and Reading entered out of 40?", answer: "IELTS Listening and Reading are marked as a raw score out of 40 questions, which is then converted to a 0-9 band using the official conversion table. Writing and Speaking are assessed directly against band descriptors, so they're entered as a band score." },
-  ];
   return (
     <section id="faq" className="bg-[#fff] px-4 pb-20">
       <div className="mx-auto max-w-3xl">
@@ -1149,14 +1275,26 @@ function FAQSection({
           {faqs.map((faq, index) => {
             const open = expandedFAQ === index;
             return (
-              <div key={faq.question} className="overflow-hidden rounded-lg border border-slate-200 bg-white">
-                <button onClick={() => setExpandedFAQ(open ? null : index)} className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left">
+              <div
+                key={faq.question}
+                className="overflow-hidden rounded-lg border border-slate-200 bg-white"
+              >
+                <button
+                  onClick={() => setExpandedFAQ(open ? null : index)}
+                  className="flex w-full items-center justify-between gap-4 px-4 py-4 text-left"
+                >
                   <span className="text-xm font-bold">{faq.question}</span>
-                  {open ? <ChevronUp className="h-4 w-4 shrink-0 text-orange-500" /> : <ChevronDown className="h-4 w-4 shrink-0 text-orange-500" />}
+                  {open ? (
+                    <ChevronUp className="h-4 w-4 shrink-0 text-orange-500" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 shrink-0 text-orange-500" />
+                  )}
                 </button>
                 {open && (
                   <div className="border-t border-slate-100 px-4 pb-4 pt-3">
-                    <p className="text-[14px] leading-5 text-slate-500">{faq.answer}</p>
+                    <p className="text-[14px] leading-5 text-slate-500">
+                      {faq.answer}
+                    </p>
                   </div>
                 )}
               </div>
@@ -1171,14 +1309,29 @@ function FAQSection({
 function BottomCTA() {
   return (
     <section id="contact" className="bg-white px-4 pb-5">
-      <div className="mx-auto max-w-7xl overflow-hidden rounded-xl px-6 py-10 text-center sm:px-10" style={{ background: "linear-gradient(135deg, #ff7627 0%, #ff8b4d 100%)" }}>
-        <h2 className="text-xl font-black text-white sm:text-2xl">Your Dream Grad School Is One Score Away</h2>
+      <div
+        className="mx-auto max-w-7xl overflow-hidden rounded-xl px-6 py-10 text-center sm:px-10"
+        style={{
+          background: "linear-gradient(135deg, #ff7627 0%, #ff8b4d 100%)",
+        }}
+      >
+        <h2 className="text-xl font-black text-white sm:text-2xl">
+          Your Dream Grad School Is One Score Away
+        </h2>
         <p className="mx-auto mt-2 max-w-xl text-xm leading-5 text-white/80">
-          Understand your current performance and take the next step toward your graduate school goals.
+          Understand your current performance and take the next step toward your
+          graduate school goals.
         </p>
         <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
-          <a href="#calculator" className="rounded-lg bg-[#0b1e3f] px-5 py-3 text-xm font-bold text-white">Calculate My Score</a>
-          <button className="rounded-lg bg-white px-5 py-3 text-xm font-bold text-[#0b1e3f]">Talk To An Expert</button>
+          <a
+            href="#calculator"
+            className="rounded-lg bg-[#0b1e3f] px-5 py-3 text-xm font-bold text-white"
+          >
+            Calculate My Score
+          </a>
+          <button className="rounded-lg bg-white px-5 py-3 text-xm font-bold text-[#0b1e3f]">
+            Talk To An Expert
+          </button>
         </div>
       </div>
     </section>
@@ -1201,11 +1354,22 @@ function SectionHeading({
       {/* <span className={`inline-flex rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-widest ${dark ? "bg-orange-400/10 text-orange-300" : "bg-orange-50 text-orange-500"}`}>
         {eyebrow}
       </span> */}
-      <h2 className={`mt-3 text-2xl font-extrabold leading-tight sm:text-3xl ${dark ? "text-white" : "text-[#0b1e3f]"}`}>{title}</h2>
-      <p className={`mt-3 text-xm leading-5 sm:text-sm ${dark ? "text-blue-100/60" : "text-slate-500"}`}>{description}</p>
+      <h2
+        className={`mt-3 text-2xl font-extrabold leading-tight sm:text-3xl ${dark ? "text-white" : "text-[#0b1e3f]"}`}
+      >
+        {title}
+      </h2>
+      <p
+        className={`mt-3 text-xm leading-5 sm:text-sm ${dark ? "text-blue-100/60" : "text-slate-500"}`}
+      >
+        {description}
+      </p>
     </div>
   );
 }
+
+
+
 
 
 
@@ -2284,16 +2448,6 @@ function SectionHeading({
 //   );
 // }
 
-
-
-
-
-
-
-
-
-
-
 // "use client";
 
 // import React, { useMemo, useState } from "react";
@@ -2332,7 +2486,6 @@ function SectionHeading({
 //   setQuantCorrect: (value: number) => void;
 //   setQuantTotal: (value: number) => void;
 // };
-
 
 // const faqs: FAQ[] = [
 //   {
@@ -2431,7 +2584,7 @@ function SectionHeading({
 //       {/* <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(40,78,140,.35),transparent_55%)]" /> */}
 
 //       <div className="relative mx-auto max-w-5xl px-4 pb-14 pt-16 text-center sm:px-6 lg:pb-20 lg:pt-20">
-//         {/* <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange-300/20 bg-orange-400/10 px-3 py-1 
+//         {/* <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-orange-300/20 bg-orange-400/10 px-3 py-1
 //         text-[10px] font-bold uppercase tracking-wider text-orange-300">
 //           <Sparkles className="h-3 w-3" />
 //           Free GRE Tool
@@ -2673,51 +2826,51 @@ function SectionHeading({
 // }
 
 // function WhySection() {
-//   return (<section className="bg-[#fcf3ed] px-4 py-16 text-[#0b1e3f]"> 
-//   <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center"> 
-//     <div> 
-//       <div className="mb-4 inline-flex rounded-full bg-orange-500/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-orange-600"> 
-//         More Than A Number 
-//       </div> 
-//       <h2 className="max-w-xl text-2xl font-extrabold leading-tight sm:text-3xl text-[#0b1e3f]"> 
-//         Your Score Doesn't Stop Here — <br /> Practice For Real 
-//       </h2> 
-//       <p className="mt-5 max-w-xl text-sm leading-6 text-[#0b1e3f]/80"> 
-//         Your GRE score is only one part of your graduate school journey. Use your results to identify weaknesses, improve your preparation, and build a stronger application strategy. 
-//       </p> 
-//       <ul className="mt-6 space-y-3"> 
-//         {[ 
-//           "Identify your strongest and weakest GRE sections", 
-//           "Track progress across multiple practice tests", 
-//           "Understand where your score stands", 
-//           "Build a smarter graduate school shortlist", 
-//         ].map((item) => ( 
-//           <li key={item} className="flex items-center gap-3 text-xm text-[#0b1e3f]/90" > 
-//             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500/15 text-orange-600"> 
-//               <Check className="h-3 w-3" /> 
-//             </span> 
-//             {item} 
-//           </li> 
-//         ))} 
-//       </ul> 
-//       <button className="mt-7 rounded-lg px-5 py-3 text-xm font-bold text-white" style={{ background: ORANGE }} > 
-//         Start Your Preparation 
-//       </button> 
-//     </div> 
-//     <div className="grid grid-cols-2 gap-3"> 
-//       {[ 
-//         ["2,000+", "Students Tested"], 
-//         ["10,000+", "Practice Results"], 
-//         ["42 pts", "Average Improvement"], 
-//         ["247", "Universities Explored"], 
-//       ].map(([number, label]) => ( 
-//         <div key={label} className="rounded-xl border border-[#0b1e3f]/10 bg-[#0b1e3f]/5 p-5" > 
-//           <p className="text-xl font-black text-[#0b1e3f]">{number}</p> 
-//           <p className="mt-1 text-[10px] text-[#0b1e3f]/60">{label}</p> 
-//         </div> 
-//       ))} 
-//     </div> 
-//   </div> 
+//   return (<section className="bg-[#fcf3ed] px-4 py-16 text-[#0b1e3f]">
+//   <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center">
+//     <div>
+//       <div className="mb-4 inline-flex rounded-full bg-orange-500/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-orange-600">
+//         More Than A Number
+//       </div>
+//       <h2 className="max-w-xl text-2xl font-extrabold leading-tight sm:text-3xl text-[#0b1e3f]">
+//         Your Score Doesn't Stop Here — <br /> Practice For Real
+//       </h2>
+//       <p className="mt-5 max-w-xl text-sm leading-6 text-[#0b1e3f]/80">
+//         Your GRE score is only one part of your graduate school journey. Use your results to identify weaknesses, improve your preparation, and build a stronger application strategy.
+//       </p>
+//       <ul className="mt-6 space-y-3">
+//         {[
+//           "Identify your strongest and weakest GRE sections",
+//           "Track progress across multiple practice tests",
+//           "Understand where your score stands",
+//           "Build a smarter graduate school shortlist",
+//         ].map((item) => (
+//           <li key={item} className="flex items-center gap-3 text-xm text-[#0b1e3f]/90" >
+//             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500/15 text-orange-600">
+//               <Check className="h-3 w-3" />
+//             </span>
+//             {item}
+//           </li>
+//         ))}
+//       </ul>
+//       <button className="mt-7 rounded-lg px-5 py-3 text-xm font-bold text-white" style={{ background: ORANGE }} >
+//         Start Your Preparation
+//       </button>
+//     </div>
+//     <div className="grid grid-cols-2 gap-3">
+//       {[
+//         ["2,000+", "Students Tested"],
+//         ["10,000+", "Practice Results"],
+//         ["42 pts", "Average Improvement"],
+//         ["247", "Universities Explored"],
+//       ].map(([number, label]) => (
+//         <div key={label} className="rounded-xl border border-[#0b1e3f]/10 bg-[#0b1e3f]/5 p-5" >
+//           <p className="text-xl font-black text-[#0b1e3f]">{number}</p>
+//           <p className="mt-1 text-[10px] text-[#0b1e3f]/60">{label}</p>
+//         </div>
+//       ))}
+//     </div>
+//   </div>
 // </section>
 
 //   );
@@ -3053,16 +3206,3 @@ function SectionHeading({
 //     </div>
 //   );
 // }
-
-
-
-
-
-
-
-
-
-
-
-
-
