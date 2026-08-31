@@ -2995,7 +2995,7 @@ export const pageData: any = {
   },
 
   greCalculator: {
-  name: "GRE Score Calculator",
+  name: "Score Calculator",
   description: "Create and manage score calculator page content",
   require: true,
 
