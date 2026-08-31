@@ -1,14 +1,49 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   compiler: {
-    removeConsole: false,
+    removeConsole: true
   },
+
   typescript: {
     ignoreBuildErrors: true,
   },
+
   images: {
     unoptimized: true,
   },
-}
 
-export default nextConfig
+  reactStrictMode: true,
+
+  experimental: {
+    optimizePackageImports: [
+      "lucide-react",
+    ],
+  },
+};
+
+export default nextConfig;
+
+
+
+
+
+
+
+
+
+// /** @type {import('next').NextConfig} */
+// const nextConfig = {
+//   compiler: {
+//     removeConsole: false,
+//   },
+//   typescript: {
+//     ignoreBuildErrors: true,
+//   },
+//   images: {
+//     unoptimized: true,
+//   },
+// }
+
+// export default nextConfig
+
+

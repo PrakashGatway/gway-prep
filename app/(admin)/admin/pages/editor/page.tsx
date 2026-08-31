@@ -286,7 +286,6 @@ const Page = () => {
 
                       <div className="flex items-center gap-3">
 
-                        {/* Icon */}
                         <div className="h-11 w-11 rounded-xl bg-orange-50 flex items-center justify-center shrink-0">
                           <FileText
                             size={20}
@@ -309,7 +308,6 @@ const Page = () => {
                         Manage page content & SEO
                       </p>
 
-                      {/* Status */}
                       <div className="mt-5">
                         <span
                           className={`inline-flex px-3 py-1.5 rounded-full text-xs font-medium ${
@@ -390,8 +388,9 @@ const Page = () => {
             <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
 
               {/* List Header */}
-              <div className="hidden md:grid grid-cols-[1fr_180px_150px_150px] gap-4 px-6 py-4 bg-gray-50 border-b border-gray-200 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <div className="hidden md:grid grid-cols-[1fr__130px_140px_150px_150px] gap-4 px-6 py-4 bg-gray-50 border-b border-gray-200 text-xs font-semibold uppercase tracking-wide text-gray-500">
                 <div>Page</div>
+                <div>Template</div>
                 <div>Slug</div>
                 <div>Status</div>
                 <div className="text-right">
@@ -408,7 +407,7 @@ const Page = () => {
                       `/admin/pages/editor/${pageItem.slug}`
                     )
                   }
-                  className={`group grid grid-cols-1 md:grid-cols-[1fr_180px_150px_150px] gap-4 items-center px-6 py-5 hover:bg-orange-50/40 transition cursor-pointer ${
+                  className={`group grid grid-cols-1 md:grid-cols-[1fr_130px_140px_150px_150px] gap-4 items-center px-6 py-5 hover:bg-orange-50/40 transition cursor-pointer ${
                     index !== pages.length - 1
                       ? "border-b border-gray-100"
                       : ""
@@ -435,6 +434,8 @@ const Page = () => {
                       </p>
                     </div>
                   </div>
+
+                  <div className="text-sm text-gray-500 truncate">{pageItem.seoMeta.template}</div>
 
                   {/* Slug */}
                   <div className="text-sm text-gray-500 truncate">
@@ -464,7 +465,6 @@ const Page = () => {
                     }
                   >
 
-                    {/* Duplicate */}
                     <button
                       onClick={(e) =>
                         openDuplicateModal(
@@ -481,7 +481,6 @@ const Page = () => {
                       />
                     </button>
 
-                    {/* Edit */}
                     <button
                       onClick={() =>
                         router.push(
@@ -497,7 +496,6 @@ const Page = () => {
                       />
                     </button>
 
-                    {/* Delete */}
                     <button
                       onClick={(e) =>
                         openDeleteModal(

@@ -241,7 +241,6 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
     });
   };
 
-  // Group Field Handler
   const handleGroupFieldChange = (
     sectionName: string,
     groupFieldName: string,
@@ -265,7 +264,6 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
     });
   };
 
-  // Repeater Handlers
   const addRepeaterItem = (sectionName: string, fieldName: string) => {
     setValues((prev) => {
       const sectionValues = prev[sectionName] || {};
@@ -297,7 +295,6 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
     });
   };
 
-  // Add nested repeater item
   const addNestedRepeaterItem = (
     sectionName: string,
     parentFieldName: string,
@@ -336,7 +333,6 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
     });
   };
 
-  // Remove nested repeater item
   const removeNestedRepeaterItem = (
     sectionName: string,
     parentFieldName: string,

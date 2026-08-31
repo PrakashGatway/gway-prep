@@ -11,7 +11,7 @@ export async function POST(request : NextRequest){
         const body = await request.json();
 
         const {slug,name,description} = body
-console.log(body)
+        
 
         if(!slug||!name){
             return NextResponse.json({

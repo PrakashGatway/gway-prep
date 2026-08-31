@@ -2995,18 +2995,16 @@ export const pageData: any = {
   },
 
   greCalculator: {
-  name: "Score Calculator",
+  name: "Calculator",
   description: "Create and manage score calculator page content",
   require: true,
 
   sections: [
-    
     {
       name: "hero",
       label: "Hero Section",
       require: true,
       fields: [
-       
         {
           name: "title",
           label: "Hero Title",
@@ -3014,7 +3012,12 @@ export const pageData: any = {
           required: true,
           placeholder: "Free GRE Score Calculator",
         },
-        
+        {
+          name : "pageType",
+          label : "Page Type",
+          type: "select",
+              option: [ "GRE" , "GMAT" , "SAT" , "TOEFL" , "IELTS" , "PTE"],
+        },
         {
           name: "description",
           label: "Hero Description",
@@ -3037,6 +3040,53 @@ export const pageData: any = {
           required: false,
           placeholder: "#calculator",
         },
+      ],
+    },
+    
+    {
+      name: "calculator",
+      label: "Calculator",
+      require: false,
+      fields: [
+       
+        {
+          name: "title",
+          label: "Title",
+          type: "text",
+          required: true,
+          placeholder: "Your Score Doesn't Stop Here — Practice For Real",
+        },
+        {
+          name: "description",
+          label: "Description",
+          type: "editor",
+          placeholder:
+            "Your GRE score is only one part of your graduate school journey.",
+        }
+      ],
+    },
+
+    
+    {
+      name: "chart",
+      label: "Chart",
+      require: false,
+      fields: [
+       
+        {
+          name: "title",
+          label: "Title",
+          type: "text",
+          required: true,
+          placeholder: "Your Score Doesn't Stop Here — Practice For Real",
+        },
+        {
+          name: "description",
+          label: "Description",
+          type: "editor",
+          placeholder:
+            "Your GRE score is only one part of your graduate school journey.",
+        }
       ],
     },
 
@@ -3164,7 +3214,7 @@ export const pageData: any = {
                 "Trophy",
                 "MapPin",
                 "Sparkles",
-              ],
+             ],
             },
             {
               name: "title",

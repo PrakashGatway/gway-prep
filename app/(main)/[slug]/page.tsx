@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import ExamDetails from "@/components/examDetails";
+import ScoreCalculatorPage from "@/components/calculator/page";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -20,7 +21,7 @@ export async function generateMetadata({
 
   const rowtext = cleanText.toLowerCase().replace(/\s+/g, "-");
 
-  if (rowtext === 'favicon.ico') return {}; 
+  if (rowtext === "favicon.ico") return {};
   if (!rowtext) {
     return {
       title: "No Data Found",
@@ -119,11 +120,9 @@ export async function generateMetadata({
   };
 }
 
-
 export default async function PreparationPage({ params }: PageProps) {
   const { slug } = await params;
 
-  
   const cleanText = decodeURIComponent(decodeURIComponent(slug));
   const rowtext = cleanText.toLowerCase().replace(/\s+/g, "-");
 
@@ -152,21 +151,15 @@ export default async function PreparationPage({ params }: PageProps) {
     itemListElement: [
       {
         "@type": "ListItem",
-
         position: 1,
-
         name: "Home",
-
         item: SITE_URL,
       },
 
       {
         "@type": "ListItem",
-
         position: 2,
-
         name: pageData?.seoMeta?.title || rowtext.toUpperCase(),
-
         item: `${SITE_URL}/${rowtext}`,
       },
     ],
@@ -239,8 +232,8 @@ export default async function PreparationPage({ params }: PageProps) {
       {faqSchema && (
         <script
           type="application/ld+json"
-        async={true}
-        strategy="afterInteractive"
+          async={true}
+          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(faqSchema),
           }}
@@ -249,14 +242,16 @@ export default async function PreparationPage({ params }: PageProps) {
 
       {pageData?.template === "preparation" ? (
         <Gre pageInfo={pageData} slug={rowtext} />
+      ) : pageData?.template === "calculator" ? (
+        <ScoreCalculatorPage pageInfo={pageData} slug={rowtext}/>
       ) : (
         <ExamDetails pagedata={pageData} />
       )}
+
+
     </>
   );
 }
-
-// ================= 404 UI =================
 
 function NoDataFoundUI() {
   return (
