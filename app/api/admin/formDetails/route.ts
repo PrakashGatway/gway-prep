@@ -80,9 +80,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json({
         error: error.message || "Something went wrong",
-      },{
-        status: 500,
-      },
+      },{status: 500}
     );
   }
 }
