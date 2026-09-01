@@ -6,17 +6,17 @@ import { Tokenchecker } from "@/app/lib/auth";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   try {
-    const token = req.cookies.get("adminToken")?.value;
+    // const token = req.cookies.get("adminToken")?.value;
 
-    if (!token) {
-      return NextResponse.json({ error: "No token provided" }, { status: 401 });
-    }
+    // if (!token) {
+    //   return NextResponse.json({ error: "No token provided" }, { status: 401 });
+    // }
 
-    const isValid = Tokenchecker(token);
+    // const isValid = Tokenchecker(token);
 
-    if (!isValid) {
-      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
-    }
+    // if (!isValid) {
+    //   return NextResponse.json({ error: "Invalid token" }, { status: 401 });
+    // }
 
     await connectDB();
 
@@ -55,12 +55,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     console.log("lead" , api.data);
     
     if (!path) {
-      return NextResponse.json({
-          error: "Path is required",
-        },{
-          status: 400,
-        },
-      );
+      return NextResponse.json({error: "Path is required"},{status: 400});
     }
 
 
