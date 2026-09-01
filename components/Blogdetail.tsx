@@ -18,6 +18,7 @@ import {
 import FormSection from "./formSection";
 import axiosInstance from "@/app/lib/axios";
 import axios from "axios";
+import QuestionsSection from "./comment";
 
 // ─── Types ───
 interface FAQ {
@@ -751,8 +752,10 @@ export default function BlogDetailPage({ blog, loading, res, slug }: BlogDetailP
               {renderBlogContent(blogDetails)}
             </article>
 
-            {/* Tags */}
-            {data.tags && data.tags.length > 0 && (
+              
+      <QuestionsSection page={'Blog'} heading={'Comments'} css={'bg-[#fafafa] py-6 my-6'}/>
+      
+            {/* {data.tags && data.tags.length > 0 && (
               <div className="mt-8 flex flex-wrap gap-2">
                 {data.tags.map((tag, index) => (
                   <span
@@ -763,7 +766,7 @@ export default function BlogDetailPage({ blog, loading, res, slug }: BlogDetailP
                   </span>
                 ))}
               </div>
-            )}
+            )} */}
 
             {/* Related Posts Section */}
             {res && res.length > 0 && (

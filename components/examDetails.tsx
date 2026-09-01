@@ -28,12 +28,12 @@ import axiosInstance from "@/app/lib/axios";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import QuestionsSection from "./comment";
 
 const ExamDetails = ({ pagedata }: any) => {
   // console.log(pagedata,"page data")
   const basicInfo = pagedata?.sections?.["basic-info"]?.fields;
-  const examData =
-    pagedata?.sections?.["exam-data"]?.fields?.exam_details || [];
+  const examData = pagedata?.sections?.["exam-data"]?.fields?.exam_details || [];
   const [activeSection, setActiveSection] = useState<string>("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
@@ -254,6 +254,9 @@ const ExamDetails = ({ pagedata }: any) => {
                 )}
               </div>
             ))}
+
+        <QuestionsSection page={'ExamDetails'}  css={'bg-[#fafafa] py-6 my-6'}/>
+
           </div>
 
           {/* Sidebar */}
@@ -373,6 +376,7 @@ function Banner({ finalCtaSection, Image }: any) {
     </section>
   );
 }
+
 
 // function QuizCard({ section ,pagedata}: any) {
 //   const [answer, setAnswer] = useState("");
@@ -644,6 +648,7 @@ function Banner({ finalCtaSection, Image }: any) {
 // }
 
 // Chart Components
+
 const SimpleBarChart = ({ data }: { data: any[] }) => {
   const maxClicks = Math.max(...data.map((item) => item.totalClicks), 1);
 
