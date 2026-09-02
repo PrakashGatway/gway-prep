@@ -81,7 +81,7 @@ export default function SupportArticlesPage() {
 
 
     const fetchcat = async () => {
-        const res = await axiosInstance.get("category")
+        const res = await axiosInstance.get("article-category")
         setcategoryFetch(res.data.data)
     }
     useEffect(() => {
@@ -156,7 +156,7 @@ export default function SupportArticlesPage() {
         setDeleteLoading(true);
 
         const res = await axiosInstance.delete(
-            `/category?slug=${selectedCategory.slug}`
+            `/article-category?slug=${selectedCategory.slug}`
         );
 
         if (res.data.success) {

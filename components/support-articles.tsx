@@ -172,239 +172,288 @@ useEffect(() => {
                 HERO
             ====================================================== */}
 
-            <section className="
-                relative
-                overflow-hidden
-                bg-gradient-to-br
-                from-orange-50
-                via-[#fff8f2]
-                to-white
-            ">
+           <section
+    className="
+        relative
+        overflow-hidden
+        bg-gradient-to-br
+        from-orange-50
+        via-[#fff8f2]
+        to-white
+    "
+>
+    {/* Decorative Background */}
+    <div
+        className="
+            pointer-events-none
+            absolute
+            -left-24
+            top-10
+            h-64
+            w-64
+            rounded-full
+            bg-orange-200/20
+            blur-3xl
+        "
+    />
 
-                {/* Decorative circles */}
-                <div className="
-                    absolute
-                    -left-24
-                    top-10
-                    h-64 w-64
-                    rounded-full
-                    bg-orange-200/20
-                    blur-3xl
-                " />
+    <div
+        className="
+            pointer-events-none
+            absolute
+            -right-20
+            -top-20
+            h-[380px]
+            w-[380px]
+            rounded-full
+            bg-orange-300/15
+            blur-3xl
+        "
+    />
 
-                <div className="
-                    absolute
-                    right-0
-                    top-0
-                    h-[380px]
-                    w-[380px]
-                    rounded-full
-                    bg-orange-300/15
-                    blur-3xl
-                " />
+    <div
+        className="
+            relative
+            mx-auto
+            flex
+            min-h-[330px]
+            max-w-[1280px]
+            items-center
+            px-5
+            py-10
+            sm:px-8
+            lg:min-h-[360px]
+            lg:px-10
+            lg:py-8
+        "
+    >
+        <div
+            className="
+                grid
+                w-full
+                grid-cols-1
+                items-center
+                lg:grid-cols-[58%_42%]
+            "
+        >
 
-                <div className="
-                    relative
-                    mx-auto
+            {/* =====================================================
+                LEFT CONTENT
+            ===================================================== */}
+            <div
+                className="
                     flex
-                    min-h-[360px]
-                    max-w-[1280px]
-                    items-center
-                    px-5
-                    py-1
-                    sm:px-8
-                    lg:min-h-[300px]
-                    lg:px-10
-                ">
+                    min-w-0
+                    flex-col
+                    justify-center
+                    lg:pr-8
+                    xl:pr-12
+                "
+            >
+                <div className="flex items-start gap-4">
 
-                    <div className="
-                        grid w-full
-                        grid-cols-1
-                        items-center
-                        gap-10
-                        lg:grid-cols-[1fr_0.85fr]
-                    ">
+                    {/* Category Icon */}
+                   
 
-                        {/* Hero Content */}
-                        <div>
+                    {/* Text Content */}
+                    <div className="min-w-0 flex-1">
 
-                            <div className="
-                                mb-5
+                        {/* Category */}
+                        <span
+                            className="
                                 inline-flex
                                 items-center
-                                gap-2
                                 rounded-full
-                                border
-                                border-orange-200
-                                bg-white/80
-                                px-3.5
-                                py-2
-                                text-[11px]
-                                font-semibold
-                                text-orange-500
-                            ">
-                                <MessageCircle size={14} />
-                                We're Here to Help
-                            </div>
+                                bg-orange-100
+                                px-3
+                                py-1
+                                text-[10px]
+                                font-bold
+                                uppercase
+                                tracking-[0.5px]
+                                text-orange-600
+                            "
+                        >
+                            {article?.category}
+                        </span>
 
-                            <h1 className="
-                                max-w-[650px]
-                                text-xl
+                        {/* Title */}
+                        <h1
+                            className="
+                                mt-3
+                                max-w-[720px]
+                                text-[28px]
                                 font-extrabold
-                                leading-[1.1]
+                                leading-[1.18]
                                 tracking-tight
-                                text-slate-900
-                                sm:text-5xl
-                                lg:text-3xl
-                            ">
-                                How can we{" "}
-                                <span className="text-orange-500">
-                                    help you?
-                                </span>
-                            </h1>
+                                text-[#071f49]
+                                sm:text-[32px]
+                                md:text-[36px]
+                                lg:text-[38px]
+                                xl:text-[40px]
+                            "
+                        >
+                            {article?.title}
+                        </h1>
 
-                            <p className="
-                                
-                                max-w-[560px]
-                                text-sm
-                                leading-6
-                                text-slate-500
-                                sm:text-[15px]
-                            ">
-                                Find quick answers, step-by-step guides,
-                                and all the support you need in one place.
-                            </p>
-
-                            {/* Search */}
-                            <div className="
-                                mt-2
-                                flex
-                                max-w-[650px]
-                                items-center
-                                rounded-2xl
-                                border
-                                border-slate-100
-                                bg-white
-                                p-1.5
-                                shadow-xl
-                                shadow-orange-100/40
-                            ">
-
-                                <div className="
-                                    flex
-                                    min-w-0
-                                    flex-1
-                                    items-center
-                                    gap-3
-                                    px-4
-                                ">
-                                    <Search
-                                        size={19}
-                                        className="shrink-0 text-slate-400"
-                                    />
-
-                                    <input
-                                        type="text"
-                                        placeholder="Search for articles, topics or keywords..."
-                                        className="
-                                            h-11
-                                            w-full
-                                            min-w-0
-                                            bg-transparent
-                                            text-sm
-                                            text-slate-700
-                                            outline-none
-                                            placeholder:text-slate-400
-                                        "
-                                    />
-                                </div>
-
-                                <button className="
-                                    flex
-                                    h-11
-                                    shrink-0
-                                    items-center
-                                    gap-2
-                                    rounded-xl
-                                    bg-orange-500
-                                    px-5
-                                    text-xs
-                                    font-bold
-                                    text-white
-                                    shadow-lg
-                                    shadow-orange-500/20
-                                    transition
-                                    hover:bg-orange-600
-                                ">
-                                    Search
-                                    <ArrowRight size={15} />
-                                </button>
-
-                            </div>
-
-                            {/* Popular */}
-                            <div className="
-                                mt-5
+                        {/* Meta */}
+                        <div
+                            className="
+                                mt-4
                                 flex
                                 flex-wrap
                                 items-center
-                                gap-2
-                            ">
+                                gap-x-3
+                                gap-y-2
+                                text-[12px]
+                                font-medium
+                                text-[#7890b2]
+                                sm:text-[13px]
+                            "
+                        >
+                            <span>
+                                Updated on{" "}
+                                {article?.updatedAt &&
+                                    new Date(
+                                        article.updatedAt
+                                    ).toLocaleDateString(
+                                        "en-US",
+                                        {
+                                            month: "short",
+                                            day: "numeric",
+                                            year: "numeric",
+                                        }
+                                    )}
+                            </span>
 
-                                <span className="
-                                    mr-1
-                                    text-[11px]
-                                    font-bold
-                                    text-slate-700
-                                ">
-                                    Popular:
-                                </span>
+                            <span className="text-[#b9c3d1]">
+                                •
+                            </span>
 
-                                {popularTopics.map((topic) => (
-                                    <button
-                                        key={topic}
-                                        className="
-                                            rounded-full
-                                            border
-                                            border-orange-100
-                                            bg-white
-                                            px-3
-                                            py-1.5
-                                            text-[10px]
-                                            font-medium
-                                            text-slate-600
-                                            transition
-                                            hover:border-orange-300
-                                            hover:bg-orange-50
-                                            hover:text-orange-500
-                                        "
-                                    >
-                                        {topic}
-                                    </button>
-                                ))}
-
-                            </div>
-
-                        </div>
-
-                        {/* Hero Illustration */}
-                        <div className="
-                            relative
-                            hidden
-                            w-120
-                            h-[340px]
-                            lg:block
-                        ">
-
-                          <img src="/image/support-article.png" alt="" />
-
+                            <span className="flex items-center gap-1.5">
+                                <EyeIcon size={13} />
+                                {article?.views || 0}
+                            </span>
                         </div>
 
                     </div>
 
                 </div>
 
-            </section>
+                {/* Actions */}
+                <div
+                    className="
+                        mt-5
+                        ml-16
+                        flex
+                        items-center
+                        gap-2
+                        sm:ml-[72px]
+                        lg:mt-4
+                    "
+                >
+                    <button
+                        type="button"
+                        title="Print article"
+                        className="
+                            flex
+                            h-9
+                            w-9
+                            items-center
+                            justify-center
+                            rounded-xl
+                            border
+                            border-slate-200
+                            bg-white
+                            text-slate-500
+                            shadow-sm
+                            transition-all
+                            hover:-translate-y-0.5
+                            hover:border-orange-200
+                            hover:bg-orange-50
+                            hover:text-orange-500
+                        "
+                    >
+                        <Printer size={16} />
+                    </button>
+
+                    <button
+                        type="button"
+                        title="Share article"
+                        className="
+                            flex
+                            h-9
+                            w-9
+                            items-center
+                            justify-center
+                            rounded-xl
+                            border
+                            border-slate-200
+                            bg-white
+                            text-slate-500
+                            shadow-sm
+                            transition-all
+                            hover:-translate-y-0.5
+                            hover:border-orange-200
+                            hover:bg-orange-50
+                            hover:text-orange-500
+                        "
+                    >
+                        <Send size={15} />
+                    </button>
+                </div>
+            </div>
+
+
+            {/* =====================================================
+                RIGHT ILLUSTRATION
+            ===================================================== */}
+            <div
+                className="
+                    relative
+                    hidden
+                    h-[320px]
+                    w-full
+                    items-center
+                    justify-center
+                    lg:flex
+                "
+            >
+
+                {/* Illustration Glow */}
+                <div
+                    className="
+                        absolute
+                        right-8
+                        top-1/2
+                        h-[260px]
+                        w-[260px]
+                        -translate-y-1/2
+                        rounded-full
+                        bg-orange-100/70
+                        blur-3xl
+                    "
+                />
+
+                <img
+                    src="/image/support-article.png"
+                    alt="Support article"
+                    className="
+                        relative
+                        z-10
+                        h-full
+                        w-full
+                        max-w-[470px]
+                        object-contain
+                        object-center
+                        drop-shadow-[0_18px_30px_rgba(15,23,42,0.08)]
+                    "
+                />
+            </div>
+
+        </div>
+    </div>
+</section>
 
             {/* =====================================================
                 MAIN CONTENT
@@ -467,129 +516,7 @@ useEffect(() => {
 
                         <div className="p-5 sm:p-7 lg:p-9">
 
-                            {/* Article Header */}
-                            <div className="
-                                flex
-                                flex-col
-                                gap-5
-                                sm:flex-row
-                                sm:items-start
-                                sm:justify-between
-                            ">
-
-                                <div className="flex items-start gap-4">
-
-                                    <div className="
-                                        flex
-                                        h-12 w-12
-                                        shrink-0
-                                        items-center justify-center
-                                        rounded-2xl
-                                        bg-orange-50
-                                        text-orange-500
-                                        sm:h-14
-                                        sm:w-14
-                                    ">
-                                        <UserRound size={25} />
-                                    </div>
-
-                                    <div>
-
-                                        <span className="
-                                            inline-flex
-                                            rounded-full
-                                            bg-orange-50
-                                            px-2.5
-                                            py-1
-                                            text-[10px]
-                                            font-bold
-                                            text-orange-500
-                                        ">
-                                            {article?.category}
-                                        </span>
-
-                                        <h2 className="
-                                            mt-2
-                                            text-2xl
-                                            font-extrabold
-                                            tracking-tight
-                                            text-slate-900
-                                            sm:text-3xl
-                                        ">
-                                           {article?.title}
-                                        </h2>
-
-                                        <div className="
-                                            mt-2
-                                            flex
-                                            flex-wrap
-                                            items-center
-                                            gap-2
-                                            text-[10px]
-                                            text-slate-400
-                                        ">
-                                            <span>
-                                                Updated on {new Date(article?.updatedAt).toLocaleDateString("en-US",{
-                                                    month : "short",
-                                                    day : "numeric",
-                                                    year : "numeric"
-                                                })}
-                                            </span>
-
-                                            <span>•</span>
-
-                                            <span className="flex items-center gap-1">
-                                                <EyeIcon size={12} />
-                                                {article?.views}
-                                            </span>
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                {/* Actions */}
-                                <div className="flex items-center gap-2">
-
-                                    <button
-                                        title="Print article"
-                                        className="
-                                            flex h-9 w-9
-                                            items-center justify-center
-                                            rounded-xl
-                                            border
-                                            border-slate-200
-                                            text-slate-500
-                                            transition
-                                            hover:border-orange-200
-                                            hover:bg-orange-50
-                                            hover:text-orange-500
-                                        "
-                                    >
-                                        <Printer size={16} />
-                                    </button>
-
-                                    <button
-                                        title="Share article"
-                                        className="
-                                            flex h-9 w-9
-                                            items-center justify-center
-                                            rounded-xl
-                                            border
-                                            border-slate-200
-                                            text-slate-500
-                                            transition
-                                            hover:border-orange-200
-                                            hover:bg-orange-50
-                                            hover:text-orange-500
-                                        "
-                                    >
-                                        <Send size={15} />
-                                    </button>
-
-                                </div>
-
-                            </div>
+                         
 
                             {/* Notice */}
                             <div className="
@@ -618,7 +545,7 @@ useEffect(() => {
                                 </div>
 
                                 <p className="
-                                    text-xs
+                                    text-sm
                                     leading-5
                                     text-slate-600
                                     sm:text-[13px]
@@ -641,8 +568,8 @@ useEffect(() => {
     .article-content {
         width: 100%;
         color: #374151;
-        font-size: 12px;
-        line-height: 1.6;
+        font-size: 17px;
+        line-height: 1.75;
         word-break: break-word;
     }
 
@@ -651,10 +578,10 @@ useEffect(() => {
     ========================================================= */
 
     .article-content p {
-        margin: 0 0 14px !important;
+        margin: 0 0 16px !important;
         color: #374151 !important;
-        font-size: 12px !important;
-        line-height: 1.65 !important;
+        font-size: 17px !important;
+        line-height: 1.75 !important;
     }
 
     /* =========================================================
@@ -662,20 +589,21 @@ useEffect(() => {
     ========================================================= */
 
     .article-content h1 {
-        margin: 26px 0 14px !important;
+        margin: 32px 0 16px !important;
         color: #111827 !important;
-        font-size: 25px !important;
+        font-size: 30px !important;
         font-weight: 800 !important;
         line-height: 1.25 !important;
     }
 
     .article-content h2 {
         position: relative;
+
         margin: 28px 0 14px !important;
-        padding-left: 28px !important;
+        padding-left: 30px !important;
 
         color: #111827 !important;
-        font-size: 15px !important;
+        font-size: 23px !important;
         font-weight: 700 !important;
         line-height: 1.4 !important;
     }
@@ -683,50 +611,68 @@ useEffect(() => {
     /* Orange circle before H2 */
     .article-content h2::before {
         content: "!";
+
         position: absolute;
         left: 0;
-        top: 1px;
+        top: 2px;
 
         display: flex;
         align-items: center;
         justify-content: center;
 
-        width: 17px;
-        height: 17px;
+        width: 19px;
+        height: 19px;
 
         border: 1.5px solid #f97316;
         border-radius: 50%;
 
         color: #f97316;
-        font-size: 10px;
+        font-size: 11px;
         font-weight: 800;
         line-height: 1;
     }
 
     .article-content h3 {
-        margin: 22px 0 10px !important;
+        margin: 22px 0 11px !important;
         color: #111827 !important;
-        font-size: 14px !important;
+        font-size: 20px !important;
         font-weight: 700 !important;
         line-height: 1.4 !important;
     }
 
     .article-content h4 {
-        margin: 18px 0 8px !important;
+        margin: 18px 0 9px !important;
         color: #111827 !important;
-        font-size: 13px !important;
+        font-size: 18px !important;
         font-weight: 700 !important;
+        line-height: 1.4 !important;
+    }
+
+    .article-content h5 {
+        margin: 16px 0 8px !important;
+        color: #111827 !important;
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        line-height: 1.4 !important;
+    }
+
+    .article-content h6 {
+        margin: 14px 0 7px !important;
+        color: #111827 !important;
+        font-size: 16px !important;
+        font-weight: 700 !important;
+        line-height: 1.4 !important;
     }
 
     /* =========================================================
        ORDERED LIST
        Orange numbered circles
-       ========================================================= */
+    ========================================================= */
 
     .article-content ol {
         counter-reset: article-counter;
 
-        margin: 10px 0 18px !important;
+        margin: 12px 0 18px !important;
         padding: 0 !important;
 
         list-style: none !important;
@@ -738,14 +684,14 @@ useEffect(() => {
         display: flex;
         align-items: flex-start;
 
-        min-height: 21px;
+        min-height: 22px;
 
-        margin: 0 0 7px !important;
-        padding: 0 0 0 28px !important;
+        margin: 0 0 8px !important;
+        padding: 0 0 0 30px !important;
 
         color: #374151 !important;
-        font-size: 11px !important;
-        line-height: 1.55 !important;
+        font-size: 16px !important;
+        line-height: 1.7 !important;
 
         list-style: none !important;
     }
@@ -757,21 +703,21 @@ useEffect(() => {
 
         position: absolute;
         left: 0;
-        top: 0;
+        top: 2px;
 
         display: flex;
         align-items: center;
         justify-content: center;
 
-        width: 17px;
-        height: 17px;
+        width: 19px;
+        height: 19px;
 
         border-radius: 50%;
 
         background: #f97316;
         color: white;
 
-        font-size: 9px;
+        font-size: 11px;
         font-weight: 700;
         line-height: 1;
     }
@@ -779,10 +725,10 @@ useEffect(() => {
     /* =========================================================
        UNORDERED LIST
        Orange check/icon circles
-       ========================================================= */
+    ========================================================= */
 
     .article-content ul {
-        margin: 10px 0 18px !important;
+        margin: 12px 0 18px !important;
         padding: 0 !important;
 
         list-style: none !important;
@@ -795,11 +741,11 @@ useEffect(() => {
         align-items: flex-start;
 
         margin: 0 0 9px !important;
-        padding: 0 0 0 30px !important;
+        padding: 0 0 0 32px !important;
 
         color: #374151 !important;
-        font-size: 11px !important;
-        line-height: 1.55 !important;
+        font-size: 16px !important;
+        line-height: 1.7 !important;
 
         list-style: none !important;
     }
@@ -810,28 +756,28 @@ useEffect(() => {
 
         position: absolute;
         left: 0;
-        top: 0;
+        top: 2px;
 
         display: flex;
         align-items: center;
         justify-content: center;
 
-        width: 18px;
-        height: 18px;
+        width: 19px;
+        height: 19px;
 
         border: 1.5px solid #f97316;
         border-radius: 50%;
 
         color: #f97316;
 
-        font-size: 9px;
+        font-size: 11px;
         font-weight: 800;
         line-height: 1;
     }
 
     /* =========================================================
        NESTED LIST
-       ========================================================= */
+    ========================================================= */
 
     .article-content ul ul,
     .article-content ol ol,
@@ -847,7 +793,7 @@ useEffect(() => {
         background: transparent;
         border: 0;
 
-        font-size: 16px;
+        font-size: 17px;
         font-weight: 900;
     }
 
@@ -882,18 +828,18 @@ useEffect(() => {
     ========================================================= */
 
     .article-content blockquote {
-        margin: 18px 0 !important;
-        padding: 12px 15px !important;
+        margin: 20px 0 !important;
+        padding: 14px 18px !important;
 
-        border-left: 3px solid #f97316 !important;
+        border-left: 4px solid #f97316 !important;
         border-radius: 0 10px 10px 0 !important;
 
         background: #fff7ed !important;
 
         color: #4b5563 !important;
 
-        font-size: 11px !important;
-        line-height: 1.65 !important;
+        font-size: 16px !important;
+        line-height: 1.7 !important;
     }
 
     /* =========================================================
@@ -901,7 +847,7 @@ useEffect(() => {
     ========================================================= */
 
     .article-content hr {
-        margin: 22px 0 !important;
+        margin: 28px 0 !important;
 
         border: 0 !important;
         border-top: 1px solid #eeeeee !important;
@@ -913,17 +859,17 @@ useEffect(() => {
 
     .article-content table {
         width: 100% !important;
-        margin: 20px 0 !important;
+        margin: 22px 0 !important;
 
         border-collapse: collapse !important;
 
         border: 1px solid #eeeeee !important;
 
-        font-size: 11px !important;
+        font-size: 15px !important;
     }
 
     .article-content th {
-        padding: 9px 10px !important;
+        padding: 10px 12px !important;
 
         border: 1px solid #eeeeee !important;
 
@@ -931,19 +877,19 @@ useEffect(() => {
 
         color: #111827 !important;
 
-        font-size: 11px !important;
+        font-size: 15px !important;
         font-weight: 700 !important;
         text-align: left !important;
     }
 
     .article-content td {
-        padding: 9px 10px !important;
+        padding: 10px 12px !important;
 
         border: 1px solid #eeeeee !important;
 
         color: #4b5563 !important;
 
-        font-size: 11px !important;
+        font-size: 15px !important;
     }
 
     /* =========================================================
@@ -956,7 +902,7 @@ useEffect(() => {
         max-width: 100% !important;
         height: auto !important;
 
-        margin: 20px auto !important;
+        margin: 22px auto !important;
 
         border-radius: 12px !important;
     }
@@ -972,7 +918,7 @@ useEffect(() => {
         width: 100% !important;
         max-width: 100% !important;
 
-        margin: 20px auto !important;
+        margin: 22px auto !important;
 
         border: 0 !important;
         border-radius: 12px !important;
@@ -983,7 +929,7 @@ useEffect(() => {
     ========================================================= */
 
     .article-content code {
-        padding: 2px 5px !important;
+        padding: 2px 6px !important;
 
         border-radius: 5px !important;
 
@@ -991,30 +937,34 @@ useEffect(() => {
 
         color: #ea580c !important;
 
-        font-size: 11px !important;
+        font-size: 13px !important;
     }
 
     .article-content pre {
         overflow-x: auto !important;
 
-        margin: 18px 0 !important;
-        padding: 14px !important;
+        margin: 20px 0 !important;
+        padding: 15px !important;
 
         border-radius: 10px !important;
 
         background: #111827 !important;
         color: #f9fafb !important;
+
+        font-size: 14px !important;
+        line-height: 1.6 !important;
     }
 
     .article-content pre code {
         padding: 0 !important;
         background: transparent !important;
         color: inherit !important;
+        font-size: 14px !important;
     }
 
     /* =========================================================
        FIRST PARAGRAPH
-       ========================================================= */
+    ========================================================= */
 
     .article-content > p:first-child {
         margin-top: 0 !important;
@@ -1022,70 +972,115 @@ useEffect(() => {
 
     /* =========================================================
        MOBILE
-       ========================================================= */
+    ========================================================= */
 
     @media (max-width: 640px) {
 
         .article-content {
-            font-size: 11px;
-            line-height: 1.6;
+            font-size: 16px;
+            line-height: 1.7;
         }
 
         .article-content p {
-            font-size: 11px !important;
-            line-height: 1.6 !important;
+            font-size: 16px !important;
+            line-height: 1.7 !important;
+            margin-bottom: 15px !important;
         }
 
         .article-content h1 {
-            font-size: 22px !important;
+            margin: 26px 0 14px !important;
+            font-size: 25px !important;
         }
 
         .article-content h2 {
-            margin-top: 22px !important;
-            padding-left: 25px !important;
+            margin-top: 24px !important;
+            margin-bottom: 12px !important;
+            padding-left: 27px !important;
 
-            font-size: 14px !important;
+            font-size: 21px !important;
         }
 
         .article-content h2::before {
-            width: 16px;
-            height: 16px;
+            width: 17px;
+            height: 17px;
 
-            font-size: 9px;
+            font-size: 10px;
         }
 
         .article-content h3 {
-            font-size: 13px !important;
+            margin-top: 20px !important;
+            font-size: 18px !important;
+        }
+
+        .article-content h4 {
+            font-size: 17px !important;
+        }
+
+        .article-content h5 {
+            font-size: 16px !important;
+        }
+
+        .article-content h6 {
+            font-size: 15px !important;
         }
 
         .article-content ol > li {
-            padding-left: 26px !important;
-            font-size: 10.5px !important;
+            padding-left: 28px !important;
+            font-size: 15px !important;
+            line-height: 1.65 !important;
         }
 
         .article-content ul > li {
-            padding-left: 27px !important;
-            font-size: 10.5px !important;
+            padding-left: 29px !important;
+            font-size: 15px !important;
+            line-height: 1.65 !important;
         }
 
         .article-content ol > li::before {
-            width: 16px;
-            height: 16px;
+            width: 18px;
+            height: 18px;
+
+            font-size: 10px;
         }
 
         .article-content ul > li::before {
-            width: 17px;
-            height: 17px;
+            width: 18px;
+            height: 18px;
+
+            font-size: 11px;
+        }
+
+        .article-content blockquote {
+            font-size: 15px !important;
+            line-height: 1.65 !important;
         }
 
         .article-content table {
             display: block !important;
             overflow-x: auto !important;
-            white-space: nowrap !important;
+            white-space: nowrap;
+
+            font-size: 14px !important;
+        }
+
+        .article-content th,
+        .article-content td {
+            font-size: 14px !important;
+        }
+
+        .article-content code {
+            font-size: 12px !important;
+        }
+
+        .article-content pre {
+            font-size: 13px !important;
+        }
+
+        .article-content pre code {
+            font-size: 13px !important;
         }
     }
 `}</style>
-
        <div
     className="article-content"
     dangerouslySetInnerHTML={{
@@ -1120,7 +1115,7 @@ useEffect(() => {
                             ">
 
                                 <p className="
-                                    text-xs
+                                    text-sm
                                     font-bold
                                     text-slate-800
                                 ">
@@ -1445,7 +1440,7 @@ useEffect(() => {
                             bg-orange-500
                             px-6
                             py-3.5
-                            text-xs
+                            text-sm
                             font-bold
                             text-white
                             shadow-lg

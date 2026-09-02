@@ -21,6 +21,7 @@ import {
     Zap,
     MessageCircleQuestion,
 } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface Guide {
     id: string;
@@ -137,42 +138,38 @@ const categoryColors: Record<string, string> = {
     GENERAL: "text-[#0891a2]",
 };
 
-export default function GuidePage({ allGuides }) {
+export default function GuidePage({ allGuides,allCategory }) {
     const [activeCategory, setActiveCategory] = useState("All Guides");
-    const [search, setSearch] = useState("");
+  
     const [sort, setSort] = useState("Latest First");
     const [page, setPage] = useState(1);
 
-    const filteredGuides = useMemo(() => {
-        let result = [...guides];
+   
 
-        if (activeCategory !== "All Guides") {
-            result = result.filter(
-                (guide) =>
-                    guide.category.toLowerCase() ===
-                    activeCategory.toLowerCase()
-            );
-        }
+    const router = useRouter();
+
+      const searchParams = useSearchParams();
+
+    const [search, setSearch] = useState(
+        searchParams.get("search") || ""
+    );
+
+    const handleSearch = () => {
+        const params = new URLSearchParams(
+            searchParams.toString()
+        );
 
         if (search.trim()) {
-            const query = search.toLowerCase();
-
-            result = result.filter(
-                (guide) =>
-                    guide.title.toLowerCase().includes(query) ||
-                    guide.description.toLowerCase().includes(query) ||
-                    guide.category.toLowerCase().includes(query)
-            );
+            params.set("search", search.trim());
+        } else {
+            params.delete("search");
         }
 
-        if (sort === "Latest First") {
-            result.reverse();
-        }
+        // Search should always start from page 1
+        params.set("page", "1");
 
-        return result;
-    }, [activeCategory, search, sort]);
-
-    
+        router.push(`/guide?${params.toString()}`);
+    };
 
     console.log(allGuides)
 
@@ -180,13 +177,36 @@ export default function GuidePage({ allGuides }) {
         return MessageCircleQuestion;
     };
 
-    const handleCategory = (category: string) => {
-        setActiveCategory(category);
+   const handleCategory = (category: string) => {
+    const params = new URLSearchParams(
+        searchParams.toString()
+    );
+
+     setActiveCategory(category);
         setPage(1);
-    };
+
+    params.set("page", "1");
+
+    if (category === "All Guides") {
+        params.delete("category");
+    } else {
+        params.set("category", category);
+    }
+
+    router.push(`/guide?${params.toString()}`);
+};
+
+
+const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.set("page", String(newPage));
+
+    router.push(`/guide?${params.toString()}`);
+};
 
     return (
-        <main className="min-h-screen bg-white text-[#101b35]">
+        <main className="h-full bg-white text-[#101b35]">
 
             {/* =========================================================
                 HERO
@@ -210,7 +230,7 @@ export default function GuidePage({ allGuides }) {
                 <div className="pointer-events-none absolute right-[7%] top-24 hidden h-12 w-12 rounded-full bg-[#fff0e7] lg:block" />
 
                 <div className="mx-auto max-w-[1280px] px-5 sm:px-8 lg:px-10">
-                    <div className="relative grid min-h-[430px] items-center gap-10 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:py-20">
+                    <div className="relative grid min-h-[350px] items-center gap-10 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:py-5 lg:pb-2">
 
                         {/* Left */}
                         <div className="relative z-10">
@@ -248,6 +268,7 @@ export default function GuidePage({ allGuides }) {
                                 </div>
 
                                 <button
+                                onClick={handleSearch}
                                     type="button"
                                     className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#ff5b16] text-white transition hover:bg-[#ed4f0c]"
                                 >
@@ -255,23 +276,7 @@ export default function GuidePage({ allGuides }) {
                                 </button>
                             </div>
 
-                            {/* Popular */}
-                            <div className="mt-5 flex flex-wrap items-center gap-2">
-                                <span className="mr-1 text-sm font-bold text-[#1d2740]">
-                                    Popular Searches:
-                                </span>
-                                {allGuides.data
-                                    .filter((item) => item.isPopular)
-                                    .map((item) => (
-                                        <button
-                                            key={item._id}
-                                            onClick={() => setSearch(item.category)}
-                                            className="rounded-full border border-[#e7e9ed] bg-white px-3 py-1.5 text-sm font-medium text-[#687286] transition hover:border-[#ffb28d] hover:text-[#ff5b16]"
-                                        >
-                                            {item.category}
-                                        </button>
-                                    ))}
-                            </div>
+                      
                         </div>
 
                         {/* Right Hero Illustration */}
@@ -325,18 +330,20 @@ export default function GuidePage({ allGuides }) {
                     </div>
                 </div>
 
-                {/* bottom curve */}
-                <div className="absolute -bottom-10 left-[-5%] h-20 w-[110%] rounded-[50%] bg-white" />
+               
             </section>
 
             {/* =========================================================
                 CATEGORY NAVIGATION
             ========================================================= */}
-           <section className="relative z-10 mx-auto -mt-1 max-w-[1280px] px-4 sm:px-8 lg:px-10">
+          <section className="relative z-10 mx-auto -mt-1 max-w-[1280px] px-4 sm:px-8 lg:px-10 lg:py-4">
     <div className="rounded-2xl border border-[#f0f1f3] bg-white p-2 shadow-[0_8px_30px_rgba(20,30,50,0.05)]">
         <div className="scrollbar-hide flex gap-2 overflow-x-auto">
 
-            {/* All Guides */}
+            {/* =====================================================
+                ALL GUIDES
+            ===================================================== */}
+
             <motion.button
                 layout
                 onClick={() => handleCategory("All Guides")}
@@ -357,7 +364,7 @@ export default function GuidePage({ allGuides }) {
                 )}
 
                 <span
-                    className={`relative z-10 text-[12px] font-bold transition-colors duration-200 ${
+                    className={`relative z-10 text-[12px] font-bold ${
                         activeCategory === "All Guides"
                             ? "text-[#ff5b16]"
                             : "text-[#273149]"
@@ -367,40 +374,43 @@ export default function GuidePage({ allGuides }) {
                 </span>
 
                 <span
-                    className={`relative z-10 flex h-7 min-w-7 items-center justify-center rounded-full px-2 text-[10px] font-bold transition-colors duration-200 ${
+                    className={`relative z-10 flex h-7 min-w-7 items-center justify-center rounded-full px-2 text-[10px] font-bold ${
                         activeCategory === "All Guides"
                             ? "bg-[#ff5b16] text-white"
                             : "bg-[#f3f4f6] text-[#667085]"
                     }`}
                 >
-                    {allGuides?.data?.length || 0}
+                    {allGuides?.pagination?.total || 0}
                 </span>
             </motion.button>
 
-            {/* Dynamic Categories */}
-            {[
-                ...new Set(
-                    allGuides?.data
-                        ?.map((item) => item.category)
-                        .filter(Boolean)
-                ),
-            ].map((category) => {
+            {/* =====================================================
+                DYNAMIC CATEGORIES
+            ===================================================== */}
+
+            {allCategory?.data?.map((item) => {
+
+                const isActive =
+                    activeCategory === item.name;
+
+                // Count guides belonging to this category
                 const count =
                     allGuides?.data?.filter(
-                        (item) => item.category === category
+                        (guide) =>
+                            guide.category === item.name
                     ).length || 0;
-
-                const isActive = activeCategory === category;
 
                 return (
                     <motion.button
-                        key={category}
+                        key={item._id}
                         layout
-                        onClick={() => handleCategory(category)}
+                        onClick={() =>
+                            handleCategory(item.name)
+                        }
                         className="relative flex min-w-[155px] shrink-0 items-center justify-between gap-2 overflow-hidden rounded-xl px-4 py-3.5"
                         whileTap={{ scale: 0.98 }}
                     >
-                        {/* TRAIN-LIKE SLIDING ACTIVE BACKGROUND */}
+                        {/* Sliding active background */}
                         {isActive && (
                             <motion.div
                                 layoutId="category-slider"
@@ -414,6 +424,7 @@ export default function GuidePage({ allGuides }) {
                             />
                         )}
 
+                        {/* Category name */}
                         <motion.span
                             animate={{
                                 color: isActive
@@ -425,9 +436,10 @@ export default function GuidePage({ allGuides }) {
                             }}
                             className="relative z-10 truncate text-[12px] font-bold"
                         >
-                            {category}
+                            {item.name}
                         </motion.span>
 
+                        {/* Category count */}
                         <motion.span
                             animate={{
                                 backgroundColor: isActive
@@ -454,38 +466,9 @@ export default function GuidePage({ allGuides }) {
             {/* =========================================================
                 GUIDES
             ========================================================= */}
-            <section className="mx-auto max-w-[1280px] px-4 pb-16 pt-12 sm:px-8 lg:px-10 lg:pt-14">
+            <section className="mx-auto max-w-[1280px] px-4 pb-16 pt-12 sm:px-8 lg:px-10 lg:pt-0">
 
-                {/* Heading */}
-                <div className="mb-7 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-
-                    <div>
-                        <h2 className="text-[27px] font-extrabold tracking-[-0.7px] text-[#111a34] sm:text-[31px]">
-                            All Guides
-                        </h2>
-
-                        <p className="mt-1 text-sm text-[#737c8e]">
-                            Browse our latest guides and support articles.
-                        </p>
-                    </div>
-
-                    {/* Sort */}
-                    <div className="relative">
-                        <select
-                            value={sort}
-                            onChange={(e) => setSort(e.target.value)}
-                            className="h-11 appearance-none rounded-xl border border-[#e5e8ed] bg-white pl-4 pr-10 text-xs font-semibold text-[#29334a] outline-none transition hover:border-[#ffb28d]"
-                        >
-                            <option>Latest First</option>
-                            <option>Oldest First</option>
-                        </select>
-
-                        <ChevronDown
-                            size={15}
-                            className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#647087]"
-                        />
-                    </div>
-                </div>
+            
 
                 {/* Empty state */}
                 {allGuides.data.length === 0 ? (
@@ -606,10 +589,7 @@ export default function GuidePage({ allGuides }) {
                 {/* =====================================================
                     PAGINATION
                 ===================================================== */}
-                <div className="mt-10 flex items-center justify-center gap-1.5">
-
-                  {/* Pagination */}
-{allGuides.pagination?.pages > 0 && (
+               {allGuides.pagination?.pages > 0 && (
     <div className="mt-10 flex items-center justify-center gap-2">
 
         {/* Previous */}
@@ -617,11 +597,16 @@ export default function GuidePage({ allGuides }) {
             type="button"
             disabled={allGuides.pagination.page === 1}
             onClick={() => {
-                setPage((prev) => Math.max(prev - 1, 1));
+                handlePageChange(
+                    Math.max(
+                        allGuides.pagination.page - 1,
+                        1
+                    )
+                );
             }}
             className={`
-                flex h-9 w-9 items-center justify-center rounded-lg
-                border transition-all
+                flex h-9 w-9 items-center justify-center
+                rounded-lg border transition-all
                 ${
                     allGuides.pagination.page === 1
                         ? "cursor-not-allowed border-[#eeeeee] text-[#c5c9d0]"
@@ -634,13 +619,15 @@ export default function GuidePage({ allGuides }) {
 
         {/* Page Numbers */}
         {Array.from(
-            { length: allGuides.pagination.pages },
+            {
+                length: allGuides.pagination.pages,
+            },
             (_, index) => index + 1
         ).map((pageNumber) => (
             <button
                 key={pageNumber}
                 type="button"
-                onClick={() => setPage(pageNumber)}
+                onClick={() => handlePageChange(pageNumber)}
                 className={`
                     flex h-9 min-w-9 items-center justify-center
                     rounded-lg border px-2 text-xs font-semibold
@@ -659,17 +646,24 @@ export default function GuidePage({ allGuides }) {
         {/* Next */}
         <button
             type="button"
-            disabled={allGuides.pagination.page === allGuides.pagination.pages}
+            disabled={
+                allGuides.pagination.page ===
+                allGuides.pagination.pages
+            }
             onClick={() => {
-                setPage((prev) =>
-                    Math.min(prev + 1, allGuides.pagination.pages)
+                handlePageChange(
+                    Math.min(
+                        allGuides.pagination.page + 1,
+                        allGuides.pagination.pages
+                    )
                 );
             }}
             className={`
-                flex h-9 w-9 items-center justify-center rounded-lg
-                border transition-all
+                flex h-9 w-9 items-center justify-center
+                rounded-lg border transition-all
                 ${
-                    allGuides.pagination.page === allGuides.pagination.pages
+                    allGuides.pagination.page ===
+                    allGuides.pagination.pages
                         ? "cursor-not-allowed border-[#eeeeee] text-[#c5c9d0]"
                         : "border-[#e5e7eb] text-[#273149] hover:border-[#ff6b35] hover:text-[#ff6b35]"
                 }
@@ -677,9 +671,9 @@ export default function GuidePage({ allGuides }) {
         >
             <ChevronRight size={16} />
         </button>
+
     </div>
 )}
-                </div>
             </section>
         </main>
     );

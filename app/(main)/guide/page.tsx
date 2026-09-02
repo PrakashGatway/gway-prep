@@ -6,25 +6,28 @@ import GuidePage from "@/components/guide";
 
 export default async function Page({ searchParams }) {
 
-    const { params } = await searchParams
+    const  params  = await searchParams
 
-    const page = Number(params.page)
-    const search = params.search || "";
-    const category = params.category || "";
+    const page = Number(params?.page || 1)
+    const search = params?.search || "";
+    const category = params?.category || "";
 
-    const [allGuides] = await Promise.all([
+    const [allGuides,allCategory] = await Promise.all([
         axiosInstance.get("/articles", {
             params: {
                 page, search, category
             }
-        })
+        }),
+        axiosInstance.get("/article-category")
     ]);
+
+ 
 
 
 
     return (
         <>
-            <GuidePage allGuides={allGuides.data} />
+            <GuidePage allGuides={allGuides.data} allCategory= {allCategory.data} />
         </>
     )
 }

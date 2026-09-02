@@ -70,7 +70,7 @@ const CreateCategory = ({
             setLoading(true);
 
             const res = await axiosInstance.post(
-                "category",
+                "/article-category",
                 form
             );
 
@@ -514,7 +514,7 @@ export const EditCategory = ({
             setLoading(true);
 
             const res = await axiosInstance.put(
-                `/category?slug=${category.slug}`,
+                `/article-category?slug=${category.slug}`,
                 {
                     name: form.name,
                     description: form.description,
