@@ -1097,6 +1097,11 @@ export const pageData: any = {
                 label: "Exam Icon",
                 type: "file",
               },
+              {
+                name: "url",
+                label: "Url",
+                type: "text",
+              },
             ],
           },
         ],
@@ -1642,7 +1647,7 @@ export const pageData: any = {
               {
                 name: "designation",
                 label: "Designation",
-                type: "textarea",
+                type: "editor",
               },
               {
                 name: "image",
@@ -1812,6 +1817,7 @@ export const pageData: any = {
             label: "Primary Button",
             type: "text",
           },
+          
           {
             name: "secondaryButton",
             label: "Secondary Button",
@@ -2995,348 +3001,339 @@ export const pageData: any = {
   },
 
   greCalculator: {
-  name: "Calculator",
-  description: "Create and manage score calculator page content",
-  require: true,
+    name: "Calculator",
+    description: "Create and manage score calculator page content",
+    require: true,
 
-  sections: [
-    {
-      name: "hero",
-      label: "Hero Section",
-      require: true,
-      fields: [
-        {
-          name: "title",
-          label: "Hero Title",
-          type: "text",
-          required: true,
-          placeholder: "Free GRE Score Calculator",
-        },
-        {
-          name : "pageType",
-          label : "Page Type",
-          type: "select",
-              option: [ "GRE" , "GMAT" , "SAT" , "TOEFL" , "IELTS" , "PTE"],
-        },
-        {
-          name: "description",
-          label: "Hero Description",
-          type: "textarea",
-          required: false,
-          placeholder:
-            "Estimate your GRE score, understand your percentile, and discover graduate programs that match your current performance.",
-        },
-        {
-          name: "primaryButtonText",
-          label: "Primary Button Text",
-          type: "text",
-          required: false,
-          placeholder: "Calculate My GRE Score",
-        },
-        {
-          name: "primaryButtonUrl",
-          label: "Primary Button URL",
-          type: "text",
-          required: false,
-          placeholder: "#calculator",
-        },
-      ],
-    },
-    
-    {
-      name: "calculator",
-      label: "Calculator",
-      require: false,
-      fields: [
-       
-        {
-          name: "title",
-          label: "Title",
-          type: "text",
-          required: true,
-          placeholder: "Your Score Doesn't Stop Here — Practice For Real",
-        },
-        {
-          name: "description",
-          label: "Description",
-          type: "editor",
-          placeholder:
-            "Your GRE score is only one part of your graduate school journey.",
-        }
-      ],
-    },
+    sections: [
+      {
+        name: "hero",
+        label: "Hero Section",
+        require: true,
+        fields: [
+          {
+            name: "title",
+            label: "Hero Title",
+            type: "text",
+            required: true,
+            placeholder: "Free GRE Score Calculator",
+          },
+          {
+            name: "pageType",
+            label: "Page Type",
+            type: "select",
+            option: ["GRE", "GMAT", "SAT", "TOEFL", "IELTS", "PTE"],
+          },
+          {
+            name: "description",
+            label: "Hero Description",
+            type: "textarea",
+            required: false,
+            placeholder:
+              "Estimate your GRE score, understand your percentile, and discover graduate programs that match your current performance.",
+          },
+          {
+            name: "primaryButtonText",
+            label: "Primary Button Text",
+            type: "text",
+            required: false,
+            placeholder: "Calculate My GRE Score",
+          },
+          {
+            name: "primaryButtonUrl",
+            label: "Primary Button URL",
+            type: "text",
+            required: false,
+            placeholder: "#calculator",
+          },
+        ],
+      },
 
-    
-    {
-      name: "chart",
-      label: "Chart",
-      require: false,
-      fields: [
-       
-        {
-          name: "title",
-          label: "Title",
-          type: "text",
-          required: true,
-          placeholder: "Your Score Doesn't Stop Here — Practice For Real",
-        },
-        {
-          name: "description",
-          label: "Description",
-          type: "editor",
-          placeholder:
-            "Your GRE score is only one part of your graduate school journey.",
-        }
-      ],
-    },
+      {
+        name: "calculator",
+        label: "Calculator",
+        require: false,
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+            required: true,
+            placeholder: "Your Score Doesn't Stop Here — Practice For Real",
+          },
+          {
+            name: "description",
+            label: "Description",
+            type: "editor",
+            placeholder:
+              "Your GRE score is only one part of your graduate school journey.",
+          },
+        ],
+      },
 
-    {
-      name: "whySection",
-      label: "Why Section",
-      require: false,
-      fields: [
-       
-        {
-          name: "title",
-          label: "Title",
-          type: "text",
-          required: true,
-          placeholder: "Your Score Doesn't Stop Here — Practice For Real",
-        },
-        {
-          name: "description",
-          label: "Description",
-          type: "editor",
-          placeholder:
-            "Your GRE score is only one part of your graduate school journey.",
-        },
-        {
-          name: "buttonText",
-          label: "Button Text",
-          type: "text",
-          placeholder: "Start Your Preparation",
-        },
-        {
-          name: "buttonUrl",
-          label: "Button URL",
-          type: "text",
-          placeholder: "/gre",
-        },
+      {
+        name: "chart",
+        label: "Chart",
+        require: false,
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+            required: true,
+            placeholder: "Your Score Doesn't Stop Here — Practice For Real",
+          },
+          {
+            name: "description",
+            label: "Description",
+            type: "editor",
+            placeholder:
+              "Your GRE score is only one part of your graduate school journey.",
+          },
+        ],
+      },
 
+      {
+        name: "whySection",
+        label: "Why Section",
+        require: false,
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+            required: true,
+            placeholder: "Your Score Doesn't Stop Here — Practice For Real",
+          },
+          {
+            name: "description",
+            label: "Description",
+            type: "editor",
+            placeholder:
+              "Your GRE score is only one part of your graduate school journey.",
+          },
+          {
+            name: "buttonText",
+            label: "Button Text",
+            type: "text",
+            placeholder: "Start Your Preparation",
+          },
+          {
+            name: "buttonUrl",
+            label: "Button URL",
+            type: "text",
+            placeholder: "/gre",
+          },
 
-        {
-          name: "statistics",
-          label: "Statistics",
-          type: "repeater",
-          max: 10,
-          fields: [
-            {
-              name: "number",
-              label: "Number",
-              type: "text",
-              required: true,
-              placeholder: "2,000+",
-            },
-            {
-              name: "label",
-              label: "Label",
-              type: "text",
-              required: true,
-              placeholder: "Students Tested",
-            },
-          ],
-        },
-      ],
-    },
+          {
+            name: "statistics",
+            label: "Statistics",
+            type: "repeater",
+            max: 10,
+            fields: [
+              {
+                name: "number",
+                label: "Number",
+                type: "text",
+                required: true,
+                placeholder: "2,000+",
+              },
+              {
+                name: "label",
+                label: "Label",
+                type: "text",
+                required: true,
+                placeholder: "Students Tested",
+              },
+            ],
+          },
+        ],
+      },
 
-    {
-      name: "differenceSection",
-      label: "Difference Section",
-      require: false,
-      fields: [
-        {
-          name: "title",
-          label: "Title",
-          type: "text",
-          required: true,
-          placeholder: "How Ooshas Prep's GRE Calculator Is Different",
-        },
-        {
-          name: "description",
-          label: "Description",
-          type: "textarea",
-          placeholder: "A simple calculator designed to give you useful insights beyond just a single number.",
-        },
-        {
-          name : "Data",
-          label : "Data",
-          type : 'editor',
-          placeholder: "A simple calculator Data."
-        }
-      ],
-    },
+      {
+        name: "differenceSection",
+        label: "Difference Section",
+        require: false,
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+            required: true,
+            placeholder: "How Ooshas Prep's GRE Calculator Is Different",
+          },
+          {
+            name: "description",
+            label: "Description",
+            type: "textarea",
+            placeholder:
+              "A simple calculator designed to give you useful insights beyond just a single number.",
+          },
+          {
+            name: "Data",
+            label: "Data",
+            type: "editor",
+            placeholder: "A simple calculator Data.",
+          },
+        ],
+      },
 
-    {
-      name: "beyondNumber",
-      label: "Beyond The Number",
-      require: false,
-      fields: [
-        {
-          name: "title",
-          label: "Title",
-          type: "text",
-          required: true,
-          placeholder:
-            "Go Beyond the Number — Understand Your Score",
-        },
-        {
-          name: "description",
-          label: "Description",
-          type: "textarea",
-          placeholder:
-            "Your GRE result can tell you much more when combined with the right context.",
-        },
+      {
+        name: "beyondNumber",
+        label: "Beyond The Number",
+        require: false,
+        fields: [
+          {
+            name: "title",
+            label: "Title",
+            type: "text",
+            required: true,
+            placeholder: "Go Beyond the Number — Understand Your Score",
+          },
+          {
+            name: "description",
+            label: "Description",
+            type: "textarea",
+            placeholder:
+              "Your GRE result can tell you much more when combined with the right context.",
+          },
 
-        {
-          name: "features",
-          label: "Features",
-          type: "repeater",
-          max: 20,
-          fields: [
-            {
-              name: "icon",
-              label: "Icon",
-              type: "select",
-              option: [
-                "TrendingUp",
-                "Target",
-                "GraduationCap",
-                "Trophy",
-                "MapPin",
-                "Sparkles",
-             ],
-            },
-            {
-              name: "title",
-              label: "Feature Title",
-              type: "text",
-              required: true,
-              placeholder: "Track Your Progress",
-            },
-            {
-              name: "text",
-              label: "Feature Description",
-              type: "textarea",
-              required: true,
-              placeholder:
-                "Monitor score changes over multiple practice tests.",
-            },
-          ],
-        },
-      ],
-    },
-    
-    {
-      name: "faq",
-      label: "FAQ Section",
-      require: false,
-      fields: [
-        // {
-        //   name: "eyebrow",
-        //   label: "Eyebrow",
-        //   type: "text",
-        //   required: false,
-        // },
-        {
-          name: "title",
-          label: "FAQ Title",
-          type: "text",
-          required: true,
-          placeholder:
-            "GRE Score Calculator — Frequently Asked Questions",
-        },
-        {
-          name: "description",
-          label: "FAQ Description",
-          type: "textarea",
-          placeholder:
-            "Everything you need to know about our GRE score calculator.",
-        },
+          {
+            name: "features",
+            label: "Features",
+            type: "repeater",
+            max: 20,
+            fields: [
+              {
+                name: "icon",
+                label: "Icon",
+                type: "select",
+                option: [
+                  "TrendingUp",
+                  "Target",
+                  "GraduationCap",
+                  "Trophy",
+                  "MapPin",
+                  "Sparkles",
+                ],
+              },
+              {
+                name: "title",
+                label: "Feature Title",
+                type: "text",
+                required: true,
+                placeholder: "Track Your Progress",
+              },
+              {
+                name: "text",
+                label: "Feature Description",
+                type: "textarea",
+                required: true,
+                placeholder:
+                  "Monitor score changes over multiple practice tests.",
+              },
+            ],
+          },
+        ],
+      },
 
-        {
-          name: "items",
-          label: "FAQ Items",
-          type: "repeater",
-          max: 50,
-          fields: [
-            {
-              name: "question",
-              label: "Question",
-              type: "text",
-              required: true,
-              placeholder:
-                "How accurate is the GRE score calculator?",
-            },
-            {
-              name: "answer",
-              label: "Answer",
-              type: "textarea",
-              required: true,
-              placeholder:
-                "The calculator provides an estimated GRE score based on the practice section results you enter.",
-            },
-          ],
-        },
-      ],
-    },
+      {
+        name: "faq",
+        label: "FAQ Section",
+        require: false,
+        fields: [
+          // {
+          //   name: "eyebrow",
+          //   label: "Eyebrow",
+          //   type: "text",
+          //   required: false,
+          // },
+          {
+            name: "title",
+            label: "FAQ Title",
+            type: "text",
+            required: true,
+            placeholder: "GRE Score Calculator — Frequently Asked Questions",
+          },
+          {
+            name: "description",
+            label: "FAQ Description",
+            type: "textarea",
+            placeholder:
+              "Everything you need to know about our GRE score calculator.",
+          },
 
-    {
-      name: "bottomCTA",
-      label: "Bottom CTA",
-      require: false,
-      fields: [
-        {
-          name: "title",
-          label: "CTA Title",
-          type: "text",
-          required: true,
-          placeholder:
-            "Your Dream Grad School Is One Score Away",
-        },
-        {
-          name: "description",
-          label: "CTA Description",
-          type: "textarea",
-          placeholder:
-            "Understand your current GRE performance and take the next step toward your graduate school goals.",
-        },
-        {
-          name: "primaryButtonText",
-          label: "Primary Button Text",
-          type: "text",
-          placeholder: "Calculate My Score",
-        },
-        {
-          name: "primaryButtonUrl",
-          label: "Primary Button URL",
-          type: "text",
-          placeholder: "#calculator",
-        },
-        {
-          name: "secondaryButtonText",
-          label: "Secondary Button Text",
-          type: "text",
-          placeholder: "Talk To An Expert",
-        },
-        {
-          name: "secondaryButtonUrl",
-          label: "Secondary Button URL",
-          type: "text",
-          placeholder: "/contact",
-        },
-      ],
-    },
-  ],
-},
+          {
+            name: "items",
+            label: "FAQ Items",
+            type: "repeater",
+            max: 50,
+            fields: [
+              {
+                name: "question",
+                label: "Question",
+                type: "text",
+                required: true,
+                placeholder: "How accurate is the GRE score calculator?",
+              },
+              {
+                name: "answer",
+                label: "Answer",
+                type: "textarea",
+                required: true,
+                placeholder:
+                  "The calculator provides an estimated GRE score based on the practice section results you enter.",
+              },
+            ],
+          },
+        ],
+      },
 
+      {
+        name: "bottomCTA",
+        label: "Bottom CTA",
+        require: false,
+        fields: [
+          {
+            name: "title",
+            label: "CTA Title",
+            type: "text",
+            required: true,
+            placeholder: "Your Dream Grad School Is One Score Away",
+          },
+          {
+            name: "description",
+            label: "CTA Description",
+            type: "textarea",
+            placeholder:
+              "Understand your current GRE performance and take the next step toward your graduate school goals.",
+          },
+          {
+            name: "primaryButtonText",
+            label: "Primary Button Text",
+            type: "text",
+            placeholder: "Calculate My Score",
+          },
+          {
+            name: "primaryButtonUrl",
+            label: "Primary Button URL",
+            type: "text",
+            placeholder: "#calculator",
+          },
+          {
+            name: "secondaryButtonText",
+            label: "Secondary Button Text",
+            type: "text",
+            placeholder: "Talk To An Expert",
+          },
+          {
+            name: "secondaryButtonUrl",
+            label: "Secondary Button URL",
+            type: "text",
+            placeholder: "/contact",
+          },
+        ],
+      },
+    ],
+  },
 };
