@@ -48,19 +48,19 @@ const JOB_APPLICATION_CONFIG: any = {
       required: true,
       placeholder: "john@email.com",
       step: 1,
-      grid: "half",
+      grid: "full",
       icon: Mail
     },
-    // {
-    //   name: "phone",
-    //   label: "Phone Number",
-    //   type: "tel",
-    //   required: true,
-    //   placeholder: "+91 98765 43210",
-    //   step: 1,
-    //   grid: "half",
-    //   icon: Phone
-    // },
+    {
+      name: "phone",
+      label: "Phone Number",
+      type: "tel",
+      required: true,
+      placeholder: "+91 98765 43210",
+      step: 1,
+      grid: "full",
+      icon: Phone
+    },
     // {
     //   name: "experience",
     //   label: "Years of Experience",
@@ -166,8 +166,8 @@ const CareersSection: React.FC<CareersSectionProps> = ({ data }) => {
 
   return (
     <>
-      <section className="max-w-7xl mx-auto px-6 md:px-0 py-12">
-        <div className="text-center mb-10">
+      <section className="max-w-7xl mx-auto px-6 md:px-0 py-12" >
+        <div className="text-center mb-10" id="open-positions">
           <h2 className="text-3xl md:text-4xl font-bold text-black">
             Open <span className="text-[#F26E46]">Positions</span>
           </h2>
@@ -177,11 +177,8 @@ const CareersSection: React.FC<CareersSectionProps> = ({ data }) => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {data.openPositions.map((p, i) => {
             const Icon = getIcon(p.icon);
-          
-
-  const colors = [ "#fcf3ed", "#FEF0BF", "#ffb399" ];
-  const currentBg = colors[i % colors.length]; 
-
+            const colors = [ "#fcf3ed", "#FEF0BF", "#ffb399" ];
+            const currentBg = colors[i % colors.length]; 
 
             return (
               <motion.div
@@ -251,7 +248,7 @@ const CareersSection: React.FC<CareersSectionProps> = ({ data }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed top-20 inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+            className="fixed top-0 inset-0 z-999 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
             onClick={closePopup}
           >
             <motion.div
@@ -259,7 +256,7 @@ const CareersSection: React.FC<CareersSectionProps> = ({ data }) => {
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.95, y: 20, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative w-full max-w-4xl max-h-[80vh] bg-white rounded-2xl shadow-2xl overflow-auto"
+              className="relative w-full max-w-4xl max-h-[90vh] bg-white rounded-2xl shadow-2xl overflow-auto"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Close Button */}

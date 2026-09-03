@@ -776,7 +776,7 @@ interface CareersData {
 }
 
 export default function CareersPage({ sections }: any) {
-  console.log(sections, "main");
+  // console.log(sections, "main");
 
   const [data, setData] = useState<CareersData>({
     hero: {
@@ -912,15 +912,15 @@ export default function CareersPage({ sections }: any) {
             </h1>
             <p className="mt-4 text-lg ">{data.hero.description}</p>
             <div className="mt-8 flex gap-4 flex-wrap">
-              <button
+              <a href="#open-positions"
                 className="px-8 py-4 rounded-lg text-white text-base font-semibold hover:opacity-90 transition"
                 style={{ backgroundColor: orange }}
               >
                 {data.hero.buttons.primary}
-              </button>
-              <button className="px-8 py-4 rounded-lg text-base font-semibold border-2 border-black text-black bg-white hover:bg-gray-50 transition">
+              </a>
+              <a href="#open-positions" className="px-8 py-4 rounded-lg text-base font-semibold border-2 border-black text-black bg-white hover:bg-gray-50 transition">
                 {data.hero.buttons.secondary}
-              </button>
+              </a>
             </div>
           </div>
           <div className="relative">
@@ -981,12 +981,13 @@ export default function CareersPage({ sections }: any) {
                   {data.build.description}
                 </p>
                 <div className="mt-8 flex gap-4 flex-wrap">
-                  <button
+                  <a
+                    href="#open-positions"
                     className="px-8 py-4 rounded-lg text-white text-base font-semibold hover:opacity-90 transition"
                     style={{ backgroundColor: orange }}
                   >
                     {data.build.buttons.primary}
-                  </button>
+                  </a>
                 </div>
               </div>
 
