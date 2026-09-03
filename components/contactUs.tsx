@@ -155,10 +155,10 @@ function ConnectSection({ data }: { data?: any }) {
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 mt-12 ">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 mt-12 " >
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start"  id="form">
         <div>
-          <h2 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold my-6">
+          <h2 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold my-6" >
             {title} <span className="text-primary">{highlightText}</span>
           </h2>
 
@@ -436,12 +436,14 @@ export default function ContactPage({ Data }: any) {
               {ctaDescription}
             </p>
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
-              <button className="bg-[#FF5E3A] text-white font-medium py-3 px-8 rounded-lg shadow-md hover:bg-[#e54a2a] transition-colors">
+              <a
+                href="tel:+919166146538"
+                className="bg-[#FF5E3A] text-white font-medium py-3 px-8 rounded-lg shadow-md hover:bg-[#e54a2a] transition-colors">
                 {ctaPrimaryButton}
-              </button>
-              <button className="border border-[#FF5E3A] text-[#FF5E3A] font-medium py-3 px-8 rounded-lg hover:bg-[#FFF6F2] transition-colors">
+              </a>
+              <a href="#form" className="border border-[#FF5E3A] text-[#FF5E3A] font-medium py-3 px-8 rounded-lg hover:bg-[#FFF6F2] transition-colors">
                 {ctaSecondaryButton}
-              </button>
+              </a>
             </div>
           </div>
         </div>
