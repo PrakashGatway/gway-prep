@@ -186,14 +186,14 @@ export default function PopupModal({
                 <div className="relative z-10 mt-12 space-y-8">
                   <Benefit
                     title="Trusted by 300,000+ Learners"
-                    description="Join a thriving community of students pursuing global education."
+                    description="Join a thriving community of students pursuing education."
                   />
                   <Benefit
                     title="360° Expert Support at Every Step"
                     description="End-to-end guidance from application to admission."
                   />
                   <Benefit
-                    title="Access 1000+ Global University Partners"
+                    title="Access 100+ Test Series"
                     description="Explore top universities across the world."
                   />
                 </div>
@@ -204,7 +204,7 @@ export default function PopupModal({
                     <Globe2 className="h-5 w-5" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-slate-800">Global Education</p>
+                    <p className="text-sm font-bold text-slate-800">Ooshas Prep Education</p>
                     <p className="text-xs text-slate-500">Expert Counseling</p>
                   </div>
                 </div>
