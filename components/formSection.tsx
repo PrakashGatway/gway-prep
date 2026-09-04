@@ -3,10 +3,10 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  User, 
-  Mail, 
-  Phone, 
+import {
+  User,
+  Mail,
+  Phone,
   CheckCircle,
   ArrowRight,
   ArrowLeft,
@@ -16,10 +16,11 @@ import {
   Globe,
   Building,
   UserCheck,
-  Users as UsersIcon
+  Users as UsersIcon,
 } from "lucide-react";
 import axiosInstance from "../app/lib/axios";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 type FormData = {
   [key: string]: string | string[];
@@ -52,7 +53,7 @@ interface SubmitConfig {
   variant?: "primary" | "secondary" | "success" | "danger" | "warning" | "info";
   size?: "small" | "medium" | "large";
   position?: "bottom" | "top" | "both";
-  totalStep?:Number;
+  totalStep?: Number;
   onSuccess?: {
     message: string;
     redirect?: string;
@@ -70,22 +71,24 @@ interface RegistrationSectionProps {
   onSubmitted?: (response: any) => void;
 }
 
-export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSectionProps) {
+export default function FormSection({
+  FORM_CONFIG,
+  onSubmitted,
+}: RegistrationSectionProps) {
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  
-  // Initialize form data from config
+
   const initialFormData: FormData = {};
-  FORM_CONFIG.fields.forEach(field => {
+  FORM_CONFIG.fields.forEach((field) => {
     if (field.type === "checkbox-group") {
       initialFormData[field.name] = [];
     } else {
       initialFormData[field.name] = "";
     }
   });
-  
+
   const [formData, setFormData] = useState<FormData>(initialFormData);
 
   const primaryColor = "#f26e46";
@@ -94,7 +97,7 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
     setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when field is updated
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: "" }));
+      setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
@@ -108,176 +111,254 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
 
   const validateStep = (stepNumber: number): boolean => {
     const fieldsToValidate = FORM_CONFIG.fields.filter(
-      field => field.step === stepNumber && field.required
+      (field) => field.step === stepNumber && field.required,
     );
-    
+
     let isValid = true;
     const newErrors: Record<string, string> = {};
-    
-    fieldsToValidate.forEach(field => {
+
+    fieldsToValidate.forEach((field) => {
       const value = formData[field.name];
       if (!value || (Array.isArray(value) && value.length === 0)) {
         newErrors[field.name] = `${field.label} is required`;
         isValid = false;
       }
     });
-    
+
     setErrors(newErrors);
     return isValid;
   };
 
   const handleSubmit = async (e?: FormEvent) => {
-  if (e) {
-    e.preventDefault();
-  }
+    if (e) {
+      e.preventDefault();
+    }
 
-  // Validate all fields
-  let allValid = true;
-  const allErrors: Record<string, string> = {};
+    let allValid = true;
+    const allErrors: Record<string, string> = {};
 
-  FORM_CONFIG.fields.forEach((field) => {
-    if (field.required) {
-      const value = formData[field.name];
+    // Validate required fields
+    FORM_CONFIG.fields.forEach((field) => {
+      if (field.required) {
+        const value = formData[field.name];
 
-      if (!value || (Array.isArray(value) && value.length === 0)) {
-        allErrors[field.name] = `${field.label} is required`;
+        if (!value || (Array.isArray(value) && value.length === 0)) {
+          allErrors[field.name] = `${field.label} is required`;
+          allValid = false;
+        }
+      }
+    });
+
+    // Validate phone number
+    const phoneValue = formData["phone"] || formData["mobile"];
+
+    if (phoneValue) {
+      const digitsOnly = String(phoneValue).replace(/\D/g, "");
+
+      if (digitsOnly.length !== 10) {
+        const phoneFieldName = formData["phone"] ? "phone" : "mobile";
+
+        allErrors[phoneFieldName] = "Phone number must be exactly 10 digits";
+
         allValid = false;
       }
     }
-  });
 
+    // Validation error
+    if (!allValid) {
+      setErrors(allErrors);
 
-  if (!allValid) {
-    setErrors(allErrors);
+      const firstErrorField = Object.keys(allErrors)[0];
 
-    const firstErrorField = Object.keys(allErrors)[0];
+      const errorElement = document.querySelector(
+        `[name="${firstErrorField}"]`,
+      );
 
-    const errorElement = document.querySelector(
-      `[name="${firstErrorField}"]`
-    );
+      if (errorElement) {
+        errorElement.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        });
+      }
 
-    if (errorElement) {
-      errorElement.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-      });
+      // Show error message
+      toast.error(
+        allErrors[firstErrorField] || "Please fill all required fields",
+      );
+
+      return;
     }
 
-    return;
-  }
+    try {
+      setIsLoading(true);
 
+      const pagePath = window.location.href;
 
-  try {
+      const payload = {
+        path: pagePath,
+        data: formData,
+      };
 
-    setIsLoading(true);
+      const response = await axiosInstance.post("/admin/formDetails", payload);
 
+      console.log("Submit response:", response.data);
 
-    // Get current page URL path
-    const pagePath = window.location.href;
-    // const pagePath = window.location.pathname;
+      if (response.data?.success === true) {
+        setSubmitted(true);
 
+        toast.success(response.data?.message || "Form submitted successfully!");
 
-    const payload = {
-      path: pagePath,
-      data: formData,
-    };
+        if (onSubmitted) {
+          onSubmitted(response.data);
+        }
 
+        return;
+      }
 
-    // console.log("Form Payload:", payload);
+      setSubmitted(false);
 
+      toast.error(
+        response.data?.message ||
+          response.data?.error ||
+          "Form submission failed",
+      );
+    } catch (error: any) {
+      console.error(
+        "Form Submit Error:",
+        error?.response?.data || error?.message,
+      );
 
+      setSubmitted(false);
 
-    const response = await axiosInstance.post(
-      "/admin/formDetails",
-      payload
-    );
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        error?.message ||
+        "Something went wrong. Please try again.";
 
+      toast.error(errorMessage);
 
-    // console.log("Form Submitted:", response.data);
+      setErrors({
+        submit: errorMessage,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    setSubmitted(true);
-
-    // Send response to parent if callback provided
-    if (onSubmitted) onSubmitted(response.data);
-
-
-  } catch (error: any) {
-
-    console.error(
-      "Form Submit Error:",
-      error.response?.data || error.message
-    );
-
-
-    setErrors({
-      submit:
-        error.response?.data?.error ||
-        "Something went wrong. Please try again.",
-    });
-
-
-  } finally {
-
-    setIsLoading(false);
-
-  }
-};
-
-  // const handleSubmit = async (e?: FormEvent) => {
+  //   const handleSubmit = async (e?: FormEvent) => {
   //   if (e) {
   //     e.preventDefault();
   //   }
-    
-  //   // Validate all steps before submission
+
+  //   // Validate all fields
   //   let allValid = true;
   //   const allErrors: Record<string, string> = {};
-    
-  //   FORM_CONFIG.fields.forEach(field => {
+
+  //   FORM_CONFIG.fields.forEach((field) => {
   //     if (field.required) {
   //       const value = formData[field.name];
+
   //       if (!value || (Array.isArray(value) && value.length === 0)) {
   //         allErrors[field.name] = `${field.label} is required`;
   //         allValid = false;
   //       }
   //     }
   //   });
-    
+
   //   if (!allValid) {
   //     setErrors(allErrors);
-  //     // Scroll to first error
+
   //     const firstErrorField = Object.keys(allErrors)[0];
-  //     const errorElement = document.querySelector(`[name="${firstErrorField}"]`);
+
+  //     const errorElement = document.querySelector(
+  //       `[name="${firstErrorField}"]`
+  //     );
+
   //     if (errorElement) {
-  //       errorElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  //       errorElement.scrollIntoView({
+  //         behavior: "smooth",
+  //         block: "center",
+  //       });
   //     }
+
   //     return;
   //   }
-    
-  //   setIsLoading(true);
 
-  //   const jsonData = JSON.stringify(formData, null, 2);
-  //   // console.log("Form JSON:", jsonData);
+  //   try {
 
-  //     const api = axiosInstance('/admin/formDetails')
+  //     setIsLoading(true);
 
+  //     // Get current page URL path
+  //     const pagePath = window.location.href;
+  //     // const pagePath = window.location.pathname;
 
-  //   // Simulate API call
-  //   await new Promise((resolve) => setTimeout(resolve, 1500));
-    
-  //   setIsLoading(false);
-  //   setSubmitted(true);
+  //     const payload = {
+  //       path: pagePath,
+  //       data: formData,
+  //     };
+
+  //     // console.log("Form Payload:", payload);
+  //     const response = await axiosInstance.post(
+  //       "/admin/formDetails",
+  //       payload
+  //     );
+
+  //      // Check API success
+  //       if (response.data?.success === true) {
+  //         setSubmitted(true);
+
+  //         // Send response to parent
+  //         if (onSubmitted) {
+  //           onSubmitted(response.data);
+  //         }
+  //       } else {
+  //         console.error("Form submission failed:", response.data);
+
+  //         // Don't show submitted state
+  //         setSubmitted(false);
+
+  //         // Optional error message
+  //         alert(response.data?.message)
+  //         toast.error(response.data?.message || "Form submission failed");
+  //       }
+
+  //   } catch (error: any) {
+
+  //     console.error(
+  //       "Form Submit Error:",
+  //       error.response?.data || error.message
+  //     );
+
+  //     setErrors({
+  //       submit:
+  //         error.response?.data?.error ||
+  //         "Something went wrong. Please try again.",
+  //     });
+
+  //         toast.error( error.response?.data?.error ||
+  //         "Something went wrong. Please try again.");
+
+  //   } finally {
+
+  //     setIsLoading(false);
+
+  //   }
   // };
 
   const handleStepAction = async () => {
-    const currentStepConfig = FORM_CONFIG.steps.find(s => s.step === step);
-    
+    const currentStepConfig = FORM_CONFIG.steps.find((s) => s.step === step);
+
     // Validate current step
     if (!validateStep(step)) {
       return;
     }
 
     // Check if current step has "submit" button or if it's the last step
-    if (currentStepConfig?.button === "submit" || step === FORM_CONFIG.steps.length) {
+    if (
+      currentStepConfig?.button === "submit" ||
+      step === FORM_CONFIG.steps.length
+    ) {
       // Submit the form
       await handleSubmit();
     } else {
@@ -291,14 +372,14 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
       setStep((s) => Math.min(s + 1, FORM_CONFIG.steps.length));
     }
   };
-  
+
   const prevStep = () => setStep((s) => Math.max(s - 1, 1));
 
   const restart = () => {
     setStep(1);
     setSubmitted(false);
     const resetData: FormData = {};
-    FORM_CONFIG.fields.forEach(field => {
+    FORM_CONFIG.fields.forEach((field) => {
       if (field.type === "checkbox-group") {
         resetData[field.name] = [];
       } else {
@@ -310,12 +391,12 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
   };
 
   const getFieldsForStep = (stepNumber: number) => {
-    return FORM_CONFIG.fields.filter(field => field.step === stepNumber);
+    return FORM_CONFIG.fields.filter((field) => field.step === stepNumber);
   };
 
   // Get current step fields
   const currentStepFields = getFieldsForStep(step);
-  const currentStep = FORM_CONFIG.steps.find(s => s.step === step);
+  const currentStep = FORM_CONFIG.steps.find((s) => s.step === step);
 
   // Get total steps
   const totalSteps = FORM_CONFIG.steps.length;
@@ -329,34 +410,38 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
     icon: Send,
     variant: "primary",
     size: "large",
-    position: "bottom"
+    position: "bottom",
   };
 
   const SubmitIcon = submitConfig.icon;
 
   // Determine button text and icon based on step config
   const getButtonConfig = () => {
-    const currentStepConfig = FORM_CONFIG.steps.find(s => s.step === step);
-    const isSubmit = currentStepConfig?.button === "submit" || step === totalSteps;
-    
+    const currentStepConfig = FORM_CONFIG.steps.find((s) => s.step === step);
+    const isSubmit =
+      currentStepConfig?.button === "submit" || step === totalSteps;
+
     return {
-      text: isSubmit ? (submitConfig.label || "Submit") : "Continue",
+      text: isSubmit ? submitConfig.label || "Submit" : "Continue",
       icon: isSubmit ? SubmitIcon : ArrowRight,
-      action: handleStepAction
+      action: handleStepAction,
     };
   };
 
   const buttonConfig = getButtonConfig();
 
   const renderSubmitButton = (position: string) => {
-    if (submitConfig.position !== position && submitConfig.position !== "both") {
+    if (
+      submitConfig.position !== position &&
+      submitConfig.position !== "both"
+    ) {
       return null;
     }
 
     const sizeClasses = {
       small: "px-4 py-2 text-xs",
       medium: "px-6 py-3 text-sm",
-      large: "px-8 py-4 text-base"
+      large: "px-8 py-4 text-base",
     };
 
     return (
@@ -367,8 +452,8 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
         whileTap={{ scale: 0.97 }}
         className={`${sizeClasses[submitConfig.size || "large"]} font-bold text-white rounded-xl transition-all shadow-lg
          hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 w-full`}
-        style={{ 
-          background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
+        style={{
+          background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`,
         }}
       >
         {isLoading ? (
@@ -403,7 +488,7 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
 
   const router = useRouter();
   if (submitted) {
-    router.push('/thank-you')
+    router.push("/thank-you");
     // return (
     //   <section className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
     //     <motion.div
@@ -481,47 +566,67 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
             transition={{ duration: 0.3 }}
           >
             {/* Step Header */}
-           {currentStep?.title &&
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: `${primaryColor}15` }}>
-                {currentStep && <currentStep.icon className="w-4 h-4" style={{ color: primaryColor }} />}
+            {currentStep?.title && (
+              <div className="flex items-center gap-3 mb-4">
+                <div
+                  className="w-8 h-8 rounded-lg flex items-center justify-center"
+                  style={{ background: `${primaryColor}15` }}
+                >
+                  {currentStep && (
+                    <currentStep.icon
+                      className="w-4 h-4"
+                      style={{ color: primaryColor }}
+                    />
+                  )}
+                </div>
+                <p className="text-xl font-bold text-gray-900">
+                  {currentStep?.title}
+                </p>
               </div>
-              <p className="text-xl font-bold text-gray-900">{currentStep?.title}</p>
-            </div>
-            }
+            )}
 
             {/* Dynamic Fields */}
             <div className="space-y-2 grid grid-cols-2 gap-2">
               {currentStepFields.map((field) => {
-                const gridClass = field.grid === "half" ? "col-span-1" : "col-span-2";
+                const gridClass =
+                  field.grid === "half" ? "col-span-1" : "col-span-2";
                 const hasError = !!errors[field.name];
-                
+
                 return (
                   <div key={field.name} className={gridClass}>
                     {field.type === "select" && (
                       <>
-                        {
-                        field.label &&
-                         <label className="block text-sm text-gray-700 mb-1">
-                          {field.label}
-                          {field.required && <span className="text-red-500 ml-1">*</span>}
-                         </label>
-                        }
+                        {field.label && (
+                          <label className="block text-sm text-gray-700 mb-1">
+                            {field.label}
+                            {field.required && (
+                              <span className="text-red-500 ml-1">*</span>
+                            )}
+                          </label>
+                        )}
                         <select
                           name={field.name}
-                          value={formData[field.name] as string || ""}
-                          onChange={(e) => updateField(field.name, e.target.value)}
+                          value={(formData[field.name] as string) || ""}
+                          onChange={(e) =>
+                            updateField(field.name, e.target.value)
+                          }
                           className={`w-full border-2 rounded-xl px-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
-                            hasError ? 'border-red-500' : 'border-gray-200'
+                            hasError ? "border-red-500" : "border-gray-200"
                           }`}
-                          style={{ borderColor: hasError ? '#ef4444' : '#e5e7eb' }}
+                          style={{
+                            borderColor: hasError ? "#ef4444" : "#e5e7eb",
+                          }}
                           onFocus={(e) => {
-                            e.target.style.borderColor = hasError ? '#ef4444' : primaryColor;
-                            e.target.style.boxShadow = `0 0 0 4px ${hasError ? '#ef444420' : `${primaryColor}20`}`;
+                            e.target.style.borderColor = hasError
+                              ? "#ef4444"
+                              : primaryColor;
+                            e.target.style.boxShadow = `0 0 0 4px ${hasError ? "#ef444420" : `${primaryColor}20`}`;
                           }}
                           onBlur={(e) => {
-                            e.target.style.borderColor = hasError ? '#ef4444' : '#e5e7eb';
-                            e.target.style.boxShadow = 'none';
+                            e.target.style.borderColor = hasError
+                              ? "#ef4444"
+                              : "#e5e7eb";
+                            e.target.style.boxShadow = "none";
                           }}
                           required={field.required}
                         >
@@ -533,109 +638,175 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
                           ))}
                         </select>
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>
+                          <p className="text-red-500 text-xs mt-1">
+                            {errors[field.name]}
+                          </p>
                         )}
-                        {
-                          formData[field.name] === "other" && (
-                            <input type="text" 
-                            
-                          name={field.other}
-                          value={formData[field.other] as string || ""}
-                          onChange={(e) => updateField(field.other, e.target.value)}
-                            className={`w-full border-2 rounded-xl px-4  py-2 mt-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white `} />
-                          )
-                        }
+                        {formData[field.name] === "other" && (
+                          <input
+                            type="text"
+                            name={field.other}
+                            value={(formData[field.other] as string) || ""}
+                            onChange={(e) =>
+                              updateField(field.other, e.target.value)
+                            }
+                            className={`w-full border-2 rounded-xl px-4  py-2 mt-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white `}
+                          />
+                        )}
                       </>
                     )}
 
                     {field.type === "text" && field.icon && (
                       <>
-                        {
-                        field.label &&
-                         <label className="block text-sm text-gray-700 mb-1">
-                          {field.label}
-                          {field.required && <span className="text-red-500 ml-1">*</span>}
-                         </label>
-                        }
+                        {field.label && (
+                          <label className="block text-sm text-gray-700 mb-1">
+                            {field.label}
+                            {field.required && (
+                              <span className="text-red-500 ml-1">*</span>
+                            )}
+                          </label>
+                        )}
                         <div className="relative">
                           <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                           <input
                             name={field.name}
                             type="text"
-                            value={formData[field.name] as string || ""}
-                            onChange={(e) => updateField(field.name, e.target.value)}
+                            value={(formData[field.name] as string) || ""}
+                            onChange={(e) =>
+                              updateField(field.name, e.target.value)
+                            }
                             className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
-                              hasError ? 'border-red-500' : 'border-gray-200'
+                              hasError ? "border-red-500" : "border-gray-200"
                             }`}
-                            style={{ borderColor: hasError ? '#ef4444' : '#e5e7eb' }}
+                            style={{
+                              borderColor: hasError ? "#ef4444" : "#e5e7eb",
+                            }}
                             onFocus={(e) => {
-                              e.target.style.borderColor = hasError ? '#ef4444' : primaryColor;
-                              e.target.style.boxShadow = `0 0 0 4px ${hasError ? '#ef444420' : `${primaryColor}20`}`;
+                              e.target.style.borderColor = hasError
+                                ? "#ef4444"
+                                : primaryColor;
+                              e.target.style.boxShadow = `0 0 0 4px ${hasError ? "#ef444420" : `${primaryColor}20`}`;
                             }}
                             onBlur={(e) => {
-                              e.target.style.borderColor = hasError ? '#ef4444' : '#e5e7eb';
-                              e.target.style.boxShadow = 'none';
+                              e.target.style.borderColor = hasError
+                                ? "#ef4444"
+                                : "#e5e7eb";
+                              e.target.style.boxShadow = "none";
                             }}
                             // placeholder={field.placeholder}
                             required={field.required}
                           />
                         </div>
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>
+                          <p className="text-red-500 text-xs mt-1">
+                            {errors[field.name]}
+                          </p>
                         )}
                       </>
                     )}
 
                     {field.type === "email" && field.icon && (
                       <>
-                        {
-                        field.label &&
-                         <label className="block text-sm text-gray-700 mb-1">
-                          {field.label}
-                          {field.required && <span className="text-red-500 ml-1">*</span>}
-                         </label>
-                        }
+                        {field.label && (
+                          <label className="block text-sm text-gray-700 mb-1">
+                            {field.label}
+                            {field.required && (
+                              <span className="text-red-500 ml-1">*</span>
+                            )}
+                          </label>
+                        )}
                         <div className="relative">
                           <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                           <input
                             name={field.name}
                             type="email"
-                            value={formData[field.name] as string || ""}
-                            onChange={(e) => updateField(field.name, e.target.value)}
+                            value={(formData[field.name] as string) || ""}
+                            onChange={(e) =>
+                              updateField(field.name, e.target.value)
+                            }
                             className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
-                              hasError ? 'border-red-500' : 'border-gray-200'
+                              hasError ? "border-red-500" : "border-gray-200"
                             }`}
-                            style={{ borderColor: hasError ? '#ef4444' : '#e5e7eb' }}
+                            style={{
+                              borderColor: hasError ? "#ef4444" : "#e5e7eb",
+                            }}
                             onFocus={(e) => {
-                              e.target.style.borderColor = hasError ? '#ef4444' : primaryColor;
-                              e.target.style.boxShadow = `0 0 0 4px ${hasError ? '#ef444420' : `${primaryColor}20`}`;
+                              e.target.style.borderColor = hasError
+                                ? "#ef4444"
+                                : primaryColor;
+                              e.target.style.boxShadow = `0 0 0 4px ${hasError ? "#ef444420" : `${primaryColor}20`}`;
                             }}
                             onBlur={(e) => {
-                              e.target.style.borderColor = hasError ? '#ef4444' : '#e5e7eb';
-                              e.target.style.boxShadow = 'none';
+                              e.target.style.borderColor = hasError
+                                ? "#ef4444"
+                                : "#e5e7eb";
+                              e.target.style.boxShadow = "none";
                             }}
                             // placeholder={field.placeholder}
                             required={field.required}
                           />
                         </div>
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>
+                          <p className="text-red-500 text-xs mt-1">
+                            {errors[field.name]}
+                          </p>
                         )}
                       </>
                     )}
 
                     {field.type === "tel" && field.icon && (
                       <>
-                        {
-                        field.label &&
-                        <label className="block text-sm text-gray-700 mb-1">
-                          {field.label}
-                          {field.required && <span className="text-red-500 ml-1">*</span>}
-                        </label>
-                        }
+                        {field.label && (
+                          <label className="block text-sm text-gray-700 mb-1">
+                            {field.label}
+                            {field.required && (
+                              <span className="text-red-500 ml-1">*</span>
+                            )}
+                          </label>
+                        )}
                         <div className="relative">
                           <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+
                           <input
+                            name={field.name}
+                            type="tel"
+                            inputMode="numeric"
+                            minLength={10}
+                            maxLength={10}
+                            value={(formData[field.name] as string) || ""}
+                            onChange={(e) => {
+                              const digitsOnly = e.target.value
+                                .replace(/\D/g, "")
+                                .slice(0, 10);
+
+                              updateField(field.name, digitsOnly);
+                            }}
+                            className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
+                              hasError ? "border-red-500" : "border-gray-200"
+                            }`}
+                            style={{
+                              borderColor: hasError ? "#ef4444" : "#e5e7eb",
+                            }}
+                            onFocus={(e) => {
+                              e.target.style.borderColor = hasError
+                                ? "#ef4444"
+                                : primaryColor;
+
+                              e.target.style.boxShadow = `0 0 0 4px ${
+                                hasError ? "#ef444420" : `${primaryColor}20`
+                              }`;
+                            }}
+                            onBlur={(e) => {
+                              e.target.style.borderColor = hasError
+                                ? "#ef4444"
+                                : "#e5e7eb";
+
+                              e.target.style.boxShadow = "none";
+                            }}
+                            required={field.required}
+                          />
+
+                          {/* <input
                             name={field.name}
                             type="tel"
                             inputMode="numeric"
@@ -659,165 +830,219 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
                             }}
                             // placeholder={field.placeholder}
                             required={field.required}
-                          />
+                          /> */}
                         </div>
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>
+                          <p className="text-red-500 text-xs mt-1">
+                            {errors[field.name]}
+                          </p>
                         )}
                       </>
                     )}
 
                     {field.type === "number" && field.icon && (
                       <>
-                        {
-                        field.label &&
-                         <label className="block text-sm text-gray-700 mb-1">
-                          {field.label}
-                          {field.required && <span className="text-red-500 ml-1">*</span>}
-                         </label>
-                        }
+                        {field.label && (
+                          <label className="block text-sm text-gray-700 mb-1">
+                            {field.label}
+                            {field.required && (
+                              <span className="text-red-500 ml-1">*</span>
+                            )}
+                          </label>
+                        )}
                         <div className="relative">
                           <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                           <input
                             name={field.name}
                             type="number"
-                            value={formData[field.name] as string || ""}
-                            onChange={(e) => updateField(field.name, e.target.value)}
+                            value={(formData[field.name] as string) || ""}
+                            onChange={(e) =>
+                              updateField(field.name, e.target.value)
+                            }
                             className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
-                              hasError ? 'border-red-500' : 'border-gray-200'
+                              hasError ? "border-red-500" : "border-gray-200"
                             }`}
-                            style={{ borderColor: hasError ? '#ef4444' : '#e5e7eb' }}
+                            style={{
+                              borderColor: hasError ? "#ef4444" : "#e5e7eb",
+                            }}
                             onFocus={(e) => {
-                              e.target.style.borderColor = hasError ? '#ef4444' : primaryColor;
-                              e.target.style.boxShadow = `0 0 0 4px ${hasError ? '#ef444420' : `${primaryColor}20`}`;
+                              e.target.style.borderColor = hasError
+                                ? "#ef4444"
+                                : primaryColor;
+                              e.target.style.boxShadow = `0 0 0 4px ${hasError ? "#ef444420" : `${primaryColor}20`}`;
                             }}
                             onBlur={(e) => {
-                              e.target.style.borderColor = hasError ? '#ef4444' : '#e5e7eb';
-                              e.target.style.boxShadow = 'none';
+                              e.target.style.borderColor = hasError
+                                ? "#ef4444"
+                                : "#e5e7eb";
+                              e.target.style.boxShadow = "none";
                             }}
                             // placeholder={field.placeholder}
                             required={field.required}
                           />
                         </div>
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>
+                          <p className="text-red-500 text-xs mt-1">
+                            {errors[field.name]}
+                          </p>
                         )}
                       </>
                     )}
 
                     {field.type === "date" && field.icon && (
                       <>
-                        {
-                        field.label &&
-                         <label className="block text-sm text-gray-700 mb-1">
-                          {field.label}
-                          {field.required && <span className="text-red-500 ml-1">*</span>}
-                         </label>
-                        }
+                        {field.label && (
+                          <label className="block text-sm text-gray-700 mb-1">
+                            {field.label}
+                            {field.required && (
+                              <span className="text-red-500 ml-1">*</span>
+                            )}
+                          </label>
+                        )}
                         <div className="relative">
                           <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                           <input
                             name={field.name}
                             type="date"
-                            value={formData[field.name] as string || ""}
-                            onChange={(e) => updateField(field.name, e.target.value)}
+                            value={(formData[field.name] as string) || ""}
+                            onChange={(e) =>
+                              updateField(field.name, e.target.value)
+                            }
                             className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
-                              hasError ? 'border-red-500' : 'border-gray-200'
+                              hasError ? "border-red-500" : "border-gray-200"
                             }`}
-                            style={{ borderColor: hasError ? '#ef4444' : '#e5e7eb' }}
+                            style={{
+                              borderColor: hasError ? "#ef4444" : "#e5e7eb",
+                            }}
                             onFocus={(e) => {
-                              e.target.style.borderColor = hasError ? '#ef4444' : primaryColor;
-                              e.target.style.boxShadow = `0 0 0 4px ${hasError ? '#ef444420' : `${primaryColor}20`}`;
+                              e.target.style.borderColor = hasError
+                                ? "#ef4444"
+                                : primaryColor;
+                              e.target.style.boxShadow = `0 0 0 4px ${hasError ? "#ef444420" : `${primaryColor}20`}`;
                             }}
                             onBlur={(e) => {
-                              e.target.style.borderColor = hasError ? '#ef4444' : '#e5e7eb';
-                              e.target.style.boxShadow = 'none';
+                              e.target.style.borderColor = hasError
+                                ? "#ef4444"
+                                : "#e5e7eb";
+                              e.target.style.boxShadow = "none";
                             }}
                             required={field.required}
                           />
                         </div>
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>
+                          <p className="text-red-500 text-xs mt-1">
+                            {errors[field.name]}
+                          </p>
                         )}
                       </>
                     )}
 
                     {field.type === "textarea" && (
                       <>
-                        {
-                        field.label &&
-                         <label className="block text-sm text-gray-700 mb-1">
-                          {field.label}
-                          {field.required && <span className="text-red-500 ml-1">*</span>}
-                         </label>
-                        }
+                        {field.label && (
+                          <label className="block text-sm text-gray-700 mb-1">
+                            {field.label}
+                            {field.required && (
+                              <span className="text-red-500 ml-1">*</span>
+                            )}
+                          </label>
+                        )}
                         <textarea
                           name={field.name}
-                          value={formData[field.name] as string || ""}
-                          onChange={(e) => updateField(field.name, e.target.value)}
+                          value={(formData[field.name] as string) || ""}
+                          onChange={(e) =>
+                            updateField(field.name, e.target.value)
+                          }
                           rows={4}
                           className={`w-full border-2 rounded-xl px-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white resize-none ${
-                            hasError ? 'border-red-500' : 'border-gray-200'
+                            hasError ? "border-red-500" : "border-gray-200"
                           }`}
-                          style={{ borderColor: hasError ? '#ef4444' : '#e5e7eb' }}
+                          style={{
+                            borderColor: hasError ? "#ef4444" : "#e5e7eb",
+                          }}
                           onFocus={(e) => {
-                            e.target.style.borderColor = hasError ? '#ef4444' : primaryColor;
-                            e.target.style.boxShadow = `0 0 0 4px ${hasError ? '#ef444420' : `${primaryColor}20`}`;
+                            e.target.style.borderColor = hasError
+                              ? "#ef4444"
+                              : primaryColor;
+                            e.target.style.boxShadow = `0 0 0 4px ${hasError ? "#ef444420" : `${primaryColor}20`}`;
                           }}
                           onBlur={(e) => {
-                            e.target.style.borderColor = hasError ? '#ef4444' : '#e5e7eb';
-                            e.target.style.boxShadow = 'none';
+                            e.target.style.borderColor = hasError
+                              ? "#ef4444"
+                              : "#e5e7eb";
+                            e.target.style.boxShadow = "none";
                           }}
                           placeholder={field.placeholder}
                           required={field.required}
                         />
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>
+                          <p className="text-red-500 text-xs mt-1">
+                            {errors[field.name]}
+                          </p>
                         )}
                       </>
                     )}
 
                     {field.type === "button-group" && (
                       <>
-                        {
-                        field.label &&
-                         <label className="block text-sm text-gray-700 mb-1">
-                          {field.label}
-                          {field.required && <span className="text-red-500 ml-1">*</span>}
-                         </label>
-                        }
+                        {field.label && (
+                          <label className="block text-sm text-gray-700 mb-1">
+                            {field.label}
+                            {field.required && (
+                              <span className="text-red-500 ml-1">*</span>
+                            )}
+                          </label>
+                        )}
                         <div className="grid grid-cols-3 gap-3">
                           {field.options?.map((option) => {
                             const OptionIcon = option.icon;
-                            const isSelected = formData[field.name] === option.value;
+                            const isSelected =
+                              formData[field.name] === option.value;
                             return (
                               <motion.button
                                 key={option.value}
                                 type="button"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                onClick={() => updateField(field.name, isSelected ? "" : option.value)}
+                                onClick={() =>
+                                  updateField(
+                                    field.name,
+                                    isSelected ? "" : option.value,
+                                  )
+                                }
                                 className="p-3 rounded-xl border-2 text-sm transition-all"
                                 style={{
-                                  background: isSelected 
+                                  background: isSelected
                                     ? `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
                                     : "#f9fafb",
                                   color: isSelected ? "white" : "#374151",
-                                  borderColor: isSelected ? "transparent" : hasError ? "#ef4444" : "#e5e7eb",
-                                  boxShadow: isSelected ? `0 4px 14px ${primaryColor}40` : "none"
+                                  borderColor: isSelected
+                                    ? "transparent"
+                                    : hasError
+                                      ? "#ef4444"
+                                      : "#e5e7eb",
+                                  boxShadow: isSelected
+                                    ? `0 4px 14px ${primaryColor}40`
+                                    : "none",
                                 }}
                               >
-                                {OptionIcon && <OptionIcon className="w-6 h-6 mx-auto mb-1" />}
+                                {OptionIcon && (
+                                  <OptionIcon className="w-6 h-6 mx-auto mb-1" />
+                                )}
                                 {option.label}
                                 {option.desc && (
-                                  <p className="text-xs mt-1 opacity-80">{option.desc}</p>
+                                  <p className="text-xs mt-1 opacity-80">
+                                    {option.desc}
+                                  </p>
                                 )}
                               </motion.button>
                             );
                           })}
                         </div>
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>
+                          <p className="text-red-500 text-xs mt-1">
+                            {errors[field.name]}
+                          </p>
                         )}
                       </>
                     )}
@@ -826,38 +1051,56 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
                       <>
                         <label className="block text-sm text-gray-700 mb-1">
                           {field.label}
-                          <span className="text-gray-400 text-xs ml-1">(select all that apply)</span>
-                          {field.required && <span className="text-red-500 ml-1">*</span>}
+                          <span className="text-gray-400 text-xs ml-1">
+                            (select all that apply)
+                          </span>
+                          {field.required && (
+                            <span className="text-red-500 ml-1">*</span>
+                          )}
                         </label>
                         <div className="grid grid-cols-2 gap-3">
                           {field.options?.map((option) => {
                             const OptionIcon = option.icon;
-                            const isSelected = (formData[field.name] as string[] || []).includes(option.value);
+                            const isSelected = (
+                              (formData[field.name] as string[]) || []
+                            ).includes(option.value);
                             return (
                               <motion.button
                                 key={option.value}
                                 type="button"
                                 whileHover={{ scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
-                                onClick={() => toggleCheckboxGroup(field.name, option.value)}
+                                onClick={() =>
+                                  toggleCheckboxGroup(field.name, option.value)
+                                }
                                 className="p-3 rounded-xl border-2 font-medium text-sm transition-all flex items-center gap-2"
                                 style={{
-                                  background: isSelected 
+                                  background: isSelected
                                     ? `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
                                     : "#f9fafb",
                                   color: isSelected ? "white" : "#374151",
-                                  borderColor: isSelected ? "transparent" : hasError ? "#ef4444" : "#e5e7eb",
-                                  boxShadow: isSelected ? `0 4px 14px ${primaryColor}40` : "none"
+                                  borderColor: isSelected
+                                    ? "transparent"
+                                    : hasError
+                                      ? "#ef4444"
+                                      : "#e5e7eb",
+                                  boxShadow: isSelected
+                                    ? `0 4px 14px ${primaryColor}40`
+                                    : "none",
                                 }}
                               >
-                                {OptionIcon && <OptionIcon className="w-4 h-4" />}
+                                {OptionIcon && (
+                                  <OptionIcon className="w-4 h-4" />
+                                )}
                                 {option.label}
                               </motion.button>
                             );
                           })}
                         </div>
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>
+                          <p className="text-red-500 text-xs mt-1">
+                            {errors[field.name]}
+                          </p>
                         )}
                       </>
                     )}
@@ -869,8 +1112,10 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
         </AnimatePresence>
 
         {/* Navigation Buttons */}
-        <div className={`flex ${FORM_CONFIG.steps.length > 1 ? 'justify-between': 'justify-center'} gap-4 mt-2 pt-4 border-t border-gray-200`}>
-          {step > 1 &&  (
+        <div
+          className={`flex ${FORM_CONFIG.steps.length > 1 ? "justify-between" : "justify-center"} gap-4 mt-2 pt-4 border-t border-gray-200`}
+        >
+          {step > 1 && (
             <motion.button
               type="button"
               whileHover={{ scale: 1.05 }}
@@ -882,7 +1127,6 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
               Back
             </motion.button>
           )}
-          
 
           <motion.button
             type="button"
@@ -891,8 +1135,8 @@ export default function FormSection({ FORM_CONFIG, onSubmitted }: RegistrationSe
             onClick={buttonConfig.action}
             className="px-8 py-3 text-sm font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl
              flex items-center gap-2"
-            style={{ 
-              background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor})`
+            style={{
+              background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor})`,
             }}
           >
             {buttonConfig.text}
