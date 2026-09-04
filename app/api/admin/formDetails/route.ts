@@ -36,8 +36,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       data: data || {},
     });
 
-    console.log("Form created successfully:", newForm._id);
-
     const leadPayload = {
       fullName,
       email,
@@ -51,7 +49,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       },
     };
 
-    console.log(leadPayload)
     try {
       const apiResponse = await axios.post(
         "https://server.gatewayabroadeducations.com/api/v1/leads",
@@ -107,72 +104,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     );
   }
 }
-
-// export async function POST(req: NextRequest): Promise<NextResponse> {
-//   try {
-
-//     await connectDB();
-
-//     const body = await req.json();
-//     const { path, data } = body;
-
-//     const {
-//       name,
-//       email,
-//       phone,
-//       mobile,
-//       interest,
-//       city,
-//       ...remainingData
-//     } = data || {};
-
-//     const leadPayload = {
-//       fullName: name,
-//       email: email,
-//       phone: phone || mobile,
-//       coursePreference: interest,
-//       city: city,
-//       source: "website",
-//       website: "ooshasPrep",
-//       extraDetails: {
-//         ...remainingData
-//       },
-//     };
-
-//     if (!path) {
-//       return NextResponse.json({error: "Path is required"},{status: 400});
-//     }
-
-//     const newForm = await FormDetails.create({
-//       path,
-//       data: data || {},
-//     });
-
-//     const api = await axios.post(
-//       `https://server.gatewayabroadeducations.com/api/v1/leads`,
-//       leadPayload
-//     );
-//     console.log("lead" , api.data);
-
-//     return NextResponse.json(
-//       {
-//         success: true,
-//         message: "Form created successfully",
-//         form: newForm,
-//       },
-//       {
-//         status: 201,
-//       },
-//     );
-//   } catch (error: any) {
-//     console.error("POST Form Error:", error);
-
-//     return NextResponse.json({
-//         error: error.message || "Something went wrong",
-//       },{status: 500}
-//     );
-//   }
-// }
 
 export async function GET(req: NextRequest): Promise<NextResponse> {
   try {
@@ -237,6 +168,49 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
       {
         status: 500,
       },
+    );
+  }
+}
+
+// DELETE handler
+export async function DELETE(req: NextRequest): Promise<NextResponse> {
+  try {
+    await connectDB();
+
+    const body = await req.json();
+    const { id } = body;
+
+    if (!id) {
+      return NextResponse.json(
+        { error: "Lead ID is required" },
+        { status: 400 },
+      );
+    }
+
+    // Find and delete the lead by ID
+    const deletedLead = await FormDetails.findByIdAndDelete(id);
+
+    if (!deletedLead) {
+      return NextResponse.json({ error: "Lead not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Lead deleted successfully",
+        deletedLead,
+      },
+      { status: 200 },
+    );
+  } catch (error: any) {
+    console.error("DELETE Form Error:", error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        error: error.message || "Something went wrong",
+      },
+      { status: 500 },
     );
   }
 }

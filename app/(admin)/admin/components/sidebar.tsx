@@ -52,6 +52,7 @@ const Sidebar = () => {
     { icon: <File size={18} />, label: "Blog", href: "/admin/pages/Blogs" },
     { icon: <BookUser size={18} />, label: "Authors", href: "/admin/pages/Authors"},
     { icon: <File size={18} />, label: "Support Articles", href: "/admin/pages/support-articles" },
+    { icon: <File size={18} />, label: "Leads ", href: "/admin/pages/leads" },
   ];
 
   // if (!isAuthChecked) return null;
