@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ChevronDown,
+  ChevronRight,
   Menu,
   X,
   Phone,
@@ -12,55 +13,49 @@ import {
   LayoutDashboard,
   GraduationCap,
   ArrowRight,
-  ChevronRight,
   UserCircle,
   LogOut,
-  Settings,
-  ChevronUp,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGlobal } from "@/hooks/AppStateContext";
 import AuthDrawer from "./auth/drawer";
 import { useRouter } from "next/navigation";
-import axiosInstance from "@/services/axiosInstance";
 
-export function Navbar({ Data }: any) {
+interface NavbarProps {
+  Data?: any[];
+}
+
+export function Navbar({ Data }: NavbarProps) {
   const router = useRouter();
   const { user, logout, drawer, setDrawer } = useGlobal();
-  console.log(user, "user");
+
   const [isOpen, setIsOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
+
   const [activeDropdown, setActiveDropdown] = React.useState<string | null>(
     null,
   );
+
   const [activeSubDropdown, setActiveSubDropdown] = React.useState<
     string | null
   >(null);
+
   const [mobileDropdown, setMobileDropdown] = React.useState<string | null>(
     null,
   );
+
+  const [mobileSubDropdown, setMobileSubDropdown] = React.useState<
+    string | null
+  >(null);
 
   const [showProfileMenu, setShowProfileMenu] = React.useState(false);
 
   const profileMenuRef = React.useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
-  React.useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        profileMenuRef.current &&
-        !profileMenuRef.current.contains(event.target as Node)
-      ) {
-        setShowProfileMenu(false);
-      }
-    };
+  /* ---------------------------------------------------------
+     DATA
+  --------------------------------------------------------- */
 
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  });
   const NAVDATA1 = React.useMemo(
     () =>
       Data?.filter(
@@ -83,136 +78,303 @@ export function Navbar({ Data }: any) {
 
   const navItems = React.useMemo(
     () => [
-      { name: "Home", href: "/", icon: null },
+      {
+        name: "Home",
+        href: "/",
+        icon: null,
+      },
+
       {
         name: "Test Prep",
         href: "#",
         hasDropdown: true,
         icon: GraduationCap,
+
         dropdownItems: NAVDATA.filter(
           (subItem: any) => !subItem?.seoMeta?.duplicateOf,
         ).map((item: any) => {
-          
           return {
-            name: item.seoMeta.navTitle,
+            name: item?.seoMeta?.navTitle,
             img: item?.seoMeta?.navIcon,
-            slug: item.seoMeta.canonicalUrl,
-            description: item.seoMeta.navSubtitle,
-            badge: item.seoMeta?.badge || null,
+            slug: item?.seoMeta?.canonicalUrl,
+            description: item?.seoMeta?.navSubtitle,
+            badge: item?.seoMeta?.badge || null,
+
             sublink: NAVDATA.filter((subItem: any) =>
               subItem?.seoMeta?.duplicateOf
                 ?.toLowerCase()
                 .includes(item?.name?.toLowerCase()),
             ).map((ele: any) => {
               return {
-                name: ele.seoMeta.navTitle,
+                name: ele?.seoMeta?.navTitle,
                 img: ele?.seoMeta?.navIcon,
-                slug: ele.seoMeta.canonicalUrl,
-                description: ele.seoMeta.navSubtitle,
-                badge: ele.seoMeta?.badge || null,
+                slug: ele?.seoMeta?.canonicalUrl,
+                description: ele?.seoMeta?.navSubtitle,
+                badge: ele?.seoMeta?.badge || null,
               };
             }),
           };
         }),
       },
-      { name: "About Us", href: "/about", icon: null },
-      { name: "Services", href: "/services", icon: null },
-      // {
-      //   name: "Exam Prep",
-      //   href: "#",
-      //   hasDropdown: true,
-      //   icon: GraduationCap,
-      //   dropdownItems: NAVDATA1.map((item: any) => ({
-      //     name: item.seoMeta.navTitle,
-      //     img: item?.seoMeta?.navIcon,
-      //     slug: item.seoMeta.canonicalUrl,
-      //     description: item.seoMeta.navSubtitle,
-      //     badge: item.seoMeta?.badge || null,
 
-      //   })),
-      // },
-      { name: "Blogs", href: "/blog", icon: null },
-      { name: "Career", href: "/career", icon: null },
-      { name: "Contact Us", href: "/contact", icon: null },
+      {
+        name: "About Us",
+        href: "/about",
+        icon: null,
+      },
+
+      {
+        name: "Services",
+        href: "/services",
+        icon: null,
+      },
+
+      {
+        name: "Blogs",
+        href: "/blog",
+        icon: null,
+      },
+
+      {
+        name: "Career",
+        href: "/career",
+        icon: null,
+      },
+
+      {
+        name: "Contact Us",
+        href: "/contact",
+        icon: null,
+      },
     ],
     [NAVDATA],
   );
 
-  const [mobileSubDropdown, setMobileSubDropdown] = React.useState<
-    string | null
-  >(null);
-  // Scroll handler
   React.useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 10);
+    };
+
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
-  // Body scroll lock
   React.useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = "";
     }
+
     return () => {
-      document.body.style.overflow = "unset";
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileMenuRef.current &&
+        !profileMenuRef.current.contains(event.target as Node)
+      ) {
+        setShowProfileMenu(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  React.useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+
+      setIsOpen(false);
+      setShowProfileMenu(false);
+      setActiveDropdown(null);
+      setActiveSubDropdown(null);
+      setMobileDropdown(null);
+      setMobileSubDropdown(null);
+    };
+
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
 
   const handleLinkClick = () => {
     setIsOpen(false);
     setMobileDropdown(null);
+    setMobileSubDropdown(null);
   };
 
   const handleDropdownToggle = (itemName: string) => {
-    setMobileDropdown(mobileDropdown === itemName ? null : itemName);
+    setMobileDropdown((current) => (current === itemName ? null : itemName));
+
+    setMobileSubDropdown(null);
   };
 
-  // Close everything when mouse leaves the whole dropdown area
+  const handleMobileSubDropdown = (slug: string) => {
+    setMobileSubDropdown((current) => (current === slug ? null : slug));
+  };
+
   const closeDesktopDropdown = () => {
     setActiveDropdown(null);
     setActiveSubDropdown(null);
   };
 
+  const closeMobileMenu = () => {
+    setIsOpen(false);
+    setMobileDropdown(null);
+    setMobileSubDropdown(null);
+  };
+
   return (
     <>
       <nav
-        className={`sticky top-0 left-0 right-0 z-[500] transition-all duration-300 ${
-          scrolled
-            ? "bg-white/90 backdrop-blur-xl shadow-lg border-b border-gray-100"
-            : "bg-white/95 backdrop-blur-sm"
-        }`}
+        className={`
+          sticky
+          top-0
+          left-0
+          right-0
+          z-[500]
+          w-full
+          transition-all
+          duration-300
+          ${
+            scrolled
+              ? "border-b border-gray-100 bg-white/90 shadow-lg backdrop-blur-xl"
+              : "border-b border-transparent bg-white/95 backdrop-blur-sm"
+          }
+        `}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-3">
-            {/* Logo */}
-            <Link href="/" className="flex-shrink-0 group">
+        <div className="mx-auto w-full max-w-7xl px-3 md:px-0">
+          <div
+            className="
+              flex
+              min-h-[64px]
+              items-center
+              justify-between
+              gap-3
+              py-2.5
+              sm:min-h-[70px]
+              sm:py-3
+            "
+          >
+
+            <Link
+              href="/"
+              className="
+                group
+                flex
+                min-w-0
+                shrink-0
+                items-center
+              "
+              aria-label="Ooshas Prep Home"
+            >
               <Image
                 src="/image/logo.png"
                 alt="Ooshas Prep Logo"
                 width={160}
                 height={80}
-                className="h-14 w-auto transition-transform group-hover:scale-105"
                 priority
+                className="
+                  h-10
+                  w-auto
+                  object-contain
+                  transition-transform
+                  duration-200
+                  group-hover:scale-[1.03]
+                  sm:h-11
+                  lg:h-14
+                "
               />
             </Link>
 
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setIsOpen(true)}
-              className="lg:hidden p-3 hover:bg-gray-100 rounded-2xl transition-colors"
-              aria-label="Open menu"
-            >
-              <Menu size={26} className="text-gray-700" />
-            </button>
 
-            {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center gap-1">
-              {navItems.map((item) => (
+            <div className="ml-auto flex items-center gap-2 lg:hidden">
+              {/* Phone */}
+
+              <a
+                href="tel:+919166146538"
+                aria-label="Call Ooshas Prep"
+                className="
+                  flex
+                  h-10
+                  w-10
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-orange-100
+                  bg-orange-50
+                  text-[#F36C45]
+                  transition-all
+                  duration-200
+                  hover:bg-orange-100
+                  active:scale-95
+                  sm:h-11
+                  sm:w-11
+                "
+              >
+                <Phone
+                  size={17}
+                  strokeWidth={2}
+                  className="sm:h-[18px] sm:w-[18px]"
+                />
+              </a>
+
+              {/* Menu */}
+
+              <button
+                type="button"
+                onClick={() => setIsOpen(true)}
+                aria-label="Open navigation menu"
+                aria-expanded={isOpen}
+                className="
+                  flex
+                  h-10
+                  w-10
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-gray-100
+                  text-gray-700
+                  transition-all
+                  duration-200
+                  hover:bg-orange-50
+                  hover:text-[#F36C45]
+                  active:scale-95
+                  sm:h-11
+                  sm:w-11
+                "
+              >
+                <Menu size={22} strokeWidth={2} className="sm:h-6 sm:w-6" />
+              </button>
+            </div>
+
+            {/* =================================================
+                DESKTOP NAVIGATION
+            ================================================= */}
+
+            <div className="hidden items-center gap-1 lg:flex">
+              {navItems.map((item: any) => (
                 <div
                   key={item.name}
-                  className="relative group"
+                  className="relative"
                   onMouseEnter={() => {
                     if (item.hasDropdown) {
                       setActiveDropdown(item.name);
@@ -220,65 +382,149 @@ export function Navbar({ Data }: any) {
                   }}
                   onMouseLeave={closeDesktopDropdown}
                 >
+                  {/* Main nav item */}
+
                   <Link
                     href={item.href}
-                    className={`flex items-center gap-1.5 px-3 py-2.5 text-sm font-medium rounded-2xl transition-all duration-200
+                    className={`
+                      flex
+                      items-center
+                      gap-1.5
+                      rounded-2xl
+                      px-3
+                      py-2.5
+                      text-sm
+                      font-medium
+                      transition-all
+                      duration-200
                       ${
                         activeDropdown === item.name
-                          ? "text-[#F36C45] bg-orange-50"
-                          : "text-gray-600 hover:text-[#F36C45] hover:bg-orange-50/70"
-                      }`}
+                          ? "bg-orange-50 text-[#F36C45]"
+                          : "text-gray-600 hover:bg-orange-50/70 hover:text-[#F36C45]"
+                      }
+                    `}
                   >
                     <span>{item.name}</span>
+
                     {item.hasDropdown && (
                       <ChevronDown
                         size={16}
-                        className={`transition-transform duration-200 ${
-                          activeDropdown === item.name ? "rotate-180" : ""
-                        }`}
+                        className={`
+                          transition-transform
+                          duration-200
+                          ${activeDropdown === item.name ? "rotate-180" : ""}
+                        `}
                       />
                     )}
                   </Link>
 
-                  {/* Desktop Dropdown */}
+
                   <AnimatePresence>
                     {item.hasDropdown && activeDropdown === item.name && (
                       <motion.div
-                        initial={{ opacity: 0, y: 8, scale: 0.97 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 8, scale: 0.97 }}
-                        transition={{ duration: 0.15 }}
-                        className="absolute left-[10%] top-full pt-2 z-50"
+                        initial={{
+                          opacity: 0,
+                          y: 8,
+                          scale: 0.97,
+                        }}
+                        animate={{
+                          opacity: 1,
+                          y: 0,
+                          scale: 1,
+                        }}
+                        exit={{
+                          opacity: 0,
+                          y: 8,
+                          scale: 0.97,
+                        }}
+                        transition={{
+                          duration: 0.15,
+                        }}
+                        className="
+                            absolute
+                            left-0
+                            top-full
+                            z-[600]
+                            pt-2
+                          "
                         onMouseEnter={() => setActiveDropdown(item.name)}
                         onMouseLeave={closeDesktopDropdown}
                       >
-                        <div className="bg-white rounded border border-gray-100 shadow-xl overflow-hidden flex">
-                          <div className="py-2 max-h-[520px] overflow-y-auto min-w-[280px] xl:min-w-[320px] bg-orange-50/60">
+                        <div
+                          className="
+                              flex
+                              overflow-hidden
+                              rounded-2xl
+                              border
+                              border-gray-100
+                              bg-white
+                              shadow-[0_20px_60px_rgba(0,0,0,0.12)]
+                            "
+                        >
+                          {/* LEFT COLUMN */}
+
+                          <div
+                            className="
+                                max-h-[520px]
+                                min-w-[290px]
+                                overflow-y-auto
+                                bg-gradient-to-b
+                                from-orange-50/80
+                                to-white
+                                py-2
+                                xl:min-w-[330px]
+                              "
+                          >
                             {item.dropdownItems?.map((dd: any) => {
                               const hasSub =
                                 dd.sublink && dd.sublink.length > 0;
+
                               const isActive = activeSubDropdown === dd.slug;
 
                               return (
                                 <div
                                   key={dd.slug}
+                                  className="relative px-2"
                                   onMouseEnter={() => {
                                     setActiveSubDropdown(
                                       hasSub ? dd.slug : null,
                                     );
                                   }}
-                                  className="relative"
                                 >
                                   <Link
                                     href={`/${dd.slug}`}
-                                    className={`group flex items-center gap-3 px-4 py-3 transition-all ${
-                                      isActive
-                                        ? "bg-white shadow-sm"
-                                        : "hover:bg-white/80"
-                                    }`}
                                     onClick={closeDesktopDropdown}
+                                    className={`
+                                          group
+                                          flex
+                                          items-center
+                                          gap-3
+                                          rounded-xl
+                                          px-3
+                                          py-3
+                                          transition-all
+                                          ${
+                                            isActive
+                                              ? "bg-white shadow-sm"
+                                              : "hover:bg-white/80"
+                                          }
+                                        `}
                                   >
-                                    <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 bg-white shadow-sm">
+                                    {/* Icon */}
+
+                                    <div
+                                      className="
+                                            flex
+                                            h-10
+                                            w-10
+                                            shrink-0
+                                            items-center
+                                            justify-center
+                                            rounded-xl
+                                            bg-white
+                                            shadow-sm
+                                          "
+                                    >
                                       {dd.img ? (
                                         <Image
                                           src={dd.img}
@@ -295,43 +541,75 @@ export function Navbar({ Data }: any) {
                                       )}
                                     </div>
 
-                                    <div className="flex-1 min-w-0">
+                                    {/* Content */}
+
+                                    <div className="min-w-0 flex-1">
                                       <div className="flex items-center gap-2">
                                         <span
-                                          className={`font-medium text-sm transition-colors ${
-                                            isActive
-                                              ? "text-[#F36C45]"
-                                              : "text-gray-800 group-hover:text-[#F36C45]"
-                                          }`}
+                                          className={`
+                                                truncate
+                                                text-sm
+                                                font-medium
+                                                transition-colors
+                                                ${
+                                                  isActive
+                                                    ? "text-[#F36C45]"
+                                                    : "text-gray-800 group-hover:text-[#F36C45]"
+                                                }
+                                              `}
                                         >
                                           {dd.name}
                                         </span>
+
                                         {dd.badge && (
-                                          <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[#F36C45]/10 text-[#F36C45] font-medium whitespace-nowrap">
+                                          <span
+                                            className="
+                                                  shrink-0
+                                                  rounded-full
+                                                  bg-[#F36C45]/10
+                                                  px-1.5
+                                                  py-0.5
+                                                  text-[9px]
+                                                  font-semibold
+                                                  text-[#F36C45]
+                                                "
+                                          >
                                             {dd.badge}
                                           </span>
                                         )}
                                       </div>
+
                                       {dd.description && (
-                                        <p className="text-xs text-gray-500 truncate mt-0.5">
+                                        <p className="mt-0.5 truncate text-xs text-gray-500">
                                           {dd.description}
                                         </p>
                                       )}
                                     </div>
 
+                                    {/* Arrow */}
+
                                     {hasSub ? (
                                       <ChevronRight
                                         size={16}
-                                        className={`flex-shrink-0 transition-colors ${
-                                          isActive
-                                            ? "text-[#F36C45]"
-                                            : "text-gray-300 group-hover:text-[#F36C45]"
-                                        }`}
+                                        className={`
+                                              shrink-0
+                                              transition-colors
+                                              ${
+                                                isActive
+                                                  ? "text-[#F36C45]"
+                                                  : "text-gray-300 group-hover:text-[#F36C45]"
+                                              }
+                                            `}
                                       />
                                     ) : (
                                       <ArrowRight
                                         size={14}
-                                        className="text-gray-300 group-hover:text-[#F36C45] transition-colors flex-shrink-0"
+                                        className="
+                                              shrink-0
+                                              text-gray-300
+                                              transition-colors
+                                              group-hover:text-[#F36C45]
+                                            "
                                       />
                                     )}
                                   </Link>
@@ -340,85 +618,128 @@ export function Navbar({ Data }: any) {
                             })}
                           </div>
 
-                          {/* Right Column – Sub items (stays open while hovering left or right) */}
+
                           <AnimatePresence mode="wait">
                             {activeSubDropdown && (
                               <motion.div
                                 key={activeSubDropdown}
-                                initial={{ opacity: 0, x: -8 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0, x: -8 }}
-                                transition={{ duration: 0.15 }}
-                                className="border-l border-gray-100 bg-white w-[300px] max-h-[520px] overflow-y-auto"
+                                initial={{
+                                  opacity: 0,
+                                  x: -8,
+                                }}
+                                animate={{
+                                  opacity: 1,
+                                  x: 0,
+                                }}
+                                exit={{
+                                  opacity: 0,
+                                  x: -8,
+                                }}
+                                transition={{
+                                  duration: 0.15,
+                                }}
+                                className="
+                                    w-[300px]
+                                    max-h-[520px]
+                                    overflow-y-auto
+                                    border-l
+                                    border-gray-100
+                                    bg-white
+                                  "
                               >
                                 {item.dropdownItems?.map((dd: any) => {
                                   if (
-                                    dd.slug === activeSubDropdown &&
-                                    dd.sublink?.length > 0
+                                    dd.slug !== activeSubDropdown ||
+                                    !dd.sublink?.length
                                   ) {
-                                    return (
-                                      <div key={dd.slug} className="p-3">
-                                        <div className="px-2 py-2 mb-1">
-                                          <h4 className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
-                                            {dd.name} Programs
-                                          </h4>
-                                        </div>
-                                        <div className="space-y-0.5">
-                                          {dd.sublink.map((sub: any) => (
-                                            <Link
-                                              key={sub.slug}
-                                              href={`/${sub.slug}`}
-                                              className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-orange-50
-                                               transition-all group/sub"
-                                              onClick={closeDesktopDropdown}
-                                            >
-                                              <div
-                                                className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0
-                                               bg-white transition-colors"
-                                              >
-                                                {sub.img ? (
-                                                  <Image
-                                                    src={sub.img}
-                                                    alt={sub.name}
-                                                    width={28}
-                                                    height={28}
-                                                    className="object-contain"
-                                                  />
-                                                ) : (
-                                                  // <Image
-                                                  //   src={sub.img}
-                                                  //   alt={sub.name}
-                                                  //   width={22}
-                                                  //   height={22}
-                                                  //   className="object-contain"
-                                                  // />
-                                                  <GraduationCap
-                                                    size={14}
-                                                    className="text-[#F36C45]"
-                                                  />
-                                                )}
-                                              </div>
-                                              <div className="flex-1 min-w-0">
-                                                <span className="text-sm text-gray-700 group-hover/sub:text-[#F36C45] transition-colors">
-                                                  {sub.name}
-                                                </span>
-                                                {sub.description && (
-                                                  <p className="text-xs text-gray-400 truncate">
-                                                    {sub.description}
-                                                  </p>
-                                                )}
-                                              </div>
-                                              <ArrowRight
-                                                size={12}
-                                                className="text-gray-300 group-hover/sub:text-[#F36C45] flex-shrink-0"
-                                              />
-                                            </Link>
-                                          ))}
-                                        </div>
-                                      </div>
-                                    );
+                                    return null;
                                   }
-                                  return null;
+
+                                  return (
+                                    <div key={dd.slug} className="p-3">
+                                      <div className="mb-2 px-2 py-2">
+                                        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#F36C45]">
+                                          Test Prep
+                                        </p>
+
+                                        <h4 className="mt-1 text-sm font-semibold text-gray-900">
+                                          {dd.name}
+                                        </h4>
+                                      </div>
+
+                                      <div className="space-y-0.5">
+                                        {dd.sublink.map((sub: any) => (
+                                          <Link
+                                            key={sub.slug}
+                                            href={`/${sub.slug}`}
+                                            onClick={closeDesktopDropdown}
+                                            className="
+                                                    group/sub
+                                                    flex
+                                                    items-center
+                                                    gap-3
+                                                    rounded-xl
+                                                    px-3
+                                                    py-2.5
+                                                    transition-all
+                                                    hover:bg-orange-50
+                                                  "
+                                          >
+                                            <div
+                                              className="
+                                                      flex
+                                                      h-9
+                                                      w-9
+                                                      shrink-0
+                                                      items-center
+                                                      justify-center
+                                                      rounded-lg
+                                                      bg-gray-50
+                                                      group-hover/sub:bg-white
+                                                    "
+                                            >
+                                              {sub.img ? (
+                                                <Image
+                                                  src={sub.img}
+                                                  alt={sub.name}
+                                                  width={24}
+                                                  height={24}
+                                                  className="object-contain"
+                                                />
+                                              ) : (
+                                                <GraduationCap
+                                                  size={15}
+                                                  className="text-[#F36C45]"
+                                                />
+                                              )}
+                                            </div>
+
+                                            <div className="min-w-0 flex-1">
+                                              <span className="block truncate text-sm text-gray-700 transition-colors group-hover/sub:text-[#F36C45]">
+                                                {sub.name}
+                                              </span>
+
+                                              {sub.description && (
+                                                <p className="truncate text-xs text-gray-400">
+                                                  {sub.description}
+                                                </p>
+                                              )}
+                                            </div>
+
+                                            <ArrowRight
+                                              size={12}
+                                              className="
+                                                      shrink-0
+                                                      text-gray-300
+                                                      transition-colors
+                                                      group-hover/sub:text-[#F36C45]
+                                                    "
+                                            />
+                                          </Link>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  );
                                 })}
                               </motion.div>
                             )}
@@ -431,90 +752,89 @@ export function Navbar({ Data }: any) {
               ))}
             </div>
 
-            {/* Desktop CTAs */}
-            {/* <div className="hidden lg:flex items-center gap-4">
+
+            <div className="hidden items-center gap-3 lg:flex">
+              {/* Phone */}
+
               <a
                 href="tel:+919166146538"
-                className="flex items-center gap-2.5 px-4 py-1.5 rounded-2xl hover:bg-gray-100 transition-all group"
+                className="
+                  group
+                  flex
+                  items-center
+                  gap-2.5
+                  rounded-2xl
+                  px-3
+                  py-1.5
+                  transition-all
+                  hover:bg-gray-50
+                "
               >
-                <div className="w-8 h-8 rounded-full bg-[#F36C45]/10 flex items-center justify-center">
-                  <Phone size={18} className="text-[#F36C45]" />
-                </div> 
+                <div
+                  className="
+                    flex
+                    h-9
+                    w-9
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-orange-50
+                  "
+                >
+                  <Phone size={14} className="text-[#F36C45]" />
+                </div>
+
                 <div>
-                  <div className="text-xs text-gray-400 flex items-center gap-2">
-                    {" "}
-                    <Phone size={12} className="text-[#F36C45]" /> Call us
+                  <div className="text-[10px] font-medium uppercase tracking-wide text-gray-400">
+                    Call us
                   </div>
-                  <div className="font-semibold text-sm text-gray-700 group-hover:text-[#F36C45]">
+
+                  <div className="text-sm font-semibold text-gray-700 transition-colors group-hover:text-[#F36C45]">
                     +91 9166146538
                   </div>
                 </div>
               </a>
 
+              {/* Login */}
+
               {!user?.email ? (
                 <button
-                  onClick={() => router.push("/auth")}
-                  className="px-6 py-2.5 rounded-2xl bg-gradient-to-r from-[#F36C45] to-orange-500 text-white font-medium flex items-center gap-2 hover:shadow-xl hover:shadow-orange-500/30 transition-all active:scale-95"
-                >
-                  <User size={18} />
-                  Get Started
-                </button>
-              ) : (
-                <button
-                  onClick={() =>
-                    (window.location.href = "https://dashboard.ooshasprep.com")
-                  }
-                  className="px-2 py-2.5 rounded-2xl bg-gradient-to-r from-orange-500 to-primary text-white font-medium flex items-center gap-2 hover:shadow-lg cursor-pointer hover:shadow-orange-500/30 transition-all active:scale-95"
-                >
-                  <LayoutDashboard size={18} /> 
-                   Dashboard 
-                </button>
-              )}
-
-            </div> */}
-
-            <div className="hidden lg:flex items-center gap-4">
-              <a
-                href="tel:+919166146538"
-                className="flex items-center gap-2.5 px-4 py-1.5 rounded-2xl hover:bg-gray-100 transition-all group"
-              >
-                <div>
-                  <div className="text-xs text-gray-400 flex items-center gap-2">
-                    {" "}
-                    <Phone size={12} className="text-[#F36C45]" /> Call us
-                  </div>
-                  <div className="font-semibold text-sm text-gray-700 group-hover:text-[#F36C45]">
-                    +91 9166146538
-                  </div>
-                </div>
-              </a>
-              {!user?.email ? (
-                <button
+                  type="button"
                   onClick={() => router.push("/auth")}
                   className="
-                    px-6 py-2.5
+                    flex
+                    items-center
+                    gap-2
                     rounded-2xl
                     bg-gradient-to-r
                     from-[#F36C45]
                     to-orange-500
+                    px-5
+                    py-2.5
+                    text-sm
+                    font-semibold
                     text-white
-                    font-medium
-                    flex items-center
-                    gap-2
+                    shadow-md
+                    shadow-orange-500/20
+                    transition-all
+                    hover:-translate-y-0.5
                     hover:shadow-xl
                     hover:shadow-orange-500/30
-                    transition-all
-                    active:scale-95
+                    active:translate-y-0
                   "
                 >
-                  <User size={18} />
+                  <User size={17} />
                   Get Started
                 </button>
               ) : (
+                /* Profile */
+
                 <div ref={profileMenuRef} className="relative">
                   <button
                     type="button"
                     onClick={() => setShowProfileMenu((prev) => !prev)}
+                    aria-expanded={showProfileMenu}
+                    aria-haspopup="menu"
                     className="
                       flex
                       items-center
@@ -524,11 +844,13 @@ export function Navbar({ Data }: any) {
                       from-orange-500
                       to-[#F36C45]
                       pr-2
+                      shadow-sm
                       transition-all
                       hover:shadow-lg
-                      hover:shadow-orange-500/30
+                      hover:shadow-orange-500/20
                       active:scale-95
-                    ">
+                    "
+                  >
                     <div
                       className="
                         flex
@@ -544,192 +866,192 @@ export function Navbar({ Data }: any) {
                       <UserCircle size={24} />
                     </div>
 
-                    {/* CHEVRON */}
-
-                    {/* {showProfileMenu ? (
-                    <ChevronUp size={17} className="text-white " />
-                  ) : (
-                    <ChevronDown size={17} className="text-white" />
-                  )} */}
                     <ChevronDown
                       size={17}
-                      className={`text-white ${showProfileMenu ? "-rotate-180" : "rotate-0"} duration-300 ease-in-out`}
+                      className={`
+                        text-white
+                        transition-transform
+                        duration-300
+                        ${showProfileMenu ? "rotate-180" : ""}
+                      `}
                     />
                   </button>
 
-                  {showProfileMenu && (
-                    <div
-                      className="
-                      absolute
-                      right-0
-                      top-[calc(100%+12px)]
-                      z-[9999]
-                      w-[320px]
-                      overflow-hidden
-                      rounded-2xl
-                      border
-                      border-gray-100
-                      bg-white
-                      shadow-[0_10px_40px_rgba(0,0,0,0.15)]
-                    "
-                    >
-                      <div
+                  {/* Profile dropdown */}
+
+                  <AnimatePresence>
+                    {showProfileMenu && (
+                      <motion.div
+                        initial={{
+                          opacity: 0,
+                          y: 8,
+                          scale: 0.97,
+                        }}
+                        animate={{
+                          opacity: 1,
+                          y: 0,
+                          scale: 1,
+                        }}
+                        exit={{
+                          opacity: 0,
+                          y: 8,
+                          scale: 0.97,
+                        }}
+                        transition={{
+                          duration: 0.15,
+                        }}
                         className="
-                      flex
-                      items-center
-                      gap-3
-                      border-b
-                      border-gray-100
-                      px-5
-                      py-5
-                    "
+                          absolute
+                          right-0
+                          top-[calc(100%+12px)]
+                          z-[9999]
+                          w-[320px]
+                          overflow-hidden
+                          rounded-2xl
+                          border
+                          border-gray-100
+                          bg-white
+                          shadow-[0_20px_50px_rgba(0,0,0,0.14)]
+                        "
                       >
-                        {/* Avatar */}
+                        {/* User */}
 
                         <div
                           className="
-                        flex
-                        h-12
-                        w-12
-                        shrink-0
-                        items-center
-                        justify-center
-                        rounded-full
-                        border
-                        border-gray-200
-                        bg-gray-50
-                        text-gray-500
-                      "
-                        >
-                          <User size={26} />
-                        </div>
-
-                        <div className="min-w-0">
-                          <h3
-                            className="
-                            truncate
-                            text-[17px]
-                            font-semibold
-                            text-gray-900
-                          ">
-                            {user?.name || "Rajesh Kumar"}
-                          </h3>
-
-                          <p
-                            className="
-                            mt-0.5
-                            truncate
-                            text-sm
-                            text-gray-500
+                            flex
+                            items-center
+                            gap-3
+                            border-b
+                            border-gray-100
+                            bg-gradient-to-br
+                            from-orange-50
+                            to-white
+                            px-5
+                            py-5
                           "
+                        >
+                          <div
+                            className="
+                              flex
+                              h-12
+                              w-12
+                              shrink-0
+                              items-center
+                              justify-center
+                              rounded-full
+                              bg-white
+                              text-gray-500
+                              shadow-sm
+                            "
                           >
-                            {user?.email}
-                          </p>
+                            <User size={24} />
+                          </div>
+
+                          <div className="min-w-0">
+                            <h3 className="truncate text-[16px] font-semibold text-gray-900">
+                              {user?.name || "Welcome Back"}
+                            </h3>
+
+                            <p className="mt-0.5 truncate text-xs text-gray-500">
+                              {user?.email}
+                            </p>
+                          </div>
                         </div>
-                      </div>
 
-                      <div className="py-2">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowProfileMenu(false);
-                            router.push(
-                              "https://dashboard.ooshasprep.com/profile",
-                            );
-                          }}
-                          className="
-              flex
-              w-full
-              items-center
-              gap-4
-              px-5
-              py-3.5
-              text-left
-              text-[16px]
-              text-gray-700
-              transition
-              hover:bg-orange-50
-              hover:text-[#F36C45]
-            "
-                        >
-                          <User size={22} strokeWidth={1.8} />
+                        {/* Menu */}
 
-                          <span>My Profile</span>
-                        </button>
+                        <div className="p-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowProfileMenu(false);
 
-                        {/* DASHBOARD */}
+                              window.location.href =
+                                "https://dashboard.ooshasprep.com/profile";
+                            }}
+                            className="
+                              flex
+                              min-h-[48px]
+                              w-full
+                              items-center
+                              gap-3
+                              rounded-xl
+                              px-4
+                              text-left
+                              text-sm
+                              text-gray-700
+                              transition
+                              hover:bg-orange-50
+                              hover:text-[#F36C45]
+                            "
+                          >
+                            <User size={19} strokeWidth={1.8} />
 
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowProfileMenu(false);
+                            <span>My Profile</span>
+                          </button>
 
-                            window.location.href =
-                              "https://dashboard.ooshasprep.com";
-                          }}
-                          className="
-              flex
-              w-full
-              items-center
-              gap-4
-              px-5
-              py-3.5
-              text-left
-              text-[16px]
-              text-gray-700
-              transition
-              hover:bg-orange-50
-              hover:text-[#F36C45]
-            "
-                        >
-                          <LayoutDashboard size={22} strokeWidth={1.8} />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowProfileMenu(false);
 
-                          <span>Dashboard</span>
-                        </button>
-                      </div>
+                              window.location.href =
+                                "https://dashboard.ooshasprep.com";
+                            }}
+                            className="
+                              flex
+                              min-h-[48px]
+                              w-full
+                              items-center
+                              gap-3
+                              rounded-xl
+                              px-4
+                              text-left
+                              text-sm
+                              text-gray-700
+                              transition
+                              hover:bg-orange-50
+                              hover:text-[#F36C45]
+                            "
+                          >
+                            <LayoutDashboard size={19} strokeWidth={1.8} />
 
-                      {/* ================= LOGOUT ================= */}
+                            <span>Dashboard</span>
+                          </button>
+                        </div>
 
-                      <div
-                        className="
-                          border-t
-                          border-gray-100
-                          p-2
-                        "
-                      >
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShowProfileMenu(false);
+                        {/* Logout */}
 
-                            // Your logout logic here
-                            logout();
+                        <div className="border-t border-gray-100 p-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setShowProfileMenu(false);
+                              logout();
+                            }}
+                            className="
+                              flex
+                              min-h-[48px]
+                              w-full
+                              items-center
+                              gap-3
+                              rounded-xl
+                              px-4
+                              text-left
+                              text-sm
+                              text-red-500
+                              transition
+                              hover:bg-red-50
+                            "
+                          >
+                            <LogOut size={19} strokeWidth={1.8} />
 
-                            // axiosInstance.get('logout')
-                            // router.push("/auth");
-                          }}
-                          className="
-              flex
-              w-full
-              items-center
-              gap-4
-              rounded-xl
-              px-4
-              py-3
-              text-left
-              text-[16px]
-              text-red-500
-              transition
-              hover:bg-red-50
-            "
-                        >
-                          <LogOut size={22} strokeWidth={1.8} />
-
-                          <span>Logout</span>
-                        </button>
-                      </div>
-                    </div>
-                  )}
+                            <span>Logout</span>
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               )}
             </div>
@@ -737,351 +1059,820 @@ export function Navbar({ Data }: any) {
         </div>
       </nav>
 
-      {/* Mobile Drawer */}
+
       <AnimatePresence>
         {isOpen && (
           <>
+            {/* Overlay */}
+
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[400]"
-              onClick={() => setIsOpen(false)}
+              transition={{ duration: 0.2 }}
+              onClick={closeMobileMenu}
+              className="
+                fixed
+                inset-0
+                z-[600]
+                bg-black/45
+                backdrop-blur-[3px]
+                lg:hidden
+              "
             />
 
-            <motion.div
+            {/* Drawer */}
+
+            <motion.aside
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 30, stiffness: 280 }}
-              className="fixed top-0 right-0 h-full w-[90%] max-w-[400px] bg-white z-[500] shadow-2xl overflow-y-auto"
+              transition={{
+                type: "spring",
+                stiffness: 320,
+                damping: 32,
+              }}
+              className="
+                fixed
+                right-0
+                top-0
+                z-[700]
+                flex
+                h-[100dvh]
+                w-[90%]
+                max-w-[410px]
+                flex-col
+                overflow-hidden
+                bg-white
+                shadow-2xl
+                lg:hidden
+              "
+              aria-label="Mobile navigation"
             >
-              <div className="p-6">
-                {/* Drawer Header */}
-                <div className="flex items-center justify-between mb-8">
+
+              <div
+                className="
+                  flex
+                  min-h-[70px]
+                  shrink-0
+                  items-center
+                  justify-between
+                  border-b
+                  border-gray-100
+                  bg-white
+                  px-4
+                  sm:px-5
+                "
+              >
+                <Link
+                  href="/"
+                  onClick={handleLinkClick}
+                  className="flex items-center"
+                >
                   <Image
                     src="/image/logo.png"
-                    alt="Logo"
-                    width={140}
-                    height={50}
-                    className="h-9 w-auto"
+                    alt="Ooshas Prep Logo"
+                    width={145}
+                    height={70}
+                    className="h-9 w-auto object-contain sm:h-10"
                   />
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="p-3 hover:bg-gray-100 rounded-2xl"
-                    aria-label="Close menu"
-                  >
-                    <X size={26} />
-                  </button>
-                </div>
+                </Link>
 
-                {/* User Info */}
-                {user?.email && (
-                  <div className="mb-8 p-5 bg-gradient-to-br from-orange-50 to-amber-50 rounded-3xl">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#F36C45] to-orange-600 text-white flex items-center justify-center text-2xl font-semibold">
-                        {user.email[0].toUpperCase()}
+                <button
+                  type="button"
+                  onClick={closeMobileMenu}
+                  aria-label="Close navigation menu"
+                  className="
+                    flex
+                    h-10
+                    w-10
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-gray-100
+                    text-gray-700
+                    transition-all
+                    hover:bg-orange-50
+                    hover:text-[#F36C45]
+                    active:scale-95
+                  "
+                >
+                  <X size={21} />
+                </button>
+              </div>
+
+
+              {user?.email && (
+                <div className="shrink-0 px-4 pt-4 sm:px-5">
+                  <div
+                    className="
+                      relative
+                      overflow-hidden
+                      rounded-2xl
+                      border
+                      border-orange-100
+                      bg-gradient-to-br
+                      from-orange-50
+                      via-white
+                      to-amber-50
+                      p-4
+                    "
+                  >
+                    {/* Decorative circle */}
+
+                    <div
+                      className="
+                        absolute
+                        -right-8
+                        -top-8
+                        h-24
+                        w-24
+                        rounded-full
+                        bg-orange-100/60
+                      "
+                    />
+
+                    <div className="relative flex items-center gap-3">
+                      {/* Avatar */}
+
+                      <div
+                        className="
+                          flex
+                          h-11
+                          w-11
+                          shrink-0
+                          items-center
+                          justify-center
+                          rounded-full
+                          bg-gradient-to-br
+                          from-[#F36C45]
+                          to-orange-500
+                          text-base
+                          font-bold
+                          text-white
+                          shadow-md
+                          shadow-orange-500/20
+                        "
+                      >
+                        {user?.name?.charAt(0)?.toUpperCase() ||
+                          user?.email?.charAt(0)?.toUpperCase() ||
+                          "U"}
                       </div>
-                      <div>
-                        <p className="font-semibold truncate">{user.email}</p>
-                        <p className="text-sm text-gray-500">Welcome back</p>
+
+                      {/* User details */}
+
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#F36C45]">
+                          Welcome back
+                        </p>
+
+                        <p className="mt-0.5 truncate text-sm font-semibold text-gray-900">
+                          {user?.name || "User"}
+                        </p>
+
+                        <p className="truncate text-xs text-gray-500">
+                          {user?.email}
+                        </p>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
+              )}
 
-                {/* Nav Links */}
-                <div className="space-y-2">
-                  {navItems.map((item) => (
-                    <div
-                      key={item.name}
-                      className="border-b border-gray-100 last:border-none pb-1"
-                    >
-                      {item.hasDropdown ? (
-                        <>
-                          <button
-                            onClick={() => handleDropdownToggle(item.name)}
-                            className="w-full flex justify-between items-center py-4 px-2 text-left font-medium hover:text-[#F36C45]"
+              <div
+                className="
+                  flex-1
+                  overflow-y-auto
+                  overscroll-contain
+                  px-4
+                  py-4
+                  sm:px-5
+                "
+              >
+                <div className="space-y-1">
+                  {navItems.map((item: any) => {
+                    const isExpanded = mobileDropdown === item.name;
+
+                    return (
+                      <div
+                        key={item.name}
+                        className="
+                          border-b
+                          border-gray-100
+                          last:border-b-0
+                        "
+                      >
+                        
+                        {!item.hasDropdown ? (
+                          <Link
+                            href={item.href}
+                            onClick={handleLinkClick}
+                            className="
+                              group
+                              flex
+                              min-h-[52px]
+                              items-center
+                              gap-3
+                              rounded-xl
+                              px-3
+                              text-[15px]
+                              font-medium
+                              text-gray-700
+                              transition-all
+                              hover:bg-orange-50
+                              hover:text-[#F36C45]
+                              active:scale-[0.99]
+                            "
                           >
-                            <span className="flex items-center gap-3">
-                              {item.name}
-                            </span>
-                            <ChevronDown
-                              className={`transition-transform ${
-                                mobileDropdown === item.name ? "rotate-180" : ""
-                              }`}
+                            <span className="flex-1">{item.name}</span>
+
+                            <ChevronRight
+                              size={16}
+                              className="
+                                text-gray-300
+                                transition-colors
+                                group-hover:text-[#F36C45]
+                              "
                             />
-                          </button>
+                          </Link>
+                        ) : (
+                          <>
 
-                          <AnimatePresence>
-                            {/* {mobileDropdown === item.name && (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                className="pl-4 pr-2 overflow-hidden"
+                            <button
+                              type="button"
+                              onClick={() => handleDropdownToggle(item.name)}
+                              aria-expanded={isExpanded}
+                              className={`
+                                flex
+                                min-h-[54px]
+                                w-full
+                                items-center
+                                gap-3
+                                rounded-xl
+                                px-3
+                                text-left
+                                text-[15px]
+                                font-semibold
+                                transition-all
+                                ${
+                                  isExpanded
+                                    ? "bg-orange-50 text-[#F36C45]"
+                                    : "text-gray-700 hover:bg-orange-50/70 hover:text-[#F36C45]"
+                                }
+                              `}
+                            >
+                              {/* <div
+                                className={`
+                                  flex
+                                  h-8
+                                  w-8
+                                  shrink-0
+                                  items-center
+                                  justify-center
+                                  rounded-lg
+                                  transition-colors
+                                  ${
+                                    isExpanded
+                                      ? "bg-white text-[#F36C45] shadow-sm"
+                                      : "bg-gray-50 text-gray-500"
+                                  }
+                                `}
                               >
-                                {item.dropdownItems?.map((sub: any) => (
-                                  <div key={sub.slug}>
-                                    <Link
-                                      href={`/${sub.slug}`}
-                                      onClick={handleLinkClick}
-                                      className="flex gap-3 py-3 px-3 rounded-xl hover:bg-orange-50 group"
-                                    >
-                                      <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-gray-50 group-hover:bg-orange-100 transition-colors">
-                                        {sub.img ? (
-                                          <Image
-                                            src={sub.img}
-                                            alt={sub.name}
-                                            width={28}
-                                            height={28}
-                                            className="object-contain"
-                                          />
-                                        ) : (
-                                          <GraduationCap
-                                            size={18}
-                                            className="text-[#F36C45]"
-                                          />
-                                        )}
-                                      </div>
-                                      <div className="flex-1 min-w-0">
-                                        <div className="font-medium text-sm group-hover:text-[#F36C45] transition-colors">
-                                          {sub.name}
-                                        </div>
-                                        {sub.description && (
-                                          <div className="text-xs text-gray-500 truncate">
-                                            {sub.description}
-                                          </div>
-                                        )}
-                                      </div>
-                                      {sub.sublink &&
-                                        sub.sublink.length > 0 && (
-                                          <ChevronRight
-                                            size={16}
-                                            className="text-gray-300 flex-shrink-0"
-                                          />
-                                        )}
-                                    </Link>
+                                <GraduationCap size={17} />
+                              </div> */}
 
-                                    {sub.sublink && sub.sublink.length > 0 && (
-                                      <div className="ml-12 space-y-0.5 border-l-2 border-orange-200 pl-3 mb-2">
-                                        {sub.sublink.map((subSub: any) => (
-                                          <Link
-                                            key={subSub.slug}
-                                            href={`/${subSub.slug}`}
-                                            onClick={handleLinkClick}
-                                            className="flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-orange-50/50 text-sm text-gray-600 hover:text-[#F36C45] transition-all"
-                                          >
-                                            <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0">
-                                              {subSub.img ? (
-                                                <Image
-                                                  src={subSub.img}
-                                                  alt={subSub.name}
-                                                  width={16}
-                                                  height={16}
-                                                  className="object-contain"
-                                                />
-                                              ) : (
-                                                <ChevronRight
-                                                  size={12}
-                                                  className="text-gray-300"
-                                                />
-                                              )}
-                                            </div>
-                                            <span>{subSub.name}</span>
-                                            {subSub.badge && (
-                                              <span className="text-[8px] px-1.5 py-px rounded-full bg-blue-50 text-blue-600 font-medium">
-                                                {subSub.badge}
-                                              </span>
-                                            )}
-                                          </Link>
-                                        ))}
-                                      </div>
-                                    )}
-                                  </div>
-                                ))}
-                              </motion.div>
-                            )} */}
-                            {mobileDropdown === item.name && (
-                              <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: "auto", opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                className="pl-4 pr-2 overflow-hidden"
-                              >
-                                {item.dropdownItems?.map((sub: any) => {
-                                  const hasSublinks =
-                                    sub.sublink && sub.sublink.length > 0;
-                                  const isSubOpen =
-                                    mobileSubDropdown === sub.slug;
+                              <span className="flex-1">{item.name}</span>
 
-                                  return (
-                                    <div key={sub.slug}>
-                                      <div className="flex items-center">
-                                        <Link
-                                          href={`/${sub.slug}`}
-                                          onClick={handleLinkClick}
-                                          className="flex-1 flex gap-3 py-3 px-3 rounded-xl hover:bg-orange-50 group"
+                              <ChevronDown
+                                size={18}
+                                className={`
+                                  transition-transform
+                                  duration-200
+                                  ${
+                                    isExpanded
+                                      ? "rotate-180 text-[#F36C45]"
+                                      : "text-gray-400"
+                                  }
+                                `}
+                              />
+                            </button>
+
+                            <AnimatePresence initial={false}>
+                              {isExpanded && (
+                                <motion.div
+                                  initial={{
+                                    height: 0,
+                                    opacity: 0,
+                                  }}
+                                  animate={{
+                                    height: "auto",
+                                    opacity: 1,
+                                  }}
+                                  exit={{
+                                    height: 0,
+                                    opacity: 0,
+                                  }}
+                                  transition={{
+                                    duration: 0.22,
+                                  }}
+                                  className="overflow-hidden"
+                                >
+                                  <div className="mb-2 mt-1 space-y-1 rounded-2xl bg-orange-50/60 p-2">
+                                    {item.dropdownItems?.map((sub: any) => {
+                                      const hasSublinks =
+                                        sub.sublink && sub.sublink.length > 0;
+
+                                      const isSubOpen =
+                                        mobileSubDropdown === sub.slug;
+
+                                      return (
+                                        <div
+                                          key={sub.slug}
+                                          className="overflow-hidden"
                                         >
-                                          <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 bg-gray-50 group-hover:bg-orange-100 transition-colors">
-                                            {sub.img ? (
-                                              <Image
-                                                src={sub.img}
-                                                alt={sub.name}
-                                                width={28}
-                                                height={28}
-                                                className="object-contain"
-                                              />
-                                            ) : (
-                                              <GraduationCap
-                                                size={18}
-                                                className="text-[#F36C45]"
-                                              />
-                                            )}
-                                          </div>
+                                          
 
-                                          <div className="flex-1 min-w-0">
-                                            <div className="font-medium text-sm group-hover:text-[#F36C45] transition-colors">
-                                              {sub.name}
-                                            </div>
-
-                                            {sub.description && (
-                                              <div className="text-xs text-gray-500 truncate">
-                                                {sub.description}
-                                              </div>
-                                            )}
-                                          </div>
-                                        </Link>
-
-                                        {hasSublinks && (
-                                          <button
-                                            type="button"
-                                            onClick={(e) => {
-                                              e.preventDefault();
-                                              e.stopPropagation();
-
-                                              setMobileSubDropdown(
-                                                isSubOpen ? null : sub.slug,
-                                              );
-                                            }}
-                                            className="p-3 rounded-lg"
+                                          <div
+                                            className="
+                                                flex
+                                                items-center
+                                                rounded-xl
+                                                transition
+                                                hover:bg-white
+                                              "
                                           >
-                                            <ChevronRight
-                                              size={18}
-                                              className={`text-gray-800 transition-transform ${
-                                                isSubOpen ? "rotate-90" : ""
-                                              }`}
-                                            />
-                                          </button>
-                                        )}
-                                      </div>
-
-                                      {hasSublinks && isSubOpen && (
-                                        <motion.div
-                                          initial={{ height: 0, opacity: 0 }}
-                                          animate={{
-                                            height: "auto",
-                                            opacity: 1,
-                                          }}
-                                          exit={{ height: 0, opacity: 0 }}
-                                          className="ml-12 space-y-0.5 border-l-2 border-orange-200 pl-3 mb-2 overflow-hidden"
-                                        >
-                                          {sub.sublink.map((subSub: any) => (
                                             <Link
-                                              key={subSub.slug}
-                                              href={`/${subSub.slug}`}
+                                              href={`/${sub.slug}`}
                                               onClick={handleLinkClick}
-                                              className="flex items-center gap-2 py-1.5 px-2 rounded-lg hover:bg-orange-50/50 text-sm text-gray-600 hover:text-[#F36C45] transition-all"
+                                              className="
+                                                  group
+                                                  flex
+                                                  min-h-[54px]
+                                                  min-w-0
+                                                  flex-1
+                                                  items-center
+                                                  gap-3
+                                                  rounded-xl
+                                                  px-2.5
+                                                "
                                             >
-                                              <div className="w-5 h-5 rounded flex items-center justify-center flex-shrink-0">
-                                                {subSub.img ? (
+                                              {/* Icon */}
+
+                                              <div
+                                                className="
+                                                    flex
+                                                    h-9
+                                                    w-9
+                                                    shrink-0
+                                                    items-center
+                                                    justify-center
+                                                    rounded-lg
+                                                    bg-white
+                                                    shadow-sm
+                                                  "
+                                              >
+                                                {sub.img ? (
                                                   <Image
-                                                    src={subSub.img}
-                                                    alt={subSub.name}
-                                                    width={16}
-                                                    height={16}
+                                                    src={sub.img}
+                                                    alt={sub.name}
+                                                    width={23}
+                                                    height={23}
                                                     className="object-contain"
                                                   />
                                                 ) : (
-                                                  <ChevronRight
-                                                    size={12}
-                                                    className="text-gray-600"
+                                                  <GraduationCap
+                                                    size={17}
+                                                    className="text-[#F36C45]"
                                                   />
                                                 )}
                                               </div>
 
-                                              <span>{subSub.name}</span>
+                                              {/* Text */}
 
-                                              {subSub.badge && (
-                                                <span className="text-[8px] px-1.5 py-px rounded-full bg-blue-50 text-blue-600 font-medium">
-                                                  {subSub.badge}
-                                                </span>
-                                              )}
+                                              <div className="min-w-0 flex-1">
+                                                <div className="flex items-center gap-1.5">
+                                                  <span className="block truncate text-sm font-medium text-gray-800 transition-colors group-hover:text-[#F36C45]">
+                                                    {sub.name}
+                                                  </span>
+
+                                                  {sub.badge && (
+                                                    <span
+                                                      className="
+                                                          shrink-0
+                                                          rounded-full
+                                                          bg-[#F36C45]/10
+                                                          px-1.5
+                                                          py-0.5
+                                                          text-[8px]
+                                                          font-semibold
+                                                          text-[#F36C45]
+                                                        "
+                                                    >
+                                                      {sub.badge}
+                                                    </span>
+                                                  )}
+                                                </div>
+
+                                                {sub.description && (
+                                                  <p className="mt-0.5 truncate text-[11px] text-gray-500">
+                                                    {sub.description}
+                                                  </p>
+                                                )}
+                                              </div>
                                             </Link>
-                                          ))}
-                                        </motion.div>
-                                      )}
-                                    </div>
-                                  );
-                                })}
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </>
-                      ) : (
-                        <Link
-                          href={item.href}
-                          onClick={handleLinkClick}
-                          className="flex items-center gap-3 py-4 px-2 font-medium hover:text-[#F36C45] rounded-2xl hover:bg-orange-50"
-                        >
-                          {item.icon && <item.icon size={20} />}
-                          {item.name}
-                        </Link>
-                      )}
-                    </div>
-                  ))}
+
+                                            {/* Nested toggle */}
+
+                                            {hasSublinks && (
+                                              <button
+                                                type="button"
+                                                onClick={() =>
+                                                  handleMobileSubDropdown(
+                                                    sub.slug,
+                                                  )
+                                                }
+                                                aria-label={`Show ${sub.name} programs`}
+                                                aria-expanded={isSubOpen}
+                                                className="
+                                                    mr-1
+                                                    flex
+                                                    h-10
+                                                    w-10
+                                                    shrink-0
+                                                    items-center
+                                                    justify-center
+                                                    rounded-lg
+                                                    text-gray-400
+                                                    transition
+                                                    hover:bg-orange-50
+                                                    hover:text-[#F36C45]
+                                                  "
+                                              >
+                                                <ChevronRight
+                                                  size={17}
+                                                  className={`
+                                                      transition-transform
+                                                      duration-200
+                                                      ${
+                                                        isSubOpen
+                                                          ? "rotate-90 text-[#F36C45]"
+                                                          : ""
+                                                      }
+                                                    `}
+                                                />
+                                              </button>
+                                            )}
+                                          </div>
+
+
+                                          <AnimatePresence initial={false}>
+                                            {hasSublinks && isSubOpen && (
+                                              <motion.div
+                                                initial={{
+                                                  height: 0,
+                                                  opacity: 0,
+                                                }}
+                                                animate={{
+                                                  height: "auto",
+                                                  opacity: 1,
+                                                }}
+                                                exit={{
+                                                  height: 0,
+                                                  opacity: 0,
+                                                }}
+                                                transition={{
+                                                  duration: 0.2,
+                                                }}
+                                                className="
+                                                      ml-7
+                                                      mr-1
+                                                      overflow-hidden
+                                                      border-l-2
+                                                      border-orange-200
+                                                      pl-3
+                                                    "
+                                              >
+                                                <div className="space-y-0.5 py-1">
+                                                  {sub.sublink.map(
+                                                    (child: any) => (
+                                                      <Link
+                                                        key={child.slug}
+                                                        href={`/${child.slug}`}
+                                                        onClick={
+                                                          handleLinkClick
+                                                        }
+                                                        className="
+                                                              group
+                                                              flex
+                                                              min-h-[44px]
+                                                              items-center
+                                                              gap-2.5
+                                                              rounded-lg
+                                                              px-2
+                                                              text-sm
+                                                              text-gray-600
+                                                              transition-all
+                                                              hover:bg-white
+                                                              hover:text-[#F36C45]
+                                                            "
+                                                      >
+                                                        {/* Small icon */}
+
+                                                        <div
+                                                          className="
+                                                                flex
+                                                                h-6
+                                                                w-6
+                                                                shrink-0
+                                                                items-center
+                                                                justify-center
+                                                              "
+                                                        >
+                                                          {child.img ? (
+                                                            <Image
+                                                              src={child.img}
+                                                              alt={child.name}
+                                                              width={17}
+                                                              height={17}
+                                                              className="object-contain"
+                                                            />
+                                                          ) : (
+                                                            <span
+                                                              className="
+                                                                    h-1.5
+                                                                    w-1.5
+                                                                    rounded-full
+                                                                    bg-[#F36C45]
+                                                                  "
+                                                            />
+                                                          )}
+                                                        </div>
+
+                                                        {/* Name */}
+
+                                                        <span className="min-w-0 flex-1 truncate">
+                                                          {child.name}
+                                                        </span>
+
+                                                        {child.badge && (
+                                                          <span
+                                                            className="
+                                                                  shrink-0
+                                                                  rounded-full
+                                                                  bg-blue-50
+                                                                  px-1.5
+                                                                  py-0.5
+                                                                  text-[8px]
+                                                                  font-medium
+                                                                  text-blue-600
+                                                                "
+                                                          >
+                                                            {child.badge}
+                                                          </span>
+                                                        )}
+
+                                                        <ChevronRight
+                                                          size={12}
+                                                          className="
+                                                                shrink-0
+                                                                text-gray-300
+                                                                transition-colors
+                                                                group-hover:text-[#F36C45]
+                                                              "
+                                                        />
+                                                      </Link>
+                                                    ),
+                                                  )}
+                                                </div>
+                                              </motion.div>
+                                            )}
+                                          </AnimatePresence>
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </motion.div>
+                              )}
+                            </AnimatePresence>
+                          </>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
+              </div>
 
-                {/* Mobile CTAs */}
-                <div className="mt-10 space-y-4">
-                  <a
-                    href="tel:+919166146538"
-                    className="flex items-center justify-center gap-3 w-full py-4 hover:bg-gray-100 rounded-2xl font-medium"
+
+
+              <div
+                className="
+                  shrink-0
+                  border-t
+                  border-gray-100
+                  bg-white
+                  p-4
+                  sm:p-5
+                "
+              >
+                
+
+                <a
+                  href="tel:+919166146538"
+                  className="
+                    mb-2.5
+                    flex
+                    min-h-[52px]
+                    items-center
+                    gap-3
+                    rounded-xl
+                    border
+                    border-gray-100
+                    bg-gray-50
+                    px-3.5
+                    transition-all
+                    hover:border-orange-100
+                    hover:bg-orange-50
+                    active:scale-[0.99]
+                  "
+                >
+                  <div
+                    className="
+                      flex
+                      h-9
+                      w-9
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-orange-100
+                    "
                   >
-                    <Phone className="text-[#F36C45]" />
-                    +91 9166146538
-                  </a>
+                    <Phone size={16} className="text-[#F36C45]" />
+                  </div>
 
-                  {!user?.email ? (
+                  <div className="min-w-0">
+                    <p className="text-[10px] font-medium uppercase tracking-wide text-gray-400">
+                      Call us
+                    </p>
+
+                    <p className="text-sm font-semibold text-gray-700">
+                      +91 9166146538
+                    </p>
+                  </div>
+                </a>
+
+
+                {!user?.email ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      closeMobileMenu();
+                      router.push("/auth");
+                    }}
+                    className="
+                      flex
+                      min-h-[52px]
+                      w-full
+                      items-center
+                      justify-center
+                      gap-2
+                      rounded-xl
+                      bg-gradient-to-r
+                      from-[#F36C45]
+                      to-orange-500
+                      px-5
+                      text-sm
+                      font-semibold
+                      text-white
+                      shadow-lg
+                      shadow-orange-500/20
+                      transition-all
+                      hover:-translate-y-0.5
+                      hover:shadow-xl
+                      active:translate-y-0
+                    "
+                  >
+                    <User size={18} />
+                    Get Started
+                  </button>
+                ) : (
+                  
+
+                  <div className="space-y-1.5">
+                    {/* Dashboard */}
+
                     <button
+                      type="button"
                       onClick={() => {
-                        setIsOpen(false);
-                        router.push("/auth");
-                      }}
-                      className="w-full py-4 bg-gradient-to-r from-[#F36C45] to-orange-500 text-white rounded-2xl font-medium"
-                    >
-                      Get Started
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => {
-                        setIsOpen(false);
+                        closeMobileMenu();
+
                         window.location.href =
                           "https://dashboard.ooshasprep.com";
                       }}
-                      className="w-full py-4 bg-gradient-to-r from-orange-500 to-primary text-white rounded-2xl font-medium"
+                      className="
+                        flex
+                        min-h-[48px]
+                        w-full
+                        items-center
+                        gap-3
+                        rounded-xl
+                        px-3
+                        text-left
+                        text-sm
+                        font-medium
+                        text-gray-700
+                        transition
+                        hover:bg-orange-50
+                        hover:text-[#F36C45]
+                      "
                     >
-                      Go to Dashboard
+                      <LayoutDashboard size={19} strokeWidth={1.8} />
+
+                      <span>Dashboard</span>
+
+                      <ChevronRight
+                        size={15}
+                        className="ml-auto text-gray-300"
+                      />
                     </button>
-                  )}
-                </div>
+
+                    {/* Profile */}
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        closeMobileMenu();
+
+                        window.location.href =
+                          "https://dashboard.ooshasprep.com/profile";
+                      }}
+                      className="
+                        flex
+                        min-h-[48px]
+                        w-full
+                        items-center
+                        gap-3
+                        rounded-xl
+                        px-3
+                        text-left
+                        text-sm
+                        font-medium
+                        text-gray-700
+                        transition
+                        hover:bg-orange-50
+                        hover:text-[#F36C45]
+                      "
+                    >
+                      <User size={19} strokeWidth={1.8} />
+
+                      <span>My Profile</span>
+
+                      <ChevronRight
+                        size={15}
+                        className="ml-auto text-gray-300"
+                      />
+                    </button>
+
+                    {/* Logout */}
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        closeMobileMenu();
+                        logout();
+                      }}
+                      className="
+                        flex
+                        min-h-[48px]
+                        w-full
+                        items-center
+                        gap-3
+                        rounded-xl
+                        px-3
+                        text-left
+                        text-sm
+                        font-medium
+                        text-red-500
+                        transition
+                        hover:bg-red-50
+                      "
+                    >
+                      <LogOut size={19} strokeWidth={1.8} />
+
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
               </div>
-            </motion.div>
+            </motion.aside>
           </>
         )}
       </AnimatePresence>
+
 
       <AuthDrawer isOpen={drawer} setIsOpen={setDrawer} />
     </>
   );
 }
+
+
