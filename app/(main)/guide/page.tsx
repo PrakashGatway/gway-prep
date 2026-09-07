@@ -12,15 +12,28 @@ export default async function Page({ searchParams }) {
     const search = params?.search || "";
     const category = params?.category || "";
 
+
+    const query = {
+        page : page,
+        search : search,
+        category : category
+    }
+    
+
+
+
     const [allGuides,allCategory] = await Promise.all([
-        axiosInstance.get("/articles", {
-            params: {
-                page, search, category
-            }
+        axiosInstance.get(`/articles`,{
+            params : query
         }),
         axiosInstance.get("/article-category")
     ]);
 
+    console.log(allGuides,"all")
+
+
+
+    console.log(params.category,"jkl")
  
 
 

@@ -1,14 +1,4 @@
 
-
-
-
-
-
-
-
-
-
-
 "use client";
 import React, { useEffect, useState } from "react";
 import {
@@ -258,7 +248,7 @@ export default function SupportArticlePage({ article }) {
                                 bg-orange-100
                                 px-3
                                 py-1
-                                text-[10px]
+                                text-sm
                                 font-bold
                                 uppercase
                                 tracking-[0.5px]
@@ -444,7 +434,7 @@ export default function SupportArticlePage({ article }) {
         <main
           className="
                 mx-auto
-                max-w-[1180px]
+                max-w-[1200px]
                 px-5
                 py-8
                 sm:px-8

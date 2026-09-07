@@ -171,7 +171,7 @@ export default function GuidePage({ allGuides,allCategory }) {
         router.push(`/guide?${params.toString()}`);
     };
 
-    console.log(allGuides)
+  
 
     const getGuideIcon = () => {
         return MessageCircleQuestion;
@@ -391,21 +391,22 @@ const handlePageChange = (newPage: number) => {
             {allCategory?.data?.map((item) => {
 
                 const isActive =
-                    activeCategory === item.name;
+                    activeCategory === item.slug;
 
                 // Count guides belonging to this category
                 const count =
                     allGuides?.data?.filter(
                         (guide) =>
-                            guide.category === item.name
+                            guide.category === item.slug
                     ).length || 0;
+                    
 
                 return (
                     <motion.button
                         key={item._id}
                         layout
                         onClick={() =>
-                            handleCategory(item.name)
+                            handleCategory(item.slug)
                         }
                         className="relative flex min-w-[155px] shrink-0 items-center justify-between gap-2 overflow-hidden rounded-xl px-4 py-3.5"
                         whileTap={{ scale: 0.98 }}
@@ -518,11 +519,11 @@ const handlePageChange = (newPage: number) => {
 
                                             <p
                                                 className={`mb-1.5 text-sm font-extrabold tracking-wide ${categoryColors[
-                                                    guide.category
+                                                    guide.category.split("-").join(" ")
                                                 ] || "text-[#ff5b16]"
                                                     }`}
                                             >
-                                                {guide.category}
+                                                {guide.category.split("-").join(" ").toUpperCase()}
                                             </p>
 
                                             <h3 className="text-[15px] font-bold leading-6 text-[#17213a] transition-colors group-hover:text-[#ff5b16] sm:text-[16px]">

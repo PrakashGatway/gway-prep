@@ -948,7 +948,7 @@ export const EditSupportArticlePage=({selectedslug,setEditOpen,fetchArticles})=>
 
                 const [articleRes, categoryRes] = await Promise.all([
                     axiosInstance.get(`/articles/${id}`),
-                    axiosInstance.get("/category"),
+                    axiosInstance.get("/article-category"),
                 ]);
 
                 const article = articleRes.data.data;
@@ -1338,9 +1338,9 @@ export const EditSupportArticlePage=({selectedslug,setEditOpen,fetchArticles})=>
                                 {categories.map((item) => (
                                     <option
                                         key={item._id}
-                                        value={item.name}
+                                        value={item.slug}
                                     >
-                                        {item.name}
+                                        {item.slug}
                                     </option>
                                 ))}
                             </select>
