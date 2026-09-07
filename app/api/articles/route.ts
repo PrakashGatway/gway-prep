@@ -50,6 +50,7 @@ export async function GET(request: NextRequest) {
     filter.category = category;
 }
 
+console.log(category,"api")
 
 
         // Search
