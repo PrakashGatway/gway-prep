@@ -665,245 +665,169 @@ const AuthDrawer = () => {
   const handleClose = () => setIsVisible(false);
 
   return (
-    
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-[#f26e46] border-t-transparent rounded-full animate-spin" />
-      </div>
-    }>
-      
-    <AnimatePresence mode="wait">
-      {isVisible && (
-        <>
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="w-8 h-8 border-4 border-[#f26e46] border-t-transparent rounded-full animate-spin" />
+        </div>
+      }
+    >
+      <AnimatePresence mode="wait">
+        {isVisible && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={handleClose}
+              style={{ zIndex: 998 }}
+              aria-hidden="true"
+            />
 
-          {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={handleClose}
-            style={{ zIndex: 998 }}
-            aria-hidden="true"
-          />
+            {/* Drawer */}
+            <motion.div
+              initial={{ x: "100%", opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              exit={{ x: "100%", opacity: 0 }}
+              transition={{
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+                mass: 1,
+              }}
+              style={{ zIndex: 999 }}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Authentication"
+              className="fixed inset-y-0 right-0 h-full w-full  bg-white shadow-2xl overflow-hidden flex"
+            >
+              {/* Left Side - Auth Form */}
+              <div className="flex-1 flex flex-col items-center justify-center px-6 sm:px-10 lg:px-14 py-10 relative bg-white min-w-0 overflow-y-auto">
+                {/* Auth Component */}
+                <div className="w-full max-w-sm mx-auto lg:mx-0">
+                  <Auth toggleDrawer={handleClose} />
+                </div>
 
-          {/* Drawer */}
-          <motion.div
-            initial={{ x: "100%", opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: "100%", opacity: 0 }}
-            transition={{
-              type: "spring",
-              stiffness: 300,
-              damping: 30,
-              mass: 1,
-            }}
-            style={{ zIndex: 999 }}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Authentication"
-            className="fixed inset-y-0 right-0 h-full w-full  bg-white shadow-2xl overflow-hidden flex"
-          >
-            {/* Left Side - Auth Form */}
-            <div className="flex-1 flex flex-col items-center justify-center px-6 sm:px-10 lg:px-14 py-10 relative bg-white min-w-0 overflow-y-auto">
-              {/* Close Button */}
-              {/* <button
-                onClick={handleClose}
-                className="absolute top-5 right-5 p-2.5 rounded-full hover:bg-gray-100 transition-all duration-200 z-10 group"
-                aria-label="Close authentication panel"
-              >
-                <X className="w-5 h-5 text-gray-400 group-hover:text-gray-600 transition-colors" />
-              </button> */}
-
-              {/* Auth Component */}
-              <div className="w-full max-w-sm mx-auto lg:mx-0">
-                <Auth toggleDrawer={handleClose} />
+                {/* Footer Links */}
+                <div className="mt-8 text-center">
+                  <p className="text-xs text-gray-400">
+                    By continuing, you agree to our{" "}
+                    <a href="#" className="text-[#f26e46] hover:underline">
+                      Terms
+                    </a>{" "}
+                    and{" "}
+                    <a href="#" className="text-[#f26e46] hover:underline">
+                      Privacy Policy
+                    </a>
+                  </p>
+                </div>
               </div>
 
-              {/* Footer Links */}
-              <div className="mt-8 text-center">
-                <p className="text-xs text-gray-400">
-                  By continuing, you agree to our{" "}
-                  <a href="#" className="text-[#f26e46] hover:underline">
-                    Terms
-                  </a>{" "}
-                  and{" "}
-                  <a href="#" className="text-[#f26e46] hover:underline">
-                    Privacy Policy
-                  </a>
-                </p>
-              </div>
-            </div>
+              {/* Right Side - Branding/Info */}
+              <aside className="hidden md:flex flex-col justify-between w-1/2 shrink-0 relative overflow-hidden">
+                {/* Animated Gradient Background */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-br from-[#fcf3ed] via-[#fcf3ed] to-[#fcf3ed]"
+                  animate={{
+                    background: [
+                      "linear-gradient(135deg, #fcf3ed, #fcf3ed, #fcf3ed)",
+                      "linear-gradient(225deg, #fcf3ed, #fcf3ed, #fcf3ed)",
+                      "linear-gradient(135deg, #fcf3ed, #fcf3ed, #fcf3ed)",
+                    ],
+                  }}
+                  transition={{
+                    duration: 10,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                />
 
-            {/* Right Side - Branding/Info */}
-            <aside className="hidden md:flex flex-col justify-between w-1/2 shrink-0 relative overflow-hidden">
-              {/* Animated Gradient Background */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-br from-[#fcf3ed] via-[#fcf3ed] to-[#fcf3ed]"
-                animate={{
-                  background: [
-                    "linear-gradient(135deg, #fcf3ed, #fcf3ed, #fcf3ed)",
-                    "linear-gradient(225deg, #fcf3ed, #fcf3ed, #fcf3ed)",
-                    "linear-gradient(135deg, #fcf3ed, #fcf3ed, #fcf3ed)",
-                  ],
-                }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-              />
+                {/* Dot Grid Pattern */}
+                <div
+                  className="absolute inset-0 opacity-[0.08]"
+                  style={{
+                    backgroundImage:
+                      "radial-gradient(circle, #fff 1.5px, transparent 1.5px)",
+                    backgroundSize: "24px 24px",
+                  }}
+                  aria-hidden="true"
+                />
 
-              {/* Dot Grid Pattern */}
-              <div
-                className="absolute inset-0 opacity-[0.08]"
-                style={{
-                  backgroundImage:
-                    "radial-gradient(circle, #fff 1.5px, transparent 1.5px)",
-                  backgroundSize: "24px 24px",
-                }}
-                aria-hidden="true"
-              />
+                {/* Animated Blobs */}
+                <motion.div
+                  className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl"
+                  animate={{ scale: [1, 1.2, 1], x: [0, -20, 0] }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  aria-hidden="true"
+                />
+                <motion.div
+                  className="absolute bottom-10 -left-20 w-64 h-64 bg-white/[0.07] rounded-full blur-3xl"
+                  animate={{ scale: [1, 1.1, 1], y: [0, -30, 0] }}
+                  transition={{
+                    duration: 6,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  aria-hidden="true"
+                />
 
-              {/* Animated Blobs */}
-              <motion.div
-                className="absolute -top-32 -right-32 w-96 h-96 bg-white/10 rounded-full blur-3xl"
-                animate={{ scale: [1, 1.2, 1], x: [0, -20, 0] }}
-                transition={{
-                  duration: 8,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                aria-hidden="true"
-              />
-              <motion.div
-                className="absolute bottom-10 -left-20 w-64 h-64 bg-white/[0.07] rounded-full blur-3xl"
-                animate={{ scale: [1, 1.1, 1], y: [0, -30, 0] }}
-                transition={{
-                  duration: 6,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-                aria-hidden="true"
-              />
-
-              {/* Content */}
-              <div className="relative z-10 flex flex-col justify-between h-full p-10 lg:p-12 text-black">
-                {/* Top Section */}
-                <div>
-                  {/* Brand Badge */}
-                  <motion.div
-                    initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="flex items-center gap-2 my-6"
-                  >
-                    {/* <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full border border-white/10 flex items-center gap-1.5">
+                {/* Content */}
+                <div className="relative z-10 flex flex-col justify-between h-full p-10 lg:p-12 text-black">
+                  {/* Top Section */}
+                  <div>
+                    {/* Brand Badge */}
+                    <motion.div
+                      initial={{ opacity: 0, y: -20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      className="flex items-center gap-2 my-6"
+                    >
+                      {/* <div className="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full border border-white/10 flex items-center gap-1.5">
                       <Shield className="w-3.5 h-3.5" />
                       <span className="text-xs font-medium">Trusted Platform</span>
                     </div> */}
-                  </motion.div>
+                    </motion.div>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    <h2 className="text-[2.8rem] font-semibold leading-[1.1] tracking-tight">
-                      Transform Your Future with{" "}
-                      <span className="text-primary"> Ooshas Prep</span> Online
-                      Platform
-                    </h2>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      <h2 className="text-[2.8rem] font-semibold leading-[1.1] tracking-tight">
+                        Transform Your Future with{" "}
+                        <span className="text-primary"> Ooshas Prep</span>{" "}
+                        Online Platform
+                      </h2>
 
-                    <p className="mt-4 text-black/80 text-[15px] leading-relaxed px-2 font-semibold">
-                      India’s most trusted online test prep platform — study at
-                      home, learn smarter, and join thousands of students
-                      achieving their dream scores worldwide.
-                    </p>
-                  </motion.div>
+                      <p className="mt-4 text-black/80 text-[15px] leading-relaxed px-2 font-semibold">
+                        India’s most trusted online test prep platform — study
+                        at home, learn smarter, and join thousands of students
+                        achieving their dream scores worldwide.
+                      </p>
+                    </motion.div>
 
-                  <Image
-                    src={"/login.webp"}
-                    alt="login img"
-                    width={600}
-                    height={600}
-                    className="mx-auto mt-4"
-                  />
-                  {/* Testimonial Carousel */}
-                  {/* <motion.div
-                    key={activeTestimonial}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.5 }}
-                    className="mt-6 p-4 bg-white/10 backdrop-blur-sm rounded-2xl border border-white/10"
-                  >
-                    <div className="flex items-start gap-3">
-                      <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-                        <Star className="w-4 h-4 fill-white text-white" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium leading-relaxed">
-                          "{TESTIMONIALS[activeTestimonial].quote}"
-                        </p>
-                        <p className="text-xs text-white/60 mt-1">
-                          — {TESTIMONIALS[activeTestimonial].author}
-                        </p>
-                      </div>
-                    </div>
-                  </motion.div>
-
-                  <div className="flex gap-1.5 mt-3">
-                    {TESTIMONIALS.map((_, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => setActiveTestimonial(idx)}
-                        className={`h-1.5 rounded-full transition-all duration-300 ${
-                          idx === activeTestimonial
-                            ? "w-6 bg-white"
-                            : "w-1.5 bg-white/30 hover:bg-white/50"
-                        }`}
-                        aria-label={`View testimonial ${idx + 1}`}
-                      />
-                    ))}
-                  </div> */}
+                    <Image
+                      src={"/login.webp"}
+                      alt="login img"
+                      width={600}
+                      height={600}
+                      className="mx-auto mt-4"
+                    />
+                  </div>
                 </div>
-
-                {/* <div className="space-y-4">
-                  {STATS.map((stat, i) => {
-                    const Icon = stat.icon;
-                    return (
-                      <motion.div
-                        key={stat.label}
-                        initial={{ opacity: 0, x: 30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.4 + i * 0.12, duration: 0.5 }}
-                        className="flex items-center gap-4 group cursor-default"
-                      >
-                        <div className="w-12 h-12 rounded-xl bg-white/15 backdrop-blur-sm flex items-center justify-center shrink-0 border border-white/10 group-hover:bg-white/20 transition-colors duration-300">
-                          <Icon className="w-5 h-5 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-2xl font-extrabold leading-none">
-                            {stat.value}
-                          </p>
-                          <p className="text-white/60 text-sm mt-0.5 flex items-center gap-1">
-                            {stat.label}
-                            <span className="text-white/30 text-xs ml-1">
-                              • {stat.detail}
-                            </span>
-                          </p>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-
-                </div> */}
-              </div>
-            </aside>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+              </aside>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </Suspense>
-    
   );
 };
 

@@ -187,6 +187,8 @@ const EditorContent = ({ content_data }: EditorContentProps) => {
             [&_p]:leading-8
             [&_p]:text-gray-700
             [&_p]:mb-4
+            [&_p]:whitespace-normal 
+            [&_p]:break-words 
 
             [&_div]:my-4
 

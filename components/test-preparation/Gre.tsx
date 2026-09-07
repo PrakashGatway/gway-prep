@@ -26,6 +26,7 @@ import Image from "next/image";
 import { StudentsSlider } from "../3dslider";
 import { useRouter } from "next/navigation";
 import PopupModal from "../popupModel";
+import EditorContent from "../editorContent";
 
 function AIStudySection({ aiStudySection }: { aiStudySection: any }) {
   return (
@@ -213,12 +214,14 @@ function GreSection({
                 </h3>
               )}
 
-              <div
-                className={`text-gray-600 text-sm sm:text-base leading-relaxed text-justify ${!item?.title?.trim() ? "col-span-full" : ""}`}
+              {/* <div
+                className={`whitespace-normal break-words text-gray-600 text-sm sm:text-base leading-relaxed text-justify ${!item?.title?.trim() ? "col-span-full" : ""}`}
                 dangerouslySetInnerHTML={{
                   __html: item?.description || "",
                 }}
-              />
+              /> */}
+              
+              <EditorContent content_data={item?.description} />
             </div>
           ),
         )}
@@ -291,10 +294,10 @@ function GrePatternTable({ examPatternData }: { examPatternData: any }) {
               />
             </div>
 
-            {/* Responsive Table Wrapper */}
+            Responsive Table Wrapper
             {patternTableRows.length > 0 ? (
               <div className="w-full overflow-x-auto bg-white rounded-lg shadow-sm">
-                <table className="w-full min-w-[600px] md:min-w-[800px] border-collapse text-left">
+                <table className="w-full min-w-[500px] md:min-w-[800px] border-collapse text-left">
                   <thead>
                     <tr className="bg-[#f06437] text-white">
                       {headers.map((header, idx) => (

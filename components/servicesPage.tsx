@@ -535,50 +535,108 @@ export function EnvironmentCard({
   className,
 }: EnvironmentCardProps) {
   return (
-    <div
-      className={`group relative overflow-hidden rounded-lg bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-transform duration-1000 ease-in-out hover:scale-105 ${className}`}
-    >
-      {/* Image with dimming effect via opacity */}
-      <Image
-        src={image}
-        alt={title}
-        width={400}
-        height={400}
-        className="w-full opacity-100 transition-opacity duration-1000 ease-in-out group-hover:opacity-40"
-      />
-
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/80 to-transparent pointer-events-none opacity-0 transition-opacity duration-1000 ease-in-out group-hover:opacity-100" />
-
-      {/* Content Container: Positioned at the bottom with smooth layout transition */}
-      <div className="absolute bottom-0 left-0 right-0 max-h-[40%] overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-white/20 transition-all duration-1000 ease-in-out group-hover:bottom-[40%] group-hover:text-white">
-        <h3 className="text-center text-base md:text-sm font-semibold whitespace-normal break-words line-clamp-1 transition-all duration-1000 ease-in-out group-hover:line-clamp-5">
-          {title}
-        </h3>
-      </div>
-    </div>
-
-    //    <div className={`group relative cursor-pointer overflow-hidden rounded-lg bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)]
-    //             transition-transform duration-300 ease-in-out hover:scale-105 ${className}`}>
+    // <div
+    //   className={`group relative overflow-hidden rounded-lg bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)] transition-transform duration-1000 ease-in-out hover:scale-105 ${className}`}
+    // >
     //   {/* Image with dimming effect via opacity */}
     //   <Image
     //     src={image}
     //     alt={title}
     //     width={400}
     //     height={400}
-    //     className="w-full opacity-100 transition-opacity duration-300 "
+    //     className="w-full opacity-100 transition-opacity duration-1000 ease-in-out group-hover:opacity-40"
     //   />
 
     //   {/* Gradient Overlay */}
-    //   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/80 to-transparent pointer-events-none hidden group-hover:block" />
+    //   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/80 to-transparent pointer-events-none opacity-0 transition-opacity duration-1000 ease-in-out group-hover:opacity-100" />
 
-    //   {/* Content Container: Positioned at the bottom, allows full text scrolling if it overflows */}
-    //   <div className="absolute bottom-0 left-0 group-hover:bottom-[40%] group-hover:text-white  right-0 max-h-[40%] overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-white/20">
-    //     <h3 className="text-center text-base md:text-sm font-semibold  whitespace-normal break-words line-clamp-1 group-hover:line-clamp-5">
+    //   {/* Content Container: Positioned at the bottom with smooth layout transition */}
+    //   <div className="absolute bottom-0 left-0 right-0 max-h-[40%] overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-white/20\ transition-all duration-1000 ease-in-out group-hover:bottom-[40%] group-hover:text-white">
+    //     <h3 className="text-center text-base md:text-sm font-semibold whitespace-normal break-words line-clamp-1 transition-all duration-1000 ease-in-out group-hover:line-clamp-5">
     //       {title}
     //     </h3>
     //   </div>
     // </div>
+
+    <div
+  className={`group relative overflow-hidden rounded-lg bg-white shadow-[0_20px_60px_rgba(0,0,0,0.08)]
+  transition-transform duration-500 ease-in-out
+  md:hover:scale-105
+  ${className}`}
+>
+  {/* Image */}
+  <Image
+    src={image}
+    alt={title}
+    width={400}
+    height={400}
+    className="
+      w-full
+      opacity-100
+      transition-opacity duration-500 ease-in-out
+      md:group-hover:opacity-40
+    "
+  />
+
+  {/* Gradient Overlay */}
+  <div
+    className="
+      pointer-events-none absolute inset-0
+      bg-gradient-to-t from-black/80 via-black/50 to-transparent
+
+      /* Mobile: always visible */
+      opacity-100
+
+      /* Desktop: only visible on hover */
+      md:opacity-0
+      md:transition-opacity
+      md:duration-500
+      md:group-hover:opacity-100
+    "
+  />
+
+  {/* Content */}
+  <div
+    className="
+      absolute bottom-0 left-0 right-0
+      p-3 sm:p-4
+
+      /* Mobile */
+      max-h-[50%]
+      overflow-hidden
+      text-white
+
+      /* Desktop */
+      md:max-h-[40%]
+      md:text-black
+      md:transition-all
+      md:duration-500
+      md:ease-in-out
+      md:group-hover:bottom-[40%]
+      md:group-hover:text-white
+    "
+  >
+    <h3
+      className="
+        text-center
+        text-sm
+        sm:text-base
+        md:text-sm
+        font-semibold
+        whitespace-normal
+        break-words
+        line-clamp-3
+        md:line-clamp-1
+        md:transition-all
+        md:duration-500
+        md:group-hover:line-clamp-5
+      "
+    >
+      {title}
+    </h3>
+  </div>
+</div>
+
   );
 }
 
