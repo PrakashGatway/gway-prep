@@ -294,7 +294,7 @@ function GrePatternTable({ examPatternData }: { examPatternData: any }) {
               />
             </div>
 
-            Responsive Table Wrapper
+
             {patternTableRows.length > 0 ? (
               <div className="w-full overflow-x-auto bg-white rounded-lg shadow-sm">
                 <table className="w-full min-w-[500px] md:min-w-[800px] border-collapse text-left">
