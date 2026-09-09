@@ -124,6 +124,41 @@ export function Footer({ Data = [] }: FooterProps) {
     <footer className="bg-[#FDF4EF] mt-2 mx-4 sm:mx-8 lg:mx-16 overflow-hidden border-2 border-primary rounded-t-[2rem] sm:rounded-t-[3rem] lg:rounded-t-[3.5rem] mt-10">
       {/* ================= TOP ================= */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-12">
+        {groupedArray.length > 0 && (
+          <div className="mb-12 pb-8 border-b border-gray-300">
+            <h3 className="text-xl font-bold mb-6">All Preparation Courses</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+              {groupedArray.map((group) => (
+                <div key={group.key}>
+                  <h4 className="text-sm font-bold text-gray-900 mb-3 capitalize">
+                    {group.base?.seoMeta?.navTitle || group.key}
+                  </h4>
+                  <ul className="space-y-2 text-sm text-[#444]">
+                    {group.base && (
+                      <li
+                        onClick={() => router.push(`/${group.base.slug}`)}
+                        className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
+                      >
+                        {/* {group.base.seoMeta?.navTitle || group.base.name} */}
+                      </li>
+                    )}
+                    {group.variants.map((course: any) => (
+                      <li
+                        key={course._id}
+                        onClick={() => router.push(`/${course.slug}`)}
+                        className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
+                      >
+                        {course.seoMeta?.navTitle || course.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 md:gap-12 lg:gap-16 items-start">
           {/* Logo */}
           <div className="sm:col-span-2 lg:col-span-2 pr-10 space-y-3">
@@ -238,39 +273,6 @@ export function Footer({ Data = [] }: FooterProps) {
         </div>
 
 
-        {groupedArray.length > 0 && (
-          <div className="mt-12 pt-8 border-t border-gray-300">
-            <h3 className="text-xl font-bold mb-6">All Preparation Courses</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-              {groupedArray.map((group) => (
-                <div key={group.key}>
-                  <h4 className="text-sm font-bold text-gray-900 mb-3 capitalize">
-                    {group.base?.seoMeta?.navTitle || group.key}
-                  </h4>
-                  <ul className="space-y-2 text-sm text-[#444]">
-                    {group.base && (
-                      <li
-                        onClick={() => router.push(`/${group.base.slug}`)}
-                        className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
-                      >
-                        {/* {group.base.seoMeta?.navTitle || group.base.name} */}
-                      </li>
-                    )}
-                    {group.variants.map((course: any) => (
-                      <li
-                        key={course._id}
-                        onClick={() => router.push(`/${course.slug}`)}
-                        className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
-                      >
-                        {course.seoMeta?.navTitle || course.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
 
