@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import { Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
@@ -14,21 +16,33 @@ interface FooterProps {
 export function Footer({ Data = [] }: FooterProps) {
   const router = useRouter();
 
-const courseData = React.useMemo(
-  () => Data?.filter((item: any) => {
-    return item?.seoMeta?.template?.toLowerCase() === "preparation" && 
-           !item?.seoMeta?.duplicateOf &&
-           item?.seoMeta?.isPublished === true;
-  }) || [],
-  [Data],
-);
+  const courses = React.useMemo(
+    () =>
+      Data?.filter((item: any) => {
+        return (
+          item?.seoMeta?.template?.toLowerCase() === "preparation" &&
+          item?.seoMeta?.isPublished === true
+        );
+      }) || [],
+    [Data],
+  );
 
+  const courseData = React.useMemo(
+    () =>
+      Data?.filter((item: any) => {
+        return (
+          item?.seoMeta?.template?.toLowerCase() === "preparation" &&
+          !item?.seoMeta?.duplicateOf &&
+          item?.seoMeta?.isPublished === true
+        );
+      }) || [],
+    [Data],
+  );
 
-  
   const courseData1 = React.useMemo(
     () =>
       Data?.filter(
-        (item: any) => 
+        (item: any) =>
           item?.seoMeta?.template?.toLowerCase() === "examdetails" &&
           item?.seoMeta?.isPublished === true,
       ) || [],
@@ -83,146 +97,187 @@ const courseData = React.useMemo(
     { label: "Events & Webinars", path: "/#" },
   ];
 
+  // Group courses by their base type
+  const groupedCourses = courses.reduce((acc, course) => {
+    const baseKey = course.seoMeta?.duplicateOf || course.name;
+    if (!acc[baseKey]) {
+      acc[baseKey] = {
+        base: null,
+        variants: [],
+      };
+    }
+    if (!course.seoMeta?.duplicateOf) {
+      acc[baseKey].base = course;
+    } else {
+      acc[baseKey].variants.push(course);
+    }
+    return acc;
+  }, {});
+
+  
+  const groupedArray = Object.entries(groupedCourses).map(([key, value]) => ({
+    key,
+    ...(value as any),
+  }));
+
   return (
     <footer className="bg-[#FDF4EF] mt-2 mx-4 sm:mx-8 lg:mx-16 overflow-hidden border-2 border-primary rounded-t-[2rem] sm:rounded-t-[3rem] lg:rounded-t-[3.5rem] mt-10">
       {/* ================= TOP ================= */}
-      <div className="">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6  md:gap-12 lg:gap-16 items-start">
-            {/* Logo */}
-            <div className="sm:col-span-2 lg:col-span-2 pr-10 space-y-3">
-              <Image
-                src="/image/logo.png"
-                alt="logo"
-                width={170}
-                height={70}
-                className=""
-              />
-              <p className="text-sm leading-5 text-[#303030]">
-                Ooshas Prep is a leading online test prep platform for IELTS,
-                GRE, GMAT, SAT, TOEFL & PTE, offering flexible learning formats
-                and world-class coaching.
-              </p>
-              <p className="text-sm leading-5 text-[#303030]">
-                Toll Free : +91 9166146538
-              </p>
-              <p className="text-sm leading-5 text-[#303030]">
-                Email : info@ooshasprep.com
-              </p>
-              <ul className="flex items-center gap-2 mt-2">
-                {socialLinks.map((social) => {
-                  const Icon = social.icon;
-                  return (
-                    <li key={social.label}>
-                      <button
-                        className={`flex items-center gap-1 cursor-pointer transition-colors hover:text-black`}
-                        onClick={() => window.open(social.url, "_blank")}
-                        aria-label={`Follow us on ${social.label}`}
-                      >
-                        <img
-                          src={Icon}
-                          alt={`${social.label} social icon`}
-                          width={24}
-                          height={24}
-                          loading="lazy"
-                          className="w-6 h-6"
-                        />
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-
-            {/* Quick Links */}
-            <div>
-              <h3 className="text-xl font-bold my-5">Quick Links</h3>
-              <ul className="space-y-2 text-sm text-[#444]">
-                {quickLinks.map((link) => (
-                  <li key={link.label}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 md:gap-12 lg:gap-16 items-start">
+          {/* Logo */}
+          <div className="sm:col-span-2 lg:col-span-2 pr-10 space-y-3">
+            <Image
+              src="/image/logo.png"
+              alt="logo"
+              width={170}
+              height={70}
+              className=""
+            />
+            <p className="text-sm leading-5 text-[#303030]">
+              Ooshas Prep is a leading online test prep platform for IELTS,
+              GRE, GMAT, SAT, TOEFL & PTE, offering flexible learning formats
+              and world-class coaching.
+            </p>
+            <p className="text-sm leading-5 text-[#303030]">
+              Toll Free : +91 9166146538
+            </p>
+            <p className="text-sm leading-5 text-[#303030]">
+              Email : info@ooshasprep.com
+            </p>
+            <ul className="flex items-center gap-2 mt-2">
+              {socialLinks.map((social) => {
+                const Icon = social.icon;
+                return (
+                  <li key={social.label}>
                     <button
-                      className="cursor-pointer hover:text-primary transition-colors"
-                      onClick={() => router.push(link.path)}
+                      className={`flex items-center gap-1 cursor-pointer transition-colors hover:text-black`}
+                      onClick={() => window.open(social.url, "_blank")}
+                      aria-label={`Follow us on ${social.label}`}
                     >
-                      {link.label}
+                      <img
+                        src={Icon}
+                        alt={`${social.label} social icon`}
+                        width={24}
+                        height={24}
+                        loading="lazy"
+                        className="w-6 h-6"
+                      />
                     </button>
                   </li>
-                ))}
-              </ul>
-            </div>
+                );
+              })}
+            </ul>
+          </div>
 
-            {/* Services */}
-            <div>
-              <h3 className="text-xl font-bold my-5">Our Services</h3>
-              <ul className="space-y-2 text-sm text-[#444]">
-                {courseData.map((item: any) => (
-                  <li
-                    key={item._id}
-                    onClick={() => router.push(`/${item.seoMeta.canonicalUrl}`)}
-                    className="cursor-pointer hover:text-[#FF6D4D]"
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-xl font-bold my-5">Quick Links</h3>
+            <ul className="space-y-2 text-sm text-[#444]">
+              {quickLinks.map((link) => (
+                <li key={link.label}>
+                  <button
+                    className="cursor-pointer hover:text-primary transition-colors"
+                    onClick={() => router.push(link.path)}
                   >
-                    {item.seoMeta.navTitle}
-                  </li>
-                ))}
-              </ul>
-            </div>
+                    {link.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-            {/* Resources */}
-            <div>
-              <h3 className="text-xl font-bold my-5">Resources</h3>
-              <ul className="space-y-2 text-sm text-[#444]">
-                {resources.map((resource) => (
-                  <li key={resource.label}>
-                    <button
-                      className="cursor-pointer hover:text-primary transition-colors"
-                      onClick={() => router.push(resource.path)}
-                    >
-                      {resource.label}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
+          {/* Services */}
+          <div>
+            <h3 className="text-xl font-bold my-5">Our Services</h3>
+            <ul className="space-y-2 text-sm text-[#444]">
+              {courseData.map((item: any) => (
+                <li
+                  key={item._id}
+                  onClick={() => router.push(`/${item.seoMeta.canonicalUrl}`)}
+                  className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
+                >
+                  {item.seoMeta.navTitle}
+                </li>
+              ))}
+            </ul>
+          </div>
 
-            {/* Contact - Hidden on mobile, visible on lg screens */}
-            <div className=" lg:block">
-              <h3 className="text-xl font-bold my-5">Exam Details</h3>
-              <ul className="space-y-2 text-sm text-[#444]">
-                {courseData1.map((item: any) => (
-                  <li
-                    key={item._id}
-                    onClick={() => router.push(`/${item.seoMeta.canonicalUrl}`)}
-                    className="cursor-pointer hover:text-[#FF6D4D]"
+          {/* Resources */}
+          <div>
+            <h3 className="text-xl font-bold my-5">Resources</h3>
+            <ul className="space-y-2 text-sm text-[#444]">
+              {resources.map((resource) => (
+                <li key={resource.label}>
+                  <button
+                    className="cursor-pointer hover:text-primary transition-colors"
+                    onClick={() => router.push(resource.path)}
                   >
-                    {item.seoMeta.navTitle}
-                  </li>
-                ))}
+                    {resource.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-                {/* {socialLinks.map((social) => {
-                  const Icon = social.icon;
-                  return (
-                    <li key={social.label}>
-                      <button
-                        className={`flex items-center gap-1 cursor-pointer transition-colors hover:text-black`}
-                        onClick={() => window.open(social.url, "_blank")}
-                        aria-label={`Follow us on ${social.label}`}
-                      >
-                        {social.label}
-                      </button>
-                    </li>
-                  );
-                })} */}
-              </ul>
-            </div>
+          {/* Exam Details */}
+          <div className="lg:block">
+            <h3 className="text-xl font-bold my-5">Exam Details</h3>
+            <ul className="space-y-2 text-sm text-[#444]">
+              {courseData1.map((item: any) => (
+                <li
+                  key={item._id}
+                  onClick={() => router.push(`/${item.seoMeta.canonicalUrl}`)}
+                  className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
+                >
+                  {item.seoMeta.navTitle}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
+
+
+        {groupedArray.length > 0 && (
+          <div className="mt-12 pt-8 border-t border-gray-300">
+            <h3 className="text-xl font-bold mb-6">All Preparation Courses</h3>
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+              {groupedArray.map((group) => (
+                <div key={group.key}>
+                  <h4 className="text-sm font-bold text-gray-900 mb-3 capitalize">
+                    {group.base?.seoMeta?.navTitle || group.key}
+                  </h4>
+                  <ul className="space-y-2 text-sm text-[#444]">
+                    {group.base && (
+                      <li
+                        onClick={() => router.push(`/${group.base.slug}`)}
+                        className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
+                      >
+                        {/* {group.base.seoMeta?.navTitle || group.base.name} */}
+                      </li>
+                    )}
+                    {group.variants.map((course: any) => (
+                      <li
+                        key={course._id}
+                        onClick={() => router.push(`/${course.slug}`)}
+                        className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
+                      >
+                        {course.seoMeta?.navTitle || course.name}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* ================= ORANGE BAR / SUBSCRIBE SECTION ================= */}
+
       <div className="relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 text-black">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8">
-           <motion.div
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.5 }}
@@ -265,23 +320,17 @@ const courseData = React.useMemo(
 
       <div className="border-b-1 border-gray-300 mb-8 sm:mb-16 lg:mb-24 max-w-8xl mx-4 sm:mx-8 lg:mx-10 my-1"></div>
 
-      {/* ================= BLACK BAR ================= */}
+
       <div className="bg-primary relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="flex flex-wrap justify-center md:justify-start gap-4 sm:gap-6 lg:gap-8 mt-4 md:mt-0">
             <p className="text-white text-sm text-center sm:text-left">
               © {new Date().getFullYear()} Ooshas Prep. All rights reserved.
             </p>
-            <Link
-              href="/privacy-policy"
-              className="text-white text-sm"
-            >
+            <Link href="/privacy-policy" className="text-white text-sm">
               Privacy Policy
             </Link>
-            <Link
-              href="/terms-and-conditions"
-              className="text-white text-sm"
-            >
+            <Link href="/terms-and-conditions" className="text-white text-sm">
               Terms of Service
             </Link>
           </div>
@@ -413,7 +462,7 @@ const courseData = React.useMemo(
 //                   );
 //                 })}
 //               </ul>
-              
+
 //             </div>
 
 //             {/* Study Destinations */}
@@ -427,7 +476,7 @@ const courseData = React.useMemo(
 //                       className="cursor-pointer hover:text-primary transition-colors"
 //                       onClick={() => router.push(link.path)}
 //                     >
-//                       {link.label} 
+//                       {link.label}
 //                     </button>
 //                   </li>
 //                 ))}
@@ -512,14 +561,14 @@ const courseData = React.useMemo(
 //       >
 //         <div className="max-w-7xl mx-auto  py-4 text-white">
 //           <div className="flex flex-col lg:flex-row justify-between items-center gap-8">
-            
+
 //             <motion.div
 //               initial={{ opacity: 0 }}
 //               animate={{ opacity: 1 }}
 //               transition={{ delay: 0.8, duration: 0.5 }}
 //               className="flex flex-col md:flex-row items-center w-full gap-6 text-center md:text-left"
 //             >
-              
+
 //               <div className="text-white max-w-xl">
 //                 <h6 className="text-lg md:text-xl font-bold tracking-tight mb-1">
 //                   {"Ready to Achieve Your Dreams?"}
@@ -659,13 +708,3 @@ const courseData = React.useMemo(
 //     </footer>
 //   );
 // }
-
-
-
-
-
-
-
-
-
-

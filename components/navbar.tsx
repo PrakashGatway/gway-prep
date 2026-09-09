@@ -52,9 +52,6 @@ export function Navbar({ Data }: NavbarProps) {
 
   const profileMenuRef = React.useRef<HTMLDivElement>(null);
 
-  /* ---------------------------------------------------------
-     DATA
-  --------------------------------------------------------- */
 
   const NAVDATA1 = React.useMemo(
     () =>
