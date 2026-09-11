@@ -38,7 +38,8 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  const blog = await getBlogData(slug);
+  const Allblog = await getBlogData(slug);
+  const blog = Allblog.data
 
   if (!blog) {
     return {
@@ -49,13 +50,11 @@ export async function generateMetadata({
 
   const title =
     blog?.metaTitle ||
-    blog?.title ||
-    "Blog Details | Ooshas Prep";
+    blog?.title
 
   const description =
     blog?.metaDescription ||
-    blog?.summary ||
-    "Read the latest blog posts from Ooshas Prep.";
+    blog?.summary
 
   const image =
     blog?.image ||

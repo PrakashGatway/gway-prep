@@ -498,7 +498,7 @@ export function Navbar({ Data }: NavbarProps) {
                                           gap-3
                                           rounded-xl
                                           px-3
-                                          py-3
+                                          py-1
                                           transition-all
                                           ${
                                             isActive
@@ -576,11 +576,6 @@ export function Navbar({ Data }: NavbarProps) {
                                         )}
                                       </div>
 
-                                      {dd.description && (
-                                        <p className="mt-0.5 truncate text-xs text-gray-500">
-                                          {dd.description}
-                                        </p>
-                                      )}
                                     </div>
 
                                     {/* Arrow */}
@@ -654,7 +649,7 @@ export function Navbar({ Data }: NavbarProps) {
 
                                   return (
                                     <div key={dd.slug} className="p-3">
-                                      <div className="mb-2 px-2 py-2">
+                                      <div className="mb-2 px-2 ">
                                         <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#F36C45]">
                                           Test Prep
                                         </p>
@@ -676,8 +671,8 @@ export function Navbar({ Data }: NavbarProps) {
                                                     items-center
                                                     gap-3
                                                     rounded-xl
-                                                    px-3
-                                                    py-2.5
+                                                    px-2
+                                                    
                                                     transition-all
                                                     hover:bg-orange-50
                                                   "
@@ -716,11 +711,7 @@ export function Navbar({ Data }: NavbarProps) {
                                                 {sub.name}
                                               </span>
 
-                                              {sub.description && (
-                                                <p className="truncate text-xs text-gray-400">
-                                                  {sub.description}
-                                                </p>
-                                              )}
+                                            
                                             </div>
 
                                             <ArrowRight

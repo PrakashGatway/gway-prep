@@ -2,7 +2,7 @@
 // app/blog/[id]/page.tsx
 "use client";
 
-import { Calendar, Menu } from "lucide-react";
+import { Calendar, ChevronDown, HelpCircle, Menu } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState, FormEvent, useEffect, useRef, useLayoutEffect } from "react";
@@ -19,6 +19,7 @@ import FormSection from "./formSection";
 import axiosInstance from "@/app/lib/axios";
 import axios from "axios";
 import QuestionsSection from "./comment";
+import Link from "next/link";
 
 // ─── Types ───
 interface FAQ {
@@ -306,7 +307,7 @@ const TableOfContents = ({
   if (headings.length === 0) return null;
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-6">
+    <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-3">
       <div
         className="flex items-center justify-between cursor-pointer"
         onClick={() => setIsOpen(!isOpen)}
@@ -319,17 +320,13 @@ const TableOfContents = ({
       </div>
 
       <div
-        className={`mt-4 space-y-2 transition-all duration-300 ${isOpen ? "block" : "hidden"}`}
+        className={`mt-4 px-4  transition-all duration-300 ${isOpen ? "block" : "hidden"}`}
       >
         {headings.map((heading, index) => (
           <button
             key={index}
             onClick={() => scrollToHeading(heading)}
-            className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all hover:bg-neutral-50 hover:text-[#F86C43] ${
-              activeHeading === heading
-                ? "bg-[#F86C43]/10 text-[#F86C43] font-medium border-l-2 border-[#F86C43]"
-                : "text-neutral-600"
-            }`}
+            className={`w-full text-left px-3 py-1 text-blue-500 rounded-lg text-sm transition-all hover:bg-neutral-50 hover:text-[#F86C43] text-orange-500`}
           >
             {heading}
           </button>
@@ -411,18 +408,75 @@ const renderBlogContent = (blogDetails: BlogDetail[]) => {
     }
 
     // FAQs
-    if (detail.faq && detail.faq.length > 0) {
-      const [faq] = detail.faq; // Use first FAQ or map all
-      sections.push(
-        <div key={`faq-${index}`} className="my-6 p-6 bg-blue-50 rounded-xl border border-blue-100">
-          <h4 className="text-lg font-semibold text-neutral-800 mb-2">
-            💡 Quick FAQ
+   if (detail.faq && detail.faq.length > 0) {
+    const [openFaq, setOpenFaq] = useState<number | null>(null);
+  sections.push(
+    <div
+      key={`faq-${index}`}
+      className="my-5  "
+    >
+      {/* Header */}
+      <div className="flex items-center gap-2.5   py-3">
+     
+
+        <div>
+          <h4 className="!text-xl font-bold text-primary">
+            Frequently Asked Questions
           </h4>
-          <p className="font-medium text-neutral-700">{faq.question}</p>
-          <p className="text-neutral-600 mt-1">{faq.answer}</p>
+         
         </div>
-      );
-    }
+      </div>
+
+      {/* FAQ Items */}
+   <div className="space-y-3">
+  {detail.faq.map((item, faqIndex) => {
+    const isOpen = openFaq === faqIndex;
+
+    return (
+      <div
+        key={`faq-item-${faqIndex}`}
+        className="overflow-hidden border-b border-gray-200 bg-white rounded-2xl  py-3"
+      >
+        {/* Question */}
+        <button
+          type="button"
+          onClick={() => setOpenFaq(isOpen ? null : faqIndex)}
+          className="flex w-full items-center justify-between gap-4 px-5 text-left"
+        >
+          <span className="text-sm font-semibold text-gray-800 sm:text-[15px]">
+            {item.question}
+          </span>
+
+          <span
+            className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#f96c33] text-white transition-transform duration-200 ${
+              isOpen ? "rotate-180" : ""
+            }`}
+          >
+            <ChevronDown size={16} strokeWidth={2.5} />
+          </span>
+        </button>
+
+        {/* Answer */}
+        <div
+          className={`grid transition-all duration-300 ease-in-out ${
+            isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+          }`}
+        >
+          <div className="overflow-hidden">
+            <div className="px-5 pr-16">
+              <p className="text-sm leading-6 text-gray-600">
+                {item.answer}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  })}
+</div>
+    </div>
+  );
+}
 
     // Banner
     if (detail.Banner && detail.Banner.length > 0) {
@@ -563,10 +617,10 @@ export default function BlogDetailPage({ blog, loading, res, slug }: BlogDetailP
 
   const data = blog.data;
   const blogDetails = data.blog_details || [];
-
+console.log(data,"gfds")
   return (
     <div className="bg-neutral-50 min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-10">
         {/* Breadcrumb */}
         <nav className="text-sm text-neutral-500 mb-6">
           <span
@@ -590,7 +644,7 @@ export default function BlogDetailPage({ blog, loading, res, slug }: BlogDetailP
           {/* Main Blog Content */}
           <div className="lg:col-span-8">
             {/* Hero Image */}
-            <div className="relative w-full h-64 md:h-108 rounded-2xl overflow-hidden mb-8 shadow-sm">
+            <div className="relative w-full rounded-2xl overflow-hidden mb-8 shadow-sm">
               <img
                 src={data.image}
                 alt={data.title}
@@ -604,25 +658,37 @@ export default function BlogDetailPage({ blog, loading, res, slug }: BlogDetailP
               {data.title}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-sm text-neutral-500 mb-8 pb-8 border-b border-neutral-200">
+            <div className="flex justify-between items-center mb-5">
+
+            <div className="flex flex-wrap items-center gap-4 text-sm text-neutral-500 ">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-bold text-neutral-600">
                   {data.author?.charAt(0)?.toUpperCase() || "A"}
                 </div>
-                <span className="font-medium text-neutral-700">
+                <Link href={`/auther/${data.author.split(" ").join("-").toLowerCase()}`} className="font-medium text-neutral-700">
                   {data.author || "Anonymous"}
-                </span>
+                </Link>
               </div>
               <span>•</span>
               <span>
-                {data.publishedDate
-                  ? new Date(data.publishedDate).toLocaleDateString("en-US", {
+                {data.createdAt
+                  ? new Date(data.createdAt).toLocaleDateString("en-US", {
                       year: "numeric",
                       month: "long",
                       day: "numeric",
                     })
                   : "Date not available"}
               </span>
+            </div>
+            <div className="flex items-center gap-1.5  px-3 text-sm text-gray-600">
+
+  <span className="font-medium">
+    {data?.count ?? 0}
+  </span>
+  <span className="text-gray-500">
+    views
+  </span>
+</div>
             </div>
 
             {/* Table of Contents - Desktop */}
@@ -638,6 +704,9 @@ export default function BlogDetailPage({ blog, loading, res, slug }: BlogDetailP
 
             {/* Blog Content Styles */}
             <style>{`
+             .blog-html * {
+    font-family: inherit !important;
+  }
               .blog-html table {
                 width: 100%;
                 border-collapse: collapse;

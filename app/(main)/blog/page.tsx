@@ -16,6 +16,10 @@ export async function generateMetadata(): Promise<Metadata> {
   const data = await getPageInfo("blog");
   const seo = data?.seoMeta || {};
 
+
+console.log("data:", data);
+console.log("is array:", Array.isArray(data));
+console.log("length:", data?.length);
   // Normalize canonical URL
   const canonicalPath =
     seo?.canonicalUrl

@@ -48,8 +48,7 @@ export async function PUT(req: NextRequest, context: Context) {
     const { slug } = await context.params;
     const body = await req.json();
 
-    // ❌ Prevent slug overwrite
-    delete body.slug;
+ 
 
     if (!body || Object.keys(body).length === 0) {
       return NextResponse.json(

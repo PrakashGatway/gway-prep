@@ -368,9 +368,9 @@ export default function BlogPage({
   /**
    * Navigate to blog detail
    */
-  const navigateToBlog = (blogSlug: string) => {
-    router.push(`/blog/${blogSlug}`);
-  };
+ const navigateToBlog = (blogSlug: string) => {
+  window.open(`/blog/${blogSlug}`, "_blank", "noopener,noreferrer");
+};
 
   
   const getPaginationNumbers = () => {
@@ -681,9 +681,7 @@ export default function BlogPage({
                       {post.title}
                     </h3>
 
-                    <p className="mb-3 text-[13px] leading-relaxed text-gray-500">
-                      {post.excerpt || post?.metaDescription}
-                    </p>
+                   
 
                     <div className="flex items-center gap-4 text-[11px] text-gray-400">
                       <span className="flex items-center gap-1">

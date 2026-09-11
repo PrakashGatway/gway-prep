@@ -148,43 +148,7 @@ function QuestionsSection({page = "calculator", heading, css }: any) {
           </button>
         </form>
 
-        {/* Comments */}
-        <div className="mt-4 space-y-3">
-          {comments.length > 0 ? (
-            comments.map((item) => (
-              <div
-                key={item._id}
-                className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
-              >
-                <div className="flex gap-3">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#0b1e3f] text-xs font-bold text-white">
-                    {item.name?.charAt(0)?.toUpperCase()}
-                  </div>
-
-                  <div className="flex-1">
-                    <p className="text-sm font-bold text-slate-900">
-                      {item.name}
-                    </p>
-
-                    <p className="mt-1 text-sm text-slate-600">
-                      {item.comment}
-                    </p>
-
-                    {item.createdAt && (
-                      <p className="mt-2 text-[10px] text-slate-400">
-                        {new Date(item.createdAt).toLocaleDateString()}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="rounded-xl border border-slate-200 bg-white p-5 text-center text-sm text-slate-400">
-              No comments yet. Be the first to ask a question.
-            </div>
-          )}
-        </div>
+   
       </div>
     </section>
   );
