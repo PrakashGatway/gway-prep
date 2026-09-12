@@ -422,7 +422,7 @@ export default function FormSection({
       currentStepConfig?.button === "submit" || step === totalSteps;
 
     return {
-      text: isSubmit ? submitConfig.label || "Submit" : "Continue",
+      text: isSubmit ? submitConfig.label || "Submit" : "Next",
       icon: isSubmit ? SubmitIcon : ArrowRight,
       action: handleStepAction,
     };
@@ -1134,7 +1134,7 @@ export default function FormSection({
             whileTap={{ scale: 0.95 }}
             onClick={buttonConfig.action}
             className="px-8 py-3 text-sm font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl
-             flex items-center gap-2"
+             flex items-center gap-2 cursor-pointer"
             style={{
               background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor})`,
             }}

@@ -135,7 +135,7 @@ export default function PricingSection({ plans }: { plans: any }) {
                     {/* Button */}
                     <button
                       onClick={() => router.push("/auth")}
-                      className={`mt-4 w-full rounded-xl py-3 font-semibold transition
+                      className={`mt-4 w-full rounded-xl py-3 cursor-pointer font-semibold transition
               ${
                 isHighlighted
                   ? "bg-[#FF6B45] text-white hover:bg-[#F15B2F]"

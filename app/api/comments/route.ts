@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
       email,
       comment,
       page,
+      Score
     } = body;
 
     // Validation
@@ -43,7 +44,7 @@ export async function POST(request: NextRequest) {
       email: email?.trim().toLowerCase() || "",
       comment: comment.trim(),
       page: page.trim(),
-
+      Score: Score?.trim()
     });
 
     return NextResponse.json(

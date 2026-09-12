@@ -92,13 +92,23 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
         }
       : {};
 
-    // 3. Parallel fetching for performance
+    // // 3. Parallel fetching for performance
+    // const [students, total] = await Promise.all([
+    //   Student.find(filter)
+    //     .sort({ createdAt: -1 })
+    //     .skip(skip)
+    //     .limit(limit)
+    //     .lean(),
+    //   Student.countDocuments(filter),
+    // ]);
+
     const [students, total] = await Promise.all([
-      Student.find(filter)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean(),
+      Student.aggregate([
+        { $match: filter },
+        { $sample: { size: Math.min(limit + skip, 10000) } },
+        { $skip: skip },
+        { $limit: limit },
+      ]),
       Student.countDocuments(filter),
     ]);
 

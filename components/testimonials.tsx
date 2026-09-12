@@ -450,6 +450,7 @@ export function VideoTestimonialCard({ heading, data }: any) {
 }
 
 export function TextTestimonials({ heading, data }: any) {
+  console.log(data.data, "text data")
   const imageTestimonials =
     data?.data?.filter((ele: any) => ele.type === "image") || [];
 
@@ -563,7 +564,7 @@ export function TextTestimonials({ heading, data }: any) {
                         onClick={() =>
                           setSelectedTestimonial(item)
                         }
-                        className="md:mt-3 text-[#FF6B35] font-semibold hover:underline text-sm sm:text-base"
+                        className="cursor-pointer md:mt-3 text-[#FF6B35] font-semibold hover:underline text-sm sm:text-base"
                       >
                         Read More
                       </button>

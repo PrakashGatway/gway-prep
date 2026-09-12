@@ -102,7 +102,7 @@ export function PartnerSection() {
         <div className="flex flex-col lg:flex-row justify-between items-start gap-12 text-white">
           
           {/* Left Column: Contact Info */}
-          <div className="lg:w-1/2 w-full space-y-2">
+          <div className="lg:w-1/2 w-full space-y-2 mt-14">
             <p className="text-3xl md:text-5xl font-bold">Get Started</p>
             <p className="text-2xl md:text-3xl font-bold leading-tight">
               Ready to Build Your Score Strategy?
@@ -140,13 +140,13 @@ export function PartnerSection() {
               </div>
 
               {/* Location */}
-              <div className="flex items-center gap-4">
+              {/* <div className="flex items-center gap-4">
                 <div className="bg-white p-3 rounded-lg"><MapPin className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">Location</p>
                   <p className="text-xl">Jaipur, Rajasthan, India</p>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Social Media */}

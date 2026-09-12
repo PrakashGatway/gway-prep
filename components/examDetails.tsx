@@ -92,116 +92,184 @@ const ExamDetails = ({ pagedata }: any) => {
     }
   };
 
+  const socialLinks = [
+    {
+      icon: "/icon/insta.webp",
+      label: "Instagram",
+      url: "https://www.instagram.com/ooshasprep",
+      hoverColor: "hover:text-pink-500",
+    },
+    {
+      icon: "/icon/facebook.webp",
+      label: "Facebook",
+      url: "https://www.facebook.com/share/18aH5VifRr/?mibextid=wwXIfr",
+      hoverColor: "hover:text-blue-600",
+    },
+    {
+      icon: "/icon/twitter.webp",
+      label: "Twitter",
+      url: "https://x.com/ooshasprep",
+      hoverColor: "hover:text-blue-700",
+    },
+    {
+      icon: "/icon/whatsapp.webp",
+      label: "whatsapp",
+      url: "https://wa.me/919166146538",
+      hoverColor: "hover:text-blue-700",
+    },
+    {
+      icon: "/icon/youtube.webp",
+      label: "YouTube",
+      url: "https://youtube.com/@ooshasprep",
+      hoverColor: "hover:text-red-600",
+    },
+  ];
+
+  const tocRef = useRef<HTMLDivElement | null>(null);
+  const [isSticky, setIsSticky] = useState(false);
+
+  useEffect(() => {
+    const element = tocRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsSticky(!entry.isIntersecting);
+      },
+      {
+        threshold: 0,
+        rootMargin: "-80px 0px 0px 0px",
+      }
+    );
+
+    observer.observe(element);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <main className="relative flex flex-col">
-      <div className="relative w-full overflow-hidden bg-primary/40 px-4 sm:px-8 lg:px-12 py-8 sm:py-10">
-        <div className="relative z-10 mx-auto max-w-[1500px] bg-white px-5 sm:px-8 lg:px-12 py-8 sm:py-10">
-          {/* Top Hero Content */}
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-            {/* Left Image */}
-            <div className="w-full lg:w-[52%]">
-              <div className="overflow-hidden ">
+      <div className="relative w-full overflow-visible px-4 sm:px-8 lg:px-12 py-6 sm:py-8">
+        <div className="relative z-10 mx-auto bg-white max-w-7xl mx-auto px-1x py-8">
+          {/* Heading */}
+          <h1 className="mb-4 text-left text-2xl font-bold leading-tight sm:text-3xl lg:text-[36px] lg:leading-[1.25]">
+            <span className="text-primary">
+              {basicInfo.title?.split("||")[0]}
+            </span>
+
+            <span className="text-black">
+              {basicInfo.title?.split("||")[1]}
+            </span>
+
+            <span className="text-black">
+              {basicInfo.title?.split("||")[2]}
+            </span>
+          </h1>
+
+          {/* Main Content */}
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_335px] lg:gap-14">
+            {/* Left Content */}
+            <div className="min-w-0 w-full">
+              {/* Hero Image */}
+              <div className="w-full overflow-hidden">
                 <img
                   src={
                     basicInfo?.image ||
                     "https://res.cloudinary.com/drsainihk/image/upload/v1784546671/cway-admin/rx2e0kmbnawefickyvqr.webp"
                   }
                   alt={`${basicInfo?.title || "Hero"} image`}
-                  className="w-full h-[220px] sm:h-[300px] lg:h-[285px] object-contain"
+                  className="block w-full h-auto max-h-[500px] object-contain object-left"
                 />
               </div>
+
+              {/* Button + Social */}
+              <div className="mt-3 flex w-full items-center justify-between">
+                <button
+                  type="button"
+                  onClick={() => Router.push(basicInfo?.url || `/auth`)}
+                  className="inline-flex min-w-[138px] items-center justify-center bg-primary px-7 py-2 text-base font-semibold text-white transition-all duration-300 hover:opacity-90 sm:text-lg"
+                >
+                  {basicInfo?.buttonText || "Explore Now"}
+                </button>
+
+                <ul className="flex items-center gap-1.5">
+                  {socialLinks.map((social) => {
+                    const Icon = social.icon;
+
+                    return (
+                      <li key={social.label}>
+                        <button
+                          type="button"
+                          className="flex cursor-pointer items-center transition-colors hover:opacity-70"
+                          onClick={() => window.open(social.url, "_blank")}
+                          aria-label={`Follow us on ${social.label}`}
+                        >
+                          <img
+                            src={Icon}
+                            alt={`${social.label} social icon`}
+                            width={24}
+                            height={24}
+                            loading="lazy"
+                            className="h-6 w-6"
+                          />
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+
+              {/* Subtitle / Description */}
+              {basicInfo?.subtitle && (
+                <div className="mt-3 max-w-7xl">
+                  <div className="text-base leading-7 text-slate-700 sm:text-lg">
+                    <EditorContent content_data={basicInfo.subtitle} />
+                  </div>
+                </div>
+              )}
             </div>
 
-            {/* Right Content */}
-            <div className="w-full lg:w-[48%] flex flex-col items-start">
-              <h1 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold md:leading:7 text-primary lg:leading-14">
-                {basicInfo.title?.split("||")[0]}
-                <span className="text-black">
-                  {basicInfo.title?.split("||")[1]}
-                </span>
-                {basicInfo.title?.split("||")[2]}
-              </h1>
-
-              <button
-                type="button"
-                onClick={() => Router.push(basicInfo?.url || `/auth`)}
-                className="mt-6 inline-flex items-center justify-center bg-primary px-7 py-2 text-base sm:text-lg font-semibold text-white transition-all duration-300 hover:opacity-90"
-              >
-                {/* Explore Now */}
-                {basicInfo?.buttonText || "Explore Now"}
-              </button>
+            {/* Right Lead Form */}
+            <div className="sticky top-20 self-start w-full lg:max-w-[335px] lg:mt-0 mt-6">
+              <LeadForm />
             </div>
           </div>
-
-          {basicInfo?.subtitle && (
-            <div className="mt-8 max-w-7xl">
-              <div className="text-base sm:text-lg leading-7 text-slate-700">
-                <EditorContent content_data={basicInfo.subtitle} />
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
-      <div className="sticky top-20 z-40 bg-white border-b shadow-sm">
-        <div className=" mx-auto px-4">
-          {/* Mobile Toggle */}
-          {/* <div className="lg:hidden flex items-center justify-between py-3">
-              <span className="font-semibold text-sm">Table of Contents</span>
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
-              </button>
-            </div> */}
+      <div ref={tocRef} className="h-0" />
 
-          <div
-            className=" flex items-center gap-6 py-1 whitespace-nowrap overflow-auto"
-            style={{
-              scrollbarWidth: "none",
-            }}
-          >
-            {toc.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
-                className={`whitespace-nowrap text-sm font-medium transition-colors relative py-2 ${
-                  activeSection === item.id
-                    ? "text-[#F26E46] border-b-2 border-[#F26E46]"
-                    : "text-gray-600 hover:text-[#F26E46]"
-                }`}
-              >
-                {item.title}
-              </button>
-            ))}
-          </div>
-
-          {/* {isMobileMenuOpen && (
-              <div className="lg:hidden py-4 border-t">
-                <ul className="space-y-3">
-                  {toc.map((item) => (
-                    <li key={item.id}>
-                      <button
-                        onClick={() => scrollToSection(item.id)}
-                        className={`w-full text-left px-3 py-2 rounded-lg transition-colors text-sm ${
-                          activeSection === item.id
-                            ? "bg-[#F26E46] text-white"
-                            : "hover:bg-gray-100 text-gray-700"
-                        }`}
-                      >
-                        {item.title}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )} */}
+      <div
+        className={`sticky top-20 z-40 transition-all duration-200 ${
+          isSticky
+            ? "visible bg-white border-b shadow-sm"
+            : "invisible h-0 overflow-hidden"
+        }`}
+      >
+        <div
+          className="flex items-center gap-6 py-1 whitespace-nowrap overflow-auto bg-[#F26E46]"
+          style={{
+            scrollbarWidth: "none",
+          }}
+        >
+          {toc.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => scrollToSection(item.id)}
+              className={`whitespace-nowrap  text-sm font-medium transition-colors relative py-2 ${
+                activeSection === item.id
+                  ? "text-[#000] border-b-2 border-[#000]"
+                  : "text-white hover:text-[#000]"
+              }`}
+            >
+              {item.title}
+            </button>
+          ))}
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 py-8 overflow">
-        <div className="grid lg:grid-cols-[1fr_320px] gap-10">
+        <div className=" gap-10">
           {/* Main */}
           <div className="space-y-0">
             {examData.map((section: any, index: number) => (
@@ -255,14 +323,13 @@ const ExamDetails = ({ pagedata }: any) => {
               </div>
             ))}
 
-        <QuestionsSection page={'ExamDetails'}  css={'bg-[#fafafa] py-6 my-6'}/>
-
+            <QuestionsSection page={'ExamDetails'} css={'bg-[#fafafa] py-6 my-6'} />
           </div>
 
           {/* Sidebar */}
-          <aside className="hidden lg:block sticky top-38 h-fit">
+          {/* <aside className="hidden lg:block sticky top-38 h-fit">
             <LeadForm />
-          </aside>
+          </aside> */}
         </div>
       </div>
     </main>
@@ -376,7 +443,6 @@ function Banner({ finalCtaSection, Image }: any) {
     </section>
   );
 }
-
 
 // function QuizCard({ section ,pagedata}: any) {
 //   const [answer, setAnswer] = useState("");
@@ -1218,10 +1284,13 @@ const LeadForm = () => {
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 px-6 py-2">
-      <h3 className="text-center text-lg md:text-xl font-semibold mb-2 text-neutral-900">
-        Speak to an Expert
+      <h3 className="text-center text-lg md:text-xl font-semibold mb-2 text-primary gap-2 flex mt-4">
+        Just One <p className="text-black">Step Away!</p>
       </h3>
-      <FormSection FORM_CONFIG={FORM_CONFIG} onFormSubmit={handleFormSubmit} />
+      <p className="text-sm mb-4">
+        our Experts require more information to assist you in a better way.
+      </p>
+      <FormSection FORM_CONFIG={FORM_CONFIG}  />
 
       {formSubmitted && (
         <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">

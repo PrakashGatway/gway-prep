@@ -6,8 +6,10 @@ import { Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
+import axiosInstance from "@/app/lib/axios";
+import toast from "react-hot-toast";
 
 interface FooterProps {
   Data?: any[];
@@ -26,6 +28,19 @@ export function Footer({ Data = [] }: FooterProps) {
       }) || [],
     [Data],
   );
+
+  
+  const calculator = React.useMemo(
+    () =>
+      Data?.filter((item: any) => {
+        return (
+          item?.seoMeta?.template?.toLowerCase() === "calculator" &&
+          item?.seoMeta?.isPublished === true
+        );
+      }) || [],
+    [Data],
+  );
+
 
   const courseData = React.useMemo(
     () =>
@@ -65,7 +80,7 @@ export function Footer({ Data = [] }: FooterProps) {
     {
       icon: "/icon/twitter.webp",
       label: "Twitter",
-      url: "#",
+      url: "https://x.com/ooshasprep",
       hoverColor: "hover:text-blue-700",
     },
     {
@@ -88,10 +103,10 @@ export function Footer({ Data = [] }: FooterProps) {
     { label: "Services", path: "/services" },
     { label: "Career", path: "/career" },
     { label: "Contact Us", path: "/contact" },
+    { label: "Blogs", path: "/blog" },
   ];
 
   const resources = [
-    { label: "Blogs", path: "/blog" },
     { label: "Case Studies", path: "/#" },
     { label: "Student Testimonials", path: "/#" },
     { label: "Events & Webinars", path: "/#" },
@@ -119,6 +134,19 @@ export function Footer({ Data = [] }: FooterProps) {
     key,
     ...(value as any),
   }));
+  const [email, setemail] = useState("");
+
+  const submit = async() => {
+    try {
+      const api = await axiosInstance.post(
+        "/subscribe",
+        { email }
+      );
+      toast.success("Subscribed successfully!");
+    } catch (error) {
+      toast.error("Subscription failed. Please try again.");  
+    }
+  }
 
   return (
     <footer className="bg-[#FDF4EF] mt-2 mx-4 sm:mx-8 lg:mx-16 overflow-hidden border-2 border-primary rounded-t-[2rem] sm:rounded-t-[3rem] lg:rounded-t-[3.5rem] mt-10">
@@ -242,13 +270,13 @@ export function Footer({ Data = [] }: FooterProps) {
           <div>
             <h3 className="text-xl font-bold my-5">Resources</h3>
             <ul className="space-y-2 text-sm text-[#444]">
-              {resources.map((resource) => (
-                <li key={resource.label}>
+              {calculator.map((resource) => (
+                <li key={resource.slug}>
                   <button
                     className="cursor-pointer hover:text-primary transition-colors"
-                    onClick={() => router.push(resource.path)}
+                    onClick={() => router.push(resource.slug)}
                   >
-                    {resource.label}
+                    {resource?.seoMeta?.navTitle}
                   </button>
                 </li>
               ))}
@@ -291,11 +319,12 @@ export function Footer({ Data = [] }: FooterProps) {
               <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
                 <input
                   type="text"
+                  onChange={(e => setemail(e.target.value))}
                   placeholder="Enter your email"
                   className="w-full sm:w-64 md:w-72 lg:w-96 border-2 border-primary flex items-center gap-2 bg-white text-black font-semibold px-4 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all"
                 />
                 <button
-                  onClick={() => router.push("/auth")}
+                  onClick={() => { submit();}}
                   className="w-full sm:w-auto flex-shrink-0 border-2 border-primary flex items-center justify-center gap-2 bg-white text-[#FF6A13] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap"
                 >
                   Subscribe Now
@@ -710,3 +739,6 @@ export function Footer({ Data = [] }: FooterProps) {
 //     </footer>
 //   );
 // }
+
+
+

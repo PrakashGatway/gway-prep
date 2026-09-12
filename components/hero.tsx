@@ -138,8 +138,7 @@ export function Hero({ data, student }: HeroProps) {
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-[#e05a34] to-[#ff8a65] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <span className="relative flex items-center gap-2.5">
-                    <Phone size={20} />
-                    Book A Free Consultation
+                    <Phone size={20} /> Take free test now
                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
                   <span className="absolute inset-0 -z-10 rounded-2xl bg-[#F36C45]/30 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

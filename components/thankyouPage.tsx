@@ -21,9 +21,9 @@ const ThankYouPage = () => {
 
   // Support options array for cleaner mapping
   const supportOptions = [
-    { icon: Phone, label: "Call Us", delay: 0.4 },
-    { icon: Mail, label: "Email Us", delay: 0.5 },
-    { icon: MessageSquare, label: "Live Chat", delay: 0.6 },
+    { icon: Phone, label: "Call Us", delay: 0.4, to:'tel:+919876543210' },
+    { icon: Mail, label: "Email Us", delay: 0.5, to:'https://mail.google.com/mail/?view=cm&fs=1&to=example@gmail.com' },
+    { icon: MessageSquare, label: "Live Chat", delay: 0.6, to:'https://api.whatsapp.com/send/?phone=919166146538&text&type=phone_number&app_absent=0' },
   ];
 
   return (
@@ -82,11 +82,22 @@ const ThankYouPage = () => {
         {/* Support Grid */}
         <div className="grid grid-cols-3 gap-3 mb-8">
           {supportOptions.map((option, index) => (
-            <motion.div
+            <motion.a
               key={index}
+
+      href={option.to}
+      target={option.to.startsWith("http") ? "_blank" : undefined}
+      rel={option.to.startsWith("http") ? "noopener noreferrer" : undefined}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: option.delay }}
+              //   onClick={() => {
+              //     // window.location.href= option.to
+              //     window.open(
+              //       option.to,
+              //   "_blank"
+              // );
+              //   }}
               className="flex flex-col items-center gap-2 p-3 rounded-2xl bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer group"
             >
               <div 
@@ -96,7 +107,7 @@ const ThankYouPage = () => {
                 <option.icon className="w-5 h-5" style={{ color: primaryColor }} strokeWidth={2} />
               </div>
               <span className="text-xs font-medium text-slate-600">{option.label}</span>
-            </motion.div>
+            </motion.a>
           ))}
         </div>
 

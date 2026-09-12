@@ -14,6 +14,13 @@ import {
   User,
   ChevronDown,
   ChevronRight,
+  Book,
+  FileText,
+  PenTool,
+  TrendingUp,
+  Briefcase,
+  Calculator,
+  CircleDotDashedIcon,
 } from "lucide-react";
 
 import FormSection from "./formSection";
@@ -68,12 +75,15 @@ const FORM_CONFIG: any = {
       step: 1,
       grid: "full",
       options: [
-        { value: "", label: "Topic" },
-        { value: "study-abroad", label: "Study Abroad" },
-        { value: "exams", label: "Exams" },
-        { value: "visa", label: "Visa" },
-        { value: "counselling", label: "Counselling" },
-        { value: "other", label: "Other" },
+        { value : "", label : "Select the an option"},
+        { value: "IELTS", label: "IELTS", icon: Book },
+        { value: "TOEFL", label: "TOEFL", icon: FileText },
+        { value: "PTE", label: "PTE", icon: PenTool },
+        { value: "GRE", label: "GRE", icon: TrendingUp },
+        { value: "GMAT", label: "GMAT", icon: Briefcase },
+        { value: "SAT", label: "SAT", icon: Calculator },
+        { value: "other", label :"Other", icon : CircleDotDashedIcon}
+      
       ],
     },
     {

@@ -7,6 +7,7 @@ export interface IComment extends Document {
   page: string;
   publish: boolean;
   status: boolean;
+  Score: String;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -39,16 +40,18 @@ const CommentSchema = new Schema<IComment>(
       default: "",
     },
 
-    // publish: {
-    //   type: Boolean,
-    //   required: true,
-    //   default: true,
-    // },
+    publish: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
 
     status : {
         type : Boolean,
         default : true
-    }
+    },
+
+    Score : String
 
   },
   {

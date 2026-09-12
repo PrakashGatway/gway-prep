@@ -29,7 +29,7 @@ import Swal from "sweetalert2";
 import axiosInstance from "@/services/axiosInstance";
 import { useGlobal } from "@/hooks/AppStateContext";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+// import { useSearchParams } from "next/navigation";
 
 // Input Field Component
 const InputField = ({ icon: Icon, label, error, ...props }: any) => (
@@ -67,8 +67,8 @@ function Auth({ toggleDrawer }: any) {
   const [termsAccepted, setTermsAccepted] = useState(true);
   const [errors, setErrors] = useState<any>({});
   const [resendCooldown, setResendCooldown] = useState(0);
-  const search = useSearchParams();
-  const referral = search.get("referral") ?? "";
+  const search = ""
+  const referral = ""
 
   const [formData, setFormData] = useState({
     name: "",

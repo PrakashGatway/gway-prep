@@ -16,7 +16,7 @@ export function TestPrepGrid({
   const FALLBACK_ITEMS = [
     { title: "GRE", image: "/home/subject icon/gre.png", slug:"gre" },
     { title: "GMAT", image: "/home/subject icon/gmat.png", slug:"gmat" },
-    { title: "ACT", image: "/home/subject icon/act.png", slug:"act" },
+    { title: "Sat", image: "/home/subject icon/sat.png", slug:"sat" },
     { title: "IELTS", image: "/home/subject icon/ielts.png", slug:"ielts" },
     { title: "TOEFL", image: "/home/subject icon/toefl.png", slug:"toefl" },
     { title: "PTE", image: "/home/subject icon/pte.webp", slug:"pte" },

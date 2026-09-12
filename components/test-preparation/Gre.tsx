@@ -384,7 +384,7 @@ function VideoExplanationSection({ videoData }: { videoData: any }) {
               </p>
               <button
                 onClick={() => router.push("/auth")}
-                className="mt-6 sm:mt-8 md:mt-10 bg-[#F36C45] hover:bg-[#ec5d34] transition-all duration-300 text-white font-semibold rounded-xl px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg shadow-lg w-full sm:w-auto"
+                className="cursor-pointer mt-6 sm:mt-8 md:mt-10 bg-[#F36C45] hover:bg-[#ec5d34] transition-all duration-300 text-white font-semibold rounded-xl px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg shadow-lg w-full sm:w-auto"
               >
                 {videoData?.["button-text"] || "Watch Solution Now"}
               </button>
@@ -410,7 +410,7 @@ function VideoExplanationSection({ videoData }: { videoData: any }) {
                   <img
                     src="/image/logo.png"
                     alt="Instructor"
-                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full object-cover"
+                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full object-cover object-start"
                   />
                   <div>
                     <h4 className="text-base sm:text-lg md:text-xl font-semibold text-[#333333]">
@@ -501,7 +501,7 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
                 onClick={() => router.push("/auth")}
               >
                 <button
-                  className={`flex-1 rounded-xl py-2 px-3 sm:px-4 md:px-6 text-xs sm:text-sm md:text-base font-semibold transition ${
+                  className={`cursor-pointer flex-1 rounded-xl py-2 px-3 sm:px-4 md:px-6 text-xs sm:text-sm md:text-base font-semibold transition ${
                     item.filled
                       ? "bg-gradient-to-r from-[#FF6B00] to-[#F54B00] text-white hover:shadow-lg"
                       : "border-2 border-[#FFB184] text-[#F5632A] hover:bg-orange-50"
@@ -509,7 +509,7 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
                 >
                   {item.button}
                 </button>
-                <button className="w-9 h-9 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-full border-2 border-[#FFC29C] flex items-center justify-center text-[#F5632A] transition hover:bg-[#F5632A] hover:text-white flex-shrink-0">
+                <button className="cursor-pointer w-9 h-9 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-full border-2 border-[#FFC29C] flex items-center justify-center text-[#F5632A] transition hover:bg-[#F5632A] hover:text-white flex-shrink-0">
                   <ArrowRight
                     size={16}
                     className="sm:w-[20px] sm:h-[20px] md:w-[28px] md:h-[28px]"
@@ -552,7 +552,7 @@ function DashboardSection({ dashboardData }: { dashboardData: any }) {
             <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-5 justify-center lg:justify-start">
               <button
                 onClick={() => router.push("/auth")}
-                className="rounded-xl bg-white px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-semibold text-[#FF5B36] transition hover:scale-105 hover:shadow-xl text-sm sm:text-base"
+                className="cursor-pointer rounded-xl bg-white px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-semibold text-[#FF5B36] transition hover:scale-105 hover:shadow-xl text-sm sm:text-base"
               >
                 Try Free for 3 Days →
               </button>
@@ -731,7 +731,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
           <div className="bg-transparent flex flex-col sm:flex-row items-center justify-center pt-4 gap-4 max-w-2xl mx-auto">
             <button 
               onClick={()=> setIsPopupOpen(true)}
-            className="bg-[#FF7324] hover:bg-[#e05f1b] rounded-2xl px-6 py-3.5 flex items-center justify-center gap-2 transition-all w-full sm:w-auto font-bold text-white text-base sm:text-lg shadow-[0_10px_25px_-5px_rgba(255,115,36,0.3)]">
+            className="cursor-pointer bg-[#FF7324] hover:bg-[#e05f1b] rounded-2xl px-6 py-3.5 flex items-center justify-center gap-2 transition-all w-full sm:w-auto font-bold text-white text-base sm:text-lg shadow-[0_10px_25px_-5px_rgba(255,115,36,0.3)]">
               {heroSection?.ctaButtonText || "Calculate My GRE Score"} →
             </button>
 
@@ -740,7 +740,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
               style={{
                 backgroundColor: studentsData?.[0]?.colorCode || "#555",
               }}
-              className="border border-white/30 hover:bg-white/10 rounded-2xl px-6 py-3.5 flex items-center justify-center transition-all w-full sm:w-auto font-semibold text-white text-base sm:text-lg bg-transparent"
+              className="cursor-pointer border border-white/30 hover:bg-white/10 rounded-2xl px-6 py-3.5 flex items-center justify-center transition-all w-full sm:w-auto font-semibold text-white text-base sm:text-lg bg-transparent"
             >
               Take Mock Test
             </button>
@@ -811,7 +811,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
             <div className="pt-1 sm:pt-2">
               <button
                 onClick={() => router.push("/auth")}
-                className="bg-[#FF6A39] hover:bg-[#e05626] text-white font-bold px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 rounded-xl shadow-md transition text-sm sm:text-base"
+                className="cursor-pointer bg-[#FF6A39] hover:bg-[#e05626] text-white font-bold px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 rounded-xl shadow-md transition text-sm sm:text-base"
               >
                 {boostProfileSection.buttonText || "Enroll Now"}
               </button>
@@ -882,7 +882,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
             </p>
             <div className="flex justify-center lg:justify-end">
               <button
-                className="bg-gray-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl flex gap-2 items-center text-sm sm:text-base"
+                className="cursor-pointer bg-gray-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl flex gap-2 items-center text-sm sm:text-base"
                 onClick={() => router.push("/auth")}
               >
                 <Play size={16} />{" "}

@@ -46,7 +46,8 @@ import {
   Globe,
   Building,
   UserCheck,
-  Users as UsersIcon
+  Users as UsersIcon,
+  CircleDotDashedIcon
 } from "lucide-react";
 import FormSection from "./formSection";
 
@@ -158,19 +159,29 @@ const FORM_CONFIG: FormConfigType = {
       icon: MapPin
     },
     {
-      name: "age",
-      label: "Age",
-      type: "number",
+      name: "country",
+      label: "Country",
+      type: "text",
       required: false,
-      placeholder: "24",
+      placeholder: "India",
       step: 1,
       grid: "half",
-      icon: Calendar
+      icon: MapPin
     },
+    // {
+    //   name: "age",
+    //   label: "Age",
+    //   type: "number",
+    //   required: false,
+    //   placeholder: "24",
+    //   step: 1,
+    //   grid: "half",
+    //   icon: Calendar
+    // },
     {
       name: "exam",
       label: "Target Exam",
-      type: "button-group",
+      type: "select",
       required: true,
       step: 2,
       grid: "full",
@@ -180,39 +191,40 @@ const FORM_CONFIG: FormConfigType = {
         { value: "PTE", label: "PTE", icon: PenTool },
         { value: "GRE", label: "GRE", icon: TrendingUp },
         { value: "GMAT", label: "GMAT", icon: Briefcase },
-        { value: "SAT", label: "SAT", icon: Calculator }
+        { value: "SAT", label: "SAT", icon: Calculator },
+        { value: "other", label :"Other", icon : CircleDotDashedIcon}
       ]
     },
-    {
-      name: "targetScore",
-      label: "Target Score",
-      type: "text",
-      required: false,
-      placeholder: "e.g. IELTS 7.5, GRE 320",
-      step: 2,
-      grid: "full",
-      icon: Target
-    },
-    {
-      name: "attempts",
-      label: "Previous Attempts",
-      type: "select",
-      required: false,
-      step: 2,
-      grid: "full",
-      options: [
-        { value: "", label: "Select attempts" },
-        { value: "First attempt", label: "First attempt" },
-        { value: "Second attempt", label: "Second attempt" },
-        { value: "Third attempt or more", label: "Third attempt or more" }
-      ]
-    },
+    // {
+    //   name: "targetScore",
+    //   label: "Target Score",
+    //   type: "text",
+    //   required: false,
+    //   placeholder: "e.g. IELTS 7.5, GRE 320",
+    //   step: 2,
+    //   grid: "full",
+    //   icon: Target
+    // },
+    // {
+    //   name: "attempts",
+    //   label: "Previous Attempts",
+    //   type: "select",
+    //   required: false,
+    //   step: 2,
+    //   grid: "full",
+    //   options: [
+    //     { value: "", label: "Select attempts" },
+    //     { value: "First attempt", label: "First attempt" },
+    //     { value: "Second attempt", label: "Second attempt" },
+    //     { value: "Third attempt or more", label: "Third attempt or more" }
+    //   ]
+    // },
     {
       name: "englishLevel",
       label: "English Level",
       type: "button-group",
       required: false,
-      step: 3,
+      step: 2,
       grid: "full",
       options: [
         { value: "Beginner", label: "Beginner", icon: Book, desc: "Just starting" },
@@ -221,37 +233,37 @@ const FORM_CONFIG: FormConfigType = {
         { value: "Advanced", label: "Advanced", icon: Star, desc: "Fluent speaker" }
       ]
     },
-    {
-      name: "weakAreas",
-      label: "Weak Areas",
-      type: "checkbox-group",
-      required: false,
-      step: 3,
-      grid: "full",
-      options: [
-        { value: "Reading", label: "Reading", icon: Book },
-        { value: "Writing", label: "Writing", icon: PenTool },
-        { value: "Listening", label: "Listening", icon: Headphones },
-        { value: "Speaking", label: "Speaking", icon: MessageSquare },
-        { value: "Verbal", label: "Verbal", icon: Hash },
-        { value: "Quant/Math", label: "Quant/Math", icon: Calculator }
-      ]
-    },
-    {
-      name: "startTimeline",
-      label: "Start Timeline",
-      type: "select",
-      required: false,
-      step: 3,
-      grid: "full",
-      options: [
-        { value: "", label: "Select timeline" },
-        { value: "Immediately (within 1 week)", label: "Immediately (within 1 week)" },
-        { value: "Within 2-4 weeks", label: "Within 2-4 weeks" },
-        { value: "Within 1-2 months", label: "Within 1-2 months" },
-        { value: "Just exploring", label: "Just exploring" }
-      ]
-    },
+    // {
+    //   name: "weakAreas",
+    //   label: "Weak Areas",
+    //   type: "checkbox-group",
+    //   required: false,
+    //   step: 3,
+    //   grid: "full",
+    //   options: [
+    //     { value: "Reading", label: "Reading", icon: Book },
+    //     { value: "Writing", label: "Writing", icon: PenTool },
+    //     { value: "Listening", label: "Listening", icon: Headphones },
+    //     { value: "Speaking", label: "Speaking", icon: MessageSquare },
+    //     { value: "Verbal", label: "Verbal", icon: Hash },
+    //     { value: "Quant/Math", label: "Quant/Math", icon: Calculator }
+    //   ]
+    // },
+    // {
+    //   name: "startTimeline",
+    //   label: "Start Timeline",
+    //   type: "select",
+    //   required: false,
+    //   step: 3,
+    //   grid: "full",
+    //   options: [
+    //     { value: "", label: "Select timeline" },
+    //     { value: "Immediately (within 1 week)", label: "Immediately (within 1 week)" },
+    //     { value: "Within 2-4 weeks", label: "Within 2-4 weeks" },
+    //     { value: "Within 1-2 months", label: "Within 1-2 months" },
+    //     { value: "Just exploring", label: "Just exploring" }
+    //   ]
+    // },
     {
       name: "notes",
       label: "Additional Notes",

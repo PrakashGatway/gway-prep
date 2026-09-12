@@ -39,6 +39,7 @@ function QuestionsSection({page = "calculator", heading, css }: any) {
   const [comments, setComments] = useState<any[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [Score, setScore] = useState("");
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -77,6 +78,7 @@ function QuestionsSection({page = "calculator", heading, css }: any) {
           email,
           comment,
           page,
+          Score,
           status : true
       })
 
@@ -129,8 +131,15 @@ function QuestionsSection({page = "calculator", heading, css }: any) {
               placeholder="Email address"
               className="rounded-lg border border-slate-200 px-3 py-3 text-sm outline-none focus:border-orange-400"
             />
-          </div>
+            <input
+              value={Score}
+              onChange={(e) => setScore(e.target.value)}
+              placeholder="Your Score"
+              className="rounded-lg border border-slate-200 px-3 py-3 text-sm outline-none focus:border-orange-400"
+            />
 
+          </div>
+          
           <textarea
             value={comment}
             onChange={(e) => setComment(e.target.value)}
