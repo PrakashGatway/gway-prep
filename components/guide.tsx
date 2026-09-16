@@ -1,750 +1,437 @@
 "use client";
 import { motion } from "framer-motion";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
-    Search,
-    CalendarDays,
-    UserRound,
-    ArrowRight,
-    ChevronLeft,
-    ChevronRight,
-    ChevronDown,
-    Grid2X2,
-    Rocket,
-    User,
-    CreditCard,
-    GraduationCap,
-    Settings,
-    ShieldCheck,
-    Headphones,
-    BookOpen,
-    Zap,
-    MessageCircleQuestion,
+  Search,
+  CalendarDays,
+  UserRound,
+  ArrowRight,
+  ChevronLeft,
+  ChevronRight,
+  Headphones,
+  Zap,
+  BookOpen,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+// --- Types & Interfaces ---
 interface Guide {
-    id: string;
-    title: string;
-    description: string;
-    category: string;
-    date: string;
-    author: string;
-    slug: string;
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  date: string; // or createdAt depending on your API
+  createdAt?: string;
+  author: string;
+  slug: string;
+  isPopular?: boolean;
 }
 
-const guides: Guide[] = [
-    {
-        id: "1",
-        title: "Getting Started with OoshasPrep – A Quick Guide",
-        description:
-            "New here? This guide will help you create your account, set up your profile, and get started with your learning journey.",
-        category: "GETTING STARTED",
-        date: "Aug 18, 2026",
-        author: "Admin Team",
-        slug: "getting-started-with-ooshasprep",
-    },
-    {
-        id: "2",
-        title: "How to Update Your Profile and Personal Information",
-        description:
-            "Learn how to update your personal details, change your password, and manage your account settings easily.",
-        category: "ACCOUNT & PROFILE",
-        date: "Aug 16, 2026",
-        author: "Admin Team",
-        slug: "update-profile-personal-information",
-    },
-    {
-        id: "3",
-        title: "Payment Methods, Refunds & Billing Support",
-        description:
-            "Find answers to common payment issues, refund policies, and how to download your invoices.",
-        category: "PAYMENTS & BILLING",
-        date: "Aug 14, 2026",
-        author: "Admin Team",
-        slug: "payment-refunds-billing",
-    },
-    {
-        id: "4",
-        title: "How to Enroll, Access and Track Your Courses",
-        description:
-            "Step-by-step guide to enrolling in courses, accessing study materials, and tracking your learning progress.",
-        category: "COURSES & LEARNING",
-        date: "Aug 12, 2026",
-        author: "Admin Team",
-        slug: "enroll-access-track-courses",
-    },
-    {
-        id: "5",
-        title: "Troubleshooting Common Issues",
-        description:
-            "Facing login issues, video not loading, or other errors? Here's how to fix common problems quickly.",
-        category: "TECHNICAL SUPPORT",
-        date: "Aug 10, 2026",
-        author: "Admin Team",
-        slug: "troubleshooting-common-issues",
-    },
-    {
-        id: "6",
-        title: "Keep Your Account Safe and Secure",
-        description:
-            "Tips to keep your account secure, recognize suspicious activity, and protect your personal information.",
-        category: "SAFETY & SECURITY",
-        date: "Aug 08, 2026",
-        author: "Admin Team",
-        slug: "account-safety-security",
-    },
-    {
-        id: "7",
-        title: "Understanding Our Policies and Terms",
-        description:
-            "Read our terms of service, privacy policy, and other important policies to stay informed.",
-        category: "GENERAL",
-        date: "Aug 06, 2026",
-        author: "Admin Team",
-        slug: "policies-and-terms",
-    },
-    {
-        id: "8",
-        title: "How to Contact Support Team",
-        description:
-            "Can't find what you're looking for? Here's how to reach our support team for faster help.",
-        category: "GENERAL",
-        date: "Aug 04, 2026",
-        author: "Admin Team",
-        slug: "contact-support-team",
-    },
-    {
-        id: "9",
-        title: "Scholarships & Offers Guidelines",
-        description:
-            "Learn how to apply for scholarships and avail exclusive offers on courses and test series.",
-        category: "GENERAL",
-        date: "Aug 02, 2026",
-        author: "Admin Team",
-        slug: "scholarships-offers-guidelines",
-    },
-];
+interface PaginationData {
+  page: number;
+  pages: number;
+  total: number;
+}
 
+interface AllGuidesResponse {
+  data: Guide[];
+  pagination: PaginationData;
+}
 
+interface CategoryItem {
+  _id: string;
+  name: string;
+  slug: string;
+  icon?: any; // Assuming you might pass icons here, otherwise we use defaults
+}
 
-const categoryColors: Record<string, string> = {
-    "GETTING STARTED": "text-[#ff5b16]",
-    "ACCOUNT & PROFILE": "text-[#7547ed]",
-    "PAYMENTS & BILLING": "text-[#16a34a]",
-    "COURSES & LEARNING": "text-[#ff7a00]",
-    "TECHNICAL SUPPORT": "text-[#1677ff]",
-    "SAFETY & SECURITY": "text-[#ef315c]",
-    GENERAL: "text-[#0891a2]",
+interface AllCategoriesResponse {
+  data: CategoryItem[];
+}
+
+// --- Props Interface ---
+interface GuidePageProps {
+  allGuides: AllGuidesResponse;
+  allCategory: AllCategoriesResponse;
+}
+
+// --- Mock Data for Fallback (Optional, keeps TS happy if props are missing) ---
+const mockGuides: AllGuidesResponse = {
+  data: [],
+  pagination: { page: 1, pages: 1, total: 0 },
+};
+const mockCategories: AllCategoriesResponse = { data: [] };
+
+// --- Icons Mapping for Categories ---
+const CategoryIconMap: Record<string, React.ElementType> = {
+  "Account & Profile": UserRound,
+  "Password Reset": Zap,
+  "Batches & Courses": BookOpen,
+  Settings: Headphones,
+  default: BookOpen,
 };
 
-export default function GuidePage({ allGuides,allCategory }) {
-    const [activeCategory, setActiveCategory] = useState("All Guides");
-  
-    const [sort, setSort] = useState("Latest First");
-    const [page, setPage] = useState(1);
+export default function GuidePage({
+  allGuides = mockGuides,
+  allCategory = mockCategories,
+}: GuidePageProps) {
+  const [activeCategory, setActiveCategory] = useState("All Guides");
+  const [page, setPage] = useState(1);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [search, setSearch] = useState(searchParams.get("search") || "");
 
-   
+  // --- Logic Functions (Preserved) ---
 
-    const router = useRouter();
+  const handleSearch = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (search.trim()) {
+      params.set("search", search.trim());
+    } else {
+      params.delete("search");
+    }
+    params.set("page", "1");
+    router.push(`/guide?${params.toString()}`);
+  };
 
-      const searchParams = useSearchParams();
-
-    const [search, setSearch] = useState(
-        searchParams.get("search") || ""
-    );
-
-    const handleSearch = () => {
-        const params = new URLSearchParams(
-            searchParams.toString()
-        );
-
-        if (search.trim()) {
-            params.set("search", search.trim());
-        } else {
-            params.delete("search");
-        }
-
-        // Search should always start from page 1
-        params.set("page", "1");
-
-        router.push(`/guide?${params.toString()}`);
-    };
-
-  
-
-    const getGuideIcon = () => {
-        return MessageCircleQuestion;
-    };
-
-   const handleCategory = (category: string) => {
-    const params = new URLSearchParams(
-        searchParams.toString()
-    );
-
-     setActiveCategory(category);
-        setPage(1);
-
+  const handleCategory = (category: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    setActiveCategory(category);
+    setPage(1);
     params.set("page", "1");
 
     if (category === "All Guides") {
-        params.delete("category");
+      params.delete("category");
     } else {
-        params.set("category", category);
+      params.set("category", category);
     }
-
     router.push(`/guide?${params.toString()}`);
-};
+  };
 
-
-const handlePageChange = (newPage: number) => {
+  const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
-
     params.set("page", String(newPage));
-
     router.push(`/guide?${params.toString()}`);
-};
+  };
 
-    return (
-        <main className="h-full bg-white text-[#101b35]">
+  // --- Render Helpers ---
 
-            {/* =========================================================
-                HERO
+  // Helper to get a consistent icon for the guide card based on category (or generic)
+  const getGuideIcon = (categoryName: string) => {
+    // You can map specific categories to specific icons here if needed
+    // For now, returning a generic BookOpen or similar as per design
+    return BookOpen;
+  };
+
+  // Format Date
+  const formatDate = (dateString: string | undefined) => {
+    if (!dateString) return "Aug 20, 2026";
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    });
+  };
+
+  return (
+    <main className="min-h-screen bg-orange-50 text-[#101b35]">
+      {/* =========================================================
+                HERO SECTION
             ========================================================= */}
-            <section className="relative overflow-hidden bg-gradient-to-br from-[#fffaf7] via-[#fff7f2] to-[#fffdfb]">
+      <section className="relative overflow-hidden pt-10 pb-0 lg:pt-6">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-0">
+          <div className="rounded-[32px] border border-orange-500 bg-white p-6  sm:p-2 sm:px-6 lg:flex lg:items-center lg:justify-between lg:gap-12">
+            {/* Left Content */}
+            <div className="relative z-10 max-w-xl lg:w-1/2">
+              <span className="mb-4 inline-block rounded-full bg-[#ff5b16] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
+                Support Center
+              </span>
 
-                {/* decorative dots */}
-                <div className="pointer-events-none absolute left-0 top-10 hidden sm:block">
-                    <div className="grid grid-cols-5 gap-[6px] opacity-50">
-                        {Array.from({ length: 35 }).map((_, i) => (
-                            <span
-                                key={i}
-                                className="h-[3px] w-[3px] rounded-full bg-[#ff6b35]"
-                            />
-                        ))}
-                    </div>
-                </div>
+              <h1 className="text-4xl font-extrabold leading-tight text-[#1a202c] sm:text-5xl">
+                How can we <span className="text-[#ff5b16]">help you?</span>
+              </h1>
 
-                <div className="pointer-events-none absolute right-[25%] top-12 hidden h-20 w-20 rounded-full bg-[#ffe7d8] opacity-60 lg:block" />
+              <p className="mt-4 text-base text-gray-500 sm:text-lg">
+                Find answers, guides and helpful resources for your Ooshas Prep
+                learning journey.
+              </p>
 
-                <div className="pointer-events-none absolute right-[7%] top-24 hidden h-12 w-12 rounded-full bg-[#fff0e7] lg:block" />
+              {/* Search Bar */}
+              <div className="mt-8 flex items-center rounded-full border border-gray-200 bg-white p-2 pl-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-shadow focus-within:shadow-md">
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                    setPage(1);
+                  }}
+                  placeholder="Search for guides, articles or topics..."
+                  className="w-full bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
+                />
+                <button
+                  onClick={handleSearch}
+                  className="flex px-4 py-2 shrink-0 items-center justify-center rounded-full bg-[#f36d45] text-white transition hover:bg-[#e04e12]"
+                >
+                  Search
+                </button>
+              </div>
+            </div>
 
-                <div className="mx-auto max-w-[1280px] px-5 sm:px-8 lg:px-10">
-                    <div className="relative grid min-h-[350px] items-center gap-10 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:py-5 lg:pb-2">
+            {/* Right Illustration (CSS Composition) */}
+            <div className="relative mt-10 hidden lg:block lg:w-1/2 lg:min-h-[300px]">
+              {/* Abstract Background Shapes */}
+              <div className="absolute right-0 top-0 h-64 w-64 rounded-full bg-[#fff0e8] opacity-60 blur-3xl" />
 
-                        {/* Left */}
-                        <div className="relative z-10">
+              {/* Illustration Container */}
+              <div className="relative flex items-end justify-center">
+                {/* Person/Image Placeholder - Using an SVG composition to mimic the reference */}
+                <img
+                  src="/image/guide-hero.webp"
+                  alt="Support Agent"
+                  className="relative z-10 w-full max-w-md object-contain drop-shadow-xl"
+                  // Hiding placeholder, using CSS shapes below instead
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-                            <div className="mb-5 inline-flex items-center rounded-full border border-[#ffd7c3] bg-white px-4 py-2 text-[11px] font-bold uppercase tracking-wide text-[#ff5b16] shadow-sm">
-                                Support Center
-                            </div>
-
-                            <h1 className="max-w-[650px] text-[42px] font-extrabold leading-[1.05] tracking-[-1.8px] text-[#111a34] sm:text-[54px] lg:text-5xl">
-                                Support{" "}
-                                <span className="text-[#f45b1b]">
-                                    Guides
-                                </span>
-                            </h1>
-
-                            <p className="mt-5 max-w-[580px] text-[17px] font-medium leading-8 text-[#59647a] sm:text-[19px]">
-                                Find helpful articles, tips, and guides to
-                                support you at every step.
-                            </p>
-
-                            {/* Search */}
-                            <div className="mt-7 flex max-w-[580px] rounded-xl border border-[#edf0f4] bg-white p-1.5 shadow-[0_8px_30px_rgba(25,35,55,0.08)]">
-
-                                <div className="flex min-w-0 flex-1 items-center px-4">
-                                    <input
-                                        type="text"
-                                        value={search}
-                                        onChange={(e) => {
-                                            setSearch(e.target.value);
-                                            setPage(1);
-                                        }}
-                                        placeholder="Search for articles, topics or keywords..."
-                                        className="w-full bg-transparent py-3 text-sm text-[#18233c] outline-none placeholder:text-[#9aa2b1]"
-                                    />
-                                </div>
-
-                                <button
-                                onClick={handleSearch}
-                                    type="button"
-                                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-[#ff5b16] text-white transition hover:bg-[#ed4f0c]"
-                                >
-                                    <Search size={21} strokeWidth={2.5} />
-                                </button>
-                            </div>
-
-                      
-                        </div>
-
-                        {/* Right Hero Illustration */}
-                        <div className="relative hidden min-h-[350px] items-center justify-center lg:flex">
-
-                            <div className="absolute right-[25%] top-8 h-[245px] w-[245px] rounded-full bg-[#fff0e5]" />
-
-                            {/* Question bubble */}
-                            <div className="relative z-10 flex h-[150px] w-[180px] mr-40 items-center justify-center rounded-[35px] bg-gradient-to-br from-[#ffb077] to-[#ff7a32] shadow-[0_20px_40px_rgba(245,91,27,0.18)]">
-                                <span className="text-[92px] font-bold leading-none text-white">
-                                    ?
-                                </span>
-
-                                <div className="absolute -bottom-7 left-[65px] h-0 w-0 border-l-[30px] border-t-[35px] border-l-transparent border-t-[#ff7a32]" />
-                            </div>
-
-                            {/* Chat bubble */}
-                            <div className="absolute bottom-[72px] right-[37%] z-20 flex h-[70px] w-[100px] items-center justify-center rounded-[22px] bg-white shadow-[0_12px_30px_rgba(25,35,55,0.12)]">
-                                <div className="flex gap-2">
-                                    <span className="h-3 w-3 rounded-full bg-[#ff9b67]" />
-                                    <span className="h-3 w-3 rounded-full bg-[#ff9b67]" />
-                                    <span className="h-3 w-3 rounded-full bg-[#ff9b67]" />
-                                </div>
-                            </div>
-
-
-
-                            {/* Support boxes */}
-                            <div className="absolute right-0 top-4 flex flex-col gap-4">
-
-                                <SupportFeature
-                                    icon={<Headphones size={24} />}
-                                    title="24/7 Support"
-                                    description="We're here to help anytime"
-                                />
-
-                                <SupportFeature
-                                    icon={<Zap size={24} />}
-                                    title="Quick Solutions"
-                                    description="Find fast and easy solutions"
-                                />
-
-                                <SupportFeature
-                                    icon={<BookOpen size={24} />}
-                                    title="Step by Step Guides"
-                                    description="Detailed guides to help you"
-                                />
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-               
-            </section>
-
-            {/* =========================================================
-                CATEGORY NAVIGATION
+      {/* =========================================================
+                BROWSE BY CATEGORY
             ========================================================= */}
-          <section className="relative z-10 mx-auto -mt-1 max-w-[1280px] px-4 sm:px-8 lg:px-10 lg:py-4">
-    <div className="rounded-2xl border border-[#f0f1f3] bg-white p-2 shadow-[0_8px_30px_rgba(20,30,50,0.05)]">
-        <div className="scrollbar-hide flex gap-2 overflow-x-auto">
+      <section className="mt-12 mb-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-0 overflow-x-auto">
+          <div className="mb-6 flex items-end justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-[#333]">
+                Browse by <span className="text-[#ff5b16]">Category</span>
+              </h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Find the help you need, organized by topic.
+              </p>
+            </div>
+          </div>
 
-            {/* =====================================================
-                ALL GUIDES
-            ===================================================== */}
-
+          {/* Category Cards Grid */}
+          {/* Category Cards - Horizontal Slider */}
+          <div className="flex gap-4 overflow-x-auto pb-3 scrollbar-hide">
+            {/* Static "All" Card */}
             <motion.button
-                layout
-                onClick={() => handleCategory("All Guides")}
-                className="relative flex min-w-[130px] shrink-0 items-center justify-between gap-2 overflow-hidden rounded-xl px-4 py-3.5"
-                whileTap={{ scale: 0.98 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => handleCategory("All Guides")}
+              className={`group relative flex min-w-[280px] shrink-0 items-center gap-4 rounded-xl border bg-white p-5 text-left border-orange-500 sm:min-w-[300px] border-l-[4px]`}
             >
-                {activeCategory === "All Guides" && (
-                    <motion.div
-                        layoutId="category-slider"
-                        className="absolute inset-0 rounded-xl bg-[#fff3ed]"
-                        transition={{
-                            type: "spring",
-                            stiffness: 180,
-                            damping: 22,
-                            mass: 0.7,
-                        }}
-                    />
-                )}
+              <div
+                className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${
+                  activeCategory === "All Guides"
+                    ? "bg-[#f36d45] text-white"
+                    : "bg-orange-50 text-[#ff5b16]"
+                }`}
+              >
+                <BookOpen size={24} />
+              </div>
 
-                <span
-                    className={`relative z-10 text-[12px] font-bold ${
-                        activeCategory === "All Guides"
-                            ? "text-[#ff5b16]"
-                            : "text-[#273149]"
-                    }`}
+              <div>
+                <h3
+                  className={`font-bold ${
+                    activeCategory === "All Guides"
+                      ? "text-[#ff5b16]"
+                      : "text-gray-800"
+                  }`}
                 >
-                    All Guides
-                </span>
+                  All Guides
+                </h3>
 
-                <span
-                    className={`relative z-10 flex h-7 min-w-7 items-center justify-center rounded-full px-2 text-[10px] font-bold ${
-                        activeCategory === "All Guides"
-                            ? "bg-[#ff5b16] text-white"
-                            : "bg-[#f3f4f6] text-[#667085]"
-                    }`}
-                >
-                    {allGuides?.pagination?.total || 0}
-                </span>
+                <p className="text-xs text-gray-500">
+                  {allGuides?.pagination?.total || 0} guides
+                </p>
+              </div>
             </motion.button>
 
-            {/* =====================================================
-                DYNAMIC CATEGORIES
-            ===================================================== */}
-
+            {/* Dynamic Categories */}
             {allCategory?.data?.map((item) => {
+              const isActive = activeCategory === item.slug;
+              const Icon =
+                CategoryIconMap[item.name] || CategoryIconMap.default;
 
-                const isActive =
-                    activeCategory === item.slug;
+              const count =
+                allGuides?.data?.filter((g) => g.category === item.slug)
+                  .length || 0;
 
-                // Count guides belonging to this category
-                const count =
-                    allGuides?.data?.filter(
-                        (guide) =>
-                            guide.category === item.slug
-                    ).length || 0;
-                    
+              return (
+                <motion.button
+                  key={item._id}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleCategory(item.slug)}
+                  className={`group relative flex min-w-[280px] shrink-0 items-center gap-4 rounded-xl border bg-white p-5 text-left border-orange-500 border-l-[4px] sm:min-w-[300px]`}
+                >
+                  <div
+                    className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${
+                      isActive
+                        ? "bg-[#f36d45] text-white"
+                        : "bg-orange-50 text-[#ff5b16]"
+                    }`}
+                  >
+                    <Icon size={24} />
+                  </div>
 
-                return (
-                    <motion.button
-                        key={item._id}
-                        layout
-                        onClick={() =>
-                            handleCategory(item.slug)
-                        }
-                        className="relative flex min-w-[155px] shrink-0 items-center justify-between gap-2 overflow-hidden rounded-xl px-4 py-3.5"
-                        whileTap={{ scale: 0.98 }}
+                  <div>
+                    <h3
+                      className={`font-bold ${
+                        isActive ? "text-[#ff5b16]" : "text-gray-800"
+                      }`}
                     >
-                        {/* Sliding active background */}
-                        {isActive && (
-                            <motion.div
-                                layoutId="category-slider"
-                                className="absolute inset-0 rounded-xl bg-[#fff3ed]"
-                                transition={{
-                                    type: "spring",
-                                    stiffness: 180,
-                                    damping: 22,
-                                    mass: 0.7,
-                                }}
-                            />
-                        )}
+                      {item.name}
+                    </h3>
 
-                        {/* Category name */}
-                        <motion.span
-                            animate={{
-                                color: isActive
-                                    ? "#ff5b16"
-                                    : "#273149",
-                            }}
-                            transition={{
-                                duration: 0.15,
-                            }}
-                            className="relative z-10 truncate text-[12px] font-bold"
-                        >
-                            {item.name}
-                        </motion.span>
-
-                        {/* Category count */}
-                        <motion.span
-                            animate={{
-                                backgroundColor: isActive
-                                    ? "#ff5b16"
-                                    : "#f3f4f6",
-                                color: isActive
-                                    ? "#ffffff"
-                                    : "#667085",
-                            }}
-                            transition={{
-                                duration: 0.15,
-                            }}
-                            className="relative z-10 flex h-7 min-w-7 shrink-0 items-center justify-center rounded-full px-2 text-[10px] font-bold"
-                        >
-                            {count}
-                        </motion.span>
-                    </motion.button>
-                );
+                    <p className="text-xs text-gray-500">{count} guides</p>
+                  </div>
+                </motion.button>
+              );
             })}
+          </div>
         </div>
-    </div>
-</section>
+      </section>
 
-            {/* =========================================================
-                GUIDES
+      {/* =========================================================
+                POPULAR GUIDES (GRID VIEW)
             ========================================================= */}
-            <section className="mx-auto max-w-[1280px] px-4 pb-16 pt-12 sm:px-8 lg:px-10 lg:pt-0">
-
-            
-
-                {/* Empty state */}
-                {allGuides.data.length === 0 ? (
-                    <div className="rounded-2xl border border-dashed border-[#e3e6eb] py-20 text-center">
-                        <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#fff3ed] text-[#ff5b16]">
-                            <Search size={28} />
-                        </div>
-
-                        <h3 className="text-lg font-bold text-[#17213a]">
-                            No guides found
-                        </h3>
-
-                        <p className="mt-2 text-sm text-[#778094]">
-                            Try another search or select a different category.
-                        </p>
-                    </div>
-                ) : (
-                    <div className="space-y-3">
-
-                        {allGuides.data.map((guide) => {
-                            const Icon = getGuideIcon();
-
-                            return (
-                                <article
-                                    key={guide.id}
-                                    className="group relative overflow-hidden rounded-2xl border border-[#edf0f3] bg-white transition-all duration-300 hover:-translate-y-[2px] hover:border-[#ffd6c4] hover:shadow-[0_12px_35px_rgba(25,35,55,0.08)]"
-                                >
-
-                                    {/* orange hover line */}
-                                    <div className="absolute left-0 top-0 h-full w-[3px] origin-top scale-y-0 bg-[#ff5b16] transition-transform duration-300 group-hover:scale-y-100" />
-
-                                    <div className="grid items-center gap-5 p-5 sm:grid-cols-[90px_minmax(0,1fr)_180px_55px] sm:px-6 sm:py-5 lg:grid-cols-[105px_minmax(0,1fr)_190px_58px]">
-
-                                        {/* Single Question Icon */}
-                                        <div className="flex justify-center sm:justify-start">
-                                            <div className="flex h-[66px] w-[66px] items-center justify-center rounded-full bg-[#fff0e8] ring-1 ring-[#ffe0d0] transition-transform duration-300 group-hover:scale-105">
-                                                <Icon
-                                                    size={34}
-                                                    strokeWidth={2.2}
-                                                    className="text-[#ff5b16]"
-                                                />
-                                            </div>
-                                        </div>
-
-                                        {/* Content */}
-                                        <div className="min-w-0 text-center sm:text-left">
-
-                                            <p
-                                                className={`mb-1.5 text-sm font-extrabold tracking-wide ${categoryColors[
-                                                    guide.category.split("-").join(" ")
-                                                ] || "text-[#ff5b16]"
-                                                    }`}
-                                            >
-                                                {guide.category.split("-").join(" ").toUpperCase()}
-                                            </p>
-
-                                            <h3 className="text-[15px] font-bold leading-6 text-[#17213a] transition-colors group-hover:text-[#ff5b16] sm:text-[16px]">
-                                                {guide.title}
-                                            </h3>
-
-                                            <p className="mt-1 line-clamp-2 max-w-[650px] text-[12px] leading-5 text-[#697388] sm:text-[13px]" dangerouslySetInnerHTML={{
-                                                __html: guide.description
-                                            }}>
-
-                                            </p>
-                                        </div>
-
-                                        {/* Meta */}
-                                        <div className="flex flex-row justify-center gap-5 text-[10px] text-[#697388] sm:flex-col sm:items-start sm:gap-2">
-
-                                            <div className="flex items-center gap-2 px-2.5">
-                                                <CalendarDays
-                                                    size={14}
-                                                    className="text-[#7c879b]"
-                                                />
-                                                <span className="text-sm">
-                                                    {new Date(guide.createdAt).toLocaleDateString("en-US", {
-                                                        month: "short",
-                                                        day: "numeric",
-                                                        year: "numeric",
-                                                    })}
-                                                </span>
-                                            </div>
-
-                                            {guide.isPopular && (
-                                                <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-2.5 py-1">
-                                                    <UserRound
-                                                        size={12}
-                                                        strokeWidth={2.5}
-                                                        className="text-[#ff5b16]"
-                                                    />
-                                                    <span className="text-sm font-bold text-[#e85b22]">
-                                                        Frequently Asked
-                                                    </span>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        {/* Arrow */}
-                                        <div className="flex justify-center sm:justify-end">
-                                            <button
-                                                type="button"
-                                                onClick={() =>
-                                                    window.location.href = `/guide/${guide.slug}`
-                                                }
-                                                className="flex h-10 w-10 items-center justify-center rounded-full border border-[#ff9b72] text-[#ff5b16] transition-all duration-300 group-hover:bg-[#ff5b16] group-hover:text-white"
-                                            >
-                                                <ArrowRight size={18} />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </article>
-                            );
-                        })}
-                    </div>
-                )}
-
-                {/* =====================================================
-                    PAGINATION
-                ===================================================== */}
-               {allGuides.pagination?.pages > 0 && (
-    <div className="mt-10 flex items-center justify-center gap-2">
-
-        {/* Previous */}
-        <button
-            type="button"
-            disabled={allGuides.pagination.page === 1}
-            onClick={() => {
-                handlePageChange(
-                    Math.max(
-                        allGuides.pagination.page - 1,
-                        1
-                    )
-                );
-            }}
-            className={`
-                flex h-9 w-9 items-center justify-center
-                rounded-lg border transition-all
-                ${
-                    allGuides.pagination.page === 1
-                        ? "cursor-not-allowed border-[#eeeeee] text-[#c5c9d0]"
-                        : "border-[#e5e7eb] text-[#273149] hover:border-[#ff6b35] hover:text-[#ff6b35]"
-                }
-            `}
-        >
-            <ChevronLeft size={16} />
-        </button>
-
-        {/* Page Numbers */}
-        {Array.from(
-            {
-                length: allGuides.pagination.pages,
-            },
-            (_, index) => index + 1
-        ).map((pageNumber) => (
-            <button
-                key={pageNumber}
-                type="button"
-                onClick={() => handlePageChange(pageNumber)}
-                className={`
-                    flex h-9 min-w-9 items-center justify-center
-                    rounded-lg border px-2 text-xs font-semibold
-                    transition-all duration-200
-                    ${
-                        allGuides.pagination.page === pageNumber
-                            ? "border-[#ff6b35] bg-[#fff3ed] text-[#ff5b16]"
-                            : "border-[#e5e7eb] bg-white text-[#273149] hover:border-[#ffb28d] hover:text-[#ff5b16]"
-                    }
-                `}
-            >
-                {pageNumber}
-            </button>
-        ))}
-
-        {/* Next */}
-        <button
-            type="button"
-            disabled={
-                allGuides.pagination.page ===
-                allGuides.pagination.pages
-            }
-            onClick={() => {
-                handlePageChange(
-                    Math.min(
-                        allGuides.pagination.page + 1,
-                        allGuides.pagination.pages
-                    )
-                );
-            }}
-            className={`
-                flex h-9 w-9 items-center justify-center
-                rounded-lg border transition-all
-                ${
-                    allGuides.pagination.page ===
-                    allGuides.pagination.pages
-                        ? "cursor-not-allowed border-[#eeeeee] text-[#c5c9d0]"
-                        : "border-[#e5e7eb] text-[#273149] hover:border-[#ff6b35] hover:text-[#ff6b35]"
-                }
-            `}
-        >
-            <ChevronRight size={16} />
-        </button>
-
-    </div>
-)}
-            </section>
-        </main>
-    );
-}
-
-/* =========================================================
-   SUPPORT FEATURE
-========================================================= */
-
-function SupportFeature({
-    icon,
-    title,
-    description,
-}: {
-    icon: React.ReactNode;
-    title: string;
-    description: string;
-}) {
-    return (
-        <div className="flex w-[190px] items-center gap-3 rounded-xl border border-[#f1e9e4] bg-white px-4 py-3.5 shadow-[0_8px_25px_rgba(25,35,55,0.06)]">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#fff0e8] text-[#ff5b16]">
-                {icon}
-            </div>
-
+      <section className="pb-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-0">
+          <div className="mb-8 flex items-end justify-between">
             <div>
-                <p className="text-[12px] font-bold text-[#18223a]">
-                    {title}
-                </p>
-
-                <p className="mt-0.5 text-[9px] leading-4 text-[#7b8496]">
-                    {description}
-                </p>
+              <h2 className="text-2xl font-bold text-[#333]">
+                Popular <span className="text-[#ff5b16]">Guides</span>
+              </h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Helpful resources students are viewing most.
+              </p>
             </div>
+          </div>
+
+          {allGuides.data.length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-gray-300 bg-white py-20 text-center">
+              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-orange-50 text-[#ff5b16]">
+                <Search size={28} />
+              </div>
+              <h3 className="text-lg font-bold text-gray-800">
+                No guides found
+              </h3>
+              <p className="mt-2 text-sm text-gray-500">
+                Try another search or select a different category.
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {allGuides.data.map((guide) => {
+                const Icon = getGuideIcon(guide.category);
+                return (
+                  <article
+                    key={guide.id}
+                    className="group relative flex flex-col justify-between rounded-2xl border border-orange-500 bg-white p-6 transition-all duration-300 hover:-translate-y-1"
+                  >
+                    {/* Top Badge */}
+                    <div className="mb-4 flex justify-end">
+                      <div className="inline-flex items-center gap-1.5 rounded-lg bg-[#f36d45] px-3 py-1 text-sm font-bold text-[#fff0eb]">
+                        <UserRound size={12} />
+                        <span>{guide.category.split("-").join(" ")}</span>
+                      </div>
+                    </div>
+
+                    {/* Content */}
+                    <div className="mb-6">
+                      <h3 className="mb-2 text-lg font-bold leading-snug text-gray-900 transition-colors group-hover:text-[#ff5b16]">
+                        {guide.title}
+                      </h3>
+                      <p
+                        className="line-clamp-2 text-sm leading-relaxed text-gray-500"
+                        dangerouslySetInnerHTML={{ __html: guide.description }}
+                      ></p>
+                    </div>
+
+                    {/* Footer Meta */}
+                    <div className="flex items-center justify-between border-t border-gray-50 pt-4">
+                      <div className="flex items-center gap-2 text-xs font-medium text-gray-400">
+                        <CalendarDays size={14} className="text-gray-400" />
+                        <span>{formatDate(guide.date || guide.createdAt)}</span>
+                      </div>
+
+                      <button
+                        onClick={() =>
+                          (window.location.href = `/guide/${guide.slug}`)
+                        }
+                        className="flex h-8 w-8 items-center justify-center rounded-full text-[#ff5b16] transition-colors group-hover:bg-[#ff5b16] group-hover:text-white"
+                      >
+                        <ArrowRight size={18} />
+                      </button>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+          )}
+
+          {/* =========================================================
+                        PAGINATION
+                    ========================================================= */}
+          {allGuides.pagination?.pages > 1 && (
+            <div className="mt-12 flex items-center justify-center gap-2">
+              <button
+                disabled={allGuides.pagination.page === 1}
+                onClick={() =>
+                  handlePageChange(Math.max(allGuides.pagination.page - 1, 1))
+                }
+                className={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors ${
+                  allGuides.pagination.page === 1
+                    ? "cursor-not-allowed border-gray-100 text-gray-300"
+                    : "border-gray-200 text-gray-600 hover:border-[#ff5b16] hover:text-[#ff5b16]"
+                }`}
+              >
+                <ChevronLeft size={16} />
+              </button>
+
+              {Array.from(
+                { length: allGuides.pagination.pages },
+                (_, i) => i + 1,
+              ).map((pageNum) => (
+                <button
+                  key={pageNum}
+                  onClick={() => handlePageChange(pageNum)}
+                  className={`flex h-9 min-w-[36px] items-center justify-center rounded-full text-sm font-medium transition-all ${
+                    allGuides.pagination.page === pageNum
+                      ? "bg-[#ff5b16] text-white shadow-md shadow-orange-200"
+                      : "text-gray-500 hover:bg-orange-50 hover:text-[#ff5b16]"
+                  }`}
+                >
+                  {pageNum}
+                </button>
+              ))}
+
+              <button
+                disabled={
+                  allGuides.pagination.page === allGuides.pagination.pages
+                }
+                onClick={() =>
+                  handlePageChange(
+                    Math.min(
+                      allGuides.pagination.page + 1,
+                      allGuides.pagination.pages,
+                    ),
+                  )
+                }
+                className={`flex h-9 w-9 items-center justify-center rounded-full border transition-colors ${
+                  allGuides.pagination.page === allGuides.pagination.pages
+                    ? "cursor-not-allowed border-gray-100 text-gray-300"
+                    : "border-gray-200 text-gray-600 hover:border-[#ff5b16] hover:text-[#ff5b16]"
+                }`}
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
         </div>
-    );
-}
-
-/* =========================================================
-   PAGINATION BUTTON
-========================================================= */
-
-function PaginationButton({
-    children,
-    active = false,
-    disabled = false,
-    onClick,
-}: {
-    children: React.ReactNode;
-    active?: boolean;
-    disabled?: boolean;
-    onClick?: () => void;
-}) {
-    return (
-        <button
-            type="button"
-            disabled={disabled}
-            onClick={onClick}
-            className={`
-                flex h-9 min-w-9 items-center justify-center rounded-lg border px-2 text-xs font-semibold transition
-                ${active
-                    ? "border-[#ff6b35] bg-[#fff4ed] text-[#ff5b16]"
-                    : "border-[#e7e9ed] bg-white text-[#3d475d] hover:border-[#ffb28d] hover:text-[#ff5b16]"
-                }
-                ${disabled
-                    ? "cursor-not-allowed opacity-40"
-                    : ""
-                }
-            `}
-        >
-            {children}
-        </button>
-    );
+      </section>
+    </main>
+  );
 }
