@@ -29,6 +29,7 @@ import Swal from "sweetalert2";
 import axiosInstance from "@/services/axiosInstance";
 import { useGlobal } from "@/hooks/AppStateContext";
 import Image from "next/image";
+import { Turnstile } from "@marsidev/react-turnstile";
 // import { useSearchParams } from "next/navigation";
 
 // Input Field Component
@@ -67,8 +68,10 @@ function Auth({ toggleDrawer }: any) {
   const [termsAccepted, setTermsAccepted] = useState(true);
   const [errors, setErrors] = useState<any>({});
   const [resendCooldown, setResendCooldown] = useState(0);
-  const search = ""
-  const referral = ""
+  const [turnstileToken, setTurnstileToken] = useState("");
+
+  const search = "";
+  const referral = "";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -123,12 +126,19 @@ function Auth({ toggleDrawer }: any) {
       newErrors.email = "Please enter a valid email address.";
     }
 
+    // Cloudflare validation
+    if (!turnstileToken) {
+      newErrors.turnstile = "Please verify that you are not a robot.";
+    }
+
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
     setLoading(true);
     try {
-      const res = await axiosInstance.get(`/auth/verify_email?email=${email}`);
+      const res = await axiosInstance.get(
+        `/auth/verify_email?email=${email}&turnstileToken=${turnstileToken}`,
+      );
       const exists = res?.data?.isExists;
       setUserExists(exists);
 
@@ -295,6 +305,30 @@ function Auth({ toggleDrawer }: any) {
                 error={errors.email}
                 required
               />
+
+              <div className="!w-full">
+                <Turnstile
+                  siteKey={"0x4AAAAAAE13UE9vSZt3X2DO"}
+                  options={{
+                    size: "flexible",
+                  }}
+                  onSuccess={(token) => {
+                    console.log(token);
+                    setTurnstileToken(token);
+                    setErrors((prev: any) => ({
+                      ...prev,
+                      turnstile: "",
+                    }));
+                  }}
+                  onExpire={() => {
+                    setTurnstileToken("");
+                  }}
+                  onError={() => {
+                    setTurnstileToken("");
+                  }}
+                  className="!w-full"
+                />
+              </div>
 
               <button
                 type="submit"
@@ -698,17 +732,6 @@ function CoursesCard() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
 
 // "use client";
 
@@ -1334,8 +1357,6 @@ function CoursesCard() {
 //   );
 // }
 
-
-
 // const TESTIMONIALS = [
 //   {
 //     quote: "The best decision I made for my study abroad journey",
@@ -1529,5 +1550,3 @@ function CoursesCard() {
 // };
 
 // export default AuthDrawer;
-
-
