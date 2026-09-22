@@ -407,17 +407,11 @@ function VideoExplanationSection({ videoData }: { videoData: any }) {
                   </button>
                 </div>
                 <div className="mt-6 sm:mt-8 md:mt-10 flex items-center gap-2 sm:gap-3 md:gap-4 justify-center">
-                  <img
-                    src="/image/logo.png"
-                    alt="Instructor"
-                    className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 rounded-full object-cover object-start"
-                  />
+                 
                   <div>
-                    <h4 className="text-base sm:text-lg md:text-xl font-semibold text-[#333333]">
-                      By Roshni
-                    </h4>
+                    
                     <p className="text-xs sm:text-sm text-[#666666]">
-                      Ooshash Prep Expert
+                     By Ooshas Prep Expert
                     </p>
                   </div>
                 </div>
