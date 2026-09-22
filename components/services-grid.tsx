@@ -1,6 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import PopupModal from "./popupModel";
 
 export default function ServicesGrid({ data, heading }: any) {
   // Extract title and split by "||"
@@ -86,6 +88,8 @@ function Card({ item }: CardProps) {
   const description = contentParts[0]?.trim() || "";
   const buttonText = contentParts[1]?.trim() || "Learn More";
   
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
   return (
     <div className="bg-white md:rounded-3xl p-2 shadow-md border border-orange-100 hover:-translate-y-2 transition-all duration-300">
       {item.heading && (
@@ -99,10 +103,13 @@ function Card({ item }: CardProps) {
       <div className="mt-2 flex justify-center">
         <button 
           className="bg-orange-500 text-white px-5 py-2 rounded-full text-sm hover:bg-orange-600 transition cursor-pointer" 
-          onClick={() => router.push(item.link || "#")}
+          onClick={() => item.link === "*" ?setIsPopupOpen(true) : router.push(item.link || "#")}
         >
           {buttonText}
         </button>
+
+        
+      <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen}/>
       </div>
     </div>
   );

@@ -450,7 +450,7 @@ export function VideoTestimonialCard({ heading, data }: any) {
 }
 
 export function TextTestimonials({ heading, data }: any) {
-  console.log(data.data, "text data")
+  // console.log(data.data, "text data")
   const imageTestimonials =
     data?.data?.filter((ele: any) => ele.type === "image") || [];
 

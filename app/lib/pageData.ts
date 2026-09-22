@@ -118,6 +118,7 @@ export const pageData: any = {
             type: "repeater",
             fields: [
               { name: "content", label: "content", type: "text" },
+              { name: "link", label : "Link", placeholder:"Use '*' for a popup window or enter a destination URL to redirect users.", type : "text"},
               { name: "heading", label: "heading", type: "text" },
             ],
           },

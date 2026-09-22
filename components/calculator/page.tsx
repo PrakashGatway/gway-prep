@@ -51,6 +51,26 @@ type PercentileBand = {
   label: string;
 };
 
+// ---- NEW: adaptive (two-section) setup used by GRE ----
+type AdaptiveGroup = {
+  id: string; // e.g. "verbal" | "quant" (must match a section id in `sections`)
+  label: string;
+  section1Max: number;
+  section2Max: number;
+};
+
+type AdaptiveConfig = {
+  groups: AdaptiveGroup[];
+  // Extra non-adaptive input shown below the groups (Analytical Writing).
+  writing: ExamSection;
+  // Converts raw correct answers into a scaled section score.
+  scaleScore: (
+    rawCorrect: number,
+    totalQuestions: number,
+    harderSection2: boolean,
+  ) => number;
+};
+
 type ExamConfig = {
   label: string;
   sections: ExamSection[];
@@ -58,10 +78,36 @@ type ExamConfig = {
   percentileBands: PercentileBand[];
   totalLabel: string;
   computeTotal: (scores: Record<string, number>) => number;
+  adaptive?: AdaptiveConfig; // NEW
+  tierBands?: PercentileBand[]; // NEW: "best-fit grad school tier"
 };
 
 function roundToStep(value: number, step: number) {
   return Math.round(value / step) * step;
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
+/**
+ * Unofficial GMAT practice-test estimate.
+ * The official GMAT algorithm is proprietary. This estimate uses the public
+ * structure that all three 60–90 section scores contribute equally.
+ */
+function estimateGmatTotal(scores: Record<string, number>) {
+  const quant = clamp(Number(scores.quant ?? 60), 60, 90);
+  const verbal = clamp(Number(scores.verbal ?? 60), 60, 90);
+  const dataInsights = clamp(Number(scores.di ?? 60), 60, 90);
+  const average = (quant + verbal + dataInsights) / 3;
+  const unroundedTotal = 205 + ((average - 60) / 30) * 600;
+
+  // GMAT totals are 205, 215, 225 ... 805. The old implementation
+  // rounded from zero and could produce invalid values such as 630.
+  const roundedTotal =
+    205 + Math.round((unroundedTotal - 205) / 10) * 10;
+
+  return clamp(roundedTotal, 205, 805);
 }
 
 function roundIELTSBand(avg: number) {
@@ -127,6 +173,8 @@ function defaultSectionValue(section: ExamSection) {
 
 // Finds the highest band whose threshold is <= score.
 function getPercentileLabel(score: number, bands: PercentileBand[]) {
+  if (!bands.length) return "Not available";
+
   let label = bands[0]?.label ?? "";
   for (const band of bands) {
     if (score >= band.threshold) label = band.label;
@@ -134,14 +182,50 @@ function getPercentileLabel(score: number, bands: PercentileBand[]) {
   return label;
 }
 
+// NEW: GRE Analytical Writing input (0–6 in half-point steps).
+const greWritingSection: ExamSection = {
+  id: "aw",
+  label: "Analytical Writing",
+  min: 0,
+  max: 6,
+  step: 0.5,
+};
+
 const examConfigs: Record<ExamType, ExamConfig> = {
   GRE: {
     label: "GRE",
-    // Real GRE section scores are scaled 130-170, not raw 0-40 counts.
+    
     sections: [
       { id: "verbal", label: "Verbal Reasoning", min: 130, max: 170 },
       { id: "quant", label: "Quantitative Reasoning", min: 130, max: 170 },
+      greWritingSection,
     ],
+    adaptive: {
+      groups: [
+        {
+          id: "verbal",
+          label: "Verbal Reasoning",
+          section1Max: 12,
+          section2Max: 15,
+        },
+        {
+          id: "quant",
+          label: "Quantitative Reasoning",
+          section1Max: 12,
+          section2Max: 15,
+        },
+      ],
+      writing: greWritingSection,
+      
+      scaleScore: (rawCorrect, totalQuestions, harderSection2) => {
+        const span = harderSection2 ? 40 : 29;
+        return clamp(
+          Math.round(130 + (rawCorrect / totalQuestions) * span),
+          130,
+          170,
+        );
+      },
+    },
     scoreRange: { min: 260, max: 340 },
     percentileBands: [
       { threshold: 260, label: "65th" },
@@ -150,6 +234,14 @@ const examConfigs: Record<ExamType, ExamConfig> = {
       { threshold: 320, label: "90th" },
       { threshold: 325, label: "95th" },
       { threshold: 330, label: "98th" },
+    ],
+    tierBands: [
+      { threshold: 260, label: "Foundational Programs" },
+      { threshold: 295, label: "Good Regional Programs" },
+      { threshold: 305, label: "Strong State Programs" },
+      { threshold: 315, label: "Competitive Top 50 Programs" },
+      { threshold: 320, label: "Highly Competitive Top 25 Programs" },
+      { threshold: 330, label: "Elite / Ivy-Level Programs" },
     ],
     totalLabel: "/340",
     computeTotal: (scores) => (scores.verbal ?? 130) + (scores.quant ?? 130),
@@ -163,23 +255,11 @@ const examConfigs: Record<ExamType, ExamConfig> = {
       { id: "di", label: "Data Insights", min: 60, max: 90 },
     ],
     scoreRange: { min: 205, max: 805 },
-    percentileBands: [
-      { threshold: 205, label: "40th" },
-      { threshold: 600, label: "55th" },
-      { threshold: 650, label: "75th" },
-      { threshold: 700, label: "90th" },
-      { threshold: 750, label: "99th" },
-    ],
+    // Do not hardcode GMAT percentiles. They change with the current GMAC
+    // reference population and require a verified percentile table.
+    percentileBands: [],
     totalLabel: "/805",
-
-    computeTotal: (scores) => {
-      const q = scores.quant ?? 60;
-      const v = scores.verbal ?? 60;
-      const di = scores.di ?? 60;
-      const avg = (q + v + di) / 3;
-      const raw = 205 + ((avg - 60) / (90 - 60)) * (805 - 205);
-      return roundToStep(raw, 10);
-    },
+    computeTotal: estimateGmatTotal,
   },
   SAT: {
     label: "SAT",
@@ -299,6 +379,7 @@ type CalculatedResult = {
   scores: Record<string, number>;
   totalScore: number;
   percentile: string;
+  tier?: string; // NEW
 };
 
 export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
@@ -316,9 +397,21 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
   
   React.useEffect(() => {
     const initial: Record<string, number> = {};
-    config.sections.forEach((s) => {
-      initial[s.id] = defaultSectionValue(s);
-    });
+    if (config.adaptive) {
+      // GRE: keys are `${group}_s1`, `${group}_s2`, `${group}_harder` (1 = harder, 0 = easier)
+      config.adaptive.groups.forEach((g) => {
+        initial[`${g.id}_s1`] = Math.round(g.section1Max * 0.75);
+        initial[`${g.id}_s2`] = Math.round(g.section2Max * 0.75);
+        initial[`${g.id}_harder`] = 1;
+      });
+      initial[config.adaptive.writing.id] = defaultSectionValue(
+        config.adaptive.writing,
+      );
+    } else {
+      config.sections.forEach((s) => {
+        initial[s.id] = defaultSectionValue(s);
+      });
+    }
     setSectionScores(initial);
     setResult(null);
   }, [selectedExam]);
@@ -332,18 +425,55 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
     setSectionScores((prev) => ({ ...prev, [sectionId]: clamped }));
   };
 
+  // NEW: generic handler for the GRE inputs (sliders, number boxes, toggles).
+  const handleAdaptiveChange = (
+    key: string,
+    value: number,
+    min: number,
+    max: number,
+    step = 1,
+  ) => {
+    const snapped = roundToStep(value, step);
+    setSectionScores((prev) => ({ ...prev, [key]: clamp(snapped, min, max) }));
+  };
+
   const handleCalculate = () => {
-    const computed = config.computeTotal(sectionScores);
+    let scores: Record<string, number> = { ...sectionScores };
+
+    // GRE: turn raw "correct" counts into scaled 130–170 section scores.
+    if (config.adaptive) {
+      const { groups, writing, scaleScore } = config.adaptive;
+      const scaled: Record<string, number> = {};
+      groups.forEach((g) => {
+        const raw =
+          (sectionScores[`${g.id}_s1`] ?? 0) +
+          (sectionScores[`${g.id}_s2`] ?? 0);
+        const harder = (sectionScores[`${g.id}_harder`] ?? 1) === 1;
+        scaled[g.id] = scaleScore(
+          raw,
+          g.section1Max + g.section2Max,
+          harder,
+        );
+      });
+      scaled[writing.id] = sectionScores[writing.id] ?? writing.min;
+      scores = scaled;
+    }
+
+    const computed = config.computeTotal(scores);
     const totalScore = Math.min(
       config.scoreRange.max,
       Math.max(config.scoreRange.min, computed),
     );
     const percentile = getPercentileLabel(totalScore, config.percentileBands);
+    const tier = config.tierBands
+      ? getPercentileLabel(totalScore, config.tierBands)
+      : undefined;
     setResult({
       exam: selectedExam,
-      scores: { ...sectionScores },
+      scores,
       totalScore,
       percentile,
+      tier,
     });
   };
 
@@ -376,6 +506,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
         config={config}
         sectionScores={sectionScores}
         onScoreChange={handleScoreChange}
+        onAdaptiveChange={handleAdaptiveChange}
         onCalculate={handleCalculate}
         result={result && result.exam === selectedExam ? result : null}
       />
@@ -438,11 +569,182 @@ function Hero({ data }: { data: any }) {
   );
 }
 
+
+function AdaptiveInputs({
+  adaptive,
+  sectionScores,
+  onChange,
+}: {
+  adaptive: AdaptiveConfig;
+  sectionScores: Record<string, number>;
+  onChange: (
+    key: string,
+    value: number,
+    min: number,
+    max: number,
+    step?: number,
+  ) => void;
+}) {
+  const { groups, writing } = adaptive;
+  const writingValue = sectionScores[writing.id] ?? writing.min;
+
+  return (
+    <>
+      {groups.map((group) => {
+        const totalQuestions = group.section1Max + group.section2Max;
+        const harder = (sectionScores[`${group.id}_harder`] ?? 1) === 1;
+        const parts = [
+          {
+            key: `${group.id}_s1`,
+            label: "Section 1 correct",
+            max: group.section1Max,
+          },
+          {
+            key: `${group.id}_s2`,
+            label: "Section 2 correct",
+            max: group.section2Max,
+          },
+        ];
+
+        return (
+          <div
+            key={group.id}
+            className="mb-4 rounded-xl border border-slate-200 p-4"
+          >
+            <div className="mb-3 flex items-center justify-between">
+              <span className="text-xm font-bold">{group.label}</span>
+              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase text-slate-500">
+                {totalQuestions} questions
+              </span>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              {parts.map((part) => {
+                const value = sectionScores[part.key] ?? 0;
+                return (
+                  <div key={part.key}>
+                    <p className="mb-2 text-[13px] font-semibold text-slate-600">
+                      {part.label} (out of {part.max})
+                    </p>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="range"
+                        min={0}
+                        max={part.max}
+                        step={1}
+                        value={value}
+                        onChange={(e) =>
+                          onChange(part.key, Number(e.target.value), 0, part.max)
+                        }
+                        className="flex-1 accent-orange-500"
+                        aria-label={`${group.label} ${part.label}`}
+                      />
+                      <input
+                        type="number"
+                        min={0}
+                        max={part.max}
+                        step={1}
+                        value={value}
+                        onChange={(e) =>
+                          onChange(part.key, Number(e.target.value), 0, part.max)
+                        }
+                        className="w-16 rounded-lg border border-slate-200 px-2 py-1 text-center text-sm font-bold outline-none focus:border-orange-400"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <p className="mb-2 mt-4 text-[13px] font-semibold text-slate-600">
+              Section 2 difficulty you received
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { label: "Harder Section 2", isHarder: true },
+                { label: "Easier Section 2", isHarder: false },
+              ].map((opt) => {
+                const active = harder === opt.isHarder;
+                return (
+                  <button
+                    key={opt.label}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() =>
+                      onChange(`${group.id}_harder`, opt.isHarder ? 1 : 0, 0, 1)
+                    }
+                    className={`rounded-lg border px-3 py-2.5 text-[13px] font-bold transition ${
+                      active
+                        ? "border-orange-400 bg-orange-50 text-orange-600"
+                        : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+
+      {/* Analytical Writing */}
+      {/* <div className="mb-4 rounded-xl border border-slate-200 p-4">
+        <div className="mb-3 flex items-center justify-between">
+          <span className="text-xm font-bold">{writing.label}</span>
+          <span className="rounded bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">
+            {writingValue}
+            <span className="text-slate-400"> / {writing.max}</span>
+          </span>
+        </div>
+        <div className="flex items-center gap-3">
+          <input
+            type="range"
+            min={writing.min}
+            max={writing.max}
+            step={writing.step}
+            value={writingValue}
+            onChange={(e) =>
+              onChange(
+                writing.id,
+                Number(e.target.value),
+                writing.min,
+                writing.max,
+                writing.step,
+              )
+            }
+            className="flex-1 accent-orange-500"
+            aria-label={writing.label}
+          />
+          <input
+            type="number"
+            min={writing.min}
+            max={writing.max}
+            step={writing.step}
+            value={writingValue}
+            onChange={(e) =>
+              onChange(
+                writing.id,
+                Number(e.target.value),
+                writing.min,
+                writing.max,
+                writing.step,
+              )
+            }
+            className="w-16 rounded-lg border border-slate-200 px-2 py-1 text-center text-sm font-bold outline-none focus:border-orange-400"
+          />
+        </div>
+      </div> */}
+    </>
+  );
+}
+
 function ScoreSection({
   data,
   config,
   sectionScores,
   onScoreChange,
+  onAdaptiveChange,
   onCalculate,
   result,
 }: {
@@ -450,9 +752,17 @@ function ScoreSection({
   config: ExamConfig;
   sectionScores: Record<string, number>;
   onScoreChange: (id: string, value: number) => void;
+  onAdaptiveChange: (
+    key: string,
+    value: number,
+    min: number,
+    max: number,
+    step?: number,
+  ) => void;
   onCalculate: () => void;
   result: CalculatedResult | null;
 }) {
+  console.log(result , "in the scoresection ")
   const displayTotal =
     result &&
     (Number.isInteger(result.totalScore)
@@ -476,7 +786,9 @@ function ScoreSection({
                   Enter Your Practice Test Results
                 </h3>
                 <p className="mt-1 text-[14px] text-slate-500">
-                  Use your latest mock test for the best estimate.
+                  {config.adaptive
+                    ? "Works with any full-length GRE practice test (ETS PowerPrep, Ooshas Prep mock tests, or the official Bluebook-style portal)."
+                    : "Use your latest mock test for the best estimate."}
                 </p>
               </div>
               <span className="rounded-full bg-orange-50 px-2.5 py-1 text-[9px] font-bold text-orange-500">
@@ -484,59 +796,66 @@ function ScoreSection({
               </span>
             </div>
 
-            {config.sections.map((section) => {
-              const value = sectionScores[section.id] ?? section.min;
-              const percentage = Math.round(
-                ((value - section.min) / (section.max - section.min)) * 100,
-              );
-              const step = section.step || 1;
-              const bandEquivalent = section.bandFromRaw
-                ? section.bandFromRaw(value)
-                : null;
-              return (
-                <div
-                  key={section.id}
-                  className="mb-4 rounded-xl border border-slate-200 p-4"
-                >
-                  <div className="mb-3 flex items-center justify-between">
-                    <span className="text-xm font-bold">
-                      {section.label}
-                      {section.bandFromRaw && (
-                        <span className="ml-1.5 font-normal text-slate-400">
-                          (out of {section.max})
-                        </span>
-                      )}
-                    </span>
-                    <span className="rounded bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">
-                      {value}
-                      <span className="text-slate-400"> / {section.max}</span>
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <input
-                      type="range"
-                      min={section.min}
-                      max={section.max}
-                      step={step}
-                      value={value}
-                      onChange={(e) =>
-                        onScoreChange(section.id, Number(e.target.value))
-                      }
-                      className="flex-1 accent-orange-500"
-                    />
-                    <input
-                      type="number"
-                      min={section.min}
-                      max={section.max}
-                      step={step}
-                      value={value}
-                      onChange={(e) =>
-                        onScoreChange(section.id, Number(e.target.value))
-                      }
-                      className="w-16 rounded-lg border border-slate-200 px-2 py-1 text-center text-sm font-bold outline-none focus:border-orange-400"
-                    />
-                  </div>
-                  {/* <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
+            {config.adaptive ? (
+              <AdaptiveInputs
+                adaptive={config.adaptive}
+                sectionScores={sectionScores}
+                onChange={onAdaptiveChange}
+              />
+            ) : (
+              config.sections.map((section) => {
+                const value = sectionScores[section.id] ?? section.min;
+                const percentage = Math.round(
+                  ((value - section.min) / (section.max - section.min)) * 100,
+                );
+                const step = section.step || 1;
+                const bandEquivalent = section.bandFromRaw
+                  ? section.bandFromRaw(value)
+                  : null;
+                return (
+                  <div
+                    key={section.id}
+                    className="mb-4 rounded-xl border border-slate-200 p-4"
+                  >
+                    <div className="mb-3 flex items-center justify-between">
+                      <span className="text-xm font-bold">
+                        {section.label}
+                        {section.bandFromRaw && (
+                          <span className="ml-1.5 font-normal text-slate-400">
+                            (out of {section.max})
+                          </span>
+                        )}
+                      </span>
+                      <span className="rounded bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">
+                        {value}
+                        <span className="text-slate-400"> / {section.max}</span>
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="range"
+                        min={section.min}
+                        max={section.max}
+                        step={step}
+                        value={value}
+                        onChange={(e) =>
+                          onScoreChange(section.id, Number(e.target.value))
+                        }
+                        className="flex-1 accent-orange-500"
+                      />
+                      <input
+                        type="number"
+                        min={section.min}
+                        max={section.max}
+                        step={step}
+                        value={value}
+                        onChange={(e) =>
+                          onScoreChange(section.id, Number(e.target.value))
+                        }
+                        className="w-16 rounded-lg border border-slate-200 px-2 py-1 text-center text-sm font-bold outline-none focus:border-orange-400"
+                      />
+                    </div>
+                    {/* <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
                     <div
                       className="h-full rounded-full transition-all"
                       style={{
@@ -545,14 +864,15 @@ function ScoreSection({
                       }}
                     />
                   </div> */}
-                  {bandEquivalent !== null && (
-                    <p className="mt-2 text-[11px] font-semibold text-orange-500">
-                      ≈ {section.bandUnitLabel ?? "Band"} {bandEquivalent}
-                    </p>
-                  )}
-                </div>
-              );
-            })}
+                    {bandEquivalent !== null && (
+                      <p className="mt-2 text-[11px] font-semibold text-orange-500">
+                        ≈ {section.bandUnitLabel ?? "Band"} {bandEquivalent}
+                      </p>
+                    )}
+                  </div>
+                );
+              })
+            )}
 
             <button
               type="button"
@@ -582,11 +902,19 @@ function ScoreSection({
                       {config.totalLabel}
                     </span>
                   </div>
-                  <div className="mt-3 text-center">
-                    <span className="rounded-full bg-orange-500/15 px-3 py-1 text-[10px] font-bold text-orange-300">
-                      {result.percentile} Percentile
-                    </span>
-                  </div>
+                  {result.percentile !== "Not available" && (
+                    <div className="mt-3 text-center">
+                      <span className="rounded-full bg-orange-500/15 px-3 py-1 text-[10px] font-bold text-orange-300">
+                        {result.percentile} Percentile
+                      </span>
+                    </div>
+                  )}
+                  {config.label === "GMAT" && (
+                    <p className="mt-3 text-center text-[10px] leading-4 text-blue-100/60">
+                      Percentile is not estimated. Use a current, verified GMAC
+                      percentile table for percentile reporting.
+                    </p>
+                  )}
 
                   <div className="mt-8 space-y-4">
                     {config.sections.map((section) => {
@@ -600,17 +928,36 @@ function ScoreSection({
                           key={section.id}
                           label={section.label}
                           value={pct}
+                          display={
+                            config.adaptive
+                              ? String(
+                                  Number.isInteger(val) ? val : val.toFixed(1),
+                                )
+                              : undefined
+                          }
                         />
                       );
                     })}
-                    <ScoreMeter
-                      label="Overall Performance"
-                      value={Math.round(
-                        ((result.totalScore - config.scoreRange.min) /
-                          (config.scoreRange.max - config.scoreRange.min)) *
-                          100,
-                      )}
-                    />
+                    {!config.adaptive && (
+                      <ScoreMeter
+                        label="Overall Performance"
+                        value={Math.round(
+                          ((result.totalScore - config.scoreRange.min) /
+                            (config.scoreRange.max - config.scoreRange.min)) *
+                            100,
+                        )}
+                      />
+                    )}
+                    {config.adaptive && result.tier && (
+                      <div className="flex items-center justify-between gap-3 pt-2 text-[12px]">
+                        <span className="text-white/70">
+                          Best-fit grad school tier
+                        </span>
+                        <span className="text-right font-bold text-white">
+                          {result.tier}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="mt-8 border-t border-white/10 pt-5 text-center">
@@ -647,13 +994,23 @@ function ResultPlaceholder() {
   );
 }
 
-function ScoreMeter({ label, value }: { label: string; value: number }) {
+function ScoreMeter({
+  label,
+  value,
+  display,
+}: {
+  label: string;
+  value: number;
+  display?: string; // NEW: show a custom value (e.g. 145) instead of a %
+}) {
   const clamped = Math.min(Math.max(value, 0), 100);
   return (
     <div>
       <div className="mb-2 flex justify-between text-[10px]">
         <span className="text-white/70">{label}</span>
-        <span className="font-bold text-white">{Math.round(clamped)}%</span>
+        <span className="font-bold text-white">
+          {display ?? `${Math.round(clamped)}%`}
+        </span>
       </div>
       <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
         <div
@@ -680,7 +1037,7 @@ function ScoreVisualizationSection({
         <SectionHeading
           eyebrow="SCORE BREAKDOWN"
           title={data?.field?.title || "See Your Score & Band, Visually"}
-          description={data?.field?.description || 'A section-by-section chart of your practice scores, plus where your total score falls on the official band scale.'}
+          description={data?.field?.description || 'A section-by-section chart of your practice scores and your estimated total-score position.'}
         />
         <div className="mt-9 grid gap-5 lg:grid-cols-2">
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
@@ -706,11 +1063,17 @@ function ScoreVisualizationSection({
                   {Number.isInteger(result.totalScore)
                     ? result.totalScore
                     : result.totalScore.toFixed(1)}{" "}
-                  sits in the{" "}
-                  <span className="font-bold text-orange-500">
-                    {result.percentile} percentile
-                  </span>{" "}
-                  band.
+                  {result.percentile !== "Not available" ? (
+                    <>
+                      sits in the{" "}
+                      <span className="font-bold text-orange-500">
+                        {result.percentile} percentile
+                      </span>{" "}
+                      band.
+                    </>
+                  ) : (
+                    <>is an estimated total-score scale position.</>
+                  )}
                 </p>
                 <BandGaugeChart
                   config={config}
@@ -1179,20 +1542,9 @@ function SectionHeading({
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 // "use client";
 
-// import React, { useMemo, useState } from "react";
+// import React, { useEffect, useMemo, useState } from "react";
 // import {
 //   ArrowRight,
 //   Check,
@@ -1211,6 +1563,9 @@ function SectionHeading({
 //   Users,
 // } from "lucide-react";
 // import { Consultants } from "@/components/destinations-consultants";
+// import EditorContent from "../editorContent";
+// import axiosInstance from "@/app/lib/axios";
+// import QuestionsSection from "../comment";
 
 // const ORANGE = "#ff7a2a";
 // const NAVY = "#0b1e3f";
@@ -1251,6 +1606,30 @@ function SectionHeading({
 
 // function roundToStep(value: number, step: number) {
 //   return Math.round(value / step) * step;
+// }
+
+// function clamp(value: number, min: number, max: number) {
+//   return Math.min(max, Math.max(min, value));
+// }
+
+// /**
+//  * Unofficial GMAT practice-test estimate.
+//  * The official GMAT algorithm is proprietary. This estimate uses the public
+//  * structure that all three 60–90 section scores contribute equally.
+//  */
+// function estimateGmatTotal(scores: Record<string, number>) {
+//   const quant = clamp(Number(scores.quant ?? 60), 60, 90);
+//   const verbal = clamp(Number(scores.verbal ?? 60), 60, 90);
+//   const dataInsights = clamp(Number(scores.di ?? 60), 60, 90);
+//   const average = (quant + verbal + dataInsights) / 3;
+//   const unroundedTotal = 205 + ((average - 60) / 30) * 600;
+
+//   // GMAT totals are 205, 215, 225 ... 805. The old implementation
+//   // rounded from zero and could produce invalid values such as 630.
+//   const roundedTotal =
+//     205 + Math.round((unroundedTotal - 205) / 10) * 10;
+
+//   return clamp(roundedTotal, 205, 805);
 // }
 
 // function roundIELTSBand(avg: number) {
@@ -1316,6 +1695,8 @@ function SectionHeading({
 
 // // Finds the highest band whose threshold is <= score.
 // function getPercentileLabel(score: number, bands: PercentileBand[]) {
+//   if (!bands.length) return "Not available";
+
 //   let label = bands[0]?.label ?? "";
 //   for (const band of bands) {
 //     if (score >= band.threshold) label = band.label;
@@ -1352,23 +1733,11 @@ function SectionHeading({
 //       { id: "di", label: "Data Insights", min: 60, max: 90 },
 //     ],
 //     scoreRange: { min: 205, max: 805 },
-//     percentileBands: [
-//       { threshold: 205, label: "40th" },
-//       { threshold: 600, label: "55th" },
-//       { threshold: 650, label: "75th" },
-//       { threshold: 700, label: "90th" },
-//       { threshold: 750, label: "99th" },
-//     ],
+//     // Do not hardcode GMAT percentiles. They change with the current GMAC
+//     // reference population and require a verified percentile table.
+//     percentileBands: [],
 //     totalLabel: "/805",
-
-//     computeTotal: (scores) => {
-//       const q = scores.quant ?? 60;
-//       const v = scores.verbal ?? 60;
-//       const di = scores.di ?? 60;
-//       const avg = (q + v + di) / 3;
-//       const raw = 205 + ((avg - 60) / (90 - 60)) * (805 - 205);
-//       return roundToStep(raw, 10);
-//     },
+//     computeTotal: estimateGmatTotal,
 //   },
 //   SAT: {
 //     label: "SAT",
@@ -1490,75 +1859,19 @@ function SectionHeading({
 //   percentile: string;
 // };
 
-//   const faqs =  {
-//       name: 'f&q',
-//       template: 'Preparation',
-//       label: 'FAQ',
-//       fields: {
-//         title: 'Frequently || Asked Questions  ',
-//         items: [
-//           {
-//             answer: 'Our center is widely rated as the best GRE coaching in India because we offer expert physical classroom mentorship, personalized study planners, and a dedicated GRE preparation India simulation lab. We provide individual attention with strict batch limits, making us the top choice for students looking for high-quality classroom GRE coaching.',
-//             question: 'Which is the best GRE coaching in India for offline classroom preparation?'
-//           },
-//           {
-//             question: 'How can I access a realistic free GRE practice test?',
-//             answer: 'You can take a high-quality free GRE practice test directly on our platform. Our entry-level gre mock test matches the official ETS exam interface exactly, giving you an accurate baseline score and helping you identify your structural strengths and weaknesses before you buy any premium test series.'
-//           },
-//           {
-//             question: 'Does your GRE mock test series use a section-adaptive algorithm?',
-//             answer: 'Yes, every full-length gre online mock test in our test series uses a true section-adaptive engine. This means the second section dynamically changes its difficulty based on your performance in the first section, perfectly matching the official shorter GRE format for highly accurate score predictions'
-//           },
-//           {
-//             question: 'Where can I find the updated GRE syllabus 2026 and exam structure?',
-//             answer: 'You can download the complete GRE syllabus 2026 and detailed gre exam pattern directly from our resources tab. Our syllabus guide breaks down every high-yield topic across the quantitative reasoning, verbal reasoning, and analytical writing sections so you can plan your daily study goals effectively.'
-//           },
-//           {
-//             question: 'How do your online GRE classes help non-native English speakers with vocabulary?',
-//             answer: ' Our gre online classes feature a dedicated verbal strategy kit built for non-native English speakers. Students gain access to context-based digital flashcards, reading speed drills, and section-specific gre verbal mock test online modules to confidently master high-frequency exam words.'
-//           },
-//           {
-//             question: 'What is the current GRE exam fee in India for registration?',
-//             answer: 'The standard gre exam fee in India is set globally by ETS. While checking your local center slots for gre registration india, you can view our platform\'s updated fee guide, which outlines current costs in Indian Rupees (INR) alongside any active exam voucher discounts.'
-//           },
-//           {
-//             question: 'Why should I choose your test series over general GRE preparation online tools?',
-//             answer: 'Unlike basic static quiz tools found across standard gre preparation online websites, our platform provides deep performance analytics. Every gre mock test triggers an automated error report detailing your time spent per question, accuracy tiers, and a national percentile rank comparison.'
-//           },
-//           {
-//             question: 'Is Ooshas Prep good for GRE offline classroom coaching too?',
-//             answer: 'Ooshas Prep is primarily an online GRE coaching platform, with live instructor-led sessions delivered virtually. This lets us keep costs lower than traditional classroom coaching while still giving you real-time mentor access — a good fit if you want structured guidance without commuting to a coaching center.'
-//           },
-//           {
-//             question: 'Is there a free GRE practice test available?',
-//             answer: 'Yes. We offer a free GRE diagnostic test that identifies your current score range and weak areas before you commit to a paid plan, so you know exactly what you need to work on.'
-//           },
-//           {
-//             question: 'How long does it take to prepare for the GRE?',
-//             answer: 'Most students see solid results with [6–10 weeks] of consistent preparation, though this depends on your starting score, target score, and available study time per week. Our diagnostic test helps build a realistic timeline for your specific situation.'
-//           },
-//           {
-//             question: 'What is the GRE online coaching fee at Ooshas Prep in India?',
-//             answer: 'Our GRE coaching fees are different based on the packages (starter, standard, and premium) and the extent of assistance opted by the candidate. Moreover, the fees might be altered depending upon a new batch start, discount offers, and other such factors. Hence, it will be appropriate to contact our admission counselors to get an exact fee structure.'
-//           }
-//         ]
-//       }
-//     };
-
-// export default function ScoreCalculatorPage({pageInfo,slug} : any) {
-
-//   console.log(pageInfo,"pageInfo");
-
-//   const [selectedExam, setSelectedExam] = useState<ExamType>("GRE");
+// export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
+//   const [selectedExam, setSelectedExam] = useState<ExamType>(
+//     pageInfo?.sections?.hero?.fields.pageType || "GRE",
+//   );
 //   const [sectionScores, setSectionScores] = useState<Record<string, number>>(
 //     {},
 //   );
-//   const [expandedFAQ, setExpandedFAQ] = useState<number | null>(null);
+
 //   const [result, setResult] = useState<CalculatedResult | null>(null);
 
 //   const config = examConfigs[selectedExam];
 
-//   // Initialize scores for the selected exam using each section's real min/max/step.
+  
 //   React.useEffect(() => {
 //     const initial: Record<string, number> = {};
 //     config.sections.forEach((s) => {
@@ -1594,10 +1907,12 @@ function SectionHeading({
 
 //   return (
 //     <main className="min-h-screen bg-[#fff] text-[#0b1e3f]">
-//       <Hero />
+//       <Hero data={pageInfo?.sections?.hero?.fields} />
 
 //       <div className="mx-auto max-w-6xl px-4 pb-4 pt-8">
-//         <div className="flex flex-wrap justify-center gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
+//         <div
+//           className={`hidden flex flex-wrap justify-center gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm`}
+//         >
 //           {(Object.keys(examConfigs) as ExamType[]).map((exam) => (
 //             <button
 //               key={exam}
@@ -1615,6 +1930,7 @@ function SectionHeading({
 //       </div>
 
 //       <ScoreSection
+//         data = {pageInfo?.sections?.calculator}
 //         config={config}
 //         sectionScores={sectionScores}
 //         onScoreChange={handleScoreChange}
@@ -1623,48 +1939,57 @@ function SectionHeading({
 //       />
 
 //       <ScoreVisualizationSection
+//         data = {pageInfo?.sections?.chart}
 //         config={config}
 //         result={result && result.exam === selectedExam ? result : null}
 //       />
 
-//       <WhySection />
-//       <DifferenceSection />
-//       <BeyondNumberSection />
-//       <QuestionsSection />
-//       {/* <FAQSection expandedFAQ={expandedFAQ} setExpandedFAQ={setExpandedFAQ} /> */}
-//       <Consultants data={faqs} />
-//       <BottomCTA />
+//       <WhySection data={pageInfo?.sections?.whySection?.fields} />
+//       <DifferenceSection data={pageInfo?.sections?.differenceSection?.fields} />
+//       <BeyondNumberSection data={pageInfo?.sections?.beyondNumber?.fields} />
+//       <QuestionsSection page={'Calculator'} heading={'Student Questions & Comments'} />
+//       <Consultants data={pageInfo?.sections?.faq} />
+//       <BottomCTA data={pageInfo?.sections?.bottomCTA?.fields} />
 //     </main>
 //   );
 // }
 
-// function Hero() {
+// function Hero({ data }: { data: any }) {
+//   const title = data?.title || "";
+//   const [firstPart, ...rest] = title.split("&");
+
 //   return (
 //     <section className="relative overflow-hidden bg-[#fcf3ed]">
 //       <div className="relative mx-auto max-w-5xl px-4 pb-14 pt-16 text-center sm:px-6 lg:pb-20 lg:pt-20">
 //         <h1 className="mx-auto max-w-4xl text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
-//           Free <span style={{ color: ORANGE }}>Exam Score Calculator</span> &
-//           Grad School Predictor
+//           {rest.length > 0 ? (
+//             <>
+//               {firstPart.trim()} &
+//               <span style={{ color: ORANGE }}>{rest.join("&")}</span>
+//             </>
+//           ) : (
+//             title
+//           )}
 //         </h1>
-//         <p className="mx-auto mt-5 max-w-2xl text-sm leading-6 sm:text-base">
-//           Estimate your GRE, GMAT, SAT, TOEFL, IELTS, or PTE score, understand
-//           your percentile, and discover programs that match your performance.
-//         </p>
+
+//         <div
+//           className="mx-auto mt-5 max-w-2xl text-sm leading-6 sm:text-base"
+//           dangerouslySetInnerHTML={{
+//             __html: data?.description || "",
+//           }}
+//         />
+
 //         <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-//           <a
-//             href="#calculator"
-//             className="inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5"
-//             style={{ background: ORANGE }}
-//           >
-//             Calculate My Score
-//             <ArrowRight className="h-4 w-4" />
-//           </a>
-//           <a
-//             href="#programs"
-//             className="inline-flex items-center justify-center rounded-lg border border-black px-6 py-3 text-sm font-semibold transition hover:bg-white/10"
-//           >
-//             Explore Programs
-//           </a>
+//           {data?.primaryButtonText && (
+//             <a
+//               href={data?.primaryButtonUrl || "#calculator"}
+//               className="inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5"
+//               style={{ background: ORANGE }}
+//             >
+//               {data.primaryButtonText}
+//               <ArrowRight className="h-4 w-4" />
+//             </a>
+//           )}
 //         </div>
 //       </div>
 //     </section>
@@ -1672,18 +1997,21 @@ function SectionHeading({
 // }
 
 // function ScoreSection({
+//   data,
 //   config,
 //   sectionScores,
 //   onScoreChange,
 //   onCalculate,
 //   result,
 // }: {
+//   data : any
 //   config: ExamConfig;
 //   sectionScores: Record<string, number>;
 //   onScoreChange: (id: string, value: number) => void;
 //   onCalculate: () => void;
 //   result: CalculatedResult | null;
 // }) {
+//   console.log(result , "in the scoresection ")
 //   const displayTotal =
 //     result &&
 //     (Number.isInteger(result.totalScore)
@@ -1695,8 +2023,8 @@ function SectionHeading({
 //       <div className="mx-auto max-w-6xl">
 //         <SectionHeading
 //           eyebrow={`${config.label} SCORE CALCULATOR`}
-//           title={`Convert Your Raw Score Into Your Real ${config.label} Score`}
-//           description={`Enter your practice performance and click Calculate to see your estimated ${config.label} score.`}
+//           title={data?.fields?.title || `Convert Your Raw Score Into Your Real ${config.label} Score`}
+//           description={data?.fields?.description || `Enter your practice performance and click Calculate to see your estimated ${config.label} score.`}
 //         />
 
 //         <div className="mt-9 grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg lg:grid-cols-[1fr_360px]">
@@ -1813,11 +2141,19 @@ function SectionHeading({
 //                       {config.totalLabel}
 //                     </span>
 //                   </div>
-//                   <div className="mt-3 text-center">
-//                     <span className="rounded-full bg-orange-500/15 px-3 py-1 text-[10px] font-bold text-orange-300">
-//                       {result.percentile} Percentile
-//                     </span>
-//                   </div>
+//                   {result.percentile !== "Not available" && (
+//                     <div className="mt-3 text-center">
+//                       <span className="rounded-full bg-orange-500/15 px-3 py-1 text-[10px] font-bold text-orange-300">
+//                         {result.percentile} Percentile
+//                       </span>
+//                     </div>
+//                   )}
+//                   {config.label === "GMAT" && (
+//                     <p className="mt-3 text-center text-[10px] leading-4 text-blue-100/60">
+//                       Percentile is not estimated. Use a current, verified GMAC
+//                       percentile table for percentile reporting.
+//                     </p>
+//                   )}
 
 //                   <div className="mt-8 space-y-4">
 //                     {config.sections.map((section) => {
@@ -1897,9 +2233,11 @@ function SectionHeading({
 // }
 
 // function ScoreVisualizationSection({
+//   data,
 //   config,
 //   result,
 // }: {
+//   data : any;
 //   config: ExamConfig;
 //   result: CalculatedResult | null;
 // }) {
@@ -1908,8 +2246,8 @@ function SectionHeading({
 //       <div className="mx-auto max-w-6xl">
 //         <SectionHeading
 //           eyebrow="SCORE BREAKDOWN"
-//           title="See Your Score & Band, Visually"
-//           description="A section-by-section chart of your practice scores, plus where your total score falls on the official band scale."
+//           title={data?.field?.title || "See Your Score & Band, Visually"}
+//           description={data?.field?.description || 'A section-by-section chart of your practice scores and your estimated total-score position.'}
 //         />
 //         <div className="mt-9 grid gap-5 lg:grid-cols-2">
 //           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
@@ -1935,11 +2273,17 @@ function SectionHeading({
 //                   {Number.isInteger(result.totalScore)
 //                     ? result.totalScore
 //                     : result.totalScore.toFixed(1)}{" "}
-//                   sits in the{" "}
-//                   <span className="font-bold text-orange-500">
-//                     {result.percentile} percentile
-//                   </span>{" "}
-//                   band.
+//                   {result.percentile !== "Not available" ? (
+//                     <>
+//                       sits in the{" "}
+//                       <span className="font-bold text-orange-500">
+//                         {result.percentile} percentile
+//                       </span>{" "}
+//                       band.
+//                     </>
+//                   ) : (
+//                     <>is an estimated total-score scale position.</>
+//                   )}
 //                 </p>
 //                 <BandGaugeChart
 //                   config={config}
@@ -2211,7 +2555,7 @@ function SectionHeading({
 //   );
 // }
 
-// function WhySection() {
+// function WhySection({ data }: { data: any }) {
 //   return (
 //     <section className="bg-[#fcf3ed] px-4 py-16 text-[#0b1e3f]">
 //       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center">
@@ -2219,32 +2563,17 @@ function SectionHeading({
 //           <div className="mb-4 inline-flex rounded-full bg-orange-500/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-orange-600">
 //             More Than A Number
 //           </div>
-//           <h2 className="max-w-xl text-2xl font-extrabold leading-tight sm:text-3xl text-[#0b1e3f]">
-//             Your Score Doesn't Stop Here — <br /> Practice For Real
+
+//           <h2 className="max-w-3xl text-2xl font-extrabold leading-tight sm:text-3xl">
+//             {data?.title || ""}
 //           </h2>
-//           <p className="mt-5 max-w-xl text-sm leading-6 text-[#0b1e3f]/80">
-//             Your exam score is only one part of your graduate school journey.
-//             Use your results to identify weaknesses, improve your preparation,
-//             and build a stronger application strategy.
-//           </p>
-//           <ul className="mt-6 space-y-3">
-//             {[
-//               "Identify your strongest and weakest sections",
-//               "Track progress across multiple practice tests",
-//               "Understand where your score stands",
-//               "Build a smarter graduate school shortlist",
-//             ].map((item) => (
-//               <li
-//                 key={item}
-//                 className="flex items-center gap-3 text-xm text-[#0b1e3f]/90"
-//               >
-//                 <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500/15 text-orange-600">
-//                   <Check className="h-3 w-3" />
-//                 </span>
-//                 {item}
-//               </li>
-//             ))}
-//           </ul>
+
+//           <div
+//             className="mt-5 max-w-3xl text-sm leading-6 text-[#0b1e3f]/80"
+//             dangerouslySetInnerHTML={{
+//               __html: data?.description || "",
+//             }}
+//           />
 //           <button
 //             className="mt-7 rounded-lg px-5 py-3 text-xm font-bold text-white"
 //             style={{ background: ORANGE }}
@@ -2253,133 +2582,14 @@ function SectionHeading({
 //           </button>
 //         </div>
 //         <div className="grid grid-cols-2 gap-3">
-//           {[
-//             ["2,000+", "Students Tested"],
-//             ["10,000+", "Practice Results"],
-//             ["42 pts", "Average Improvement"],
-//             ["247", "Universities Explored"],
-//           ].map(([number, label]) => (
+//           {data?.statistics?.map(({ number, label }, index) => (
 //             <div
-//               key={label}
+//               key={`${label}-${index}`}
 //               className="rounded-xl border border-[#0b1e3f]/10 bg-[#0b1e3f]/5 p-5"
 //             >
 //               <p className="text-xl font-black text-[#0b1e3f]">{number}</p>
-//               <p className="mt-1 text-[10px] text-[#0b1e3f]/60">{label}</p>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-// function DifferenceSection() {
-//   return (
-//     <section id="how-it-works" className="bg-white px-4 py-12">
-//       <div className="mx-auto max-w-5xl">
-//         <SectionHeading
-//           eyebrow="OUR DIFFERENCE"
-//           title="How Ooshas Prep's Calculator Is Different"
-//           description="A simple calculator designed to give you useful insights beyond just a single number."
-//         />
-//         <div className="mt-9 overflow-hidden rounded-2xl border border-slate-200 shadow-sm">
-//           <div className="grid grid-cols-[1.4fr_1fr_1fr_1fr] bg-[#0b1e3f] text-[10px] font-bold text-white">
-//             <div className="p-3">Feature</div>
-//             <div className="p-3 text-center">Ooshas Prep</div>
-//             <div className="p-3 text-center">Basic Calculator</div>
-//             <div className="p-3 text-center">Random Predictor</div>
-//           </div>
-//           {[
-//             "Practice-based score estimate",
-//             "Section-level insights",
-//             "Grad program matching",
-//             "Performance tracking",
-//             "Study recommendations",
-//             "Admission planning",
-//           ].map((item, index) => (
-//             <div
-//               key={item}
-//               className="grid grid-cols-[1.4fr_1fr_1fr_1fr] border-t border-slate-200 text-[14px]"
-//             >
-//               <div className="p-3 font-semibold text-slate-700">{item}</div>
-//               <div className="flex items-center justify-center bg-orange-50 p-3">
-//                 <Check className="h-4 w-4 text-orange-500" />
-//               </div>
-//               <div className="flex items-center justify-center p-3">
-//                 {index < 2 ? (
-//                   <Check className="h-4 w-4 text-emerald-500" />
-//                 ) : (
-//                   <span className="text-slate-300">×</span>
-//                 )}
-//               </div>
-//               <div className="flex items-center justify-center p-3">
-//                 {index === 2 ? (
-//                   <Check className="h-4 w-4 text-emerald-500" />
-//                 ) : (
-//                   <span className="text-slate-300">×</span>
-//                 )}
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-// function BeyondNumberSection() {
-//   const features = [
-//     {
-//       icon: TrendingUp,
-//       title: "Track Your Progress",
-//       text: "Monitor score changes over multiple practice tests.",
-//     },
-//     {
-//       icon: Target,
-//       title: "Pinpoint Weak Areas",
-//       text: "Understand which section needs more preparation.",
-//     },
-//     {
-//       icon: GraduationCap,
-//       title: "Explore Universities",
-//       text: "Compare your score against program ranges.",
-//     },
-//     {
-//       icon: Trophy,
-//       title: "Build Your Profile",
-//       text: "Use your score as part of your larger application plan.",
-//     },
-//     {
-//       icon: MapPin,
-//       title: "Find Your Fit",
-//       text: "Discover programs that align with your goals.",
-//     },
-//     {
-//       icon: Sparkles,
-//       title: "Get Smarter Insights",
-//       text: "Turn raw practice results into actionable information.",
-//     },
-//   ];
-//   return (
-//     <section className="bg-[#fff] px-4 py-12">
-//       <div className="mx-auto max-w-6xl">
-//         <SectionHeading
-//           eyebrow="BEYOND THE NUMBER"
-//           title="Go Beyond the Number — Understand Your Score"
-//           description="Your result can tell you much more when combined with the right context."
-//         />
-//         <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-//           {features.map(({ icon: Icon, title, text }) => (
-//             <div
-//               key={title}
-//               className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-//             >
-//               <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-orange-500">
-//                 <Icon className="h-4 w-4" />
-//               </div>
-//               <h3 className="text-sm font-extrabold">{title}</h3>
-//               <p className="mt-2 text-[14px] leading-5 text-slate-500">
-//                 {text}
+//               <p className="mt-1 text-[10px] font-medium uppercase tracking-wider text-[#0b1e3f]/60">
+//                 {label}
 //               </p>
 //             </div>
 //           ))}
@@ -2389,68 +2599,83 @@ function SectionHeading({
 //   );
 // }
 
-// function QuestionsSection() {
+// function DifferenceSection({ data }: { data: any }) {
 //   return (
-//     <section className="bg-[#fcf3ed] px-4 py-12">
-//       <div className="mx-auto max-w-3xl">
+//     <section id="how-it-works" className="bg-white px-4 py-12">
+//       <div className="mx-auto max-w-6xl">
 //         <SectionHeading
-//           eyebrow="COMMUNITY"
-//           title="Student Questions & Comments"
-//           description="Have a question about your score? Ask our team and community."
+//           eyebrow="OUR DIFFERENCE"
+//           title={data?.title || ""}
+//           description={data?.description || ""}
 //         />
-//         <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-//           <div className="grid gap-3 sm:grid-cols-2">
-//             <input
-//               placeholder="Your name"
-//               className="rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400"
-//             />
-//             <input
-//               placeholder="Email address"
-//               className="rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400"
-//             />
-//           </div>
-//           <textarea
-//             placeholder="Ask your question..."
-//             rows={4}
-//             className="mt-3 w-full resize-none rounded-lg border border-slate-200 px-3 py-3 text-xm outline-none focus:border-orange-400"
-//           />
-//           <button className="mt-3 rounded-lg bg-[#0b1e3f] px-5 py-3 text-xm font-bold text-white">
-//             Post Question
-//           </button>
-//         </div>
-//         <div className="mt-4 space-y-3">
-//           {[
-//             "How can I improve my Quant score?",
-//             "Is a 320 GRE score competitive?",
-//             "Which universities should I target?",
-//           ].map((question, index) => (
-//             <div
-//               key={question}
-//               className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
-//             >
-//               <div className="flex gap-3">
-//                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0b1e3f] text-[10px] font-bold text-white">
-//                   {index + 1}
+
+//         {data?.Data && (
+//           <EditorContent content_data={data.Data} />
+//           // <div
+//           //   className="mt-9 overflow-x-auto rounded-2xl border border-slate-200 bg-white "
+//           //   dangerouslySetInnerHTML={{
+//           //     __html: data.Data,
+//           //   }}
+//           // />
+//         )}
+//       </div>
+//     </section>
+//   );
+// }
+
+// function BeyondNumberSection({ data }: { data: any }) {
+//   const iconMap: Record<string, any> = {
+//     TrendingUp,
+//     Target,
+//     GraduationCap,
+//     Trophy,
+//     MapPin,
+//     Sparkles,
+//     Users,
+//     Star,
+//     Search,
+//     Info,
+//   };
+
+//   const features = Array.isArray(data?.features) ? data.features : [];
+
+//   return (
+//     <section className="bg-white px-4 py-12">
+//       <div className="mx-auto max-w-6xl">
+//         <SectionHeading
+//           eyebrow="BEYOND THE NUMBER"
+//           title={data?.title || ""}
+//           description={data?.description || ""}
+//         />
+
+//         <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+//           {features.map((feature: any, index: number) => {
+//             const Icon = iconMap[feature?.icon] || Sparkles;
+
+//             return (
+//               <div
+//                 key={`${feature?.title || "feature"}-${index}`}
+//                 className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+//               >
+//                 <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-orange-500">
+//                   <Icon className="h-4 w-4" />
 //                 </div>
-//                 <div className="flex-1">
-//                   <p className="text-xm font-bold">{question}</p>
-//                   <p className="mt-1 text-[10px] text-slate-400">
-//                     Asked by GRE student
-//                   </p>
-//                 </div>
-//                 <button className="text-[10px] font-bold text-orange-500">
-//                   Answer
-//                 </button>
+//                 <h3 className="text-sm font-extrabold">
+//                   {feature?.title || ""}
+//                 </h3>
+//                 <p className="mt-2 text-[14px] leading-5 text-slate-500">
+//                   {feature?.text || ""}
+//                 </p>
 //               </div>
-//             </div>
-//           ))}
+//             );
+//           })}
 //         </div>
 //       </div>
 //     </section>
 //   );
 // }
 
-// function BottomCTA() {
+// function BottomCTA({ data }: { data: any }) {
 //   return (
 //     <section id="contact" className="bg-white px-4 pb-5">
 //       <div
@@ -2460,22 +2685,31 @@ function SectionHeading({
 //         }}
 //       >
 //         <h2 className="text-xl font-black text-white sm:text-2xl">
-//           Your Dream Grad School Is One Score Away
+//           {data?.title || ""}
 //         </h2>
-//         <p className="mx-auto mt-2 max-w-xl text-xm leading-5 text-white/80">
-//           Understand your current performance and take the next step toward your
-//           graduate school goals.
+
+//         <p className="mx-auto mt-2 max-w-xl whitespace-pre-line text-sm leading-5 text-white/80">
+//           {data?.description || ""}
 //         </p>
+
 //         <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
-//           <a
-//             href="#calculator"
-//             className="rounded-lg bg-[#0b1e3f] px-5 py-3 text-xm font-bold text-white"
-//           >
-//             Calculate My Score
-//           </a>
-//           <button className="rounded-lg bg-white px-5 py-3 text-xm font-bold text-[#0b1e3f]">
-//             Talk To An Expert
-//           </button>
+//           {data?.primaryButtonText && (
+//             <a
+//               href={data?.primaryButtonUrl || "#calculator"}
+//               className="rounded-lg bg-[#0b1e3f] px-5 py-3 text-sm font-bold text-white"
+//             >
+//               {data.primaryButtonText}
+//             </a>
+//           )}
+
+//           {data?.secondaryButtonText && (
+//             <a
+//               href={data?.secondaryButtonUrl || "#"}
+//               className="rounded-lg bg-white px-5 py-3 text-sm font-bold text-[#0b1e3f]"
+//             >
+//               {data.secondaryButtonText}
+//             </a>
+//           )}
 //         </div>
 //       </div>
 //     </section>
@@ -2503,11 +2737,21 @@ function SectionHeading({
 //       >
 //         {title}
 //       </h2>
+//       {/* <EditorContent content_data={description} /> */}
 //       <p
 //         className={`mt-3 text-xm leading-5 sm:text-sm ${dark ? "text-blue-100/60" : "text-slate-500"}`}
-//       >
-//         {description}
-//       </p>
+//         dangerouslySetInnerHTML={{__html : description}}
+//       />
+//         {/* {description}
+//       </p> */}
 //     </div>
 //   );
 // }
+
+
+
+
+
+
+
+

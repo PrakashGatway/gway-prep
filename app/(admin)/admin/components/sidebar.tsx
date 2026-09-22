@@ -11,7 +11,9 @@ import {
   LogOut,
   FileEditIcon,
   File,
-  BookUser
+  BookUser,
+  BellRing,
+  ScrollText
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -51,11 +53,12 @@ const Sidebar = () => {
     { icon: <FileEditIcon size={18} />, label: "Editor", href: "/admin/pages/editor" },
     { icon: <File size={18} />, label: "Blog", href: "/admin/pages/Blogs" },
     { icon: <BookUser size={18} />, label: "Authors", href: "/admin/pages/Authors"},
-    { icon: <File size={18} />, label: "Support Articles", href: "/admin/pages/support-articles" },
+    { icon: <ScrollText size={18} />, label: "Support Articles", href: "/admin/pages/support-articles" },
     { icon: <File size={18} />, label: "Leads ", href: "/admin/pages/leads" },
+    { icon : <BellRing size={18}/> ,label : "Subscribe", href :"/admin/pages/subscribe" }
   ];
 
-  // if (!isAuthChecked) return null;
+  
 
   return (
     <aside className="fixed left-0 top-0 z-40 flex h-screen w-64 flex-col border-r border-gray-200 bg-white">

@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { HomeCountUp } from '@/components/HomeCountUp';
 import FormSection from "./formSection";
 import PopupModal from "./popupModel";
+import { useRouter } from "next/navigation";
 
 // ─── Sparkle ───
 function Sparkle({ x, y, delay, size }: { x: string; y: string; delay: number; size: number }) {
@@ -74,6 +75,9 @@ export function Hero({ data, student }: HeroProps) {
     { x: "50%", y: "5%", delay: 3, size: 8 },
     { x: "92%", y: "45%", delay: 1, size: 11 },
   ];
+  
+  const router = useRouter();
+
 
   return (
     <section className=" overflow-hidden flex flex-col bg-[#FDF4EF]" style={{ backgroundImage: `url('/home/gridgb.png')` }}>
@@ -133,7 +137,8 @@ export function Hero({ data, student }: HeroProps) {
                   type="button"
                   whileHover={{ scale: 1.03, y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  onClick={() => setIsPopupOpen(true)}
+                  // onClick={() => setIsPopupOpen(true)}
+                  onClick={() => router.push('/auth')}
                   className="group cursor-pointer relative flex items-center justify-center gap-2.5 bg-[#F36C45] text-white rounded-2xl py-4 px-8 text-base sm:text-lg font-semibold transition-all duration-300 overflow-hidden"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-[#e05a34] to-[#ff8a65] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
