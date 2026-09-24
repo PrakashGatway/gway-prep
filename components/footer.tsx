@@ -1,8 +1,14 @@
-
-
 "use client";
 
-import { Facebook, Instagram, Linkedin, Youtube } from "lucide-react";
+import {
+  ArrowBigRight,
+  Dot,
+  Facebook,
+  Instagram,
+  Linkedin,
+  ListChecks,
+  Youtube,
+} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -29,7 +35,6 @@ export function Footer({ Data = [] }: FooterProps) {
     [Data],
   );
 
-  
   const calculator = React.useMemo(
     () =>
       Data?.filter((item: any) => {
@@ -40,7 +45,6 @@ export function Footer({ Data = [] }: FooterProps) {
       }) || [],
     [Data],
   );
-
 
   const courseData = React.useMemo(
     () =>
@@ -129,265 +133,274 @@ export function Footer({ Data = [] }: FooterProps) {
     return acc;
   }, {});
 
-  
   const groupedArray = Object.entries(groupedCourses).map(([key, value]) => ({
     key,
     ...(value as any),
   }));
   const [email, setemail] = useState("");
 
-  const submit = async() => {
+  const submit = async () => {
     try {
-      const api = await axiosInstance.post(
-        "/subscribe",
-        { email }
-      );
+      const api = await axiosInstance.post("/subscribe", { email });
       toast.success("Subscribed successfully!");
     } catch (error) {
-      toast.error("Subscription failed. Please try again.");  
+      toast.error("Subscription failed. Please try again.");
     }
-  }
+  };
 
   return (
     <>
-    <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {groupedArray.length > 0 && (
-          <div className="mb-12 pb-8 border-b border-gray-300">
-            <h3 className="text-xl font-bold mb-6">All Preparation Courses</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-              {groupedArray.map((group) => (
-                <div key={group.key}>
-                  <h4 className="text-sm font-bold text-gray-900 mb-3 capitalize">
-                    {group.base?.seoMeta?.navTitle || group.key}
-                  </h4>
-                  <ul className="space-y-2 text-sm text-[#444]">
-                    {group.base && (
-                      <li
-                        onClick={() => router.push(`/${group.base.slug}`)}
-                        className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
-                      >
-                        {/* {group.base.seoMeta?.navTitle || group.base.name} */}
-                      </li>
-                    )}
-                    {group.variants.map((course: any) => (
-                      <li
-                        key={course._id}
-                        onClick={() => router.push(`/${course.slug}`)}
-                        className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
-                      >
-                        {course.seoMeta?.navTitle || course.name}
-                      </li>
-                    ))}
-                  </ul>
+          <div className="px-4 sm:px-0 mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="rounded-2xl w-full mx-auto bg-orange-50 p-6 border border-orange-100">
+                <div className="max-w-4xl">
+                  <h3 className="text-2xl sm:text-2xl font-bold text-gray-900 mb-1">
+                    Ready to Improve Your Test Score?
+                  </h3>
+
+                  <p className="text-sm sm:text-base leading-7 text-gray-600">
+                    Prepare smarter with OoshasPrep through expert-led online
+                    classes, personalized study plans, mock tests, performance
+                    analysis, and one-to-one doubt support. Build your skills,
+                    fix weak areas, and stay focused on your target score with a
+                    preparation plan designed around your needs.
+                  </p>
+
+                  <div className="mt-3 flex flex-wrap gap-3">
+                    <Link
+                      href={"/auth"}
+                      className="rounded-full bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-700"
+                    >
+                      Explore Courses
+                    </Link>
+                  </div>
                 </div>
-              ))}
+              </div>
+
+              <div className="col-span-2 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-2">
+                {groupedArray.map((group) => (
+                  <div key={group.key}>
+                    <h4 className="text-base font-semibold text-gray-800 mb-1 capitalize">
+                      {group.base?.seoMeta?.navTitle || group.key}
+                    </h4>
+                    <ul className="space-y-0 text-sm text-[#444]">
+                      {group.base && (
+                        <li
+                          onClick={() => router.push(`/${group.base.slug}`)}
+                          className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
+                        >
+                          {/* {group.base.seoMeta?.navTitle || group.base.name} */}
+                        </li>
+                      )}
+                      {group.variants.map((course: any) => (
+                        <li
+                          key={course._id}
+                          onClick={() => router.push(`/${course.slug}`)}
+                          className="cursor-pointer flex items-center hover:text-[#FF6D4D] text-xs transition-colors"
+                        >
+                          <Dot className="w-6 h-6 shrink-0" />{" "}
+                          {course.seoMeta?.navTitle || course.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
-    </div>
-    <footer className="bg-[#FDF4EF] mt-2 mx-4 sm:mx-8 lg:mx-16 overflow-hidden border-2 border-primary rounded-t-[2rem] sm:rounded-t-[3rem] lg:rounded-t-[3.5rem] mt-10">
-      {/* ================= TOP ================= */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-12">
-      
+      </div>
+      <footer className="bg-[#FDF4EF] mt-2 mx-4 sm:mx-8 lg:mx-16 overflow-hidden border-2 border-primary rounded-t-[2rem] sm:rounded-t-[3rem] lg:rounded-t-[3.5rem] mt-10">
+        {/* ================= TOP ================= */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 md:gap-12 lg:gap-16 items-start">
+            {/* Logo */}
+            <div className="sm:col-span-2 lg:col-span-2 pr-10 space-y-3">
+              <Image
+                src="/image/logo.png"
+                alt="logo"
+                width={170}
+                height={70}
+                className=""
+              />
+              <p className="text-sm leading-5 text-[#303030]">
+                Ooshas Prep is a leading online test prep platform for IELTS,
+                GRE, GMAT, SAT, TOEFL & PTE, offering flexible learning formats
+                and world-class coaching.
+              </p>
+              <p className="text-sm leading-5 text-[#303030]">
+                Toll Free : +91 9166146538
+              </p>
+              <p className="text-sm leading-5 text-[#303030]">
+                Email : info@ooshasprep.com
+              </p>
+              <ul className="flex items-center gap-2 mt-2">
+                {socialLinks.map((social) => {
+                  const Icon = social.icon;
+                  return (
+                    <li key={social.label}>
+                      <button
+                        className={`flex items-center gap-1 cursor-pointer transition-colors hover:text-black`}
+                        onClick={() => window.open(social.url, "_blank")}
+                        aria-label={`Follow us on ${social.label}`}
+                      >
+                        <img
+                          src={Icon}
+                          alt={`${social.label} social icon`}
+                          width={24}
+                          height={24}
+                          loading="lazy"
+                          className="w-6 h-6"
+                        />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
 
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 md:gap-12 lg:gap-16 items-start">
-          {/* Logo */}
-          <div className="sm:col-span-2 lg:col-span-2 pr-10 space-y-3">
-            <Image
-              src="/image/logo.png"
-              alt="logo"
-              width={170}
-              height={70}
-              className=""
-            />
-            <p className="text-sm leading-5 text-[#303030]">
-              Ooshas Prep is a leading online test prep platform for IELTS,
-              GRE, GMAT, SAT, TOEFL & PTE, offering flexible learning formats
-              and world-class coaching.
-            </p>
-            <p className="text-sm leading-5 text-[#303030]">
-              Toll Free : +91 9166146538
-            </p>
-            <p className="text-sm leading-5 text-[#303030]">
-              Email : info@ooshasprep.com
-            </p>
-            <ul className="flex items-center gap-2 mt-2">
-              {socialLinks.map((social) => {
-                const Icon = social.icon;
-                return (
-                  <li key={social.label}>
+            {/* Quick Links */}
+            <div>
+              <h3 className="text-xl font-semibold my-4">Quick Links</h3>
+              <ul className="space-y-2 text-[13px] text-[#444]">
+                {quickLinks.map((link) => (
+                  <li key={link.label}>
                     <button
-                      className={`flex items-center gap-1 cursor-pointer transition-colors hover:text-black`}
-                      onClick={() => window.open(social.url, "_blank")}
-                      aria-label={`Follow us on ${social.label}`}
+                      className="cursor-pointer hover:text-primary transition-colors"
+                      onClick={() => router.push(link.path)}
                     >
-                      <img
-                        src={Icon}
-                        alt={`${social.label} social icon`}
-                        width={24}
-                        height={24}
-                        loading="lazy"
-                        className="w-6 h-6"
-                      />
+                      {link.label}
                     </button>
                   </li>
-                );
-              })}
-            </ul>
-          </div>
+                ))}
+              </ul>
+            </div>
 
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-xl font-bold my-5">Quick Links</h3>
-            <ul className="space-y-2 text-sm text-[#444]">
-              {quickLinks.map((link) => (
-                <li key={link.label}>
-                  <button
-                    className="cursor-pointer hover:text-primary transition-colors"
-                    onClick={() => router.push(link.path)}
+            {/* Services */}
+            <div>
+              <h3 className="text-xl font-semibold my-4">Our Services</h3>
+              <ul className="space-y-2 text-[13px] text-[#444]">
+                {courseData.map((item: any) => (
+                  <li
+                    key={item._id}
+                    onClick={() => router.push(`/${item.seoMeta.canonicalUrl}`)}
+                    className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
                   >
-                    {link.label}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
+                    {item.seoMeta.navTitle}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Services */}
-          <div>
-            <h3 className="text-xl font-bold my-5">Our Services</h3>
-            <ul className="space-y-2 text-sm text-[#444]">
-              {courseData.map((item: any) => (
-                <li
-                  key={item._id}
-                  onClick={() => router.push(`/${item.seoMeta.canonicalUrl}`)}
-                  className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
-                >
-                  {item.seoMeta.navTitle}
-                </li>
-              ))}
-            </ul>
-          </div>
+            {/* Resources */}
+            <div>
+              <h3 className="text-xl font-semibold my-4">Resources</h3>
+              <ul className="space-y-2 text-[13px] text-[#444]">
+                {calculator.map((resource) => (
+                  <li key={resource.slug}>
+                    <button
+                      className="cursor-pointer text-left hover:text-primary transition-colors"
+                      onClick={() => router.push(resource.slug)}
+                    >
+                      {resource?.seoMeta?.navTitle}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Resources */}
-          <div>
-            <h3 className="text-xl font-bold my-5">Resources</h3>
-            <ul className="space-y-2 text-sm text-[#444]">
-              {calculator.map((resource) => (
-                <li key={resource.slug}>
-                  <button
-                    className="cursor-pointer hover:text-primary transition-colors"
-                    onClick={() => router.push(resource.slug)}
+            {/* Exam Details */}
+            <div className="lg:block">
+              <h3 className="text-xl font-semibold my-4">Exam Details</h3>
+              <ul className="space-y-2 text-[13px] text-[#444]">
+                {courseData1.map((item: any) => (
+                  <li
+                    key={item._id}
+                    onClick={() => router.push(`/${item.seoMeta.canonicalUrl}`)}
+                    className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
                   >
-                    {resource?.seoMeta?.navTitle}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Exam Details */}
-          <div className="lg:block">
-            <h3 className="text-xl font-bold my-5">Exam Details</h3>
-            <ul className="space-y-2 text-sm text-[#444]">
-              {courseData1.map((item: any) => (
-                <li
-                  key={item._id}
-                  onClick={() => router.push(`/${item.seoMeta.canonicalUrl}`)}
-                  className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
-                >
-                  {item.seoMeta.navTitle}
-                </li>
-              ))}
-            </ul>
+                    {item.seoMeta.navTitle}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 
+        <div className="relative">
+          <div className="max-w-7xl pb-6 mx-auto px-4 sm:px-6 text-black">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.8, duration: 0.5 }}
+                className="flex flex-col sm:flex-row items-center w-full gap-3 sm:gap-4 text-center sm:text-left"
+              >
+                <p className="text-lg md:text-xl font-bold tracking-tight mb-1 text-gray-900">
+                  Get Exam Updates
+                </p>
+                <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                  <input
+                    type="text"
+                    onChange={(e) => setemail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="w-full sm:w-64 md:w-72 lg:w-96 border-2 border-primary flex items-center gap-2 bg-white text-black font-semibold px-4 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all"
+                  />
+                  <button
+                    onClick={() => {
+                      submit();
+                    }}
+                    className="w-full sm:w-auto flex-shrink-0 border-2 border-primary flex items-center justify-center gap-2 bg-white text-[#FF6A13] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap"
+                  >
+                    Subscribe Now
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      strokeWidth={2.5}
+                      stroke="currentColor"
+                      className="w-4 h-4"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M13.5 4.5l6.75 6.75-6.75 6.75M19.5 12H9"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </div>
 
-      </div>
-
-
-      <div className="relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 text-black">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-8">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.8, duration: 0.5 }}
-              className="flex flex-col sm:flex-row items-center w-full gap-3 sm:gap-4 text-center sm:text-left"
-            >
-              <p className="text-lg md:text-xl font-bold tracking-tight mb-1 text-gray-900">
-                Get Exam Updates
+        <div className="bg-primary relative">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="flex flex-wrap justify-center md:justify-start gap-4 sm:gap-6 lg:gap-8 mt-4 md:mt-0">
+              <p className="text-white text-sm text-center sm:text-left">
+                © {new Date().getFullYear()} Ooshas Prep. All rights reserved.
               </p>
-              <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-                <input
-                  type="text"
-                  onChange={(e => setemail(e.target.value))}
-                  placeholder="Enter your email"
-                  className="w-full sm:w-64 md:w-72 lg:w-96 border-2 border-primary flex items-center gap-2 bg-white text-black font-semibold px-4 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all"
-                />
-                <button
-                  onClick={() => { submit();}}
-                  className="w-full sm:w-auto flex-shrink-0 border-2 border-primary flex items-center justify-center gap-2 bg-white text-[#FF6A13] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap"
-                >
-                  Subscribe Now
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={2.5}
-                    stroke="currentColor"
-                    className="w-4 h-4"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M13.5 4.5l6.75 6.75-6.75 6.75M19.5 12H9"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </motion.div>
+              <Link href="/privacy-policy" className="text-white text-sm">
+                Privacy Policy
+              </Link>
+              <Link href="/terms-and-conditions" className="text-white text-sm">
+                Terms of Service
+              </Link>
+            </div>
+
+            <img
+              src="/icon/footer.webp"
+              alt="img"
+              className="hidden lg:block h-24 sm:h-28 lg:h-34 absolute right-4 sm:right-6 lg:right-8 bottom-1 opacity-50 sm:opacity-100"
+            />
           </div>
         </div>
-      </div>
-
-      <div className="border-b-1 border-gray-300 mb-8 sm:mb-16 lg:mb-24 max-w-8xl mx-4 sm:mx-8 lg:mx-10 my-1"></div>
-
-
-      <div className="bg-primary relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex flex-wrap justify-center md:justify-start gap-4 sm:gap-6 lg:gap-8 mt-4 md:mt-0">
-            <p className="text-white text-sm text-center sm:text-left">
-              © {new Date().getFullYear()} Ooshas Prep. All rights reserved.
-            </p>
-            <Link href="/privacy-policy" className="text-white text-sm">
-              Privacy Policy
-            </Link>
-            <Link href="/terms-and-conditions" className="text-white text-sm">
-              Terms of Service
-            </Link>
-          </div>
-
-          <img
-            src="/icon/footer.webp"
-            alt="img"
-            className="hidden lg:block h-24 sm:h-28 lg:h-34 absolute right-4 sm:right-6 lg:right-8 bottom-1 opacity-50 sm:opacity-100"
-          />
-        </div>
-      </div>
-    </footer>
+      </footer>
     </>
   );
 }
-
-
-
-
-
-
-
 
 // "use client";
 
@@ -744,6 +757,3 @@ export function Footer({ Data = [] }: FooterProps) {
 //     </footer>
 //   );
 // }
-
-
-

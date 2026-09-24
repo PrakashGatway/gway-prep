@@ -250,8 +250,8 @@ export function Navbar({ Data }: NavbarProps) {
           duration-300
           ${
             scrolled
-              ? "border-b border-gray-100 bg-white/90 shadow-lg backdrop-blur-xl"
-              : "border-b border-transparent bg-white/95 backdrop-blur-sm"
+              ? "border-b py-2.5 border-gray-100 bg-white/90 shadow-lg backdrop-blur-xl"
+              : "border-b py-3 border-transparent bg-white backdrop-blur-sm"
           }
         `}
       >
@@ -259,13 +259,9 @@ export function Navbar({ Data }: NavbarProps) {
           <div
             className="
               flex
-              min-h-[64px]
               items-center
               justify-between
               gap-3
-              py-2.5
-              sm:min-h-[70px]
-              sm:py-3
             "
           >
 
@@ -274,6 +270,7 @@ export function Navbar({ Data }: NavbarProps) {
               className="
                 group
                 flex
+                w-1/6
                 min-w-0
                 shrink-0
                 items-center
@@ -390,14 +387,14 @@ export function Navbar({ Data }: NavbarProps) {
                       rounded-2xl
                       px-3
                       py-2.5
-                      text-sm
+                      text-[14px]
                       font-medium
                       transition-all
                       duration-200
                       ${
                         activeDropdown === item.name
                           ? "bg-orange-50 text-[#F36C45]"
-                          : "text-gray-600 hover:bg-orange-50/70 hover:text-[#F36C45]"
+                          : "text-gray-800 hover:bg-orange-50/70 hover:text-[#F36C45]"
                       }
                     `}
                   >
