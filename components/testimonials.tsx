@@ -295,9 +295,9 @@ export function VideoTestimonialCard({ heading, data }: any) {
   const currentSlide = slider?.current?.track?.details?.rel || 0;
 
   return (
-    <div className="max-w-7xl mx-auto  px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto  px-4 sm:px-6 lg:px-0">
       {/* Heading - Updated to 5xl with responsive sizes */}
-      <div className="text-center mb-8 sm:mb-10 md:mb-12 px-4">
+      <div className="text-center mb-8 sm:mb-10 md:mb-12 px-0">
         <h2 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold">
           <span className="text-primary">What Our</span>{" "}
           <span className="">Students Say</span>
@@ -313,7 +313,7 @@ export function VideoTestimonialCard({ heading, data }: any) {
       </div>
 
       {/* Slider */}
-      <div className="relative px-2 sm:px-4 lg:px-8">
+      <div className="relative px-2 sm:px-4 lg:px-0">
         <div ref={sliderRef} className="keen-slider">
           {videoItems.map((item: any) => {
             const isPlaying = activeVideo === item.video;
@@ -518,7 +518,7 @@ export function TextTestimonials({ heading, data }: any) {
 
   return (
     <div className="py-8 sm:py-10 lg:py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0">
         {/* Heading - Updated to 5xl with responsive sizes */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12">
           <h2 className="text-center text-2xl md:text-3xl lg:text-4xl font-bold">
@@ -536,7 +536,7 @@ export function TextTestimonials({ heading, data }: any) {
         </div>
 
         {/* Slider */}
-        <div className="relative px-1 sm:px-2 lg:px-4">
+        <div className="relative px-1 sm:px-2 lg:px-0">
           <div ref={sliderRef} className="keen-slider py-2">
             {validTestimonials.map((item: any, idx: number) => (
               <div
@@ -618,7 +618,7 @@ export function TextTestimonials({ heading, data }: any) {
           {/* Prev Button - Updated positioning */}
           <button
             onClick={() => slider?.current?.prev()}
-            className="hidden md:flex absolute -left-4 lg:-left-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100 items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white transition-all duration-200 hover:scale-105 active:scale-95"
+            className="hidden md:flex absolute -left-4 lg:-left-20 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100 items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white transition-all duration-200 hover:scale-105 active:scale-95"
             aria-label="Previous"
           >
             <ChevronLeft size={18} />
@@ -627,7 +627,7 @@ export function TextTestimonials({ heading, data }: any) {
           {/* Next Button - Updated positioning */}
           <button
             onClick={() => slider?.current?.next()}
-            className="hidden md:flex absolute -right-4 lg:-right-8 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100 items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white transition-all duration-200 hover:scale-105 active:scale-95"
+            className="hidden md:flex absolute -right-4 lg:-right-22 top-1/2 -translate-y-1/2 z-20 w-10 h-10 bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100 items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white transition-all duration-200 hover:scale-105 active:scale-95"
             aria-label="Next"
           >
             <ChevronRight size={18} />

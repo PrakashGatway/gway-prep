@@ -19,7 +19,7 @@ export function Consultants({ data, finalCtaSection }: any) {
   }
 
   return (
-    <div className="bg-white max-w-7xl mx-auto rounded-xl p-6 my-10">
+    <div className="bg-white max-w-7xl mx-auto rounded-xl py-6 my-10">
       <h2 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold mb-4">
         {data.fields.title?.split("||")[0]}
         <span className="text-primary">

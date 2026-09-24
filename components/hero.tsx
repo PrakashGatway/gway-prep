@@ -51,6 +51,8 @@ export function Hero({ data, student }: HeroProps) {
   const [mounted, setMounted] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
+  const navigate = useRouter()
+
   useEffect(() => {
     setMounted(true);
   }, []);
@@ -191,7 +193,7 @@ export function Hero({ data, student }: HeroProps) {
         transition={{ delay: 1.2, duration: 0.8 }}
         className="relative z-10 pb-6 lg:pb-10"
       >
-        <HomeCountUp data={data} />
+        <HomeCountUp data={data} className="max-w-7xl mx-auto" />
       </motion.div>
 
       {/* ─── Popup Modal ─── */}

@@ -20,6 +20,7 @@ import {
   PieChart,
   LucideChevronLeftSquare,
   LucideChevronRight,
+  BookOpen,
 } from "lucide-react";
 import FormSection from "./formSection";
 import EditorContent from "./editorContent";
@@ -29,11 +30,12 @@ import axiosInstance from "@/app/lib/axios";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import QuestionsSection from "./comment";
+import { getPages } from "@/app/services/api";
 
-const ExamDetails = ({ pagedata }: any) => {
-  // console.log(pagedata,"page data")
+const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
   const basicInfo = pagedata?.sections?.["basic-info"]?.fields;
-  const examData = pagedata?.sections?.["exam-data"]?.fields?.exam_details || [];
+  const examData =
+    pagedata?.sections?.["exam-data"]?.fields?.exam_details || [];
   const [activeSection, setActiveSection] = useState<string>("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
@@ -49,6 +51,20 @@ const ExamDetails = ({ pagedata }: any) => {
         item.content_heading || `Section ${index + 1}`,
     }));
   }, [examData]);
+
+  const itemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  useEffect(() => {
+    const activeItem = itemRefs.current[activeSection];
+
+    if (activeItem) {
+      activeItem.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [activeSection]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -139,7 +155,7 @@ const ExamDetails = ({ pagedata }: any) => {
       {
         threshold: 0,
         rootMargin: "-80px 0px 0px 0px",
-      }
+      },
     );
 
     observer.observe(element);
@@ -149,7 +165,42 @@ const ExamDetails = ({ pagedata }: any) => {
 
   return (
     <main className="relative flex flex-col">
-      <div className="relative w-full overflow-visible px-4 sm:px-8 lg:px-12 py-6 sm:py-8">
+      <div className="relative w-full overflow-visible px-4 sm:px-8 lg:px-3 py-6 sm:py-8">
+        <div ref={tocRef} className="h-0"></div>
+        <div
+          className={`sticky xl:top-20 top-14 sm:top-16 lg:top-18 z-40 border-b bg-white
+    transition-all duration-300 ease-in-out
+    ${
+      isSticky
+        ? "visible translate-y-0 opacity-100"
+        : "invisible -translate-y-3 opacity-0 pointer-events-none"
+    }
+  `}
+        >
+          <div
+            className="flex items-center gap-6 py-1 px-4 whitespace-nowrap overflow-x-auto bg-white"
+            style={{
+              scrollbarWidth: "none",
+            }}
+          >
+            {toc.map((item) => (
+              <button
+                key={item.id}
+                ref={(el) => {
+                  itemRefs.current[item.id] = el;
+                }}
+                onClick={() => scrollToSection(item.id)}
+                className={`relative whitespace-nowrap py-2 text-sm font-medium transition-colors duration-200 ${
+                  activeSection === item.id
+                    ? "text-orange-500 border-b-2 border-orange-500"
+                    : "text-black hover:text-orange-500"
+                }`}
+              >
+                {item.title}
+              </button>
+            ))}
+          </div>
+        </div>
         <div className="relative z-10 mx-auto bg-white max-w-7xl mx-auto px-1x py-8">
           {/* Heading */}
           <h1 className="mb-4 text-left text-2xl font-bold leading-tight sm:text-3xl lg:text-[36px] lg:leading-[1.25]">
@@ -227,109 +278,83 @@ const ExamDetails = ({ pagedata }: any) => {
                   </div>
                 </div>
               )}
+
+              <div className=" py-8 overflow">
+                <div className=" gap-10">
+                  {/* Main */}
+                  <div className="space-y-0">
+                    {examData.map((section: any, index: number) => (
+                      <div
+                        key={index}
+                        ref={(el) => {
+                          sectionRefs.current[`section-${index}`] = el;
+                        }}
+                        id={`section-${index}`}
+                        className="bg-white lg:p-0 scroll-mt-20"
+                      >
+                        {/* Section Title */}
+                        {section?.content_heading && (
+                          <h2 className="text-2xl font-bold text-[#00306a] mb-6">
+                            {section.content_heading}
+                          </h2>
+                        )}
+
+                        {section.content_data && (
+                          <EditorContent content_data={section.content_data} />
+                        )}
+
+                        {section.faq?.length > 0 && (
+                          <div className="mt-8">
+                            <h2 className="text-2xl font-bold mb-6 text-[#183153]">
+                              Frequently Asked Questions
+                            </h2>
+
+                            {section.faq.map((faq: any, i: number) => (
+                              <FAQItem
+                                key={i}
+                                question={faq.question}
+                                answer={faq.answer}
+                              />
+                            ))}
+                          </div>
+                        )}
+
+                        {section &&
+                          Array.isArray(section?.Banner) &&
+                          section.Banner.length > 0 && (
+                            <Banner
+                              finalCtaSection={section.Banner[0]}
+                              Image={section.Image}
+                            />
+                          )}
+
+                        {section.question && (
+                          <QuizCard section={section} pagedata={pagedata} />
+                        )}
+                      </div>
+                    ))}
+
+                    <QuestionsSection
+                      page={"ExamDetails"}
+                      css={"bg-[#fafafa] py-6 my-6"}
+                    />
+                  </div>
+
+                  {/* Sidebar */}
+                  {/* <aside className="hidden lg:block sticky top-38 h-fit">
+            <LeadForm />
+          </aside> */}
+                </div>
+              </div>
             </div>
 
             {/* Right Lead Form */}
-            <div className="sticky top-20 self-start w-full lg:max-w-[335px] lg:mt-0 mt-6">
+            <div className="sticky top-34 self-start w-full lg:max-w-[335px] lg:mt-0 mt-6">
               <LeadForm />
+              <ExploreExams Data={Data} slug={slug} />
+              <ExploreBlogs Blogdata={Blogdata} />
             </div>
           </div>
-        </div>
-      </div>
-
-      <div ref={tocRef} className="h-0" />
-
-      <div
-        className={`sticky top-20 z-40 transition-all duration-200 ${
-          isSticky
-            ? "visible bg-white border-b shadow-sm"
-            : "invisible h-0 overflow-hidden"
-        }`}
-      >
-        <div
-          className="flex items-center gap-6 py-1 whitespace-nowrap overflow-auto bg-[#F26E46]"
-          style={{
-            scrollbarWidth: "none",
-          }}
-        >
-          {toc.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => scrollToSection(item.id)}
-              className={`whitespace-nowrap  text-sm font-medium transition-colors relative py-2 ${
-                activeSection === item.id
-                  ? "text-[#000] border-b-2 border-[#000]"
-                  : "text-white hover:text-[#000]"
-              }`}
-            >
-              {item.title}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div className="max-w-7xl mx-auto px-4 py-8 overflow">
-        <div className=" gap-10">
-          {/* Main */}
-          <div className="space-y-0">
-            {examData.map((section: any, index: number) => (
-              <div
-                key={index}
-                ref={(el) => {
-                  sectionRefs.current[`section-${index}`] = el;
-                }}
-                id={`section-${index}`}
-                className="bg-white lg:p-6 scroll-mt-20"
-              >
-                {/* Section Title */}
-                {section?.content_heading && (
-                  <h2 className="text-2xl font-bold text-[#00306a] mb-6">
-                    {section.content_heading}
-                  </h2>
-                )}
-
-                {section.content_data && (
-                  <EditorContent content_data={section.content_data} />
-                )}
-
-                {section.faq?.length > 0 && (
-                  <div className="mt-8">
-                    <h2 className="text-2xl font-bold mb-6 text-[#183153]">
-                      Frequently Asked Questions
-                    </h2>
-
-                    {section.faq.map((faq: any, i: number) => (
-                      <FAQItem
-                        key={i}
-                        question={faq.question}
-                        answer={faq.answer}
-                      />
-                    ))}
-                  </div>
-                )}
-
-                {section &&
-                  Array.isArray(section?.Banner) &&
-                  section.Banner.length > 0 && (
-                    <Banner
-                      finalCtaSection={section.Banner[0]}
-                      Image={section.Image}
-                    />
-                  )}
-
-                {section.question && (
-                  <QuizCard section={section} pagedata={pagedata} />
-                )}
-              </div>
-            ))}
-
-            <QuestionsSection page={'ExamDetails'} css={'bg-[#fafafa] py-6 my-6'} />
-          </div>
-
-          {/* Sidebar */}
-          {/* <aside className="hidden lg:block sticky top-38 h-fit">
-            <LeadForm />
-          </aside> */}
         </div>
       </div>
     </main>
@@ -369,7 +394,7 @@ function Banner({ finalCtaSection, Image }: any) {
     <section className="relative overflow-hidden flex items-center py-6 mt-8 ">
       {/* Main Orange Banner Container */}
       <div
-        className=" w-full mx-auto bg-[#FF6A13] rounded-[24px] overflow-hidden 
+        className=" w-full mx-auto bg-orange-50 rounded-[24px] overflow-hidden 
       flex flex-col md:flex-row items-center justify-between p-6 md:p-8 gap-6 min-h-[160px]"
       >
         {/* Left Side: Animated Character Image */}
@@ -398,10 +423,10 @@ function Banner({ finalCtaSection, Image }: any) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 0.5 }}
-          className={`flex flex-col md:flex-row items-center justify-between w-full ${Image && "md:pl-[240px]"} gap-6 text-center md:text-left`}
+          className={`flex flex-col md:flex-col items-start justify-between w-full ${Image && "md:pl-[240px]"} gap-6 text-center md:text-left`}
         >
           {/* Text Content */}
-          <div className="text-white max-w-xl">
+          <div className=" w-full">
             <h6 className="text-2xl md:text-4xl font-bold tracking-tight mb-2">
               {finalCtaSection?.title || "Ready to Achieve Your Dreams?"}
             </h6>
@@ -410,7 +435,6 @@ function Banner({ finalCtaSection, Image }: any) {
                 "Join thousands of successful students and start your journey today."}
             </p>
           </div>
-
           {/* Call to Action Button */}
           {finalCtaSection?.buttontext && (
             <button
@@ -419,7 +443,7 @@ function Banner({ finalCtaSection, Image }: any) {
                   finalCtaSection?.url ? finalCtaSection?.url : "/auth",
                 )
               }
-              className="flex-shrink-0 flex items-center gap-2 bg-white text-[#FF6A13] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap"
+              className="flex-shrink-0 flex items-center gap-2 bg-[#f36d45] text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap"
             >
               {finalCtaSection?.buttontext || "Enroll Now"}
               <svg
@@ -443,6 +467,110 @@ function Banner({ finalCtaSection, Image }: any) {
     </section>
   );
 }
+
+export const ExploreExams = ({ Data, slug }: any) => {
+  const router = useRouter();
+  const courseData1 = React.useMemo(
+    () =>
+      Data?.filter(
+        (item: any) =>
+          item?.seoMeta?.template?.toLowerCase() === "examdetails" &&
+          item?.seoMeta?.slug !== slug,
+      ) || [],
+    [Data, slug],
+  );
+
+  return (
+    <>
+      <div className="w-full rounded-2xl border border-gray-200 bg-white p-4 my-3">
+        {/* Header */}
+        <div className=" flex items-center gap-2">
+          <svg
+            className="h-5 w-5 text-orange-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.8}
+              d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.562.562 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.2 3.602a.562.562 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0l-4.725 2.885a.562.562 0 01-.84-.61l1.285-5.385a.562.562 0 00-.182-.557l-4.2-3.602a.562.562 0 01.321-.988l5.518-.442a.562.562 0 00.475-.345L11.48 3.5z"
+            />
+          </svg>
+
+          <h2 className="text-lg font-bold text-gray-900">Explore Exams</h2>
+        </div>
+
+        {/* Exam List */}
+        <ul>
+          {courseData1.map((item: any) => (
+            <li key={item._id}>
+              <button
+                onClick={() => router.push(`/${item.seoMeta.canonicalUrl}`)}
+                className="group flex w-full items-center justify-between gap-4 border-b-3 border-gray-300 py-2 text-left last:border-b-0"
+              >
+                <span className="text-[15px] leading-6 text-orange-500 transition-all duration-200 group-hover:translate-x-1 underline cursor-pointer">
+                  {item.seoMeta.navTitle}
+                </span>
+
+                <span className="shrink-0 text-lg font-light text-orange-500 transition-all duration-200 group-hover:translate-x-1">
+                  →
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        {/* Empty State */}
+        {courseData1.length === 0 && (
+          <p className="py-4 text-sm text-gray-500">No exams available.</p>
+        )}
+      </div>
+    </>
+  );
+};
+
+export const ExploreBlogs = ({ Blogdata }: any) => {
+  const router = useRouter();
+
+  return (
+    <>
+      <div className="w-full rounded-2xl border border-gray-200 bg-white p-4 my-3">
+        {/* Header */}
+        <div className=" flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-orange-500" />
+
+          <h2 className="text-lg font-bold text-gray-900">Explore Blogs</h2>
+        </div>
+
+        <ul>
+          {Blogdata.map((item: any) => (
+            <li key={item._id}>
+              <button
+                onClick={() => router.push(`/blog/${item.slug}`)}
+                className="group flex w-full items-center justify-between gap-4 border-b-3 border-gray-300 py-2 text-left last:border-b-0"
+              >
+                <span className="text-[15px] leading-6 text-orange-500 transition-all duration-200 group-hover:translate-x-1 underline cursor-pointer">
+                  {item.title}
+                </span>
+
+                <span className="shrink-0 text-lg font-light text-orange-500 transition-all duration-200 group-hover:translate-x-1">
+                  →
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        {/* Empty State */}
+        {Blogdata.length === 0 && (
+          <p className="py-4 text-sm text-gray-500">No exams available.</p>
+        )}
+      </div>
+    </>
+  );
+};
 
 // function QuizCard({ section ,pagedata}: any) {
 //   const [answer, setAnswer] = useState("");
@@ -1015,7 +1143,7 @@ function QuizCard({ section, pagedata }: any) {
             disabled={isLoading || submitted}
             whileHover={!isLoading && !submitted ? { scale: 1.02 } : {}}
             whileTap={!isLoading && !submitted ? { scale: 0.98 } : {}}
-            className={`flex-1 bg-gradient-to-r from-[#F26E46] to-orange-500 text-white px-6 py-3 rounded-xl transition-all duration-200
+            className={`flex-1 bg-[#f36d45] text-white px-6 py-3 rounded-xl transition-all duration-200
               ${isLoading ? "opacity-70 cursor-not-allowed" : "hover:shadow-lg hover:shadow-orange-200"}
               disabled:opacity-50 disabled:cursor-not-allowed
             `}
@@ -1065,7 +1193,6 @@ function QuizCard({ section, pagedata }: any) {
             </motion.button>
           )}
         </div>
-
 
         {submitted && showResults && apiResponse && (
           <motion.div
@@ -1290,7 +1417,7 @@ const LeadForm = () => {
       <p className="text-sm mb-4">
         our Experts require more information to assist you in a better way.
       </p>
-      <FormSection FORM_CONFIG={FORM_CONFIG}  />
+      <FormSection FORM_CONFIG={FORM_CONFIG} />
 
       {formSubmitted && (
         <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">

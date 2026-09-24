@@ -1,10 +1,12 @@
 "use client";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import PopupModal from "./popupModel";
+import { useState } from "react";
 
 export default function ServicesGrid({ data, heading }: any) {
+  const [isPopupOpen,setIsPopupOpen] = useState(false)
+
   // Extract title and split by "||"
   const title = heading?.fields?.title || "Four Ways to Learn. || One Standard of Excellence.";
   const titleParts = title?.split("||") || ["Four Ways to Learn.", "One Standard of Excellence."];
@@ -39,19 +41,19 @@ export default function ServicesGrid({ data, heading }: any) {
             {items?.length > 0 && (
               <>
                 <div className="absolute top-20 left-[260px] w-[280px]">
-                  <Card item={items[0]} />
+                  <Card item={items[0]} setIsPopupOpen={setIsPopupOpen} />
                 </div>
 
                 <div className="absolute top-[260px] right-20 w-[280px]">
-                  <Card item={items[1]} />
+                  <Card item={items[1]} setIsPopupOpen={setIsPopupOpen}  />
                 </div>
 
                 <div className="absolute bottom-30 left-[260px] w-[280px]">
-                  <Card item={items[2]} />
+                  <Card item={items[2]} setIsPopupOpen={setIsPopupOpen}  />
                 </div>
 
                 <div className="absolute top-[330px] left-0 w-[280px]">
-                  <Card item={items[3]} />
+                  <Card item={items[3]} setIsPopupOpen={setIsPopupOpen}  />
                 </div>
               </>
             )}
@@ -64,6 +66,8 @@ export default function ServicesGrid({ data, heading }: any) {
           ))}
         </div>
       </div>
+            <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen}/>
+
     </section>
   );
 }
@@ -78,8 +82,9 @@ type CardProps = {
   };
 };
 
-function Card({ item }: CardProps) {
+function Card({ item,setIsPopupOpen }: CardProps) {
   const router = useRouter();
+  console.log(item)
 
   if (!item) return null;
   
@@ -88,7 +93,7 @@ function Card({ item }: CardProps) {
   const description = contentParts[0]?.trim() || "";
   const buttonText = contentParts[1]?.trim() || "Learn More";
   
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+ 
 
   return (
     <div className="bg-white md:rounded-3xl p-2 shadow-md border border-orange-100 hover:-translate-y-2 transition-all duration-300">
@@ -103,15 +108,17 @@ function Card({ item }: CardProps) {
       <div className="mt-2 flex justify-center">
         <button 
           className="bg-orange-500 text-white px-5 py-2 rounded-full text-sm hover:bg-orange-600 transition cursor-pointer" 
-          onClick={() => item.link === "*" ?setIsPopupOpen(true) : router.push(item.link || "#")}
+          onClick={() => router.push(item.slug || setIsPopupOpen(true))}
         >
           {buttonText}
         </button>
 
         
-      <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen}/>
       </div>
+     
+
     </div>
+    
   );
 }
 

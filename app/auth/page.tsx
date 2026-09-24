@@ -30,6 +30,7 @@ import axiosInstance from "@/services/axiosInstance";
 import { useGlobal } from "@/hooks/AppStateContext";
 import Image from "next/image";
 import { Turnstile } from "@marsidev/react-turnstile";
+import { useSearchParams } from "next/navigation";
 // import { useSearchParams } from "next/navigation";
 
 // Input Field Component
@@ -58,7 +59,7 @@ const InputField = ({ icon: Icon, label, error, ...props }: any) => (
 
 // Main Auth Component
 function Auth({ toggleDrawer }: any) {
-  const { userInfo } = useGlobal();
+  const { userInfo,authChecked,user } = useGlobal();
 
   const [mode, setMode] = useState<any>("email");
   const [email, setEmail] = useState("");
@@ -70,6 +71,9 @@ function Auth({ toggleDrawer }: any) {
   const [resendCooldown, setResendCooldown] = useState(0);
   const [turnstileToken, setTurnstileToken] = useState("");
 
+   const searchParams = useSearchParams();
+  const ReferalFromUrl = searchParams.get("ref");
+
   const search = "";
   const referral = "";
 
@@ -79,12 +83,18 @@ function Auth({ toggleDrawer }: any) {
     referCode: "",
   });
 
-  useEffect(() => {
-    setFormData((prevFormData) => ({
-      ...prevFormData,
-      referCode: referral,
-    }));
-  }, [referral]);
+  // useEffect(() => {
+  //   setFormData((prevFormData) => ({
+  //     ...prevFormData,
+  //     referCode: referral,
+  //   }));
+  // }, [referral]);
+
+   useEffect(() => {
+      if (ReferalFromUrl) {
+          setFormData((prev) => ({ ...prev, referCode: ReferalFromUrl }));
+      }
+  }, [ReferalFromUrl]);
 
   const validatePhone = (value: string) => /^[6-9]\d{9}$/.test(value);
   const validateName = (value: string) => /^[A-Za-z ]{2,}$/.test(value);
@@ -105,6 +115,8 @@ function Auth({ toggleDrawer }: any) {
         return 0;
     }
   };
+
+  
 
   useEffect(() => {
     if (resendCooldown > 0) {
@@ -252,6 +264,16 @@ function Auth({ toggleDrawer }: any) {
       setLoading(false);
     }
   };
+
+    useEffect(() => {
+      if (authChecked && user) {
+        window.location.href = "https://dashboard.ooshasprep.com/";
+      }
+    }, [authChecked, user]);
+  
+    if (!authChecked || user) {
+      return null;
+    }
 
   return (
     <div className="flex flex-col items-left justify-center flex-20 w-full">

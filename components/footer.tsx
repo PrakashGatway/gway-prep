@@ -149,13 +149,12 @@ export function Footer({ Data = [] }: FooterProps) {
   }
 
   return (
-    <footer className="bg-[#FDF4EF] mt-2 mx-4 sm:mx-8 lg:mx-16 overflow-hidden border-2 border-primary rounded-t-[2rem] sm:rounded-t-[3rem] lg:rounded-t-[3.5rem] mt-10">
-      {/* ================= TOP ================= */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-12">
+    <>
+    <div className="max-w-7xl mx-auto">
         {groupedArray.length > 0 && (
           <div className="mb-12 pb-8 border-b border-gray-300">
             <h3 className="text-xl font-bold mb-6">All Preparation Courses</h3>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
               {groupedArray.map((group) => (
                 <div key={group.key}>
                   <h4 className="text-sm font-bold text-gray-900 mb-3 capitalize">
@@ -185,6 +184,11 @@ export function Footer({ Data = [] }: FooterProps) {
             </div>
           </div>
         )}
+    </div>
+    <footer className="bg-[#FDF4EF] mt-2 mx-4 sm:mx-8 lg:mx-16 overflow-hidden border-2 border-primary rounded-t-[2rem] sm:rounded-t-[3rem] lg:rounded-t-[3.5rem] mt-10">
+      {/* ================= TOP ================= */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-12">
+      
 
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 md:gap-12 lg:gap-16 items-start">
@@ -374,6 +378,7 @@ export function Footer({ Data = [] }: FooterProps) {
         </div>
       </div>
     </footer>
+    </>
   );
 }
 

@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Search,
   CalendarDays,
@@ -74,12 +74,14 @@ const CategoryIconMap: Record<string, React.ElementType> = {
 export default function GuidePage({
   allGuides = mockGuides,
   allCategory = mockCategories,
+  totalGuides
 }: GuidePageProps) {
   const [activeCategory, setActiveCategory] = useState("All Guides");
   const [page, setPage] = useState(1);
   const router = useRouter();
   const searchParams = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") || "");
+ 
 
   // --- Logic Functions (Preserved) ---
 
@@ -108,6 +110,8 @@ export default function GuidePage({
     router.push(`/guide?${params.toString()}`);
   };
 
+
+
   const handlePageChange = (newPage: number) => {
     const params = new URLSearchParams(searchParams.toString());
     params.set("page", String(newPage));
@@ -133,6 +137,8 @@ export default function GuidePage({
     });
   };
 
+
+
   return (
     <main className="min-h-screen bg-orange-50 text-[#101b35]">
       {/* =========================================================
@@ -143,21 +149,21 @@ export default function GuidePage({
           <div className="rounded-[32px] border border-orange-500 bg-white p-6  sm:p-2 sm:px-6 lg:flex lg:items-center lg:justify-between lg:gap-12">
             {/* Left Content */}
             <div className="relative z-10 max-w-xl lg:w-1/2">
-              <span className="mb-4 inline-block rounded-full bg-[#ff5b16] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white">
+              <span className="mb-4 inline-block rounded-full bg-[#f36d45] px-3 py-1 text-sm font-bold uppercase tracking-wider text-white">
                 Support Center
               </span>
 
-              <h1 className="text-4xl font-extrabold leading-tight text-[#1a202c] sm:text-5xl">
-                How can we <span className="text-[#ff5b16]">help you?</span>
+              <h1 className="text-4xl font-extrabold leading-tight text-black sm:text-5xl">
+                How can we <span className="text-[#f36d45]">help you?</span>
               </h1>
 
-              <p className="mt-4 text-base text-gray-500 sm:text-lg">
+              <p className="mt-4 text-base text-black sm:text-lg">
                 Find answers, guides and helpful resources for your Ooshas Prep
                 learning journey.
               </p>
 
               {/* Search Bar */}
-              <div className="mt-8 flex items-center rounded-full border border-gray-200 bg-white p-2 pl-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-shadow focus-within:shadow-md">
+              <div className="mt-4 flex items-center rounded-full border border-gray-200 bg-white p-2 pl-5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] transition-shadow focus-within:shadow-md">
                 <input
                   type="text"
                   value={search}
@@ -166,7 +172,7 @@ export default function GuidePage({
                     setPage(1);
                   }}
                   placeholder="Search for guides, articles or topics..."
-                  className="w-full bg-transparent text-sm text-gray-700 outline-none placeholder:text-gray-400"
+                  className="w-full bg-transparent text-sm text-black outline-none placeholder:text-black"
                 />
                 <button
                   onClick={handleSearch}
@@ -207,7 +213,7 @@ export default function GuidePage({
               <h2 className="text-2xl font-bold text-[#333]">
                 Browse by <span className="text-[#ff5b16]">Category</span>
               </h2>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-black">
                 Find the help you need, organized by topic.
               </p>
             </div>
@@ -220,7 +226,7 @@ export default function GuidePage({
             <motion.button
               whileTap={{ scale: 0.98 }}
               onClick={() => handleCategory("All Guides")}
-              className={`group relative flex min-w-[280px] shrink-0 items-center gap-4 rounded-xl border bg-white p-5 text-left border-orange-500 sm:min-w-[300px] border-l-[4px]`}
+              className={`group relative flex min-w-[280px] shrink-0 items-center gap-4 rounded-xl border bg-white p-5 text-left border-orange-500 sm:min-w-[250px] border-l-[4px]`}
             >
               <div
                 className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${
@@ -244,7 +250,7 @@ export default function GuidePage({
                 </h3>
 
                 <p className="text-xs text-gray-500">
-                  {allGuides?.pagination?.total || 0} guides
+                  {totalGuides} guides
                 </p>
               </div>
             </motion.button>
@@ -256,7 +262,7 @@ export default function GuidePage({
                 CategoryIconMap[item.name] || CategoryIconMap.default;
 
               const count =
-                allGuides?.data?.filter((g) => g.category === item.slug)
+                allCategory?.data?.filter((g) => g.slug === item.slug)
                   .length || 0;
 
               return (
@@ -264,7 +270,7 @@ export default function GuidePage({
                   key={item._id}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => handleCategory(item.slug)}
-                  className={`group relative flex min-w-[280px] shrink-0 items-center gap-4 rounded-xl border bg-white p-5 text-left border-orange-500 border-l-[4px] sm:min-w-[300px]`}
+                  className={`group relative flex min-w-[280px] shrink-0 items-center gap-4 rounded-xl border bg-white p-5 text-left border-orange-500 border-l-[4px] sm:min-w-[250px]`}
                 >
                   <div
                     className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${
@@ -304,7 +310,7 @@ export default function GuidePage({
               <h2 className="text-2xl font-bold text-[#333]">
                 Popular <span className="text-[#ff5b16]">Guides</span>
               </h2>
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-black">
                 Helpful resources students are viewing most.
               </p>
             </div>
@@ -352,8 +358,8 @@ export default function GuidePage({
 
                     {/* Footer Meta */}
                     <div className="flex items-center justify-between border-t border-gray-50 pt-4">
-                      <div className="flex items-center gap-2 text-xs font-medium text-gray-400">
-                        <CalendarDays size={14} className="text-gray-400" />
+                      <div className="flex items-center gap-2 text-sm font-medium text-black">
+                        <CalendarDays size={14} className="text-black" />
                         <span>{formatDate(guide.date || guide.createdAt)}</span>
                       </div>
 

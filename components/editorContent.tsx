@@ -97,10 +97,11 @@ const EditorContent = ({ content_data }: EditorContentProps) => {
         }
 
         .blog-html thead th {
-          background: #F46C44;
+          background: #f36d45;
           color: white;
           font-weight: 600;
           text-align: center;
+          text: #fff;
         }
 
         .blog-html tr:nth-child(even) {

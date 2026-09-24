@@ -1,10 +1,11 @@
 import Gre from "@/components/test-preparation/Gre";
-import { getPageInfo } from "@/app/services/api";
+import { getPageInfo, getPages } from "@/app/services/api";
 import Link from "next/link";
 import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import ExamDetails from "@/components/examDetails";
 import ScoreCalculatorPage from "@/components/calculator/page";
+import axiosInstance from "@/app/lib/axios";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -122,17 +123,20 @@ export async function generateMetadata({
 
 export default async function PreparationPage({ params }: PageProps) {
   const { slug } = await params;
+ 
 
   const cleanText = decodeURIComponent(decodeURIComponent(slug));
   const rowtext = cleanText.toLowerCase().replace(/\s+/g, "-");
 
-  console.log(rowtext);
+ 
 
   if (!rowtext || rowtext.toLowerCase() === "home") {
     redirect("/");
   }
 
   const pageData = await getPageInfo(rowtext);
+  const Data = await getPages(300)
+
 
   const hasValidData =
     pageData &&
@@ -211,6 +215,21 @@ export default async function PreparationPage({ params }: PageProps) {
         }
       : null;
 
+
+         let Blogdata = [];
+
+try {
+  const response = await axiosInstance.get(
+    "/admin/blogs?limit=8&isPublished=true"
+  );
+
+  Blogdata = response?.data;
+} catch (error) {
+  console.error("Failed to fetch blogs:", error);
+}
+
+
+
   return (
     <>
       <script
@@ -245,7 +264,7 @@ export default async function PreparationPage({ params }: PageProps) {
       ) : pageData?.template === "calculator" ? (
         <ScoreCalculatorPage pageInfo={pageData} slug={rowtext}/>
       ) : (
-        <ExamDetails pagedata={pageData} />
+        <ExamDetails pagedata={pageData} Data={Data} slug={slug} Blogdata={Blogdata.data} />
       )}
 
 

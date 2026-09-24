@@ -1,81 +1,88 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from 'react';
-import axiosInstance from '@/services/axiosInstance';
+import { createContext, useContext, useState, useEffect } from "react";
+import axiosInstance from "@/services/axiosInstance";
+import { useRouter } from "next/navigation";
 
 const GlobalContext = createContext();
 
 export function GlobalProvider({ children }) {
-    const [user, setUser] = useState(null);
-    const [drawer, setDrawer] = useState(false)
-    const [authToken, setAuthToken] = useState(null);
+  const [user, setUser] = useState(null);
+  const [drawer, setDrawer] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [authToken, setAuthToken] = useState(null);
+  const router = useRouter();
 
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    // console.log(drawer)
+  // console.log(drawer)
 
+  useEffect(() => {
+    setLoading(true); // Start loading
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500);
+    return () => clearTimeout(timer);
+  }, []);
 
-    useEffect(() => {
-        setLoading(true); // Start loading
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 500);
-        return () => clearTimeout(timer);
-    }, []);
+  const userInfo = async () => {
+    try {
+      const response = await axiosInstance.get("auth/me", {
+        withCredentials: true,
+      });
+      setUser(response.data?.data);
+    } catch (error) {
+    } finally {
+      setAuthChecked(true);
+    }
+  };
 
-    const userInfo = async () => {
-        try {
-            const response = await axiosInstance.get("auth/me", {
-                withCredentials: true
-            });
-            setUser(response.data?.data)
-        } catch (error) {
+  const logout = async () => {
+    try {
+      const response = await axiosInstance.get("auth/logout");
+      setUser(null);
+      localStorage.removeItem("accessToken");
+    } catch (error) {
+      console.error("Error fetching user info:", error);
+    }
+  };
 
-        }
-    };
+  useEffect(() => {
+    userInfo();
+  }, [authToken]);
 
-    const logout = async () => {
-        try {
-            const response = await axiosInstance.get("auth/logout");
-            setUser(null)
-            localStorage.removeItem("accessToken")
-        } catch (error) {
-            console.error("Error fetching user info:", error);
-        }
-    };
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    setAuthToken(token);
+    if (token) {
+      axiosInstance.defaults.headers.common["Authorization"] =
+        `Bearer ${token}`;
+    }
+  }, []);
 
-    useEffect(() => {
-        userInfo()
-    }, [authToken])
-
-    useEffect(() => {
-        const token = localStorage.getItem("accessToken");
-        setAuthToken(token);
-        if (token) {
-            axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        }
-    }, [])
-
-    return (
-        <GlobalContext.Provider
-            value={{
-                user,
-                userInfo,
-                logout,
-                loading,
-                error, drawer, setDrawer
-            }}
-        >
-            {children}
-        </GlobalContext.Provider>
-    );
+  return (
+    <GlobalContext.Provider
+      value={{
+        user,
+        userInfo,
+        logout,
+        loading,
+        error,
+        drawer,
+        setDrawer,
+        authChecked
+      }}
+    >
+      {children}
+    </GlobalContext.Provider>
+  );
 }
 
 export function useGlobal() {
-    const context = useContext(GlobalContext);
-    if (!context) {
-        throw new Error('useGlobal must be used within a GlobalProvider');
-    }
-    return context;
+  const context = useContext(GlobalContext);
+  if (!context) {
+    throw new Error("useGlobal must be used within a GlobalProvider");
+  }
+  return context;
 }

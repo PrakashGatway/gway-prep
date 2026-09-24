@@ -1,6 +1,6 @@
 import type React from "react";
 import type { Metadata } from "next";
-import { Inter, Noto_Sans } from "next/font/google";
+import { Inter, Montserrat, Noto_Sans } from "next/font/google";
 import Script from "next/script";
 import "../globals.css";
 import { Navbar } from "@/components/navbar";
@@ -25,10 +25,10 @@ const inter = Inter({
   display: "swap",
   variable: "--font-inter",
 });
-const notoSans = Noto_Sans({
+const montserrat = Montserrat({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
-  variable: "--font-noto-sans",
+  variable: "--font-montserrat",
   display: "swap",
 });
 
@@ -83,7 +83,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${notoSans.className} bg-white text-gray-900 max-w-[1640px] mx-auto`}
+        className={`${montserrat.className} bg-white text-gray-900 max-w-[1640px] mx-auto`}
         suppressHydrationWarning
       >
 

@@ -22,11 +22,22 @@ export default async function Page({ searchParams }) {
 
 
 
-    const [allGuides,allCategory] = await Promise.all([
-        axiosInstance.get(`/articles`,{
-            params : query
+    const [allGuides, allCategory, totalGuides] = await Promise.all([
+        // Current filtered/paginated guides
+        axiosInstance.get(`/articles`, {
+            params: query,
         }),
-        axiosInstance.get("/article-category")
+
+        // Categories
+        axiosInstance.get("/article-category"),
+
+        // Always get the complete total
+        axiosInstance.get("/articles", {
+            params: {
+                page: 1,
+                limit: 1,
+            },
+        }),
     ]);
 
     console.log(allGuides,"all")
@@ -39,7 +50,7 @@ export default async function Page({ searchParams }) {
 
     return (
         <>
-            <GuidePage allGuides={allGuides.data} allCategory= {allCategory.data} />
+            <GuidePage allGuides={allGuides.data} allCategory= {allCategory.data} totalGuides={totalGuides.data?.pagination?.total || 0} />
         </>
     )
 }
