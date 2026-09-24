@@ -124,7 +124,6 @@ interface GreFormProps {
 
 const GreForm: React.FC<GreFormProps> = ({ studentsData,formSection }) => {
   const [activeIndex, setActiveIndex] = useState(0);
-  console.log(studentsData,"student data")
   useEffect(() => {
     if (!studentsData?.length) return;
 
@@ -138,32 +137,32 @@ const GreForm: React.FC<GreFormProps> = ({ studentsData,formSection }) => {
   return (
     // <div className="min-h-screen sm:h-auto lg:h-[calc(100vh-4rem)]">
     <div className=" sm:h-auto ">
-      <section className=" bg-white pt-4 sm:pt-8 md:pt-12 lg:pt-16 pb-8 sm:pb-12 lg:pb-0">
-        <div className=" max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 flex items-center">
+      <section className="bg-white pt-4 sm:pt-8 md:pt-12 pb-8 sm:pb-12 lg:pb-0">
+        <div className=" max-w-7xl mx-auto flex items-center">
           <div className="w-full bg-[#FDF8E9] p-2 sm:p-3 md:p-4 lg:p-6 rounded-xl sm:rounded-2xl">
             <div className="grid lg:grid-cols-[1.3fr_0.9fr] gap-3 sm:gap-4 lg:gap-6 items-start">
               {/* LEFT - Testimonial */}
               <div className="bg-white border border-[#F5ECD6] p-3 sm:p-4 md:p-5 h-[400px] sm:h-[450px] md:h-[500px] lg:h-[540px] flex flex-col rounded-xl sm:rounded-2xl">
-                <div className="flex-1 min-h-0">
+                <div className="flex-1 min-h-0 overflow-hidden">
                   <AnimatePresence mode="wait">
                     {studentsData?.length > 0 ? (
                       <motion.div
                         key={activeIndex}
                         className="h-full"
                         initial={{
-                          opacity: 0,
-                          y: 80,
+                          opacity: 1,
+                          y: -400,
                         }}
                         animate={{
                           opacity: 1,
                           y: 0,
                         }}
                         exit={{
-                          opacity: 0,
-                          y: -80,
+                          opacity: 1,
+                          y: 400,
                         }}
                         transition={{
-                          duration: 0.7,
+                          duration: 0.5,
                           ease: "easeInOut",
                         }}
                       >

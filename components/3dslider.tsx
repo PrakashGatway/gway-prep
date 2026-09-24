@@ -10,7 +10,7 @@ export function StudentsSlider({ data }) {
   const [activeIndex, setActiveIndex] = useState(0);
   
   return (
-    <div className="w-full max-w-6xl mx-auto px-2 sm:px-4 md:px-5 overflow-hidden">
+    <div className="w-full max-w-6xl px-4 mx-auto overflow-hidden">
       <Swiper
         modules={[EffectCoverflow, Autoplay]}
         effect="coverflow"

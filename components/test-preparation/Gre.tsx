@@ -30,15 +30,15 @@ import EditorContent from "../editorContent";
 
 function AIStudySection({ aiStudySection }: { aiStudySection: any }) {
   return (
-    <section className="px-4 sm:px-6 bg-white">
+    <section className="px-4 bg-white">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-6 md:mb-12 lg:mb-16 max-w-5xl mx-auto">
-          <p className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-extrabold m-3 sm:m-4 flex flex-wrap gap-1 sm:gap-2 items-center justify-center">
+        <div className="text-center mb-6 md:mb-12 lg:mb-16 max-w-6xl mx-auto">
+          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-[2.5rem] font-extrabold m-3 sm:m-4 flex flex-wrap gap-1 sm:gap-2 items-center justify-center">
             {aiStudySection?.sectionTitle?.split("||")[0] || "What is"}
             <span className="text-[#f06437]">
               {aiStudySection?.sectionTitle?.split("||")[1] || "GRE?"}
             </span>
-          </p>
+          </h2>
           <p className="text-sm sm:text-base text-gray-600 px-2">
             {aiStudySection.sectionSubtitle}
           </p>
@@ -62,7 +62,7 @@ function FeatureCard({ feature, index }: { feature: any; index: number }) {
     offset: ["start end", "start start"],
   });
 
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.9]);
+  const scale = useTransform(scrollYProgress, [0, 1], [0.6, 1]);
   const opacity = useTransform(scrollYProgress, [0, 0.6, 1], [1, 1, 1]);
   const y = useTransform(scrollYProgress, [0, 1], [0, -80]);
 
@@ -80,12 +80,12 @@ function FeatureCard({ feature, index }: { feature: any; index: number }) {
           opacity,
           y,
         }}
-        className={`w-full max-w-5xl rounded-2xl md:rounded-[40px] overflow-hidden border-2 border-gray-300 flex flex-col lg:flex-row items-center
+        className={`w-full max-w-7xl rounded-2xl md:rounded-[40px] overflow-hidden border-2 border-gray-300 flex flex-col lg:flex-row items-center
           ${index % 2 === 0 ? "bg-[#FEFBEA]" : "bg-[#FDF4EF]"}
           ${index % 2 !== 0 ? "lg:flex-row-reverse" : ""}`}
       >
         {/* Image */}
-        <div className="w-full lg:w-1/2 p-3 sm:p-4 md:p-6">
+        <div className="w-full lg:w-1/2 p-3 sm:p-4">
           {feature.image && (
             <img
               src={feature.image}
@@ -96,10 +96,7 @@ function FeatureCard({ feature, index }: { feature: any; index: number }) {
         </div>
 
         {/* Content */}
-        <div className="w-full lg:w-1/2 p-4 sm:p-6 md:p-8 lg:p-14 flex flex-col justify-center">
-          {/* <span className="text-orange-500 font-semibold uppercase tracking-widest text-xs sm:text-sm">
-            AI Feature {index + 1}
-          </span> */}
+        <div className="w-full lg:w-1/2 p-4 sm:p-6 md:p-8 flex flex-col justify-center">
           <p className="text-xl sm:text-2xl md:text-3xl font-bold mt-2 md:mt-4 mb-2 md:mb-6">
             {feature.heading}
           </p>
@@ -152,18 +149,10 @@ function GreSection({
   const patternTable = examFormatSection?.patternTable || [];
 
   return (
-    <section className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-6 sm:py-8 md:py-12 text-[#2d2d2d] bg-white">
+    <section className="w-full max-w-7xl mx-auto px-3 sm:px-2 py-6 sm:py-8 md:py-12 text-[#2d2d2d] bg-white">
       {/* Main Content Body */}
       <div className="grid grid-cols-1 md:grid-cols-[1fr_3fr] gap-4 sm:gap-6 md:gap-8 items-start mb-6 md:mb-8 lg:mb-10">
         <div className="flex items-center gap-1 text-[#541e5c] justify-center ">
-          {/* <span className="text-2xl sm:text-3xl md:text-5xl font-extrabold -mt-2 animate-pulse">
-            *
-          </span>
-          <h3 className="text-4xl sm:text-5xl md:text-6xl lg:text-9xl font-black tracking-tight lowercase">
-            {slug || "gre"}
-          </h3>
-          <span className="text-base sm:text-lg font-bold self-start mt-1 sm:mt-2">®</span> */}
-
           <img src={img} alt="Img" className=" object-contain" />
         </div>
 
@@ -175,9 +164,6 @@ function GreSection({
               {whatIsGreSection?.sectionTitle?.split("||")[1] || "GRE?"}
             </p>
           </h2>
-          {/* <p className="text-gray-600 text-sm sm:text-base leading-relaxed text-justify">
-            {whatIsGreSection?.description || greData.main_content.introduction}
-          </p> */}
 
           <p
             className="text-gray-600 text-sm sm:text-base leading-relaxed text-justify"
@@ -204,23 +190,16 @@ function GreSection({
             <div
               key={index}
               className={`${index % 2 === 0 ? "bg-[#fef6f0]" : "bg-[#FEFBEA]"} border border-[#fbe9dc]
-    rounded-xl md:rounded-2xl p-3 sm:p-4 md:p-6 lg:p-8 grid grid-cols-1 ${item?.title?.trim() ? "md:grid-cols-[1fr_3fr]" : "grid-cols-1"}
-    gap-3 sm:gap-4 md:gap-8 items-center transition-all duration-300 hover:shadow-md`}
+    rounded-xl md:rounded-2xl p-3 sm:px-6 grid grid-cols-1 ${item?.title?.trim() ? "md:grid-cols-[1fr_3fr]" : "grid-cols-1"}
+    gap-3 sm:gap-4 items-center transition-all duration-300 hover:shadow-md`}
             >
               {item?.title?.trim() && (
-                <h3 className="text-base sm:text-lg md:text-xl font-bold text-[#444] md:text-center pr-4 border-b md:border-b-0 md:border-r border-orange-100 pb-2 md:pb-0">
+                <h3 className="text-base sm:text-lg md:text-xl font-bold text-[#444] md:text-center border-b md:border-b-0 md:border-r border-orange-100 md:pb-0">
                   {item.title.split("||")[0]} <br />
                   {item.title.split("||")[1] || ""}
                 </h3>
               )}
 
-              {/* <div
-                className={`whitespace-normal break-words text-gray-600 text-sm sm:text-base leading-relaxed text-justify ${!item?.title?.trim() ? "col-span-full" : ""}`}
-                dangerouslySetInnerHTML={{
-                  __html: item?.description || "",
-                }}
-              /> */}
-              
               <EditorContent content_data={item?.description} />
             </div>
           ),
@@ -270,7 +249,7 @@ function GrePatternTable({ examPatternData }: { examPatternData: any }) {
   const headers = ["Section", "Questions", "Time", "Score Range", "Format"];
 
   return (
-    <div className="w-full max-w-7xl rounded-xl mx-auto p-3 sm:p-4 md:p-6 bg-[#F8F9FD]">
+    <div className="w-full bg-[#F8F9FD]">
       {patternItems.map((patternItem: any, index: number) => {
         const patternTableRows = patternItem?.patternTable || [];
 
@@ -293,7 +272,6 @@ function GrePatternTable({ examPatternData }: { examPatternData: any }) {
                 }}
               />
             </div>
-
 
             {patternTableRows.length > 0 ? (
               <div className="w-full overflow-x-auto bg-white rounded-lg shadow-sm">
@@ -407,11 +385,9 @@ function VideoExplanationSection({ videoData }: { videoData: any }) {
                   </button>
                 </div>
                 <div className="mt-6 sm:mt-8 md:mt-10 flex items-center gap-2 sm:gap-3 md:gap-4 justify-center">
-                 
                   <div>
-                    
                     <p className="text-xs sm:text-sm text-[#666666]">
-                     By Ooshas Prep Expert
+                      By Ooshas Prep Expert
                     </p>
                   </div>
                 </div>
@@ -460,9 +436,9 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
 
   return (
     <section className="py-8 md:py-2 bg-white">
-      <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6">
+      <div className="max-w-7xl mx-auto px-2">
         <div className="text-center mb-6 sm:mb-10 md:mb-12">
-          <h2 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold">
+          <h2 className="text-center text-2xl md:text-3xl lg:text-[2.5rem] font-bold">
             {resourcesData?.title.split("||")[0]}
             <span className="text-primary">
               {resourcesData?.title.split("||")[1]}
@@ -495,7 +471,7 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
                 onClick={() => router.push("/auth")}
               >
                 <button
-                  className={`cursor-pointer flex-1 rounded-xl py-2 px-3 sm:px-4 md:px-6 text-xs sm:text-sm md:text-base font-semibold transition ${
+                  className={`cursor-pointer flex-1 rounded-xl py-2.5 px-3 sm:px-4 md:px-6 text-xs sm:text-sm font-semibold transition ${
                     item.filled
                       ? "bg-gradient-to-r from-[#FF6B00] to-[#F54B00] text-white hover:shadow-lg"
                       : "border-2 border-[#FFB184] text-[#F5632A] hover:bg-orange-50"
@@ -503,10 +479,10 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
                 >
                   {item.button}
                 </button>
-                <button className="cursor-pointer w-9 h-9 sm:w-10 sm:h-10 md:w-14 md:h-14 rounded-full border-2 border-[#FFC29C] flex items-center justify-center text-[#F5632A] transition hover:bg-[#F5632A] hover:text-white flex-shrink-0">
+                <button className="cursor-pointer w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-[#FFC29C] flex items-center justify-center text-[#F5632A] transition hover:bg-[#F5632A] hover:text-white flex-shrink-0">
                   <ArrowRight
                     size={16}
-                    className="sm:w-[20px] sm:h-[20px] md:w-[28px] md:h-[28px]"
+                    className="sm:w-[20px] sm:h-[20px]"
                   />
                 </button>
               </div>
@@ -699,15 +675,15 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
   const router = useRouter();
 
   return (
-    <>
+    <div className="font-medium">
       <section
         className="relative bg-[#FDF4EF] overflow-visible"
         style={{ scrollbarWidth: "none" }}
       >
-        <div className="max-w-7xl mx-auto py-8 sm:py-10 lg:py-12">
+        <div className="max-w-7xl mx-auto py-8 sm:py-10 px-4 sm:px-2">
           {/* Heading */}
-          <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-10 text-center">
-            <h1 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
+          <div className=" text-center">
+            <h1 className="text-center max-w-4xl mx-auto text-2xl md:text-3xl lg:text-[2.5rem] font-bold leading-11">
               {heroSection.title?.split("||")[0]}
               <span className="text-primary">
                 {heroSection.title?.split("||")[1]}
@@ -715,17 +691,18 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
               {heroSection.title?.split("||")[2]}
             </h1>
 
-            <p className="mt-2 text-sm sm:text-base md:text-lg leading-6 sm:leading-7 md:leading-8 px-2">
+            <p className="mt-2 max-w-5xl mx-auto text-sm sm:text-base md:text-lg leading-6 sm:leading-7 md:leading-8 px-2">
               {heroSection.paragraph}
             </p>
           </div>
-          
+
           <StudentsSlider data={studentsData || []} />
 
           <div className="bg-transparent flex flex-col sm:flex-row items-center justify-center pt-4 gap-4 max-w-2xl mx-auto">
-            <button 
-              onClick={()=> setIsPopupOpen(true)}
-            className="cursor-pointer bg-[#FF7324] hover:bg-[#e05f1b] rounded-2xl px-6 py-3.5 flex items-center justify-center gap-2 transition-all w-full sm:w-auto font-bold text-white text-base sm:text-lg shadow-[0_10px_25px_-5px_rgba(255,115,36,0.3)]">
+            <button
+              onClick={() => setIsPopupOpen(true)}
+              className="cursor-pointer bg-[#FF7324] hover:bg-[#e05f1b] rounded-2xl px-6 py-3 flex items-center justify-center gap-2 transition-all w-full sm:w-auto font-medium text-white text-base  shadow-[0_10px_25px_-5px_rgba(255,115,36,0.3)]"
+            >
               {heroSection?.ctaButtonText || "Calculate My GRE Score"} →
             </button>
 
@@ -734,14 +711,16 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
               style={{
                 backgroundColor: studentsData?.[0]?.colorCode || "#555",
               }}
-              className="cursor-pointer border border-white/30 hover:bg-white/10 rounded-2xl px-6 py-3.5 flex items-center justify-center transition-all w-full sm:w-auto font-semibold text-white text-base sm:text-lg bg-transparent"
+              className="cursor-pointer hover:bg-white/10 rounded-2xl px-6 py-3 flex items-center justify-center transition-all w-full sm:w-auto font-medium text-white text-base  bg-transparent"
             >
               Take Mock Test
             </button>
           </div>
-          
-          <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen}/>
 
+          <PopupModal
+            isPopupOpen={isPopupOpen}
+            setIsPopupOpen={setIsPopupOpen}
+          />
         </div>
 
         {/* <div className=" md:absolute left-1/2 bottom-0 md:-translate-x-1/2 md:translate-y-1/2 w-[95%] sm:w-full max-w-xl mx-auto
@@ -782,7 +761,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
       />
 
       <section className="py-6 sm:py-8 md:py-12 bg-[#F8F9FD]">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-2">
           <GrePatternTable examPatternData={examPatternSection} />
         </div>
       </section>
@@ -792,7 +771,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
       <AIStudySection aiStudySection={aiStudySection} />
 
       {/* Boost Profile Section */}
-      <div className="w-full max-w-6xl mx-auto my-8 sm:my-10 md:my-12 relative px-3 sm:px-4">
+      <div className="w-full max-w-7xl mx-auto my-8 sm:my-10 md:my-12 relative px-3 sm:px-4">
         <div className="bg-[#FDF0EB] rounded-xl md:rounded-[40px] p-4 sm:p-6 md:p-8 grid md:grid-cols-[2fr_1fr] items-center justify-between min-h-[200px] md:min-h-[300px] z-1">
           <div className="flex-1 z-10 text-center md:text-left space-y-3 sm:space-y-4 max-w-5xl pl-0 md:pl-20">
             <span className="text-[#FF6A39] text-xs sm:text-sm md:text-base font-medium tracking-wide block">
@@ -823,21 +802,20 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
       </div>
 
       {/* Score Guarantee Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#fdf0eb] to-white py-8 sm:pt-12 md:pt-12 px-3 sm:px-4">
-        <div className="flex justify-center items-center flex-col max-w-6xl mx-auto">
-          <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-5xl font-extrabold text-center">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#fdf0eb] to-white py-8 px-2 sm:px-4">
+        <div className=" max-w-7xl px-2 mx-auto">
+          <h2 className="text-xl mb-2 flex gap-2  sm:text-2xl md:text-3xl lg:text-[2.5rem] font-bold">
             {scoreGuaranteeSection?.title?.split("||")[0] || "What is"}{" "}
-            <br className="sm:hidden" />
             <p className="text-[#f06437]">
               {scoreGuaranteeSection?.title?.split("||")[1] || "GRE?"}
             </p>
           </h2>
 
-          <p className="my-3 sm:my-4 md:my-6 text-sm sm:text-base text-center px-2 text-justify">
+          <p className="mt-2 text-sm sm:text-base text-center px-1 text-justify">
             {scoreGuaranteeSection.subtitle}
           </p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-7xl gap-3 sm:gap-4 md:gap-6 mx-auto mt-6 sm:mt-8 md:mt-10">
+        <div className=" max-w-7xl px-4 mx-autu grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full gap-3 sm:gap-4 md:gap-6 mx-auto mt-6 sm:mt-8 md:mt-10">
           {scoreGuaranteeSection.features?.map((ele: any, idx: number) => (
             <div
               key={idx}
@@ -888,9 +866,12 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
       </section>
 
       <VideoExplanationSection videoData={studentVideo} />
-      <TextTestimonials testimonialsSection={testimonialsSection} />
+      <div className="py-8">
       <FreeResources resourcesData={freeResourcesSection} />
+
+      </div>
+      <TextTestimonials testimonialsSection={testimonialsSection} />
       <Consultants data={faqSection} finalCtaSection={finalCtaSection} />
-    </>
+    </div>
   );
 }

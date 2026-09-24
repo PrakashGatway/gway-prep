@@ -22,7 +22,7 @@ export default function PricingSection({ plans }: { plans: any }) {
       <section className="pt-12 px-5">
         <div className="max-w-7xl mx-auto">
           <div className="max-w-4xl mx-auto text-center mb-12">
-            <h2 className="text-xl md:text-2xl font-bold leading-relaxed text-[#333]">
+            <h2 className="text-xl md:text-3xl font-bold leading-relaxed text-[#333]">
               {testimonial ? (
                 // testimonial
                 <div

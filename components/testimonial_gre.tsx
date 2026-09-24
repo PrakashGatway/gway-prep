@@ -76,10 +76,10 @@ export function TextTestimonials({ testimonialsSection }: any) {
   };
 
   return (
-    <div ref={containerRef} className="min-h-[80vh] py-4 px-4 overflow-hidden">
+    <div ref={containerRef} className="min-h-[60vh] bg-[#F36D45] px-4 overflow-hidden">
       <div className="max-w-7xl m-auto">
         <div className="text-center mt-10">
-          <h2 className="text-xl md:text-2xl text-left text-gray-600">
+          <h2 className="text-xl md:text-3xl text-left text-gray-100">
             {testimonialsSection?.sectionSubtitle ||
               "Purchased by 500,000+ GRE students"}
           </h2>

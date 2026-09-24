@@ -84,7 +84,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${montserrat.className} bg-white text-gray-900 max-w-[1640px] mx-auto`}
+        className={`${montserrat.className} font-medium bg-white text-gray-900 max-w-[1640px] mx-auto`}
         suppressHydrationWarning
       >
 
