@@ -298,7 +298,7 @@ export function VideoTestimonialCard({ heading, data }: any) {
     <div className="max-w-7xl mx-auto  px-4 sm:px-6 lg:px-0">
       {/* Heading - Updated to 5xl with responsive sizes */}
       <div className="text-center mb-8 sm:mb-10 md:mb-12 px-0">
-        <h2 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold">
+        <h2 className="text-center text-2xl md:text-3xl lg:text-[2.5rem] font-bold">
           <span className="text-primary">What Our</span>{" "}
           <span className="">Students Say</span>
         </h2>
@@ -521,7 +521,7 @@ export function TextTestimonials({ heading, data }: any) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0">
         {/* Heading - Updated to 5xl with responsive sizes */}
         <div className="text-center mb-8 sm:mb-10 md:mb-12">
-          <h2 className="text-center text-2xl md:text-3xl lg:text-4xl font-bold">
+          <h2 className="text-center text-2xl md:text-3xl lg:text-[2.5rem] font-bold">
             What Our Test Preparation{" "}
             <span className="text-primary">Achievers Say</span>
           </h2>

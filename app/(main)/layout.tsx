@@ -7,6 +7,7 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { getPages } from "../services/api";
 import { GlobalProvider } from "@/hooks/AppStateContext";
+import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
   title:
@@ -106,6 +107,7 @@ export default async function RootLayout({
           <Navbar Data={NavData} />
           {children}
           <Footer Data={NavData} />
+          <Toaster position="top-right"/>
         </GlobalProvider>
       </body>
     </html>

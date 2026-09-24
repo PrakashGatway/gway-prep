@@ -98,7 +98,7 @@ export function Hero({ data, student }: HeroProps) {
             >
               {/* Title */}
               <div className="">
-                <h1 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold md:leading:7 lg:leading-14">
+                <h1 className="text-left text-2xl md:text-3xl lg:text-[2.5rem] font-bold md:leading:7 lg:leading-14">
                   {data.fields.title?.split("||")[0]}
                   <span className="text-primary">{data.fields.title?.split("||")[1]}</span>
                   {data.fields.title?.split("||")[2]}
@@ -123,7 +123,7 @@ export function Hero({ data, student }: HeroProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.8 }}
-                className="mt-4 lg:mt-6 text-base sm:text-lg leading-relaxed max-w-xl font-[300] text-justify"
+                className="mt-4 lg:mt-6 text-base sm:text-base leading-relaxed max-w-xl font-[300] text-justify"
               >
                 {data.fields.paragraph || ""}
               </motion.p>
@@ -141,7 +141,7 @@ export function Hero({ data, student }: HeroProps) {
                   whileTap={{ scale: 0.98 }}
                   // onClick={() => setIsPopupOpen(true)}
                   onClick={() => router.push('/auth')}
-                  className="group cursor-pointer relative flex items-center justify-center gap-2.5 bg-[#F36C45] text-white rounded-2xl py-4 px-8 text-base sm:text-lg font-semibold transition-all duration-300 overflow-hidden"
+                  className="group cursor-pointer relative flex items-center justify-center gap-2.5 bg-[#F36C45] text-white rounded-2xl py-4 px-2 text-base sm:text-base font-semibold transition-all duration-300 overflow-hidden"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-[#e05a34] to-[#ff8a65] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <span className="relative flex items-center gap-2.5">

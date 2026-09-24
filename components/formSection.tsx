@@ -675,7 +675,7 @@ export default function FormSection({
                             onChange={(e) =>
                               updateField(field.name, e.target.value)
                             }
-                            className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
+                            className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all hover:bg-white ${
                               hasError ? "border-red-500" : "border-gray-200"
                             }`}
                             style={{
@@ -724,7 +724,7 @@ export default function FormSection({
                             onChange={(e) =>
                               updateField(field.name, e.target.value)
                             }
-                            className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
+                            className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all hover:bg-white ${
                               hasError ? "border-red-500" : "border-gray-200"
                             }`}
                             style={{
@@ -781,7 +781,7 @@ export default function FormSection({
 
                               updateField(field.name, digitsOnly);
                             }}
-                            className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
+                            className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all hover:bg-white ${
                               hasError ? "border-red-500" : "border-gray-200"
                             }`}
                             style={{
@@ -1047,63 +1047,134 @@ export default function FormSection({
                       </>
                     )}
 
-                    {field.type === "checkbox-group" && (
-                      <>
-                        <label className="block text-sm text-gray-700 mb-1">
-                          {field.label}
-                          <span className="text-gray-400 text-xs ml-1">
-                            (select all that apply)
-                          </span>
-                          {field.required && (
-                            <span className="text-red-500 ml-1">*</span>
-                          )}
-                        </label>
-                        <div className="grid grid-cols-2 gap-3">
-                          {field.options?.map((option) => {
-                            const OptionIcon = option.icon;
-                            const isSelected = (
-                              (formData[field.name] as string[]) || []
-                            ).includes(option.value);
-                            return (
-                              <motion.button
-                                key={option.value}
-                                type="button"
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                onClick={() =>
-                                  toggleCheckboxGroup(field.name, option.value)
-                                }
-                                className="p-3 rounded-xl border-2 font-medium text-sm transition-all flex items-center gap-2"
-                                style={{
-                                  background: isSelected
-                                    ? `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
-                                    : "#f9fafb",
-                                  color: isSelected ? "white" : "#374151",
-                                  borderColor: isSelected
-                                    ? "transparent"
-                                    : hasError
-                                      ? "#ef4444"
-                                      : "#e5e7eb",
-                                  boxShadow: isSelected
-                                    ? `0 4px 14px ${primaryColor}40`
-                                    : "none",
-                                }}
-                              >
-                                {OptionIcon && (
-                                  <OptionIcon className="w-4 h-4" />
-                                )}
-                                {option.label}
-                              </motion.button>
-                            );
-                          })}
-                        </div>
-                        {hasError && (
-                          <p className="text-red-500 text-xs mt-1">
-                            {errors[field.name]}
-                          </p>
-                        )}
-                      </>
-                    )}
+                   {field.type === "checkbox-group" && (
+  <>
+    <label className="block text-sm text-gray-700 mb-2">
+      {field.label}
+      <span className="text-gray-400 text-xs ml-1">
+        (select all that apply)
+      </span>
+
+      {field.required && (
+        <span className="text-red-500 ml-1">*</span>
+      )}
+    </label>
+
+    <div className="grid grid-cols-3 gap-2.5">
+      {field.options?.map((option) => {
+        const OptionIcon = option.icon;
+
+        const isSelected = (
+          (formData[field.name] as string[]) || []
+        ).includes(option.value);
+
+        return (
+          <motion.button
+            key={option.value}
+            type="button"
+            whileHover={{ scale: 1.01 }}
+            whileTap={{ scale: 0.99 }}
+            onClick={() =>
+              toggleCheckboxGroup(field.name, option.value)
+            }
+            className={`
+              group
+              flex
+              items-center
+              gap-3
+              w-full
+              rounded-lg
+              border
+              px-3
+              py-3
+              text-left
+              transition-all
+              duration-200
+              ${
+                isSelected
+                  ? "border-[#F36C45] bg-[#FFF7F4]"
+                  : hasError
+                    ? "border-red-400 bg-white"
+                    : "border-gray-200 bg-white hover:border-gray-300"
+              }
+            `}
+          >
+            {/* Classical Checkbox */}
+            <span
+              className={`
+                flex
+                h-4
+                w-4
+                shrink-0
+                items-center
+                justify-center
+                rounded-[3px]
+                border
+                transition-all
+                duration-200
+                ${
+                  isSelected
+                    ? "border-[#F36C45] bg-[#F36C45]"
+                    : "border-gray-300 bg-white group-hover:border-[#F36C45]"
+                }
+              `}
+            >
+              {isSelected && (
+                <svg
+                  viewBox="0 0 12 12"
+                  fill="none"
+                  className="h-3 w-3 text-white"
+                >
+                  <path
+                    d="M2.5 6L5 8.5L9.5 3.5"
+                    stroke="currentColor"
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              )}
+            </span>
+
+            {/* Icon */}
+            {OptionIcon && (
+              <OptionIcon
+                className={`
+                  h-4 w-4 shrink-0 transition-colors
+                  ${
+                    isSelected
+                      ? "text-[#F36C45]"
+                      : "text-gray-500"
+                  }
+                `}
+              />
+            )}
+
+            {/* Label */}
+            <span
+              className={`
+                text-sm font-medium transition-colors
+                ${
+                  isSelected
+                    ? "text-[#D95732]"
+                    : "text-gray-700"
+                }
+              `}
+            >
+              {option.label}
+            </span>
+          </motion.button>
+        );
+      })}
+    </div>
+
+    {hasError && (
+      <p className="text-red-500 text-xs mt-1">
+        {errors[field.name]}
+      </p>
+    )}
+  </>
+)}
                   </div>
                 );
               })}

@@ -6,60 +6,51 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 
 export function Consultants({ data, finalCtaSection }: any) {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-  const toggle = (index: number) => {
-    setOpenIndex(openIndex === index ? null : index);
-  };
-  
-
+ 
   
   if (!data || !data.fields) {
     return null; 
   }
 
   return (
-    <div className="bg-white max-w-7xl mx-auto rounded-xl py-6 my-10">
-      <h2 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold mb-4">
+    <section className="bg-gray-100">
+    <div className=" max-w-7xl mx-auto rounded-xl py-6 mb-8">
+      <h2 className="text-center text-2xl md:text-3xl lg:text-[2.5rem] font-bold mb-8">
         {data.fields.title?.split("||")[0]}
         <span className="text-primary">
           {data.fields.title?.split("||")[1]}
         </span>
       </h2>
 
-      <div className="space-y-2">
-        
-        {data.fields.items?.map((item: any, index: number) => (
-          <div
-            key={item.id || index}
-            className="border-b border-gray-100 last:border-b-0"
-          >
-            <button
-              onClick={() => toggle(index)}
-              className="flex items-center justify-between w-full py-4 text-left cursor-pointer" 
-            >
-              <span className="font-medium text-primary text-lg md:text-xl">
-                {item.question}
-              </span>
+     <div className="space-y-2">
+  {data.fields.items?.map((item: any, index: number) => (
+    <details
+      key={item.id || index}
+      className="group border-b border-gray-100 last:border-b-0 bg-white rounded-2xl px-4 "
+    >
+      <summary
+        className="flex items-center justify-between w-full py-4 text-left cursor-pointer list-none"
+      >
+        <span className="font-b text-gray-700 text-lg md:text-lg">
+          {item.question}
+        </span>
 
-              {openIndex === index ? (
-                <Minus className="w-5 h-5 text-[#F36C45]" />
-              ) : (
-                <Plus className="w-5 h-5 text-gray-500" />
-              )}
-            </button>
+        <span className="ml-4 flex-shrink-0">
+          <Plus className="w-5 h-5 text-gray-500 group-open:hidden" />
+          <Minus className="w-5 h-5 text-[#F36C45] hidden group-open:block" />
+        </span>
+      </summary>
 
-            {openIndex !== index && (
-              <div className="pb-4 text-justify leading-relaxed text-sm">
-                {item.answer}
-              </div>
-            )}
-          </div>
-        ))}
+      <div className="pb-4 text-justify leading-relaxed text-sm text-gray-600">
+        {item.answer}
       </div>
+    </details>
+  ))}
+</div>
 
       {/* <CallToActionSection finalCtaSection={finalCtaSection} /> */}
     </div>
+    </section>
   );
 }
 

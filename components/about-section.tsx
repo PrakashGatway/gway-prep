@@ -85,11 +85,11 @@ export function AboutSection({data}:{data : any}) {
     <div className="relative py-8 sm:py-10 lg:py-12  ">
          {/* Heading */}
       <div className="text-center px-4">
-        <h2 className=" text-2xl md:text-3xl lg:text-5xl font-bold flex items-center justify-center gap-3">
+        <h2 className=" text-2xl md:text-3xl lg:text-[2.5rem] font-bold flex items-center justify-center gap-3">
           {data.fields?.title || "Meet our stars"}{" "}
           <Stars className="w-8 h-8 md:w-10 md:h-10 text-primary fill-primary" />
         </h2>
-        <p className=" mt-3 text-base md:text-lg">
+        <p className=" mt-3 text-base md:text-base">
           {data.fields?.subtitle || "Our students who made us proud"}
         </p>
       </div>

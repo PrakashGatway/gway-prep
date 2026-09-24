@@ -12,7 +12,7 @@ const FORM_CONFIG: any = {
   steps: [
     {
       step: 1,
-      title: "Get Started ",
+      title: "Started with Ooshas Global ",
       icon: User,
       fields: ["fullName", "email", "phone", "city", "programs"],
       button: "submit"
@@ -26,7 +26,7 @@ const FORM_CONFIG: any = {
       required: true,
       placeholder: "Student's Name",
       step: 1,
-      grid: "full",
+      grid: "half",
       icon: User
     },
     {
@@ -107,7 +107,7 @@ export function PartnerSection() {
             <p className="text-2xl md:text-3xl font-bold leading-tight">
               Ready to Build Your Score Strategy?
             </p>
-            <p className="text-lg opacity-90 max-w-md">
+            <p className="text-base opacity-90 max-w-md">
               Take the first step towards your dream university. Our experts will help you plan your roadmap to success.
             </p>
 
@@ -117,7 +117,7 @@ export function PartnerSection() {
                 <div className="bg-white p-3 rounded-lg"><MessageCircle className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">WhatsApp Us</p>
-                  <p className="text-xl">+91 9166146538</p>
+                  <p className="text-base">+91 9166146538</p>
                 </div>
               </div>
 
@@ -126,7 +126,7 @@ export function PartnerSection() {
                 <div className="bg-white p-3 rounded-lg"><Phone className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">Call Us</p>
-                  <p className="text-xl">+91 9166146538</p>
+                  <p className="text-base">+91 9166146538</p>
                 </div>
               </div>
 
@@ -135,7 +135,7 @@ export function PartnerSection() {
                 <div className="bg-white p-3 rounded-lg"><Mail className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">Email Us</p>
-                  <p className="text-xl">info@ooshasprap.com</p>
+                  <p className="text-base">info@ooshasprap.com</p>
                 </div>
               </div>
 
@@ -160,7 +160,7 @@ export function PartnerSection() {
           </div>
 
           {/* Right Column: Inquiry Form */}
-          <div className="lg:w-1/2 w-full bg-white rounded-3xl p-8 text-gray-800 shadow-2xl">
+          <div className="lg:w-130 w-full bg-white py-8 px-4 text-gray-800 shadow-2xl">
             
             <FormSection FORM_CONFIG={FORM_CONFIG} />
           </div>

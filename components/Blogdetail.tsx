@@ -20,6 +20,7 @@ import axiosInstance from "@/app/lib/axios";
 import axios from "axios";
 import QuestionsSection from "./comment";
 import Link from "next/link";
+import { useGlobal } from "@/hooks/AppStateContext";
 
 // ─── Types ───
 interface FAQ {
@@ -512,6 +513,9 @@ export default function BlogDetailPage({ blog, loading, res, slug }: BlogDetailP
   const [headings, setHeadings] = useState<string[]>([]);
   const [activeHeading, setActiveHeading] = useState<string>("");
   const contentRef = useRef<HTMLDivElement>(null);
+  const {user} = useGlobal()
+
+  console.log(user)
 
   // Extract headings from blog_details
   useLayoutEffect(() => {

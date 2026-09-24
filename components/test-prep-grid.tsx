@@ -58,7 +58,7 @@ export function TestPrepGrid({
               ✦ {data.fields?.heading || "Trusted by 50,000+ Students Globally"}{" "}✦
             </span>
 
-            <h3 className="mt-2 text-center text-xl md:text-3xl lg:text-5xl font-bold leading:7 lg:leading-14">
+            <h3 className="mt-2 text-center text-xl md:text-3xl lg:text-[2.5rem] font-bold leading:7 lg:leading-14">
               {data.fields?.title?.split("||")[0] || "Master Your Test Prep"}
               <span className="block text-primary">
                 {data.fields?.title?.split("||")[1] || "With Ooshas Prep"}

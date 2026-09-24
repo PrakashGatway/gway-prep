@@ -19,11 +19,11 @@ export default function ServicesGrid({ data, heading }: any) {
     <section className="py-2 bg-[#fff] overflow-hidden">
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-center text-2xl md:text-3xl lg:text-5xl font-bold md:leading:7 lg:leading-14">
+          <h2 className="text-center text-2xl md:text-3xl lg:text-[2.5rem] font-bold md:leading:7 lg:leading-14">
             <span className="text-primary">{titleParts[0]?.trim() || "Four Ways to Learn."}</span>{" "}
             <span className="">{titleParts[1]?.trim() || "One Standard of Excellence."}</span>
           </h2>
-          <p className="my-6 md:text-lg leading-relaxed text-justify">
+          <p className="my-6 md:text-base leading-relaxed text-justify">
             {subtitle}
           </p>
         </div>
@@ -107,7 +107,7 @@ function Card({ item,setIsPopupOpen }: CardProps) {
       </p>
       <div className="mt-2 flex justify-center">
         <button 
-          className="bg-orange-500 text-white px-5 py-2 rounded-full text-sm hover:bg-orange-600 transition cursor-pointer" 
+          className="bg-[#f36d45] text-white px-5 py-2 rounded-full text-sm hover:bg-orange-600 transition cursor-pointer" 
           onClick={() => router.push(item.slug || setIsPopupOpen(true))}
         >
           {buttonText}
