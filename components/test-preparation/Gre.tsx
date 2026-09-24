@@ -677,8 +677,12 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
   return (
     <div className="font-medium">
       <section
-        className="relative bg-[#FDF4EF] overflow-visible"
-        style={{ scrollbarWidth: "none" }}
+        className="relative overflow-visible"
+        style={{ scrollbarWidth: "none" , backgroundImage: "url('image/exam-bg.webp')",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+ }}
       >
         <div className="max-w-7xl mx-auto py-8 sm:py-10 px-4 sm:px-2">
           {/* Heading */}
