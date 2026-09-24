@@ -58,7 +58,7 @@ const InputField = ({ icon: Icon, label, error, ...props }: any) => (
 );
 
 // Main Auth Component
-function Auth({ toggleDrawer }: any) {
+function AuthContent ({ toggleDrawer }: any) {
   const { userInfo,authChecked,user } = useGlobal();
 
   const [mode, setMode] = useState<any>("email");
@@ -721,5 +721,20 @@ export default function LoginPage() {
         </section>
       </div>
     </main>
+  );
+}
+
+
+function Auth({ toggleDrawer }: any) {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-[300px] items-center justify-center">
+          <Loader2 className="h-6 w-6 animate-spin text-[#F47852]" />
+        </div>
+      }
+    >
+      <AuthContent toggleDrawer={toggleDrawer} />
+    </Suspense>
   );
 }
