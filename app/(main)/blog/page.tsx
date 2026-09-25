@@ -17,9 +17,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const seo = data?.seoMeta || {};
 
 
-console.log("data:", data);
-console.log("is array:", Array.isArray(data));
-console.log("length:", data?.length);
+  console.log("data:", data);
+  console.log("is array:", Array.isArray(data));
+  console.log("length:", data?.length);
   // Normalize canonical URL
   const canonicalPath =
     seo?.canonicalUrl
@@ -170,16 +170,18 @@ export default async function BlogPage({
     queryParams.set("category", category);
   }
 
-  
+
   let blogsData = {
     data: [],
-    currentPage: page,
-    totalPages: 1,
-    totalItems: 0,
-    itemsPerPage: 10,
+    pagination: {
+      page: page,
+      limit: 10,
+      total: 0,
+      totalPages: 1,
+    },
   };
 
-  
+
   try {
     const response = await axiosInstance.get(
       `/admin/blogs?${queryParams.toString()}&isPublished=true`
@@ -192,6 +194,7 @@ export default async function BlogPage({
       error
     );
   }
+
 
   return (
     <>
@@ -211,29 +214,24 @@ export default async function BlogPage({
           categoriesResponse?.data || []
         }
         blogs={blogsData?.data || []}
+        allBlog={blogsData}
         pagination={{
-          currentPage:
-            blogsData?.currentPage || page,
-
-          totalPages:
-            blogsData?.totalPages || 1,
-
-          totalItems:
-            blogsData?.totalItems || 0,
-
-          itemsPerPage:
-            blogsData?.itemsPerPage || 10,
+          page: blogsData?.pagination?.page || page,
+          totalPages: blogsData?.pagination?.totalPages || 1,
+          total: blogsData?.pagination?.total || 0,
+          limit: blogsData?.pagination?.limit || 10,
         }}
         filters={{
           search,
           category,
           page,
         }}
+
       />
     </>
   );
 }
-  
+
 
 
 

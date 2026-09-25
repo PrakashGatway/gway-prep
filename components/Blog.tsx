@@ -43,10 +43,10 @@ interface Category {
 }
 
 interface PaginationData {
-  currentPage: number;
+  page: number;
   totalPages: number;
-  totalItems: number;
-  itemsPerPage: number;
+  total: number;
+  limit: number;
 }
 
 // Static data for non-blog content
@@ -258,19 +258,26 @@ interface BlogPageProps {
 
 export default function BlogPage({
   pageInfo,
+  allBlog,
   categories = [],
   blogs = [],
   pagination = {
-    currentPage: 1,
-    totalPages: 1,
-    totalItems: 0,
-    itemsPerPage: 10,
-  },
+  page: 1,
+  totalPages: 1,
+  total: 0,
+  limit: 10,
+},
   filters = {},
 }: BlogPageProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [selectedCategory, setSelectedCategory] = useState("categories");
+
+  console.log(blogs,"blogs")
+  console.log(categories,"categories")
+  console.log(allBlog,"bb")
+
 
   // Local search input
   const [search, setSearch] = useState(filters.search || "");
@@ -372,76 +379,38 @@ export default function BlogPage({
   window.open(`/blog/${blogSlug}`, "_blank", "noopener,noreferrer");
 };
 
-  
-  const getPaginationNumbers = () => {
-    const currentPage = pagination.currentPage;
-    const totalPages = pagination.totalPages;
+const changePage = (page: number) => {
+  if (page < 1 || page > pagination.totalPages) {
+    return;
+  }
 
-    const pages: (number | string)[] = [];
+  const params = new URLSearchParams(searchParams.toString());
 
-    if (totalPages <= 7) {
-      for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
-      }
-    } else {
-      pages.push(1);
+  params.set("page", String(page));
 
-      if (currentPage > 3) {
-        pages.push("…");
-      }
+  router.push(`${pathname}?${params.toString()}`);
+};
 
-      const start = Math.max(2, currentPage - 1);
-      const end = Math.min(
-        totalPages - 1,
-        currentPage + 1
-      );
-
-      for (let i = start; i <= end; i++) {
-        pages.push(i);
-      }
-
-      if (currentPage < totalPages - 2) {
-        pages.push("…");
-      }
-
-      pages.push(totalPages);
-    }
-
-    return pages;
-  };
-
-  /**
-   * Change page through URL
-   */
-  const handlePageChange = (page: number | string) => {
-    if (
-      typeof page === "string" ||
-      page === pagination.currentPage ||
-      page < 1 ||
-      page > pagination.totalPages
-    ) {
-      return;
-    }
-
-    updateUrl(
-      {
-        page,
-      },
-      {
-        scroll: true,
-      }
-    );
-  };
 
   /**
    * Category filter
    */
+
+
   const handleCategoryChange = (category: string) => {
-    updateUrl({
-      category,
-      page: 1,
-    });
-  };
+  const params = new URLSearchParams(searchParams.toString());
+
+  if (category) {
+    params.set("category", category);
+  } else {
+    params.delete("category");
+  }
+
+  // category change should start from page 1
+  params.delete("page");
+
+  router.push(`${pathname}?${params.toString()}`);
+};
 
   
   const clearFilters = () => {
@@ -551,97 +520,40 @@ export default function BlogPage({
 
       {/* Body */}
       <main className="mx-auto max-w-7xl px-6 py-14">
-        <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1fr_320px]">
+       <div className="flex w-190 items-center gap-1 overflow-x-auto rounded-full bg-[#fff5f1] p-1 mb-4">
+  <button
+    onClick={() => handleCategoryChange("")}
+    className={`shrink-0 rounded-full px-5 py-2 text-[18px] font-medium transition-all ${
+      !filters.category
+        ? "bg-[#f36d45] text-white"
+        : "text-[#555] hover:text-[#f36d45]"
+    }`}
+  >
+    Categories
+  </button>
+
+  {categories.map((category) => {
+    const isActive = filters.category === category.slug;
+
+    return (
+      <button
+        key={category._id}
+        onClick={() => handleCategoryChange(category.slug)}
+        className={`shrink-0 rounded-full px-6 py-2 text-[18px] font-medium transition-all ${
+          isActive
+            ? "bg-[#f36d45] text-white"
+            : "text-[#555] hover:text-[#f36d45]"
+        }`}
+      >
+        {category.name}
+      </button>
+    );
+  })}
+</div>
+     
           {/* Left column */}
           <div>
-            {/* Featured */}
-            {featuredBlog && (
-              <>
-                <h2 className="mb-5 text-left text-2xl font-bold md:text-3xl lg:text-4xl">
-                  Featured{" "}
-                  <span className="text-[#F0642C]">
-                    Post
-                  </span>
-                </h2>
-
-                <div
-                  className="mb-12 grid cursor-pointer grid-cols-1 gap-6 rounded-lg border border-gray-100 p-2 transition-shadow hover:shadow-lg sm:grid-cols-[320px_1fr]"
-                  onClick={() =>
-                    navigateToBlog(
-                      featuredBlog.slug
-                    )
-                  }
-                >
-                  <div className="relative h-56 w-full overflow-hidden rounded-md sm:h-full">
-                    <Image
-                      src={
-                        featuredBlog.image ||
-                        "/placeholder-blog.jpg"
-                      }
-                      alt={featuredBlog.title}
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-
-                  <div className="flex flex-col justify-center px-2 py-2">
-                    <div className="mb-2 flex items-center justify-between gap-4 text-xs">
-                      <span className="font-semibold text-[#F0642C]">
-                        {featuredBlog.category ||
-                          "Featured"}
-                      </span>
-
-                      <span className="flex items-center gap-1 text-gray-400">
-                        <Calendar size={12} />
-
-                        {featuredBlog.publishedDate
-                          ?.split("T")[0] ||
-                          "2026-07-07"}
-                      </span>
-                    </div>
-
-                    <h3 className="mb-3 text-xl font-bold leading-snug text-[#1f2430]">
-                      {featuredBlog.title}
-                    </h3>
-
-                    <p className="mb-4 text-sm leading-relaxed text-gray-500">
-                      {featuredBlog.excerpt || featuredBlog?.metaDescription}
-                    </p>
-
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <UserCircle
-                          size={32}
-                          className="text-gray-400"
-                        />
-
-                        <div className="text-xs">
-                          <p className="font-semibold text-[#1f2430]" onClick={() => router.push(`/auther/${featuredBlog?.authslug || 'sakshi-taneja'}`)}>
-                            By{" "}
-                            {featuredBlog.author ||
-                              "Admin"}
-                          </p>
-                        </div>
-                      </div>
-
-                      <button
-                        className="flex items-center gap-2 rounded-md bg-[#F0642C] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-[#d9551f]"
-                        onClick={(e) => {
-                          e.stopPropagation();
-
-                          navigateToBlog(
-                            featuredBlog.slug
-                          );
-                        }}
-                      >
-                        Read More{" "}
-                        <ArrowRight size={14} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
+         
 
             {/* Latest blogs */}
             <h2 className="mb-5 text-left text-2xl font-bold md:text-3xl lg:text-4xl">
@@ -651,245 +563,113 @@ export default function BlogPage({
               </span>
             </h2>
 
-            {latestBlogs.length > 0 ? (
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {latestBlogs.map((post) => (
-                  <article
-                    key={post._id}
-                    className="group cursor-pointer"
-                    onClick={() =>
-                      navigateToBlog(post.slug)
-                    }
-                  >
-                    <div className="relative mb-3 h-40 w-full overflow-hidden rounded-md">
-                      <span className="absolute left-2 top-2 z-10 rounded bg-[#F0642C] px-2 py-0.5 text-[10px] font-semibold text-white">
-                        {post.category || "Blog"}
-                      </span>
+           {blogs.length > 0 ? (
+  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    {blogs.map((post) => (
+      <article
+        key={post._id}
+        onClick={() => navigateToBlog(post.slug)}
+        className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-300 bg-white p-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md h"
+      >
+        {/* Blog Image */}
+        <div className="relative h-[190px] w-full overflow-hidden rounded-xl">
+          <Image
+            src={post.image || "/placeholder-blog.jpg"}
+            alt={post.title}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
 
-                      <Image
-                        src={
-                          post.image ||
-                          "/placeholder-blog.jpg"
-                        }
-                        alt={post.title}
-                        fill
-                        className="object-cover transition-transform duration-300 group-hover:scale-105"
-                      />
-                    </div>
+        {/* Blog Content */}
+        <div className="flex flex-1 flex-col px-2 pt-3 ">
+          {/* Title */}
+          <h3
+            className="line-clamp-2 text-lg font-semibold leading-[1.45]  transition-colors duration-200 group-hover:text-[#F0642C]"
+          >
+         <span className="text-[#555]">{post.title.split(":")[0]} :</span>   
+         <span className="text-orange-500">{post.title.split(":")[1]}
+</span>
 
-                    <h3 className="mb-2 text-[15px] font-bold leading-snug text-[#1f2430] group-hover:text-[#F0642C]">
-                      {post.title}
-                    </h3>
 
-                   
+          </h3>
 
-                    <div className="flex items-center gap-4 text-[11px] text-gray-400">
-                      <span className="flex items-center gap-1">
-                        <Calendar size={11} />
+          {/* Description */}
+          <p className="mt-2 line-clamp-3 text-base leading-[1.55] text-[#777]">
+            {post.description ||
+              post.excerpt ||
+              post.content ||
+              "Discover useful tips, strategies and expert guidance to help you prepare better and achieve your goals."}
+          </p>
 
-                        {post.publishedDate?.split("T")[0] || "2026-07-07"}
-                      </span>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            ) : (
-              <div className="py-10 text-center text-gray-500">
-                No blogs found. Try adjusting your
-                search or category.
-              </div>
-            )}
+          {/* Read More */}
+          <div className="mt-auto flex justify-end pt-3">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigateToBlog(post.slug);
+              }}
+              className="rounded-full bg-[#F0642C] px-5 py-1.5 text-base font-medium text-white transition-all duration-200 hover:bg-[#e45724] hover:shadow-sm"
+            >
+              Read more
+            </button>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+) : (
+  <div className="py-10 text-center text-gray-500">
+    No blogs found. Try adjusting your search or category.
+  </div>
+)}
 
-            {/* Pagination */}
-            {pagination.totalPages > 1 && (
-              <div className="mt-12 flex flex-wrap items-center justify-center gap-2">
-                {/* Previous */}
-                <button
-                  className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 text-gray-400 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-                  onClick={() =>
-                    handlePageChange(
-                      pagination.currentPage - 1
-                    )
-                  }
-                  disabled={
-                    pagination.currentPage === 1
-                  }
-                >
-                  <ChevronLeft size={16} />
-                </button>
+        {/* Pagination */}
+{pagination.totalPages > 1 && (
+  <div className="mt-10 flex items-center justify-center gap-2">
 
-                {/* Page numbers */}
-                {getPaginationNumbers().map(
-                  (page, index) => (
-                    <button
-                      key={`${page}-${index}`}
-                      onClick={() =>
-                        handlePageChange(page)
-                      }
-                      className={`flex h-9 w-9 items-center justify-center rounded-md text-sm font-medium ${
-                        page ===
-                        pagination.currentPage
-                          ? "bg-[#F0642C] text-white"
-                          : page === "…"
-                            ? "cursor-default border-none"
-                            : "border border-gray-200 text-gray-500 hover:bg-gray-50"
-                      }`}
-                      disabled={page === "…"}
-                    >
-                      {page}
-                    </button>
-                  )
-                )}
+    {/* Previous */}
+    <button
+      onClick={() => changePage(pagination.page - 1)}
+      disabled={pagination.page === 1}
+      className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 text-gray-500 disabled:cursor-not-allowed disabled:opacity-40"
+    >
+      <ChevronLeft size={16} />
+    </button>
 
-                {/* Next */}
-                <button
-                  className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 text-gray-400 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-                  onClick={() =>
-                    handlePageChange(
-                      pagination.currentPage + 1
-                    )
-                  }
-                  disabled={
-                    pagination.currentPage ===
-                    pagination.totalPages
-                  }
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            )}
+    {/* Page Numbers */}
+    {Array.from(
+      { length: pagination.totalPages },
+      (_, index) => index + 1
+    ).map((page) => (
+      <button
+        key={page}
+        onClick={() => changePage(page)}
+        className={`flex h-9 w-9 items-center justify-center rounded-md text-sm font-medium ${
+          page === pagination.page
+            ? "bg-[#F0642C] text-white"
+            : "border border-gray-200 text-gray-500 hover:bg-gray-50"
+        }`}
+      >
+        {page}
+      </button>
+    ))}
+
+    {/* Next */}
+    <button
+      onClick={() => changePage(pagination.page + 1)}
+      disabled={pagination.page === pagination.totalPages}
+      className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 text-gray-500 disabled:cursor-not-allowed disabled:opacity-40"
+    >
+      <ChevronRight size={16} />
+    </button>
+
+  </div>
+)}
           </div>
 
-          {/* Sidebar */}
-          <aside className="space-y-6">
-            {/* Contact form */}
-            <div className="overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm">
-              <div className="bg-gradient-to-r from-[#F0642C] to-[#F86C43] p-4">
-                <h3 className="text-center text-lg font-bold text-white">
-                  Speak to an Expert
-                </h3>
-
-                <p className="mt-1 text-center text-xs text-white/80">
-                  Get personalized guidance for your
-                  study abroad journey
-                </p>
-              </div>
-
-              <div className="p-4">
-                <FormSection
-                  FORM_CONFIG={FORM_CONFIG}
-                  pageName="blog-page"
-                  apiEndpoint="/api/submit-enquiry"
-                />
-              </div>
-            </div>
-
-            {/* Categories */}
-            {categories &&
-              categories.length > 0 && (
-                <div className="max-h-[18rem] overflow-auto rounded bg-[#FDF9F8] p-4">
-                  <div className="mb-3 flex items-center justify-between">
-                    <h3 className="text-lg font-bold">
-                      Categories
-                    </h3>
-
-                    {filters.category && (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleCategoryChange("")
-                        }
-                        className="text-xs text-[#F0642C] hover:underline"
-                      >
-                        Clear
-                      </button>
-                    )}
-                  </div>
-
-                  <ul className="space-y-3 text-sm">
-                    {categories.map(
-                      (c: Category) => (
-                        <li
-                          key={c.name}
-                          onClick={() =>
-                            handleCategoryChange(
-                              c.name
-                            )
-                          }
-                          className={`flex cursor-pointer items-center justify-between rounded px-4 py-2 transition-colors ${
-                            filters.category ===
-                            c.name
-                              ? "bg-[#F0642C] text-white"
-                              : "bg-white hover:text-[#F0642C]"
-                          }`}
-                        >
-                          <p>{c.name}</p>
-
-                          <span
-                            className={
-                              filters.category ===
-                              c.name
-                                ? "text-white/80"
-                                : "text-gray-400"
-                            }
-                          >
-                            {c.count}
-                          </span>
-                        </li>
-                      )
-                    )}
-                  </ul>
-                </div>
-              )}
-
-            {/* Popular posts */}
-            <div>
-              <h3 className="mb-4 text-lg font-bold">
-                Popular Posts
-              </h3>
-
-              <ul className="space-y-4">
-                {blogs
-                  .slice(0, 5)
-                  .map((p) => (
-                    <li
-                      key={p._id}
-                      className="flex cursor-pointer gap-3 hover:opacity-80"
-                      onClick={() =>
-                        navigateToBlog(p.slug)
-                      }
-                    >
-                      <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-md">
-                        <Image
-                          src={
-                            p.image ||
-                            "/placeholder-blog.jpg"
-                          }
-                          alt={p.title}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-
-                      <div>
-                        <p className="text-sm font-semibold leading-snug text-[#1f2430] hover:text-[#F0642C]">
-                          {p.title}
-                        </p>
-
-                        <p className="mt-1 flex items-center gap-1 text-[11px] text-gray-400">
-                          <Calendar size={10} />
-
-                          {p.publishedDate
-                            ?.split("T")[0] ||
-                            "2026-07-07"}
-                        </p>
-                      </div>
-                    </li>
-                  ))}
-              </ul>
-            </div>
-          </aside>
-        </div>
+       
 
         {/* Newsletter */}
         <div className="mt-16 flex flex-col items-center gap-8 rounded-lg bg-[#FBEAE2] p-8 sm:flex-row">
