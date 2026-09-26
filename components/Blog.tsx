@@ -18,7 +18,7 @@ import {
   Mail,
   UserCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import FormSection from "../components/formSection";
 
@@ -281,6 +281,17 @@ export default function BlogPage({
     setSearch(filters.search || "");
   }, [filters.search]);
 
+  const categoryRef = useRef(null);
+
+  const scrollCategories = (direction) => {
+    if (!categoryRef.current) return;
+
+    categoryRef.current.scrollBy({
+      left: direction === "left" ? -250 : 250,
+      behavior: "smooth",
+    });
+  };
+
   const updateUrl = (
     values: {
       search?: string;
@@ -485,43 +496,78 @@ export default function BlogPage({
 
       {/* Body */}
       <main className="mx-auto max-w-7xl px-6 xl:px-0 py-14">
-        <div className="flex  items-center gap-1 overflow-x-auto rounded-full p-1 mb-4">
-          <button
-            onClick={() => handleCategoryChange("")}
-            className={`shrink-0 rounded-full px-5 py-2 text-[18px] font-medium transition-all ${
-              !filters.category
-                ? "border border-gray-300"
-                : "text-[#555] hover:text-[#f36d45]"
-            }`}
-          >
-            Categories
-          </button>
-
-          {categories.map((category) => {
-            const isActive = filters.category === category.slug;
-
-            return (
-              <button
-                key={category._id}
-                onClick={() => handleCategoryChange(category.name)}
-                className={`shrink-0 rounded-full px-6 py-2 text-[18px] font-medium transition-all ${
-                  isActive
-                    ? "bg-[#f36d45] text-white"
-                    : "border border-gray-300"
-                }`}
-              >
-                {category.name}
-              </button>
-            );
-          })}
-        </div>
-
         {/* Left column */}
         <div>
-          {/* Latest blogs */}
-          <h2 className="mb-5 text-left text-2xl font-bold md:text-3xl lg:text-4xl">
-            Latest <span className="text-[#F0642C]">Blogs</span>
-          </h2>
+          <div className="flex gap-4 justify-between mb-6">
+            {/* Latest blogs */}
+            <h2 className="mb-5 text-left text-2xl font-bold md:text-3xl lg:text-4xl">
+              Latest <span className="text-[#F0642C]">Blogs</span>
+            </h2>
+
+            <div className="relative mb-4 flex items-center">
+              {/* Left Arrow */}
+              <button
+                type="button"
+                onClick={() => scrollCategories("left")}
+                className="absolute left-0 z-10 flex h-9 w-9 shrink-0
+      items-center justify-center rounded-full border border-gray-200
+      bg-white shadow-sm transition
+      hover:border-[#f36d45] hover:text-[#f36d45]"
+              >
+                <ChevronLeft size={18} />
+              </button>
+
+              {/* Categories */}
+              <div
+                ref={categoryRef}
+                className="flex w-full items-center gap-1 overflow-x-auto
+      scrollbar-hide rounded-full p-1 px-12"
+              >
+                <button
+                  onClick={() => handleCategoryChange("")}
+                  className={`shrink-0 rounded-full px-5 py-2 text-base
+        font-medium transition-all ${
+          !filters.category
+            ? "bg-orange-50 text-[#f36d45]"
+            : "bg-orange-50 text-[#f36d45]"
+        }`}
+                >
+                  Categories
+                </button>
+
+                {categories.map((category) => {
+                  const isActive = filters.category === category.name;
+
+                  return (
+                    <button
+                      key={category._id}
+                      onClick={() => handleCategoryChange(category.name)}
+                      className={`shrink-0 rounded-full px-6 py-2 text-base
+            font-medium transition-all ${
+              isActive
+                ? "bg-orange-50 text-[#f36d45]"
+                : "border border-gray-300 text-[#555] hover:border-[#f36d45]"
+            }`}
+                    >
+                      {category.name}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Right Arrow */}
+              <button
+                type="button"
+                onClick={() => scrollCategories("right")}
+                className="absolute right-0 z-10 flex h-9 w-9 shrink-0
+      items-center justify-center rounded-full border border-gray-200
+      bg-white shadow-sm transition
+      hover:border-[#f36d45] hover:text-[#f36d45]"
+              >
+                <ChevronRight size={18} />
+              </button>
+            </div>
+          </div>
 
           {blogs.length > 0 ? (
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -529,10 +575,10 @@ export default function BlogPage({
                 <article
                   key={post._id}
                   onClick={() => navigateToBlog(post.slug)}
-                  className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-300 bg-white p-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md h"
+                  className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-gray-500 bg-white p-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md h"
                 >
                   {/* Blog Image */}
-                  <div className="relative h-[190px] w-full overflow-hidden rounded-xl">
+                  <div className="relative h-[220px] w-full overflow-hidden rounded-3xl">
                     <Image
                       src={post.image || "/placeholder-blog.jpg"}
                       alt={post.title}
@@ -562,14 +608,14 @@ export default function BlogPage({
                     </p>
 
                     {/* Read More */}
-                    <div className="mt-auto flex justify-end pt-3">
+                    <div className="mt-auto flex justify-end py-4 ">
                       <button
                         type="button"
                         onClick={(e) => {
                           e.stopPropagation();
                           navigateToBlog(post.slug);
                         }}
-                        className="rounded-full bg-[#F0642C] px-5 py-1.5 text-sm font-medium text-white transition-all duration-200 hover:bg-[#e45724] hover:shadow-sm cursor-pointer"
+                        className="rounded-full bg-[#f36d45] px-5 py-1.5 text-sm font-medium text-white transition-all duration-200 hover:bg-[#e45724] hover:shadow-sm cursor-pointer"
                       >
                         Read more
                       </button>
@@ -606,7 +652,7 @@ export default function BlogPage({
                   onClick={() => changePage(page)}
                   className={`flex h-9 w-9 items-center justify-center rounded-md text-sm font-medium ${
                     page === pagination.page
-                      ? "bg-[#F0642C] text-white"
+                      ? "bg-[#f36d45] text-white"
                       : "border border-gray-200 text-gray-500 hover:bg-gray-50"
                   }`}
                 >
@@ -664,7 +710,6 @@ export default function BlogPage({
         </div>
 
         <div className=" border-b border-gray-300 bg-gray-500 w-full"></div>
-
       </main>
     </div>
   );
