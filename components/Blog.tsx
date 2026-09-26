@@ -575,7 +575,7 @@ export default function BlogPage({
                 <article
                   key={post._id}
                   onClick={() => navigateToBlog(post.slug)}
-                  className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-gray-500 bg-white p-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md h"
+                  className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-3xl border border-gray-300 bg-white p-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md h"
                 >
                   {/* Blog Image */}
                   <div className="relative h-[220px] w-full overflow-hidden rounded-3xl">
