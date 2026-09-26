@@ -68,7 +68,6 @@ interface BlogDetail {
 
 interface BlogForm {
   title: string;
-  Subtitle: string;
   slug: string;
   category: string;
   tags: string[];
@@ -121,7 +120,6 @@ const createBlogDetail = (order: number): BlogDetail => ({
 
 const defaultForm: BlogForm = {
   title: "",
-  Subtitle:"",
   slug: "",
   category: "",
   image: "",
@@ -198,7 +196,6 @@ const BlogFormContent = () => {
 
           setValues({
             title: blogData.title || "",
-            Subtitle: blogData.Subtitle || "",
             slug: blogData.slug || "",
             category: blogData.category || "",
             tags: Array.isArray(blogData.tags) ? blogData.tags : [],
@@ -647,7 +644,6 @@ const BlogFormContent = () => {
 
       const payload: BlogForm = {
         title: values.title.trim(),
-        Subtitle: values.Subtitle.trim(),
         slug: values.slug.trim(),
         category: values.category,
         tags: values.tags,
@@ -872,7 +868,7 @@ const BlogFormContent = () => {
           const val = e.target.value;
           updateRootField(field.name, val);
           // Auto-generate slug if title changes and not editing
-          if (editSlug && field.name != "Subtitle") {
+          if (editSlug) {
             updateRootField("slug", slugify(val));
           }
         }}

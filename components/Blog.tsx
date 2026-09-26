@@ -484,13 +484,13 @@ export default function BlogPage({
       </section>
 
       {/* Body */}
-      <main className="mx-auto max-w-7xl px-6 py-14">
-        <div className="flex w-190 items-center gap-1 overflow-x-auto rounded-full bg-[#fff5f1] p-1 mb-4">
+      <main className="mx-auto max-w-7xl px-6 xl:px-0 py-14">
+        <div className="flex  items-center gap-1 overflow-x-auto rounded-full p-1 mb-4">
           <button
             onClick={() => handleCategoryChange("")}
             className={`shrink-0 rounded-full px-5 py-2 text-[18px] font-medium transition-all ${
               !filters.category
-                ? "bg-[#f36d45] text-white"
+                ? "border border-gray-300"
                 : "text-[#555] hover:text-[#f36d45]"
             }`}
           >
@@ -503,11 +503,11 @@ export default function BlogPage({
             return (
               <button
                 key={category._id}
-                onClick={() => handleCategoryChange(category.slug)}
+                onClick={() => handleCategoryChange(category.name)}
                 className={`shrink-0 rounded-full px-6 py-2 text-[18px] font-medium transition-all ${
                   isActive
                     ? "bg-[#f36d45] text-white"
-                    : "text-[#555] hover:text-[#f36d45]"
+                    : "border border-gray-300"
                 }`}
               >
                 {category.name}
@@ -554,8 +554,8 @@ export default function BlogPage({
                     </h3>
 
                     {/* Description */}
-                    <p className="mt-2 line-clamp-3 text-sm leading-[1.55] text-[#777]">
-                      {post.Subtitle ||
+                    <p className="mt-2 line-clamp-2 text-sm leading-[1.55] text-[#777]">
+                      {post.metaDescription ||
                         post.excerpt ||
                         post.content ||
                         "Discover useful tips, strategies and expert guidance to help you prepare better and achieve your goals."}
@@ -627,7 +627,7 @@ export default function BlogPage({
         </div>
 
         {/* Newsletter */}
-        <div className="mt-16 flex flex-col items-center gap-8 rounded-lg bg-[#FBEAE2] p-8 sm:flex-row">
+        <div className="mt-16 flex flex-col items-center gap-8 rounded-lg bg-[#FBEAE2] p-8 sm:flex-row mb-10">
           <div className="relative h-40 w-80 flex-shrink-0 overflow-hidden rounded-full">
             <Image
               src={data.newsletterBanner.img}
@@ -663,30 +663,8 @@ export default function BlogPage({
           </form>
         </div>
 
-        {/* Features */}
-        <div className="mt-16 grid grid-cols-1 gap-8 border-t border-gray-100 pt-12 sm:grid-cols-2 lg:grid-cols-4">
-          {data.features.map((f) => {
-            const Icon = iconMap[f.icon as keyof typeof iconMap];
+        <div className=" border-b border-gray-300 bg-gray-500 w-full"></div>
 
-            return (
-              <div key={f.title} className="flex items-start gap-4">
-                <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[#FBEAE2] text-[#F0642C]">
-                  <Icon size={22} />
-                </div>
-
-                <div>
-                  <h4 className="mb-1 text-sm font-bold text-[#1f2430]">
-                    {f.title}
-                  </h4>
-
-                  <p className="text-xs leading-relaxed text-gray-500">
-                    {f.desc}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
       </main>
     </div>
   );
