@@ -97,8 +97,8 @@ export const loginAdmin = async (form: any) => {
     return response.json();
 };
 
-export const getBlogs = async (page = 1, limit = 10, search = "") => {
-    const res = await axiosInstance.get(`/admin/blogs?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}`);
+export const getBlogs = async (page = 1, limit = 10, search = "",category=null,status) => {
+    const res = await axiosInstance.get(`/admin/blogs?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&category=${category}&isPublished=${status}`);
     return res.data;
 };
 

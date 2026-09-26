@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/app/lib/db";
 import Blog from "@/app/Model/BlogDetails";
 import { slugify } from "@/app/lib/slug";
+import mongoose from "mongoose";
 
 // ✅ GET ALL BLOGS (Pagination + Search + Sort)
 export async function GET(req: NextRequest) {
@@ -10,34 +11,68 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
 
+    const category = searchParams.get("category") || "";
+    const search = searchParams.get("search") || "";
+
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
-    const search = searchParams.get("search") || "";
-    const isPublishedParam = searchParams.get('isPublished');
-    const isPublished = isPublishedParam === 'true' ? true : isPublishedParam === 'false' ? false : undefined;
+
+    const isPublishedParam = searchParams.get("isPublished");
+
+    const isPublished =
+      isPublishedParam === "published"
+        ? true
+        : isPublishedParam === "draft"
+          ? false
+          : undefined;
 
     const skip = (page - 1) * limit;
 
-    // 🔍 Search query
-    // Build query: include search regexes and/or isPublished filter when provided
-    const orClauses: any[] = [];
+    // Main query
+    const query: any = {};
+
+    // Search
     if (search) {
-      orClauses.push({ title: { $regex: search, $options: "i" } });
-      orClauses.push({ description: { $regex: search, $options: "i" } });
-      orClauses.push({ category: { $regex: search, $options: "i" } });
-    }
-    if (typeof isPublished !== 'undefined') {
-      orClauses.push({ isPublished });
+      query.$or = [
+        {
+          title: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+        {
+          description: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+        {
+          category: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+      ];
     }
 
-    const query = orClauses.length ? { $or: orClauses } : {};
+    // Published filter
+    if (typeof isPublished !== "undefined") {
+      query.isPublished = isPublished;
+    }
 
-      console.log('isPublished',query);
+    // Category filter
+    if (category) {
+      query.category = category;
+    }
+
+    console.log("query:", category);
+
     const blogs = await Blog.find(query)
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .select("-__v")
+      .populate("category")
       .lean();
 
     const total = await Blog.countDocuments(query);
@@ -53,10 +88,11 @@ export async function GET(req: NextRequest) {
           totalPages: Math.ceil(total / limit),
         },
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("[BLOG LIST]", error);
+
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
@@ -69,21 +105,18 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
 
     if (!body.title) {
-      return NextResponse.json(
-        { error: "Title is required" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Title is required" }, { status: 400 });
     }
 
     // 🔥 Generate slug
-    const slug = body?.slug ||  slugify(body.title);
+    const slug = body?.slug || slugify(body.title);
 
     // 🔒 Prevent duplicate slug
     const exists = await Blog.findOne({ slug });
     if (exists) {
       return NextResponse.json(
         { error: "Blog with same title already exists" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -94,12 +127,13 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       { message: "Blog created", data: blog },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("[BLOG CREATE]", error);
-    return NextResponse.json({ "error": "Server error", errormsg : error?.message }, { status: 500 });
+    return NextResponse.json(
+      { error: "Server error", errormsg: error?.message },
+      { status: 500 },
+    );
   }
 }
-
-

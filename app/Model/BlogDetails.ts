@@ -1,4 +1,3 @@
-
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IBlog extends Document {
@@ -7,7 +6,7 @@ export interface IBlog extends Document {
   slug: string;
   category: string;
   tags: string[];
-  image : string;
+  image: string;
   metaTitle?: string;
   metaDescription?: string;
   publishedDate?: Date;
@@ -15,8 +14,8 @@ export interface IBlog extends Document {
   blog_details: any;
   author: string;
   comments: any;
-  count : any;
-  authslug : string;
+  count: any;
+  authslug: string;
 }
 
 const BlogSchema = new Schema<IBlog>(
@@ -62,18 +61,19 @@ const BlogSchema = new Schema<IBlog>(
       trim: true,
     },
     image: {
-      type : String,
-      default : "",
+      type: String,
+      default: "",
     },
     isPublished: {
       type: Boolean,
       default: true,
     },
 
-    count : {
-      type: String, default : 1000 
+    count: {
+      type: String,
+      default: 1000,
     },
-    
+
     author: {
       type: String,
       default: "Admin",
@@ -91,23 +91,15 @@ const BlogSchema = new Schema<IBlog>(
     comments: {
       type: [Schema.Types.Mixed],
       default: [],
-    }
+    },
   },
   {
     timestamps: true,
-  }
+  },
 );
-
-
-
 
 export default mongoose.models.BlogDetail ||
   mongoose.model<IBlog>("BlogDetail", BlogSchema);
-
-
-
-
-
 
 // import mongoose, { Schema, Document } from "mongoose";
 
@@ -168,7 +160,7 @@ export default mongoose.models.BlogDetail ||
 //     },
 
 //     count : {
-//       type: String, default : 1000 
+//       type: String, default : 1000
 //     },
 
 //     category: { type: String, required: true, trim: true },

@@ -1,6 +1,6 @@
 "use client";
 
-import { getBlogs, deleteBlog } from "@/app/services/api";
+import { getBlogs, deleteBlog, getBlogCategory } from "@/app/services/api";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useMemo, useState } from "react";
 import {
@@ -23,14 +23,30 @@ const Blog = () => {
 
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
+  const [allCategory,setallCategory] = useState([])
   const [status, setStatus] = useState("");
+  const [page, setPage] = useState(1);
+  const [pagination, setpagination] = useState(null);
+  const [debouncing,setdebouncing] = useState("")
+
+  const limit = 10;
+
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    setdebouncing(search);
+  }, 600);
+
+  return () => clearTimeout(timer);
+}, [search]);
+
+  
 
   const fetchBlogs = async () => {
     try {
       setLoading(true);
 
-      const res = await getBlogs();
-
+      const res = await getBlogs(page, limit,debouncing,category,status);
+      setpagination(res.pagination);
       setBlogs(res?.data || []);
     } catch (err) {
       console.error("Error fetching blogs:", err);
@@ -38,10 +54,11 @@ const Blog = () => {
       setLoading(false);
     }
   };
+ 
 
   useEffect(() => {
     fetchBlogs();
-  }, []);
+  }, [page,debouncing,category,status]);
 
   const handleDelete = async (slug: string) => {
     if (!confirm("Are you sure you want to delete this blog?")) return;
@@ -56,38 +73,13 @@ const Blog = () => {
     }
   };
 
-  const categories = useMemo(() => {
-    return Array.from(
-      new Set(
-        blogs
-          .map((blog) => blog.category)
-          .filter(Boolean)
-      )
-    );
-  }, [blogs]);
+  const categories = useMemo(async() => {
+   const res = await getBlogCategory();
+   setallCategory(res.data)
 
-  const filteredBlogs = useMemo(() => {
-    return blogs.filter((blog) => {
-      const searchValue = search.toLowerCase().trim();
+  }, []);
 
-      const matchesSearch =
-        !searchValue ||
-        blog.title?.toLowerCase().includes(searchValue) ||
-        blog.description?.toLowerCase().includes(searchValue) ||
-        blog.metaDescription?.toLowerCase().includes(searchValue) ||
-        blog.slug?.toLowerCase().includes(searchValue);
-
-      const matchesCategory =
-        !category || blog.category === category;
-
-      const matchesStatus =
-        !status ||
-        (status === "published" && blog.isPublished === true) ||
-        (status === "draft" && blog.isPublished === false);
-
-      return matchesSearch && matchesCategory && matchesStatus;
-    });
-  }, [blogs, search, category, status]);
+console.log(allCategory,"cc")
 
   const clearFilters = () => {
     setSearch("");
@@ -129,7 +121,6 @@ const Blog = () => {
   return (
     <div className="min-h-screen bg-[#f7f8fa] px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-[1500px]">
-
         {/* ================= HEADER ================= */}
         <div className="mb-5 flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -154,24 +145,17 @@ const Blog = () => {
         {/* ================= TABS ================= */}
         <div className="mb-5 border-b border-[#dfe3e8]">
           <div className="flex gap-7">
-            <button
-              className="relative flex items-center gap-3 px-6 pb-4 pt-1 text-[16px] font-semibold text-[#ff6633]"
-            >
+            <button className="relative flex items-center gap-3 px-6 pb-4 pt-1 text-[16px] font-semibold text-[#ff6633]">
               <FileText size={21} strokeWidth={2} />
-
               Support Blogs
-
               <span className="absolute bottom-0 left-0 h-[3px] w-full rounded-full bg-[#ff6633]" />
             </button>
 
             <button
-              onClick={() =>
-                router.push("/admin/pages/Blogs/category")
-              }
+              onClick={() => router.push("/admin/pages/Blogs/category")}
               className="flex items-center gap-3 px-2 pb-4 pt-1 text-[16px] font-semibold text-[#718198] transition hover:text-[#ff6633]"
             >
               <FolderOpen size={21} strokeWidth={2} />
-
               Categories
             </button>
           </div>
@@ -180,7 +164,6 @@ const Blog = () => {
         {/* ================= FILTER BOX ================= */}
         <div className="mb-5 rounded-[20px] border border-[#e0e4e9] bg-white p-5 shadow-[0_2px_5px_rgba(0,0,0,0.05)] sm:p-6">
           <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1.5fr_1fr_1fr_auto] lg:items-end">
-
             {/* Search */}
             <div>
               <label className="mb-2 block text-[14px] font-semibold text-[#253b58]">
@@ -216,9 +199,9 @@ const Blog = () => {
               >
                 <option value="">Choose Category</option>
 
-                {categories.map((item: any) => (
-                  <option key={item} value={item}>
-                    {item}
+                {allCategory.map((item: any) => (
+                  <option key={item._id} value={item.name}>
+                    {item.name}
                   </option>
                 ))}
               </select>
@@ -247,7 +230,6 @@ const Blog = () => {
               className="flex h-[55px] items-center justify-center gap-2 rounded-[15px] border border-[#dfe4ea] bg-white px-6 text-[16px] font-medium text-[#40536d] transition hover:border-[#ff7043] hover:text-[#ff7043]"
             >
               <RotateCcw size={18} />
-
               Clear Filters
             </button>
           </div>
@@ -255,23 +237,17 @@ const Blog = () => {
 
         {/* ================= TABLE ================= */}
         <div className="overflow-hidden rounded-[20px] border border-[#dfe4e8] bg-white shadow-[0_2px_5px_rgba(0,0,0,0.04)]">
-
           {loading ? (
             <div className="flex min-h-[300px] items-center justify-center">
               <div className="flex flex-col items-center gap-3">
                 <div className="h-9 w-9 animate-spin rounded-full border-4 border-[#ff7043]/20 border-t-[#ff7043]" />
-                <p className="text-sm text-[#718198]">
-                  Loading Blogs...
-                </p>
+                <p className="text-sm text-[#718198]">Loading Blogs...</p>
               </div>
             </div>
-          ) : filteredBlogs.length === 0 ? (
+          ) : blogs.length === 0 ? (
             <div className="flex min-h-[300px] flex-col items-center justify-center px-5 text-center">
               <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#fff2ec]">
-                <BookOpen
-                  size={28}
-                  className="text-[#ff7043]"
-                />
+                <BookOpen size={28} className="text-[#ff7043]" />
               </div>
 
               <h3 className="text-lg font-semibold text-[#172b4d]">
@@ -285,7 +261,6 @@ const Blog = () => {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full min-w-[1050px] border-collapse text-left">
-
                 {/* TABLE HEADER */}
                 <thead>
                   <tr className="bg-[#f96b45] text-white">
@@ -293,11 +268,11 @@ const Blog = () => {
                       #
                     </th>
 
-                    <th className="min-w-[400px] border-r border-white/30 px-5 py-5 text-[13px] font-bold">
+                    <th className="min-w-[500px] border-r border-white/30 px-5 py-5 text-[13px] font-bold">
                       ARTICLE
                     </th>
 
-                    <th className="w-[250px] border-r border-white/30 px-5 py-5 text-[13px] font-bold">
+                    <th className="w-[150px] border-r border-white/30 px-5 py-5 text-[13px] font-bold">
                       CATEGORY
                     </th>
 
@@ -321,7 +296,7 @@ const Blog = () => {
 
                 {/* TABLE BODY */}
                 <tbody>
-                  {filteredBlogs.map((blog, index) => (
+                  {blogs.map((blog, index) => (
                     <tr
                       key={blog._id || blog.slug}
                       className="border-b border-[#dfe3e7] transition hover:bg-[#fffaf7]"
@@ -334,7 +309,6 @@ const Blog = () => {
                       {/* ARTICLE */}
                       <td className="border-r border-[#dfe3e7] px-5 py-4">
                         <div className="flex items-center gap-4">
-
                           <div className="flex h-[50px] w-[50px] shrink-0 items-center justify-center rounded-[15px] bg-[#fff5ec]">
                             {blog.image ? (
                               <img
@@ -343,30 +317,23 @@ const Blog = () => {
                                 className="h-[50px] w-[50px] rounded-[15px] object-cover"
                               />
                             ) : (
-                              <BookOpen
-                                size={23}
-                                className="text-[#ff6500]"
-                              />
+                              <BookOpen size={23} className="text-[#ff6500]" />
                             )}
                           </div>
 
-                          <div className="min-w-0">
-                            <h3 className="truncate text-[16px] font-bold text-[#102744]">
+                          <div className="">
+                            <h3 className="line-clamp-2 text-sm font-bold text-[#102744]">
                               {blog.title || "Untitled Article"}
                             </h3>
 
-                            <p className="mt-1 max-w-[500px] truncate text-[13px] text-[#91a0b4]">
-                              {blog.metaDescription ||
-                                blog.description ||
-                                "No description available"}
-                            </p>
+                        
                           </div>
                         </div>
                       </td>
 
                       {/* CATEGORY */}
                       <td className="border-r border-[#dfe3e7] px-5 py-5">
-                        <span className="inline-flex rounded-[12px] bg-[#fff4ec] px-4 py-2 text-[13px] font-semibold text-[#ff5f00]">
+                        <span className="flex justify-center rounded-[12px] bg-[#fff4ec] px-4 py-2 text-[13px] font-semibold text-[#ff5f00]">
                           {blog.category || "Uncategorized"}
                         </span>
                       </td>
@@ -389,21 +356,18 @@ const Blog = () => {
                       {/* VIEWS */}
                       <td className="border-r border-[#dfe3e7] px-5 py-5 text-center">
                         <div className="flex items-center justify-center gap-2 text-[14px] text-[#40536d]">
-                          <Eye
-                            size={17}
-                            className="text-[#8d9aae]"
-                          />
+                          <Eye size={17} className="text-[#8d9aae]" />
                           {blog.count || 0}
                         </div>
                       </td>
 
                       {/* CREATED AT */}
                       <td className="border-r border-[#dfe3e7] px-5 py-4">
-                        <div className="text-[14px] font-medium text-[#253b58]">
+                        <div className="text-xs font-medium text-[#253b58]">
                           {formatDate(blog.createdAt)}
                         </div>
 
-                        <div className="mt-1 text-[13px] text-[#91a0b4]">
+                        <div className="mt-1 text-xs text-[#91a0b4]">
                           {formatTime(blog.createdAt)}
                         </div>
                       </td>
@@ -414,7 +378,7 @@ const Blog = () => {
                           <button
                             onClick={() =>
                               router.push(
-                                `/admin/pages/Blogs/add?slug=${blog.slug}`
+                                `/admin/pages/Blogs/add?slug=${blog.slug}`,
                               )
                             }
                             title="Edit Article"
@@ -424,36 +388,85 @@ const Blog = () => {
                           </button>
 
                           <button
-                            onClick={() =>
-                              handleDelete(blog.slug)
-                            }
+                            onClick={() => handleDelete(blog.slug)}
                             title="Delete Article"
                             className="flex h-[45px] w-[45px] items-center justify-center rounded-[13px] border border-[#ffd5d5] bg-white text-[#ff6262] transition hover:bg-[#fff2f2] hover:text-[#ef4444]"
                           >
                             <Trash2 size={19} />
                           </button>
-
                         </div>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
+              <div className="flex items-center justify-center gap-2 my-5">
+                {/* Previous */}
+                <button
+                  disabled={pagination.page === 1}
+                  onClick={() => setPage(page - 1)}
+                  className="h-10 px-4 rounded-lg border border-gray-200
+      bg-white text-sm font-medium text-gray-600
+      transition-all duration-200
+      hover:border-[#f36d45] hover:text-[#f36d45]
+      disabled:cursor-not-allowed disabled:opacity-40
+      disabled:hover:border-gray-200 disabled:hover:text-gray-600"
+                >
+                  Previous
+                </button>
+
+                {/* Page Numbers */}
+                <div className="flex items-center gap-1.5">
+                  {Array.from(
+                    { length: pagination.totalPages },
+                    (_, index) => index + 1,
+                  ).map((item) => (
+                    <button
+                      key={item}
+                      onClick={() => setPage(item)}
+                      className={`
+          flex h-10 w-10 items-center justify-center
+          rounded-lg text-sm font-semibold
+          transition-all duration-200
+          ${
+            page === item
+              ? "bg-[#f36d45] text-white shadow-sm"
+              : "border border-gray-200 bg-white text-gray-600 hover:border-[#f36d45] hover:text-[#f36d45]"
+          }
+        `}
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Next */}
+                <button
+                  disabled={pagination.page === pagination.totalPages}
+                  onClick={() => setPage(page + 1)}
+                  className="h-10 px-4 rounded-lg border border-gray-200
+      bg-white text-sm font-medium text-gray-600
+      transition-all duration-200
+      hover:border-[#f36d45] hover:text-[#f36d45]
+      disabled:cursor-not-allowed disabled:opacity-40
+      disabled:hover:border-gray-200 disabled:hover:text-gray-600"
+                >
+                  Next
+                </button>
+              </div>
             </div>
           )}
         </div>
 
         {/* ================= RESULT COUNT ================= */}
-        {!loading && filteredBlogs.length > 0 && (
+        {!loading && blogs.length > 0 && (
           <div className="mt-4 text-sm text-[#7c8da4]">
             Showing{" "}
             <span className="font-semibold text-[#253b58]">
-              {filteredBlogs.length}
-            </span>{" "}
-            of{" "}
-            <span className="font-semibold text-[#253b58]">
               {blogs.length}
             </span>{" "}
+            of{" "}
+            <span className="font-semibold text-[#253b58]">{blogs.length}</span>{" "}
             Blogs
           </div>
         )}
@@ -463,10 +476,6 @@ const Blog = () => {
 };
 
 export default Blog;
-
-
-
-
 
 // "use client";
 

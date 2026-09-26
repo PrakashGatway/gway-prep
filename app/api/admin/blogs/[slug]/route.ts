@@ -47,7 +47,7 @@ export async function PUT(req: NextRequest, context: Context) {
 
     const { slug } = await context.params;
 
-    console.log(slug, "sssssssssssssssssss");
+  
     const body = await req.json();
 
     if (!body || Object.keys(body).length === 0) {
