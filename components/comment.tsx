@@ -221,7 +221,7 @@ console.log(user)
       return (
         <div
           key={item._id}
-          className="flex items-start gap-3"
+          className="flex items-start gap-3 border-b border-gray-200 pb-2"
         >
           {/* User Avatar */}
           <div

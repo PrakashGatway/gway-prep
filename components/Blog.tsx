@@ -1,4 +1,3 @@
-
 "use client";
 
 import Image from "next/image";
@@ -262,22 +261,17 @@ export default function BlogPage({
   categories = [],
   blogs = [],
   pagination = {
-  page: 1,
-  totalPages: 1,
-  total: 0,
-  limit: 10,
-},
+    page: 1,
+    totalPages: 1,
+    total: 0,
+    limit: 12,
+  },
   filters = {},
 }: BlogPageProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const [selectedCategory, setSelectedCategory] = useState("categories");
-
-  console.log(blogs,"blogs")
-  console.log(categories,"categories")
-  console.log(allBlog,"bb")
-
 
   // Local search input
   const [search, setSearch] = useState(filters.search || "");
@@ -287,7 +281,6 @@ export default function BlogPage({
     setSearch(filters.search || "");
   }, [filters.search]);
 
-  
   const updateUrl = (
     values: {
       search?: string;
@@ -296,7 +289,7 @@ export default function BlogPage({
     },
     options?: {
       scroll?: boolean;
-    }
+    },
   ) => {
     const params = new URLSearchParams(searchParams.toString());
 
@@ -332,14 +325,9 @@ export default function BlogPage({
 
     const queryString = params.toString();
 
-    router.push(
-      queryString
-        ? `${pathname}?${queryString}`
-        : pathname,
-      {
-        scroll: options?.scroll ?? false,
-      }
-    );
+    router.push(queryString ? `${pathname}?${queryString}` : pathname, {
+      scroll: options?.scroll ?? false,
+    });
   };
 
   /**
@@ -354,7 +342,6 @@ export default function BlogPage({
     });
   };
 
-  
   useEffect(() => {
     const currentSearch = filters.search || "";
 
@@ -375,44 +362,41 @@ export default function BlogPage({
   /**
    * Navigate to blog detail
    */
- const navigateToBlog = (blogSlug: string) => {
-  window.open(`/blog/${blogSlug}`, "_blank", "noopener,noreferrer");
-};
+  const navigateToBlog = (blogSlug: string) => {
+    window.open(`/blog/${blogSlug}`, "_blank", "noopener,noreferrer");
+  };
 
-const changePage = (page: number) => {
-  if (page < 1 || page > pagination.totalPages) {
-    return;
-  }
+  const changePage = (page: number) => {
+    if (page < 1 || page > pagination.totalPages) {
+      return;
+    }
 
-  const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams.toString());
 
-  params.set("page", String(page));
+    params.set("page", String(page));
 
-  router.push(`${pathname}?${params.toString()}`);
-};
-
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   /**
    * Category filter
    */
 
-
   const handleCategoryChange = (category: string) => {
-  const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(searchParams.toString());
 
-  if (category) {
-    params.set("category", category);
-  } else {
-    params.delete("category");
-  }
+    if (category) {
+      params.set("category", category);
+    } else {
+      params.delete("category");
+    }
 
-  // category change should start from page 1
-  params.delete("page");
+    // category change should start from page 1
+    params.delete("page");
 
-  router.push(`${pathname}?${params.toString()}`);
-};
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
-  
   const clearFilters = () => {
     router.push(pathname);
   };
@@ -420,9 +404,8 @@ const changePage = (page: number) => {
   const featuredBlog = blogs.length > 0 ? blogs[0] : null;
 
   const latestBlogs = blogs.length > 1 ? blogs.slice(1) : [];
-  console.log(featuredBlog, 'blog');
+  console.log(blogs, "blog");
 
-  
   return (
     <div className="min-h-screen bg-white text-[#1f2430]">
       {/* Hero */}
@@ -430,10 +413,7 @@ const changePage = (page: number) => {
         <div className="mx-auto flex max-w-7xl flex-col items-center gap-12 px-4 sm:px-6 lg:flex-row lg:justify-between lg:px-8">
           <div className="flex w-full flex-col justify-center text-center lg:w-[85%] lg:text-left">
             <h1 className="text-2xl font-bold md:text-3xl lg:text-5xl">
-              Ooshas Prep{" "}
-              <span className="text-primary">
-                Blog
-              </span>
+              Ooshas Prep <span className="text-primary">Blog</span>
             </h1>
 
             <p className="mx-auto mt-4 max-w-xl text-base text-gray-600 lg:mx-0 lg:text-lg">
@@ -445,10 +425,7 @@ const changePage = (page: number) => {
               onSubmit={handleSearch}
               className="mx-auto mt-8 flex w-full max-w-md overflow-hidden rounded-xl border border-gray-200 bg-white p-1 shadow-md focus-within:ring-2 focus-within:ring-[#F0642C] lg:mx-0"
             >
-              <label
-                htmlFor="hero-search"
-                className="sr-only"
-              >
+              <label htmlFor="hero-search" className="sr-only">
                 Search for articles
               </label>
 
@@ -457,9 +434,7 @@ const changePage = (page: number) => {
                 type="text"
                 placeholder="Search for articles..."
                 value={search}
-                onChange={(e) =>
-                  setSearch(e.target.value)
-                }
+                onChange={(e) => setSearch(e.target.value)}
                 className="w-full bg-transparent px-4 py-3 text-sm text-gray-900 placeholder-gray-400 outline-none"
               />
 
@@ -468,32 +443,22 @@ const changePage = (page: number) => {
                 aria-label="Submit search"
                 className="flex items-center justify-center rounded-lg bg-[#F0642C] px-5 text-white transition-colors duration-200 hover:bg-[#d9551f]"
               >
-                <Search
-                  size={18}
-                  aria-hidden="true"
-                />
+                <Search size={18} aria-hidden="true" />
               </button>
             </form>
 
             {/* Active filters */}
-            {(filters.search ||
-              filters.category) && (
+            {(filters.search || filters.category) && (
               <div className="mt-4 flex flex-wrap items-center justify-center gap-2 lg:justify-start">
                 {filters.search && (
                   <span className="rounded-full bg-white px-3 py-1 text-xs text-gray-600 shadow-sm">
-                    Search:{" "}
-                    <strong>
-                      {filters.search}
-                    </strong>
+                    Search: <strong>{filters.search}</strong>
                   </span>
                 )}
 
                 {filters.category && (
                   <span className="rounded-full bg-white px-3 py-1 text-xs text-gray-600 shadow-sm">
-                    Category:{" "}
-                    <strong>
-                      {filters.category}
-                    </strong>
+                    Category: <strong>{filters.category}</strong>
                   </span>
                 )}
 
@@ -520,156 +485,146 @@ const changePage = (page: number) => {
 
       {/* Body */}
       <main className="mx-auto max-w-7xl px-6 py-14">
-       <div className="flex w-190 items-center gap-1 overflow-x-auto rounded-full bg-[#fff5f1] p-1 mb-4">
-  <button
-    onClick={() => handleCategoryChange("")}
-    className={`shrink-0 rounded-full px-5 py-2 text-[18px] font-medium transition-all ${
-      !filters.category
-        ? "bg-[#f36d45] text-white"
-        : "text-[#555] hover:text-[#f36d45]"
-    }`}
-  >
-    Categories
-  </button>
-
-  {categories.map((category) => {
-    const isActive = filters.category === category.slug;
-
-    return (
-      <button
-        key={category._id}
-        onClick={() => handleCategoryChange(category.slug)}
-        className={`shrink-0 rounded-full px-6 py-2 text-[18px] font-medium transition-all ${
-          isActive
-            ? "bg-[#f36d45] text-white"
-            : "text-[#555] hover:text-[#f36d45]"
-        }`}
-      >
-        {category.name}
-      </button>
-    );
-  })}
-</div>
-     
-          {/* Left column */}
-          <div>
-         
-
-            {/* Latest blogs */}
-            <h2 className="mb-5 text-left text-2xl font-bold md:text-3xl lg:text-4xl">
-              Latest{" "}
-              <span className="text-[#F0642C]">
-                Blogs
-              </span>
-            </h2>
-
-           {blogs.length > 0 ? (
-  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-    {blogs.map((post) => (
-      <article
-        key={post._id}
-        onClick={() => navigateToBlog(post.slug)}
-        className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-300 bg-white p-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md h"
-      >
-        {/* Blog Image */}
-        <div className="relative h-[190px] w-full overflow-hidden rounded-xl">
-          <Image
-            src={post.image || "/placeholder-blog.jpg"}
-            alt={post.title}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        </div>
-
-        {/* Blog Content */}
-        <div className="flex flex-1 flex-col px-2 pt-3 ">
-          {/* Title */}
-          <h3
-            className="line-clamp-2 text-lg font-semibold leading-[1.45]  transition-colors duration-200 group-hover:text-[#F0642C]"
+        <div className="flex w-190 items-center gap-1 overflow-x-auto rounded-full bg-[#fff5f1] p-1 mb-4">
+          <button
+            onClick={() => handleCategoryChange("")}
+            className={`shrink-0 rounded-full px-5 py-2 text-[18px] font-medium transition-all ${
+              !filters.category
+                ? "bg-[#f36d45] text-white"
+                : "text-[#555] hover:text-[#f36d45]"
+            }`}
           >
-         <span className="text-[#555]">{post.title.split(":")[0]} :</span>   
-         <span className="text-orange-500">{post.title.split(":")[1]}
-</span>
+            Categories
+          </button>
 
+          {categories.map((category) => {
+            const isActive = filters.category === category.slug;
 
-          </h3>
-
-          {/* Description */}
-          <p className="mt-2 line-clamp-3 text-base leading-[1.55] text-[#777]">
-            {post.description ||
-              post.excerpt ||
-              post.content ||
-              "Discover useful tips, strategies and expert guidance to help you prepare better and achieve your goals."}
-          </p>
-
-          {/* Read More */}
-          <div className="mt-auto flex justify-end pt-3">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                navigateToBlog(post.slug);
-              }}
-              className="rounded-full bg-[#F0642C] px-5 py-1.5 text-base font-medium text-white transition-all duration-200 hover:bg-[#e45724] hover:shadow-sm"
-            >
-              Read more
-            </button>
-          </div>
+            return (
+              <button
+                key={category._id}
+                onClick={() => handleCategoryChange(category.slug)}
+                className={`shrink-0 rounded-full px-6 py-2 text-[18px] font-medium transition-all ${
+                  isActive
+                    ? "bg-[#f36d45] text-white"
+                    : "text-[#555] hover:text-[#f36d45]"
+                }`}
+              >
+                {category.name}
+              </button>
+            );
+          })}
         </div>
-      </article>
-    ))}
-  </div>
-) : (
-  <div className="py-10 text-center text-gray-500">
-    No blogs found. Try adjusting your search or category.
-  </div>
-)}
 
-        {/* Pagination */}
-{pagination.totalPages > 1 && (
-  <div className="mt-10 flex items-center justify-center gap-2">
+        {/* Left column */}
+        <div>
+          {/* Latest blogs */}
+          <h2 className="mb-5 text-left text-2xl font-bold md:text-3xl lg:text-4xl">
+            Latest <span className="text-[#F0642C]">Blogs</span>
+          </h2>
 
-    {/* Previous */}
-    <button
-      onClick={() => changePage(pagination.page - 1)}
-      disabled={pagination.page === 1}
-      className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 text-gray-500 disabled:cursor-not-allowed disabled:opacity-40"
-    >
-      <ChevronLeft size={16} />
-    </button>
+          {blogs.length > 0 ? (
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {blogs.map((post) => (
+                <article
+                  key={post._id}
+                  onClick={() => navigateToBlog(post.slug)}
+                  className="group flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-gray-300 bg-white p-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md h"
+                >
+                  {/* Blog Image */}
+                  <div className="relative h-[190px] w-full overflow-hidden rounded-xl">
+                    <Image
+                      src={post.image || "/placeholder-blog.jpg"}
+                      alt={post.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
 
-    {/* Page Numbers */}
-    {Array.from(
-      { length: pagination.totalPages },
-      (_, index) => index + 1
-    ).map((page) => (
-      <button
-        key={page}
-        onClick={() => changePage(page)}
-        className={`flex h-9 w-9 items-center justify-center rounded-md text-sm font-medium ${
-          page === pagination.page
-            ? "bg-[#F0642C] text-white"
-            : "border border-gray-200 text-gray-500 hover:bg-gray-50"
-        }`}
-      >
-        {page}
-      </button>
-    ))}
+                  {/* Blog Content */}
+                  <div className="flex flex-1 flex-col px-2 pt-3 ">
+                    {/* Title */}
+                    <h3 className="line-clamp-2 text-base font-semibold leading-[1.45]  transition-colors duration-200 group-hover:text-[#F0642C]">
+                      <span className="text-[#555]">
+                        {post.title.split(":")[0]} :
+                      </span>
+                      <span className="text-orange-500">
+                        {post.title.split(":")[1]}
+                      </span>
+                    </h3>
 
-    {/* Next */}
-    <button
-      onClick={() => changePage(pagination.page + 1)}
-      disabled={pagination.page === pagination.totalPages}
-      className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 text-gray-500 disabled:cursor-not-allowed disabled:opacity-40"
-    >
-      <ChevronRight size={16} />
-    </button>
+                    {/* Description */}
+                    <p className="mt-2 line-clamp-3 text-sm leading-[1.55] text-[#777]">
+                      {post.Subtitle ||
+                        post.excerpt ||
+                        post.content ||
+                        "Discover useful tips, strategies and expert guidance to help you prepare better and achieve your goals."}
+                    </p>
 
-  </div>
-)}
-          </div>
+                    {/* Read More */}
+                    <div className="mt-auto flex justify-end pt-3">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigateToBlog(post.slug);
+                        }}
+                        className="rounded-full bg-[#F0642C] px-5 py-1.5 text-sm font-medium text-white transition-all duration-200 hover:bg-[#e45724] hover:shadow-sm cursor-pointer"
+                      >
+                        Read more
+                      </button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          ) : (
+            <div className="py-10 text-center text-gray-500">
+              No blogs found. Try adjusting your search or category.
+            </div>
+          )}
 
-       
+          {/* Pagination */}
+          {pagination.totalPages > 1 && (
+            <div className="mt-10 flex items-center justify-center gap-2">
+              {/* Previous */}
+              <button
+                onClick={() => changePage(pagination.page - 1)}
+                disabled={pagination.page === 1}
+                className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 text-gray-500 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <ChevronLeft size={16} />
+              </button>
+
+              {/* Page Numbers */}
+              {Array.from(
+                { length: pagination.totalPages },
+                (_, index) => index + 1,
+              ).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => changePage(page)}
+                  className={`flex h-9 w-9 items-center justify-center rounded-md text-sm font-medium ${
+                    page === pagination.page
+                      ? "bg-[#F0642C] text-white"
+                      : "border border-gray-200 text-gray-500 hover:bg-gray-50"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+
+              {/* Next */}
+              <button
+                onClick={() => changePage(pagination.page + 1)}
+                disabled={pagination.page === pagination.totalPages}
+                className="flex h-9 w-9 items-center justify-center rounded-md border border-gray-200 text-gray-500 disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          )}
+        </div>
 
         {/* Newsletter */}
         <div className="mt-16 flex flex-col items-center gap-8 rounded-lg bg-[#FBEAE2] p-8 sm:flex-row">
@@ -703,8 +658,7 @@ const changePage = (page: number) => {
               type="submit"
               className="flex items-center gap-2 whitespace-nowrap bg-[#F0642C] px-4 text-xs font-semibold text-white hover:bg-[#d9551f]"
             >
-              Subscribe Now{" "}
-              <ArrowRight size={14} />
+              Subscribe Now <ArrowRight size={14} />
             </button>
           </form>
         </div>
@@ -712,16 +666,10 @@ const changePage = (page: number) => {
         {/* Features */}
         <div className="mt-16 grid grid-cols-1 gap-8 border-t border-gray-100 pt-12 sm:grid-cols-2 lg:grid-cols-4">
           {data.features.map((f) => {
-            const Icon =
-              iconMap[
-                f.icon as keyof typeof iconMap
-              ];
+            const Icon = iconMap[f.icon as keyof typeof iconMap];
 
             return (
-              <div
-                key={f.title}
-                className="flex items-start gap-4"
-              >
+              <div key={f.title} className="flex items-start gap-4">
                 <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-[#FBEAE2] text-[#F0642C]">
                   <Icon size={22} />
                 </div>
@@ -743,15 +691,6 @@ const changePage = (page: number) => {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
 
 // "use client";
 
@@ -1084,7 +1023,7 @@ const changePage = (page: number) => {
 //               {"Ooshas Prep "}
 //               <span className="text-primary">{"Blog"}</span>
 //             </h1>
-            
+
 //             <p className="mx-auto mt-4 max-w-xl text-base text-gray-600 lg:mx-0 lg:text-lg">
 //               {data?.hero?.subtitle}
 //             </p>
@@ -1295,7 +1234,7 @@ const changePage = (page: number) => {
 //                   </p>
 //                 </div>
 //                 <div className="p-4">
-//                   <FormSection 
+//                   <FormSection
 //                     FORM_CONFIG={FORM_CONFIG}
 //                     pageName="blog-page"
 //                     apiEndpoint="/api/submit-enquiry"
@@ -1310,7 +1249,7 @@ const changePage = (page: number) => {
 //                   <ul className="space-y-3 text-sm">
 //                     {categories.map((c: Category) => (
 //                       <li
-//                         key={c.name} 
+//                         key={c.name}
 //                         onClick={() => setSearch(c.name)}
 //                         className="flex items-center justify-between bg-white px-4 py-2 rounded cursor-pointer"
 //                       >
@@ -1414,13 +1353,3 @@ const changePage = (page: number) => {
 //     </div>
 //   );
 // }
-
-
-
-
-
-
-
-
-
-

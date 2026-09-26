@@ -541,7 +541,7 @@ export function TextTestimonials({ heading, data }: any) {
             {validTestimonials.map((item: any, idx: number) => (
               <div
                 key={idx}
-                className="keen-slider__slide relative bg-white rounded p-4 sm:p-6 lg:p-8 transition-shadow duration-300 border-2 border-gray-100 mt-4"
+                className="keen-slider__slide relative bg-white rounded p-4 sm:p-6 lg:p-8 transition-shadow duration-300 border-2 border-gray-200 mt-4"
               >
                 {/* Quote Icon */}
                 <div className="md:absolute top-2 left-3 w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center z-20">
@@ -555,7 +555,7 @@ export function TextTestimonials({ heading, data }: any) {
                 <div className="h-full flex flex-col md:pt-6 mt-2">
                   {/* Testimonial Text */}
                   <div className="flex-1">
-                    <p className="text-gray-600 text-justify leading-relaxed text-sm sm:text-base lg:text-lg line-clamp-4">
+                    <p className="text-gray-600 text-justify leading-relaxed text-sm sm:text-base lg:text-base line-clamp-4">
                       {item.message}
                     </p>
 
@@ -572,7 +572,7 @@ export function TextTestimonials({ heading, data }: any) {
                   </div>
 
                   {/* Footer */}
-                  <div className="hidden md:block mt-4 sm:mt-6 pt-4 sm:pt-5 border-t-2">
+                  <div className="hidden md:block mt-4 sm:mt-1 pt-4 sm:pt-5 border-t-2">
                     <div className="flex items-center justify-between gap-2 sm:gap-3">
                       <div className="flex gap-2 sm:gap-3 items-center min-w-0">
                         {/* <img

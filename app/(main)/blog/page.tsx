@@ -160,7 +160,7 @@ export default async function BlogPage({
   const queryParams = new URLSearchParams();
 
   queryParams.set("page", String(page));
-  queryParams.set("limit", "10");
+  queryParams.set("limit", "12");
 
   if (search) {
     queryParams.set("search", search);
@@ -175,7 +175,7 @@ export default async function BlogPage({
     data: [],
     pagination: {
       page: page,
-      limit: 10,
+      limit: 12,
       total: 0,
       totalPages: 1,
     },
@@ -195,6 +195,7 @@ export default async function BlogPage({
     );
   }
 
+ 
 
   return (
     <>
@@ -219,7 +220,7 @@ export default async function BlogPage({
           page: blogsData?.pagination?.page || page,
           totalPages: blogsData?.pagination?.totalPages || 1,
           total: blogsData?.pagination?.total || 0,
-          limit: blogsData?.pagination?.limit || 10,
+          limit: blogsData?.pagination?.limit || 12,
         }}
         filters={{
           search,

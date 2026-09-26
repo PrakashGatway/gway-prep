@@ -272,6 +272,13 @@ export const pageData: any = {
             required: true,
             placeholder: "Enter blog title",
           },
+           {
+            name: "Subtitle",
+            label: "Blog SubTitle",
+            type: "text",
+            required: true,
+            placeholder: "Enter blog Subtitle",
+          },
           {
             name: "slug",
             label: "Slug",

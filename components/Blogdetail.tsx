@@ -826,7 +826,7 @@ console.log(data,"gfds")
             </article>
 
               
-      <QuestionsSection page={'Blog'} heading={'Comments'} css={'bg-[#fafafa] py-6 my-6'}/>
+      <QuestionsSection page={'Blog'} heading={'Comments'} css={'bg-white py-6 my-6'}/>
       
             {/* {data.tags && data.tags.length > 0 && (
               <div className="mt-8 flex flex-wrap gap-2">

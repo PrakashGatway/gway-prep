@@ -68,6 +68,7 @@ interface BlogDetail {
 
 interface BlogForm {
   title: string;
+  Subtitle: string;
   slug: string;
   category: string;
   tags: string[];
@@ -120,6 +121,7 @@ const createBlogDetail = (order: number): BlogDetail => ({
 
 const defaultForm: BlogForm = {
   title: "",
+  Subtitle:"",
   slug: "",
   category: "",
   image: "",
@@ -145,6 +147,7 @@ const BlogFormContent = () => {
   const [activeSection, setActiveSection] = useState<string | null>("basic-info");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [authors, setAuthors] = useState<any[]>([]);
+  const [blogId,setBlogId] = useState(null)
   
   // Drag and Drop State
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -178,6 +181,8 @@ const BlogFormContent = () => {
 
       if (editSlug) {
         const blogData = await getBlogBySlug(editSlug);
+        setBlogId(blogData._id)
+       
 
         if (blogData) {
           // Normalize and ensure order exists
@@ -193,6 +198,7 @@ const BlogFormContent = () => {
 
           setValues({
             title: blogData.title || "",
+            Subtitle: blogData.Subtitle || "",
             slug: blogData.slug || "",
             category: blogData.category || "",
             tags: Array.isArray(blogData.tags) ? blogData.tags : [],
@@ -641,6 +647,7 @@ const BlogFormContent = () => {
 
       const payload: BlogForm = {
         title: values.title.trim(),
+        Subtitle: values.Subtitle.trim(),
         slug: values.slug.trim(),
         category: values.category,
         tags: values.tags,
@@ -654,8 +661,8 @@ const BlogFormContent = () => {
         authslug: values.authslug || "",
       };
 
-      const url = editSlug
-        ? `/api/admin/blogs/${editSlug}`
+      const url = blogId
+        ? `/api/admin/blogs/${blogId}`
         : "/api/admin/blogs";
 
       const method = editSlug ? "PUT" : "POST";
@@ -689,6 +696,8 @@ const BlogFormContent = () => {
       setLoading(false);
     }
   };
+
+ 
 
   const inputClass =
     "w-full p-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent outline-none transition-all";
@@ -863,7 +872,7 @@ const BlogFormContent = () => {
           const val = e.target.value;
           updateRootField(field.name, val);
           // Auto-generate slug if title changes and not editing
-          if (editSlug) {
+          if (editSlug && field.name != "Subtitle") {
             updateRootField("slug", slugify(val));
           }
         }}

@@ -336,7 +336,7 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
 
                     <QuestionsSection
                       page={"ExamDetails"}
-                      css={"bg-[#fafafa] py-6 my-6"}
+                      css={" py-6 my-6"}
                     />
                   </div>
 

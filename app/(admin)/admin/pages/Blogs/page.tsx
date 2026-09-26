@@ -411,7 +411,6 @@ const Blog = () => {
                       {/* ACTIONS */}
                       <td className="px-5 py-4">
                         <div className="flex items-center justify-center gap-3">
-
                           <button
                             onClick={() =>
                               router.push(

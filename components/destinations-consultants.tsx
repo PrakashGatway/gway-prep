@@ -22,7 +22,7 @@ export function Consultants({ data, finalCtaSection }: any) {
         </span>
       </h2>
 
-     <div className="space-y-2">
+     <div className="space-y-2 px-3 xl:px-0">
   {data.fields.items?.map((item: any, index: number) => (
     <details
       key={item.id || index}
@@ -31,7 +31,7 @@ export function Consultants({ data, finalCtaSection }: any) {
       <summary
         className="flex items-center justify-between w-full py-4 text-left cursor-pointer list-none"
       >
-        <span className="font-b text-gray-700 text-lg md:text-lg">
+        <span className="font-b text-gray-700 text-sm md:text-lg">
           {item.question}
         </span>
 
@@ -41,7 +41,7 @@ export function Consultants({ data, finalCtaSection }: any) {
         </span>
       </summary>
 
-      <div className="pb-4 text-justify leading-relaxed text-sm text-gray-600">
+      <div className="pb-4 text-justify leading-relaxed text-xs text-gray-600">
         {item.answer}
       </div>
     </details>

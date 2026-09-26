@@ -7,7 +7,10 @@ type Context = {
 };
 
 // ✅ GET BLOG BY SLUG
-export async function GET(_req: NextRequest, context: Context): Promise<NextResponse> {
+export async function GET(
+  _req: NextRequest,
+  context: Context,
+): Promise<NextResponse> {
   try {
     await connectDB();
 
@@ -16,23 +19,20 @@ export async function GET(_req: NextRequest, context: Context): Promise<NextResp
 
     let blog;
 
-    if(slug === 'all'){
-       blog = await Blog.find().select('slug title').lean();
-    }else {
-       blog = await Blog.findOne({ slug }).lean();
+    if (slug === "all") {
+      blog = await Blog.find().select("slug title").lean();
+    } else {
+      blog = await Blog.findOne({ slug }).lean();
     }
 
     // console.log(blog)
     if (!blog) {
-      return NextResponse.json(
-        { error: "Blog not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
 
     return NextResponse.json(
       { message: "Blog fetched", data: blog },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("[BLOG GET]", error);
@@ -46,33 +46,32 @@ export async function PUT(req: NextRequest, context: Context) {
     await connectDB();
 
     const { slug } = await context.params;
+
+    console.log(slug, "sssssssssssssssssss");
     const body = await req.json();
 
- 
-
     if (!body || Object.keys(body).length === 0) {
-      return NextResponse.json(
-        { error: "No data to update" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No data to update" }, { status: 400 });
     }
 
     const updated = await Blog.findOneAndUpdate(
-      { slug },
+      {
+        $or: [{ slug: slug }, { _id: slug }],
+      },
       { $set: body },
-      { new: true, runValidators: true }
+      {
+        new: true,
+        runValidators: true,
+      },
     ).lean();
 
     if (!updated) {
-      return NextResponse.json(
-        { error: "Blog not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
 
     return NextResponse.json(
       { message: "Blog updated", data: updated },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("[BLOG UPDATE]", error);
@@ -90,15 +89,12 @@ export async function DELETE(_req: NextRequest, context: Context) {
     const deleted = await Blog.findOneAndDelete({ slug }).lean();
 
     if (!deleted) {
-      return NextResponse.json(
-        { error: "Blog not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Blog not found" }, { status: 404 });
     }
 
     return NextResponse.json(
       { message: "Blog deleted", data: deleted },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("[BLOG DELETE]", error);

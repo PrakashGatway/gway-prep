@@ -134,7 +134,7 @@ export function HomeStudent({data}:{data : any}) {
               />}
             </div>
 
-            <div className="lg:w-2/3 flex flex-col gap-4 sm:gap-6">
+            <div className="lg:w-2/3 flex flex-col gap-4 sm:gap-6 p-4 xl:p-0">
               <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border">
                 <p className="text-[#FF6B35] font-bold mb-3 sm:mb-4 text-base sm:text-lg">
                   How did {"Ooshaprep"} help{" "}
@@ -155,14 +155,14 @@ export function HomeStudent({data}:{data : any}) {
       {/* Buttons */}
       <button
         onClick={() => slider?.current?.prev()}
-        className="absolute left-1 sm:left-2 md:left-4 top-1/2 -translate-y-1/2 z-10"
+        className="hidden xl:block absolute left-1 sm:left-2 md:left-4 top-1/2 -translate-y-1/2 z-10"
       >
         <ChevronLeft size={28} className="sm:size-[32px] md:size-[36px] text-[#FF6B35]" />
       </button>
 
       <button
         onClick={() => slider?.current?.next()}
-        className="absolute right-1 sm:right-2 md:right-4 top-1/2 -translate-y-1/2 z-10"
+        className="hidden xl:block absolute right-1 sm:right-2 md:right-4 top-1/2 -translate-y-1/2 z-10"
       >
         <ChevronRight size={28} className="sm:size-[32px] md:size-[36px] text-[#FF6B35]" />
       </button>

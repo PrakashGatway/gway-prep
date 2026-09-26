@@ -3,6 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 
 export interface IBlog extends Document {
   title: string;
+  Subtitle: string;
   slug: string;
   category: string;
   tags: string[];
@@ -25,7 +26,11 @@ const BlogSchema = new Schema<IBlog>(
       required: true,
       trim: true,
     },
-
+    Subtitle: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     slug: {
       type: String,
       required: true,
