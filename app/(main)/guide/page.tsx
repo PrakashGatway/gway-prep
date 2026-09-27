@@ -40,11 +40,6 @@ export default async function Page({ searchParams }) {
         }),
     ]);
 
-    console.log(allGuides,"all")
-
-
-
- 
 
 
 

@@ -106,7 +106,7 @@ console.log(user)
 
   return (
     <section className={css || "bg-[#fcf3ed] px-4 py-12"}>
-      <div className=" max-w-3xl">
+      <div className=" max-w-7xl mx-auto">
         <SectionHeading
           eyebrow="COMMUNITY"
           title={heading || "Student Questions & Comments"}

@@ -184,7 +184,28 @@ const FORM_CONFIG: any = {
 
 const LeadForm = () => {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 p-6">
+    <div className="bg-white rounded-[30px] shadow-sm border border-[#F36D45] p-6 relative">
+      <button
+    className="
+      absolute
+      top-0
+      right-0
+      bg-[#F36D45]
+      text-white
+      font-semibold
+      px-5
+      py-3
+      rounded-bl-[30px]
+      rounded-tr-[30px]
+    "
+  >
+    Free Counselling
+  </button>
+      <div className="flex flex-col mb-2">
+        <span className="text-lg text-[#F36D45] font-bold">Contact Details</span>
+      
+        <span>Please provide your contact information</span></div>
+
       <FormSection FORM_CONFIG={FORM_CONFIG} />
     </div>
   );
@@ -483,16 +504,16 @@ const renderBlogContent = (blogDetails: BlogDetail[]) => {
     if (detail.Banner && detail.Banner.length > 0) {
       const banner = detail.Banner[0];
       sections.push(
-        <div key={`banner-${index}`} className="my-6 p-8 bg-gradient-to-r from-[#F86C43] to-[#e05a32] rounded-xl text-white text-center">
-          <h3 className="text-2xl font-bold mb-3">{banner.title}</h3>
+        <div key={`banner-${index}`} className="my-6 p-8 bg-orange-50 rounded-xl  ">
+          <h3 className="text-4xl  font-bold mb-3">{banner.title}</h3>
           <div
-            className="text-white/90 mb-4"
+            className="!text-black mb-4"
             dangerouslySetInnerHTML={{ __html: banner.subtitle }}
           />
           {banner.url && (
             <a
               href={banner.url}
-              className="inline-block px-8 py-3 bg-white text-[#F86C43] font-semibold rounded-lg hover:bg-neutral-100 transition-colors"
+              className="inline-block px-8 py-3 bg-[#F36D45] !text-white font-semibold rounded-lg hover:bg-neutral-100 transition-colors"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -863,15 +884,6 @@ console.log(data,"gfds")
           {/* Sidebar */}
           <div className="lg:col-span-4">
             <div className="sticky top-24 space-y-2">
-              {/* Table of Contents - Desktop */}
-              {headings.length > 0 && (
-                <div className="hidden lg:block">
-                  <TableOfContents
-                    headings={headings}
-                    activeHeading={activeHeading}
-                  />
-                </div>
-              )}
 
               <LeadForm />
             </div>

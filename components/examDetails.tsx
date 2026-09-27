@@ -40,6 +40,7 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const Router = useRouter();
+  const [halfContentScrolled, setHalfContentScrolled] = useState(false);
 
   const toc = useMemo(() => {
     return examData.map((item: any, index: number) => ({
@@ -53,6 +54,27 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
   }, [examData]);
 
   const itemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+
+  useEffect(() => {
+  const handleScroll = () => {
+    const viewportHalf = window.innerHeight / 1;
+
+   
+
+    setHalfContentScrolled(window.scrollY >= viewportHalf);
+  };
+
+  window.addEventListener("scroll", handleScroll, {
+    passive: true,
+  });
+
+  handleScroll();
+
+  return () => {
+    window.removeEventListener("scroll", handleScroll);
+  };
+}, []);
 
   useEffect(() => {
     const activeItem = itemRefs.current[activeSection];
@@ -168,7 +190,7 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
       <div className="relative w-full overflow-visible px-4 sm:px-8 lg:px-3 py-6 sm:py-8">
         <div ref={tocRef} className="h-0"></div>
         <div
-          className={`sticky xl:top-20 top-14 sm:top-16 lg:top-18 z-40 border-b bg-white
+          className={`sticky xl:top-18 top-14 sm:top-16 lg:top-18 z-40 border-b bg-white
     transition-all duration-300 ease-in-out
     ${
       isSticky
@@ -190,10 +212,10 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
                   itemRefs.current[item.id] = el;
                 }}
                 onClick={() => scrollToSection(item.id)}
-                className={`relative whitespace-nowrap py-2 text-sm font-medium transition-colors duration-200 ${
+                className={`relative whitespace-nowrap py-2 px-2 mt-2 text-sm font-medium transition-colors duration-200 ${
                   activeSection === item.id
-                    ? "text-orange-500 border-b-2 border-orange-500"
-                    : "text-black hover:text-orange-500"
+                    ? "text-white rounded-3xl bg-[#F36D45] border-b-2 border-orange-500"
+                    : "text-black hover:text-orange-500 rounded-3xl"
                 }`}
               >
                 {item.title}
@@ -349,11 +371,13 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
             </div>
 
             {/* Right Lead Form */}
-            <div className="sticky top-34 self-start w-full lg:max-w-[335px] lg:mt-0 mt-6">
-              <LeadForm />
-              <ExploreExams Data={Data} slug={slug} />
-              <ExploreBlogs Blogdata={Blogdata} />
-            </div>
+           <div className="sticky top-34 self-start w-full lg:max-w-[335px] lg:mt-0 mt-6">
+  {!halfContentScrolled && <LeadForm />}
+
+  <ExploreExams Data={Data} slug={slug} />
+
+  <ExploreBlogs Blogdata={Blogdata} />
+</div>
           </div>
         </div>
       </div>
@@ -1410,22 +1434,57 @@ const LeadForm = () => {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-neutral-100 px-6 py-2">
-      <h3 className="text-center text-lg md:text-xl font-semibold mb-2 text-primary gap-2 flex mt-4">
-        Just One <p className="text-black">Step Away!</p>
-      </h3>
-      <p className="text-sm mb-4">
-        our Experts require more information to assist you in a better way.
-      </p>
-      <FormSection FORM_CONFIG={FORM_CONFIG} />
+    <div className="relative overflow-hidden bg-white rounded-[30px] border-2 border-[#F36D45] shadow-[0_8px_30px_rgba(243,109,69,0.10)] px-5 sm:px-6 py-5">
+  <button
+    className="
+      absolute
+      top-0
+      right-0
+      bg-[#F36D45]
+      text-white
+      font-semibold
+      px-5
+      py-3
+      rounded-bl-[30px]
+    text-sm
+      rounded-tr-[30px]
+    "
+  >
+    Free Counselling
+  </button>
+  {/* Highlight accent */}
 
-      {formSubmitted && (
-        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
-          <p className="text-green-700 text-sm text-center">
-            ✓ Thank you! We will contact you shortly.
-          </p>
-        </div>
-      )}
+  <div className="relative z-10">
+    {/* Heading */}
+    <div className="flex items-center justify-center gap-2 mt-8 mb-2">
+      <span className="text-lg md:text-xl font-semibold text-[#f36d45]">
+        Just One
+      </span>
+      <span className="text-lg md:text-xl font-semibold text-gray-900">
+        Step Away!
+      </span>
     </div>
+
+
+    {/* Description */}
+    {/* <p className="text-sm text-gray-500 text-center leading-relaxed mb-5 max-w-md mx-auto">
+      Our experts require a little more information to assist you in a better way.
+    </p> */}
+
+    {/* Form */}
+    <div className="relative">
+      <FormSection FORM_CONFIG={FORM_CONFIG} />
+    </div>
+
+    {/* Success Message */}
+    {formSubmitted && (
+      <div className="mt-4 p-3.5 bg-green-50 border border-green-200 rounded-xl">
+        <p className="text-green-700 text-sm text-center font-medium">
+          ✓ Thank you! We will contact you shortly.
+        </p>
+      </div>
+    )}
+  </div>
+</div>
   );
 };

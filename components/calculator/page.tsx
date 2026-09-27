@@ -396,25 +396,97 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
 
   
   React.useEffect(() => {
-    const initial: Record<string, number> = {};
-    if (config.adaptive) {
-      // GRE: keys are `${group}_s1`, `${group}_s2`, `${group}_harder` (1 = harder, 0 = easier)
-      config.adaptive.groups.forEach((g) => {
-        initial[`${g.id}_s1`] = Math.round(g.section1Max * 0.75);
-        initial[`${g.id}_s2`] = Math.round(g.section2Max * 0.75);
-        initial[`${g.id}_harder`] = 1;
-      });
-      initial[config.adaptive.writing.id] = defaultSectionValue(
-        config.adaptive.writing,
+  const initial: Record<string, number> = {};
+
+  if (config.adaptive) {
+    // GRE
+    config.adaptive.groups.forEach((g) => {
+      initial[`${g.id}_s1`] = Math.round(g.section1Max * 0.75);
+      initial[`${g.id}_s2`] = Math.round(g.section2Max * 0.75);
+      initial[`${g.id}_harder`] = 1;
+    });
+
+    initial[config.adaptive.writing.id] = defaultSectionValue(
+      config.adaptive.writing,
+    );
+
+    // Calculate default GRE scores
+    const scaled: Record<string, number> = {};
+
+    config.adaptive.groups.forEach((g) => {
+      const raw =
+        (initial[`${g.id}_s1`] ?? 0) +
+        (initial[`${g.id}_s2`] ?? 0);
+
+      const harder = (initial[`${g.id}_harder`] ?? 1) === 1;
+
+      scaled[g.id] = config.adaptive!.scaleScore(
+        raw,
+        g.section1Max + g.section2Max,
+        harder,
       );
-    } else {
-      config.sections.forEach((s) => {
-        initial[s.id] = defaultSectionValue(s);
-      });
-    }
-    setSectionScores(initial);
-    setResult(null);
-  }, [selectedExam]);
+    });
+
+    scaled[config.adaptive.writing.id] =
+      initial[config.adaptive.writing.id] ??
+      config.adaptive.writing.min;
+
+    const computed = config.computeTotal(scaled);
+
+    const totalScore = Math.min(
+      config.scoreRange.max,
+      Math.max(config.scoreRange.min, computed),
+    );
+
+    const percentile = getPercentileLabel(
+      totalScore,
+      config.percentileBands,
+    );
+
+    const tier = config.tierBands
+      ? getPercentileLabel(totalScore, config.tierBands)
+      : undefined;
+
+    setResult({
+      exam: selectedExam,
+      scores: scaled,
+      totalScore,
+      percentile,
+      tier,
+    });
+  } else {
+    // Non-adaptive exams
+    config.sections.forEach((s) => {
+      initial[s.id] = defaultSectionValue(s);
+    });
+
+    const computed = config.computeTotal(initial);
+
+    const totalScore = Math.min(
+      config.scoreRange.max,
+      Math.max(config.scoreRange.min, computed),
+    );
+
+    const percentile = getPercentileLabel(
+      totalScore,
+      config.percentileBands,
+    );
+
+    const tier = config.tierBands
+      ? getPercentileLabel(totalScore, config.tierBands)
+      : undefined;
+
+    setResult({
+      exam: selectedExam,
+      scores: initial,
+      totalScore,
+      percentile,
+      tier,
+    });
+  }
+
+  setSectionScores(initial);
+}, [selectedExam]);
 
   const handleScoreChange = (sectionId: string, value: number) => {
     const section = config.sections.find((s) => s.id === sectionId);
@@ -533,8 +605,8 @@ function Hero({ data }: { data: any }) {
 
   return (
     <section className="relative overflow-hidden bg-[#fcf3ed]">
-      <div className="relative mx-auto max-w-5xl px-4 pb-14 pt-16 text-center sm:px-6 lg:pb-20 lg:pt-20">
-        <h1 className="mx-auto max-w-4xl text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
+      <div className="relative mx-auto max-w-7xl px-4 pb-14 pt-16 text-center sm:px-6 lg:pb-20 lg:pt-20">
+        <h1 className="mx-auto max-w-7xl text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
           {rest.length > 0 ? (
             <>
               {firstPart.trim()} &
@@ -546,7 +618,7 @@ function Hero({ data }: { data: any }) {
         </h1>
 
         <div
-          className="mx-auto mt-5 max-w-2xl text-sm leading-6 sm:text-base"
+          className=" mt-5  text-sm leading-6 sm:text-base"
           dangerouslySetInnerHTML={{
             __html: data?.description || "",
           }}
@@ -557,7 +629,7 @@ function Hero({ data }: { data: any }) {
             <a
               href={data?.primaryButtonUrl || "#calculator"}
               className="inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5"
-              style={{ background: ORANGE }}
+              style={{ background: "#F36D45" }}
             >
               {data.primaryButtonText}
               <ArrowRight className="h-4 w-4" />
@@ -791,7 +863,7 @@ function ScoreSection({
                     : "Use your latest mock test for the best estimate."}
                 </p>
               </div>
-              <span className="rounded-full bg-orange-50 px-2.5 py-1 text-[9px] font-bold text-orange-500">
+              <span className="rounded-full bg-orange-50 px-2.5 py-1 text-[9px] font-bold text-[#F36D45]">
                 LIVE
               </span>
             </div>
@@ -865,7 +937,7 @@ function ScoreSection({
                     />
                   </div> */}
                     {bandEquivalent !== null && (
-                      <p className="mt-2 text-[11px] font-semibold text-orange-500">
+                      <p className="mt-2 text-[11px] font-semibold text-[#F36D45]">
                         ≈ {section.bandUnitLabel ?? "Band"} {bandEquivalent}
                       </p>
                     )}
@@ -873,15 +945,15 @@ function ScoreSection({
                 );
               })
             )}
-
+<div className="flex justify-center">
             <button
               type="button"
               onClick={onCalculate}
-              className="mt-5 w-full rounded-lg py-3 text-xm font-bold text-white transition hover:brightness-95"
-              style={{ background: ORANGE }}
+              className="mt-5 px-4  rounded-lg py-3 text-xm font-bold text-white transition hover:brightness-95"
+              style={{ background: "#F36D45" }}
             >
               Calculate My Score
-            </button>
+            </button></div>
           </div>
 
           <div className="relative flex flex-col justify-center bg-[#0b1e3f] p-7 text-white">
@@ -1032,7 +1104,7 @@ function ScoreVisualizationSection({
   result: CalculatedResult | null;
 }) {
   return (
-    <section className="px-4 pb-20">
+    <section className="px-4 pb-10">
       <div className="mx-auto max-w-6xl">
         <SectionHeading
           eyebrow="SCORE BREAKDOWN"
@@ -1066,7 +1138,7 @@ function ScoreVisualizationSection({
                   {result.percentile !== "Not available" ? (
                     <>
                       sits in the{" "}
-                      <span className="font-bold text-orange-500">
+                      <span className="font-bold text-[#F36D45]">
                         {result.percentile} percentile
                       </span>{" "}
                       band.
@@ -1366,7 +1438,7 @@ function WhySection({ data }: { data: any }) {
           />
           <button
             className="mt-7 rounded-lg px-5 py-3 text-xm font-bold text-white"
-            style={{ background: ORANGE }}
+            style={{ background: "#F36D45" }}
           >
             Start Your Preparation
           </button>
@@ -1447,7 +1519,7 @@ function BeyondNumberSection({ data }: { data: any }) {
                 key={`${feature?.title || "feature"}-${index}`}
                 className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
               >
-                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-orange-500">
+                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-[#F36D45]">
                   <Icon className="h-4 w-4" />
                 </div>
                 <h3 className="text-sm font-extrabold">
@@ -1471,7 +1543,7 @@ function BottomCTA({ data }: { data: any }) {
       <div
         className="mx-auto max-w-7xl overflow-hidden rounded-xl px-6 py-10 text-center sm:px-10"
         style={{
-          background: "linear-gradient(135deg, #ff7627 0%, #ff8b4d 100%)",
+          background: "#F36D45",
         }}
       >
         <h2 className="text-xl font-black text-white sm:text-2xl">
@@ -1518,8 +1590,8 @@ function SectionHeading({
   dark?: boolean;
 }) {
   return (
-    <div className="mx-auto max-w-2xl text-center">
-      {/* <span className={`inline-flex rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-widest ${dark ? "bg-orange-400/10 text-orange-300" : "bg-orange-50 text-orange-500"}`}>
+    <div className="mx-auto  text-center">
+      {/* <span className={`inline-flex rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-widest ${dark ? "bg-orange-400/10 text-orange-300" : "bg-orange-50 text-[#F36D45]"}`}>
         {eyebrow}
       </span> */}
       <h2
@@ -2038,7 +2110,7 @@ function SectionHeading({
 //                   Use your latest mock test for the best estimate.
 //                 </p>
 //               </div>
-//               <span className="rounded-full bg-orange-50 px-2.5 py-1 text-[9px] font-bold text-orange-500">
+//               <span className="rounded-full bg-orange-50 px-2.5 py-1 text-[9px] font-bold text-[#F36D45]">
 //                 LIVE
 //               </span>
 //             </div>
@@ -2105,7 +2177,7 @@ function SectionHeading({
 //                     />
 //                   </div> */}
 //                   {bandEquivalent !== null && (
-//                     <p className="mt-2 text-[11px] font-semibold text-orange-500">
+//                     <p className="mt-2 text-[11px] font-semibold text-[#F36D45]">
 //                       ≈ {section.bandUnitLabel ?? "Band"} {bandEquivalent}
 //                     </p>
 //                   )}
@@ -2276,7 +2348,7 @@ function SectionHeading({
 //                   {result.percentile !== "Not available" ? (
 //                     <>
 //                       sits in the{" "}
-//                       <span className="font-bold text-orange-500">
+//                       <span className="font-bold text-[#F36D45]">
 //                         {result.percentile} percentile
 //                       </span>{" "}
 //                       band.
@@ -2657,7 +2729,7 @@ function SectionHeading({
 //                 key={`${feature?.title || "feature"}-${index}`}
 //                 className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
 //               >
-//                 <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-orange-500">
+//                 <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-[#F36D45]">
 //                   <Icon className="h-4 w-4" />
 //                 </div>
 //                 <h3 className="text-sm font-extrabold">
@@ -2729,7 +2801,7 @@ function SectionHeading({
 // }) {
 //   return (
 //     <div className="mx-auto max-w-2xl text-center">
-//       {/* <span className={`inline-flex rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-widest ${dark ? "bg-orange-400/10 text-orange-300" : "bg-orange-50 text-orange-500"}`}>
+//       {/* <span className={`inline-flex rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-widest ${dark ? "bg-orange-400/10 text-orange-300" : "bg-orange-50 text-[#F36D45]"}`}>
 //         {eyebrow}
 //       </span> */}
 //       <h2
