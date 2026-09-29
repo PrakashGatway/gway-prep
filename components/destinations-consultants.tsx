@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Plus, Minus } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useGlobal } from "@/hooks/AppStateContext";
 
 export function Consultants({ data, finalCtaSection }: any) {
  
@@ -55,6 +56,7 @@ export function Consultants({ data, finalCtaSection }: any) {
 }
 
 function CallToActionSection({ finalCtaSection }: any) {
+  const {UserNavigate} = useGlobal()
   const router = useRouter();
 
   return (
@@ -111,7 +113,7 @@ function CallToActionSection({ finalCtaSection }: any) {
 
           {/* Call to Action Button */}
           <button
-            onClick={() => router.push("/auth")}
+            onClick={UserNavigate}
             className="flex-shrink-0 flex items-center gap-2 bg-white text-[#FF6A13] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap"
           >
             {finalCtaSection?.buttonText || "Enroll Now"}

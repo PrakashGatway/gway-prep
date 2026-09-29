@@ -3,15 +3,15 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  User, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  Calendar, 
-  BookOpen, 
-  Target, 
-  Clock, 
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  BookOpen,
+  Target,
+  Clock,
   CheckCircle,
   ArrowRight,
   ArrowLeft,
@@ -47,7 +47,7 @@ import {
   Building,
   UserCheck,
   Users as UsersIcon,
-  CircleDotDashedIcon
+  CircleDotDashedIcon,
 } from "lucide-react";
 import FormSection from "./formSection";
 
@@ -58,7 +58,16 @@ type FormData = {
 type FieldConfig = {
   name: string;
   label: string;
-  type: "text" | "email" | "tel" | "number" | "date" | "select" | "textarea" | "checkbox-group" | "button-group";
+  type:
+    | "text"
+    | "email"
+    | "tel"
+    | "number"
+    | "date"
+    | "select"
+    | "textarea"
+    | "checkbox-group"
+    | "button-group";
   required?: boolean;
   placeholder?: string;
   options?: Array<{ value: string; label: string; icon?: any; desc?: string }>;
@@ -72,7 +81,7 @@ type StepConfig = {
   title: string;
   icon: any;
   fields: string[];
-  button : string;
+  button: string;
 };
 
 type SubmitConfig = {
@@ -99,23 +108,17 @@ const FORM_CONFIG: FormConfigType = {
       step: 1,
       title: "",
       icon: User,
-      fields: ["fullName", "email", "phone", "city", "age", "profile", "source"],
-      button: "next"
+      fields: [
+        "fullName",
+        "email",
+        "phone",
+        "city",
+        "age",
+        "profile",
+        "source",
+      ],
+      button: "submit",
     },
-    {
-      step: 2,
-      title: "Exam Details",
-      icon: BookOpen,
-      fields: ["exam", "purpose", "targetScore", "examDate", "attempts"],
-      button: "next"
-    },
-    {
-      step: 3,
-      title: "Current Level & Preferences",
-      icon: BarChart,
-      fields: ["englishLevel", "weakAreas", "batchType", "startTimeline", "notes"],
-      button: "submit"
-    }
   ],
   fields: [
     {
@@ -126,7 +129,7 @@ const FORM_CONFIG: FormConfigType = {
       placeholder: "Priya",
       step: 1,
       grid: "full",
-      icon: User
+      icon: User,
     },
     {
       name: "email",
@@ -135,8 +138,8 @@ const FORM_CONFIG: FormConfigType = {
       required: true,
       placeholder: "priya@email.com",
       step: 1,
-      grid: "full",
-      icon: Mail
+      grid: "half",
+      icon: Mail,
     },
     {
       name: "phone",
@@ -145,8 +148,8 @@ const FORM_CONFIG: FormConfigType = {
       required: true,
       placeholder: "+91 98765 43210",
       step: 1,
-      grid: "full",
-      icon: Phone
+      grid: "half",
+      icon: Phone,
     },
     {
       name: "city",
@@ -156,7 +159,7 @@ const FORM_CONFIG: FormConfigType = {
       placeholder: "Jaipur",
       step: 1,
       grid: "half",
-      icon: MapPin
+      icon: MapPin,
     },
     {
       name: "country",
@@ -166,7 +169,7 @@ const FORM_CONFIG: FormConfigType = {
       placeholder: "India",
       step: 1,
       grid: "half",
-      icon: MapPin
+      icon: MapPin,
     },
     // {
     //   name: "age",
@@ -178,23 +181,7 @@ const FORM_CONFIG: FormConfigType = {
     //   grid: "half",
     //   icon: Calendar
     // },
-    {
-      name: "exam",
-      label: "Target Exam",
-      type: "select",
-      required: true,
-      step: 2,
-      grid: "full",
-      options: [
-        { value: "IELTS", label: "IELTS", icon: Book },
-        { value: "TOEFL", label: "TOEFL", icon: FileText },
-        { value: "PTE", label: "PTE", icon: PenTool },
-        { value: "GRE", label: "GRE", icon: TrendingUp },
-        { value: "GMAT", label: "GMAT", icon: Briefcase },
-        { value: "SAT", label: "SAT", icon: Calculator },
-        { value: "other", label :"Other", icon : CircleDotDashedIcon}
-      ]
-    },
+
     // {
     //   name: "targetScore",
     //   label: "Target Score",
@@ -219,20 +206,7 @@ const FORM_CONFIG: FormConfigType = {
     //     { value: "Third attempt or more", label: "Third attempt or more" }
     //   ]
     // },
-    {
-      name: "englishLevel",
-      label: "English Level",
-      type: "button-group",
-      required: false,
-      step: 2,
-      grid: "full",
-      options: [
-        { value: "Beginner", label: "Beginner", icon: Book, desc: "Just starting" },
-        { value: "Intermediate", label: "Intermediate", icon: TrendingUp, desc: "Can communicate" },
-        { value: "Upper-Intermediate", label: "Upper-Intermediate", icon: Award, desc: "Good command" },
-        { value: "Advanced", label: "Advanced", icon: Star, desc: "Fluent speaker" }
-      ]
-    },
+
     // {
     //   name: "weakAreas",
     //   label: "Weak Areas",
@@ -270,9 +244,9 @@ const FORM_CONFIG: FormConfigType = {
       type: "textarea",
       required: false,
       placeholder: "Any specific requirements or questions...",
-      step: 3,
-      grid: "full"
-    }
+      step: 1,
+      grid: "full",
+    },
   ],
   submit: {
     label: "Submit Application",
@@ -282,9 +256,9 @@ const FORM_CONFIG: FormConfigType = {
     position: "bottom",
     onSuccess: {
       message: "Thank you! Our team will reach out to you shortly.",
-      redirect: "/thank-you"
-    }
-  }
+      redirect: "/thank-you",
+    },
+  },
 };
 
 export function RegistrationSection({ data }: any) {
@@ -292,13 +266,13 @@ export function RegistrationSection({ data }: any) {
 
   return (
     <section className="py-12 px-4">
-      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-8 lg:gap-8">
+      <div className="max-w-7xl bg-gray-200 p-4 rounded-3xl mx-auto flex flex-col lg:flex-row items-center gap-6">
         {/* Left Side - Image/Illustration */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="hidden lg:block lg:w-1/2 bg-[#F8F8F8] rounded-2xl px-6 py-19 border border-gray-100"
+          className="hidden lg:block lg:w-1/2 "
         >
           <div className="relative">
             <img
@@ -316,17 +290,23 @@ export function RegistrationSection({ data }: any) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            {/* Optional: Add a header above the form */}
-            <div className="mb-6 text-center lg:text-left">
-              <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                Register Now
-              </h2>
-              <p className="text-gray-600">
-                Fill in your details and our team will reach out to you
-              </p>
-            </div>
+            <div className="bg-white relative rounded-3xl p-6">
+              {/* Optional: Add a header above the form */}
+              <div className="mb-3 text-center lg:text-left  ">
+                <div className="w-90">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-px">
+                    Start Your Preparation
+                  </h2>
+                  <p className="text-gray-600 text-sm">
+                    Share your details and take the first step toward your
+                    target score.
+                  </p>
+                </div>
 
-            <div className="bg-white border-2 rounded-lg  p-4">
+                <div className="absolute xl:block hidden top-0 right-10">
+                  <img src="/plane2.webp" alt="" className="w-36 h-full" />
+                </div>
+              </div>
               <FormSection FORM_CONFIG={FORM_CONFIG} />
             </div>
           </motion.div>

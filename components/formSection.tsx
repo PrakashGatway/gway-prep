@@ -586,62 +586,64 @@ export default function FormSection({
             )}
 
             {/* Dynamic Fields */}
-            <div className="space-y-2 grid grid-cols-2 gap-2">
+            <div className=" grid grid-cols-2 gap-3">
               {currentStepFields.map((field) => {
                 const gridClass =
                   field.grid === "half" ? "col-span-1" : "col-span-2";
+
                 const hasError = !!errors[field.name];
 
                 return (
                   <div key={field.name} className={gridClass}>
+                    {/* ================= SELECT ================= */}
                     {field.type === "select" && (
                       <>
                         {field.label && (
-                          <label className="block text-sm text-gray-700 mb-1">
+                          <label className="mb-1.5 block text-sm font-medium text-gray-700">
                             {field.label}
                             {field.required && (
-                              <span className="text-red-500 ml-1">*</span>
+                              <span className="ml-1 text-red-500">*</span>
                             )}
                           </label>
                         )}
+
                         <select
                           name={field.name}
                           value={(formData[field.name] as string) || ""}
                           onChange={(e) =>
                             updateField(field.name, e.target.value)
                           }
-                          className={`w-full border-2 rounded-xl px-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
-                            hasError ? "border-red-500" : "border-gray-200"
+                          className={`w-full rounded-xl border bg-white px-4 py-3 text-sm text-gray-700 outline-none transition-all ${
+                            hasError
+                              ? "border-red-500"
+                              : "border-[#f36d45]/40 focus:border-[#f36d45]"
                           }`}
                           style={{
-                            borderColor: hasError ? "#ef4444" : "#e5e7eb",
+                            boxShadow: "none",
                           }}
                           onFocus={(e) => {
-                            e.target.style.borderColor = hasError
-                              ? "#ef4444"
-                              : primaryColor;
-                            e.target.style.boxShadow = `0 0 0 4px ${hasError ? "#ef444420" : `${primaryColor}20`}`;
+                            e.currentTarget.style.boxShadow = hasError
+                              ? "0 0 0 4px #ef444420"
+                              : "0 0 0 4px #f36d4520";
                           }}
                           onBlur={(e) => {
-                            e.target.style.borderColor = hasError
-                              ? "#ef4444"
-                              : "#e5e7eb";
-                            e.target.style.boxShadow = "none";
+                            e.currentTarget.style.boxShadow = "none";
                           }}
                           required={field.required}
                         >
-                          {/* <option value="">Select {field.label}</option> */}
                           {field.options?.map((option) => (
                             <option key={option.value} value={option.value}>
                               {option.label}
                             </option>
                           ))}
                         </select>
+
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">
+                          <p className="mt-1 text-xs text-red-500">
                             {errors[field.name]}
                           </p>
                         )}
+
                         {formData[field.name] === "other" && (
                           <input
                             type="text"
@@ -650,24 +652,27 @@ export default function FormSection({
                             onChange={(e) =>
                               updateField(field.other, e.target.value)
                             }
-                            className={`w-full border-2 rounded-xl px-4  py-2 mt-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white `}
+                            className="mt-2 w-full rounded-xl border border-[#f36d45]/40 bg-white px-4 py-3 text-sm outline-none transition-all focus:border-[#f36d45] focus:ring-4 focus:ring-[#f36d4520]"
                           />
                         )}
                       </>
                     )}
 
+                    {/* ================= TEXT ================= */}
                     {field.type === "text" && field.icon && (
                       <>
                         {field.label && (
-                          <label className="block text-sm text-gray-700 mb-1">
+                          <label className="mb-1.5 block text-sm font-medium text-gray-700">
                             {field.label}
                             {field.required && (
-                              <span className="text-red-500 ml-1">*</span>
+                              <span className="ml-1 text-red-500">*</span>
                             )}
                           </label>
                         )}
+
                         <div className="relative">
-                          <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                          <field.icon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#f36d45]" />
+
                           <input
                             name={field.name}
                             type="text"
@@ -675,48 +680,38 @@ export default function FormSection({
                             onChange={(e) =>
                               updateField(field.name, e.target.value)
                             }
-                            className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all hover:bg-white ${
-                              hasError ? "border-red-500" : "border-gray-200"
+                            className={`w-full rounded-xl border bg-white py-3 pl-10 pr-4 text-sm text-gray-700 outline-none transition-all placeholder:text-gray-400 ${
+                              hasError
+                                ? "border-red-500 focus:ring-4 focus:ring-red-100"
+                                : "border-[#f36d45]/40 focus:border-[#f36d45] focus:ring-4 focus:ring-[#f36d4520]"
                             }`}
-                            style={{
-                              borderColor: hasError ? "#ef4444" : "#e5e7eb",
-                            }}
-                            onFocus={(e) => {
-                              e.target.style.borderColor = hasError
-                                ? "#ef4444"
-                                : primaryColor;
-                              e.target.style.boxShadow = `0 0 0 4px ${hasError ? "#ef444420" : `${primaryColor}20`}`;
-                            }}
-                            onBlur={(e) => {
-                              e.target.style.borderColor = hasError
-                                ? "#ef4444"
-                                : "#e5e7eb";
-                              e.target.style.boxShadow = "none";
-                            }}
-                            // placeholder={field.placeholder}
                             required={field.required}
                           />
                         </div>
+
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">
+                          <p className="mt-1 text-xs text-red-500">
                             {errors[field.name]}
                           </p>
                         )}
                       </>
                     )}
 
+                    {/* ================= EMAIL ================= */}
                     {field.type === "email" && field.icon && (
                       <>
                         {field.label && (
-                          <label className="block text-sm text-gray-700 mb-1">
+                          <label className="mb-1.5 block text-sm font-medium text-gray-700">
                             {field.label}
                             {field.required && (
-                              <span className="text-red-500 ml-1">*</span>
+                              <span className="ml-1 text-red-500">*</span>
                             )}
                           </label>
                         )}
+
                         <div className="relative">
-                          <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                          <field.icon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#f36d45]" />
+
                           <input
                             name={field.name}
                             type="email"
@@ -724,48 +719,37 @@ export default function FormSection({
                             onChange={(e) =>
                               updateField(field.name, e.target.value)
                             }
-                            className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all hover:bg-white ${
-                              hasError ? "border-red-500" : "border-gray-200"
+                            className={`w-full rounded-xl border bg-white py-3 pl-10 pr-4 text-sm text-gray-700 outline-none transition-all placeholder:text-gray-400 ${
+                              hasError
+                                ? "border-red-500 focus:ring-4 focus:ring-red-100"
+                                : "border-[#f36d45]/40 focus:border-[#f36d45] focus:ring-4 focus:ring-[#f36d4520]"
                             }`}
-                            style={{
-                              borderColor: hasError ? "#ef4444" : "#e5e7eb",
-                            }}
-                            onFocus={(e) => {
-                              e.target.style.borderColor = hasError
-                                ? "#ef4444"
-                                : primaryColor;
-                              e.target.style.boxShadow = `0 0 0 4px ${hasError ? "#ef444420" : `${primaryColor}20`}`;
-                            }}
-                            onBlur={(e) => {
-                              e.target.style.borderColor = hasError
-                                ? "#ef4444"
-                                : "#e5e7eb";
-                              e.target.style.boxShadow = "none";
-                            }}
-                            // placeholder={field.placeholder}
                             required={field.required}
                           />
                         </div>
+
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">
+                          <p className="mt-1 text-xs text-red-500">
                             {errors[field.name]}
                           </p>
                         )}
                       </>
                     )}
 
+                    {/* ================= PHONE ================= */}
                     {field.type === "tel" && field.icon && (
                       <>
                         {field.label && (
-                          <label className="block text-sm text-gray-700 mb-1">
+                          <label className="mb-1.5 block text-sm font-medium text-gray-700">
                             {field.label}
                             {field.required && (
-                              <span className="text-red-500 ml-1">*</span>
+                              <span className="ml-1 text-red-500">*</span>
                             )}
                           </label>
                         )}
+
                         <div className="relative">
-                          <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                          <field.icon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#f36d45]" />
 
                           <input
                             name={field.name}
@@ -781,77 +765,38 @@ export default function FormSection({
 
                               updateField(field.name, digitsOnly);
                             }}
-                            className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all hover:bg-white ${
-                              hasError ? "border-red-500" : "border-gray-200"
+                            className={`w-full rounded-xl border bg-white py-3 pl-10 pr-4 text-sm text-gray-700 outline-none transition-all placeholder:text-gray-400 ${
+                              hasError
+                                ? "border-red-500 focus:ring-4 focus:ring-red-100"
+                                : "border-[#f36d45]/40 focus:border-[#f36d45] focus:ring-4 focus:ring-[#f36d4520]"
                             }`}
-                            style={{
-                              borderColor: hasError ? "#ef4444" : "#e5e7eb",
-                            }}
-                            onFocus={(e) => {
-                              e.target.style.borderColor = hasError
-                                ? "#ef4444"
-                                : primaryColor;
-
-                              e.target.style.boxShadow = `0 0 0 4px ${
-                                hasError ? "#ef444420" : `${primaryColor}20`
-                              }`;
-                            }}
-                            onBlur={(e) => {
-                              e.target.style.borderColor = hasError
-                                ? "#ef4444"
-                                : "#e5e7eb";
-
-                              e.target.style.boxShadow = "none";
-                            }}
                             required={field.required}
                           />
-
-                          {/* <input
-                            name={field.name}
-                            type="tel"
-                            inputMode="numeric"
-                            maxLength={10}
-                            value={formData[field.name] as string || ""}
-                            onChange={(e) => {
-                              const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 10);
-                              updateField(field.name, digitsOnly);
-                            }}
-                            className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
-                              hasError ? 'border-red-500' : 'border-gray-200'
-                            }`}
-                            style={{ borderColor: hasError ? '#ef4444' : '#e5e7eb' }}
-                            onFocus={(e) => {
-                              e.target.style.borderColor = hasError ? '#ef4444' : primaryColor;
-                              e.target.style.boxShadow = `0 0 0 4px ${hasError ? '#ef444420' : `${primaryColor}20`}`;
-                            }}
-                            onBlur={(e) => {
-                              e.target.style.borderColor = hasError ? '#ef4444' : '#e5e7eb';
-                              e.target.style.boxShadow = 'none';
-                            }}
-                            // placeholder={field.placeholder}
-                            required={field.required}
-                          /> */}
                         </div>
+
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">
+                          <p className="mt-1 text-xs text-red-500">
                             {errors[field.name]}
                           </p>
                         )}
                       </>
                     )}
 
+                    {/* ================= NUMBER ================= */}
                     {field.type === "number" && field.icon && (
                       <>
                         {field.label && (
-                          <label className="block text-sm text-gray-700 mb-1">
+                          <label className="mb-1.5 block text-sm font-medium text-gray-700">
                             {field.label}
                             {field.required && (
-                              <span className="text-red-500 ml-1">*</span>
+                              <span className="ml-1 text-red-500">*</span>
                             )}
                           </label>
                         )}
+
                         <div className="relative">
-                          <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                          <field.icon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#f36d45]" />
+
                           <input
                             name={field.name}
                             type="number"
@@ -859,48 +804,38 @@ export default function FormSection({
                             onChange={(e) =>
                               updateField(field.name, e.target.value)
                             }
-                            className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
-                              hasError ? "border-red-500" : "border-gray-200"
+                            className={`w-full rounded-xl border bg-white py-3 pl-10 pr-4 text-sm text-gray-700 outline-none transition-all ${
+                              hasError
+                                ? "border-red-500 focus:ring-4 focus:ring-red-100"
+                                : "border-[#f36d45]/40 focus:border-[#f36d45] focus:ring-4 focus:ring-[#f36d4520]"
                             }`}
-                            style={{
-                              borderColor: hasError ? "#ef4444" : "#e5e7eb",
-                            }}
-                            onFocus={(e) => {
-                              e.target.style.borderColor = hasError
-                                ? "#ef4444"
-                                : primaryColor;
-                              e.target.style.boxShadow = `0 0 0 4px ${hasError ? "#ef444420" : `${primaryColor}20`}`;
-                            }}
-                            onBlur={(e) => {
-                              e.target.style.borderColor = hasError
-                                ? "#ef4444"
-                                : "#e5e7eb";
-                              e.target.style.boxShadow = "none";
-                            }}
-                            // placeholder={field.placeholder}
                             required={field.required}
                           />
                         </div>
+
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">
+                          <p className="mt-1 text-xs text-red-500">
                             {errors[field.name]}
                           </p>
                         )}
                       </>
                     )}
 
+                    {/* ================= DATE ================= */}
                     {field.type === "date" && field.icon && (
                       <>
                         {field.label && (
-                          <label className="block text-sm text-gray-700 mb-1">
+                          <label className="mb-1.5 block text-sm font-medium text-gray-700">
                             {field.label}
                             {field.required && (
-                              <span className="text-red-500 ml-1">*</span>
+                              <span className="ml-1 text-red-500">*</span>
                             )}
                           </label>
                         )}
+
                         <div className="relative">
-                          <field.icon className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+                          <field.icon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#f36d45]" />
+
                           <input
                             name={field.name}
                             type="date"
@@ -908,130 +843,114 @@ export default function FormSection({
                             onChange={(e) =>
                               updateField(field.name, e.target.value)
                             }
-                            className={`w-full border-2 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white ${
-                              hasError ? "border-red-500" : "border-gray-200"
+                            className={`w-full rounded-xl border bg-white py-3 pl-10 pr-4 text-sm text-gray-700 outline-none transition-all ${
+                              hasError
+                                ? "border-red-500 focus:ring-4 focus:ring-red-100"
+                                : "border-[#f36d45]/40 focus:border-[#f36d45] focus:ring-4 focus:ring-[#f36d4520]"
                             }`}
-                            style={{
-                              borderColor: hasError ? "#ef4444" : "#e5e7eb",
-                            }}
-                            onFocus={(e) => {
-                              e.target.style.borderColor = hasError
-                                ? "#ef4444"
-                                : primaryColor;
-                              e.target.style.boxShadow = `0 0 0 4px ${hasError ? "#ef444420" : `${primaryColor}20`}`;
-                            }}
-                            onBlur={(e) => {
-                              e.target.style.borderColor = hasError
-                                ? "#ef4444"
-                                : "#e5e7eb";
-                              e.target.style.boxShadow = "none";
-                            }}
                             required={field.required}
                           />
                         </div>
+
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">
+                          <p className="mt-1 text-xs text-red-500">
                             {errors[field.name]}
                           </p>
                         )}
                       </>
                     )}
 
+                    {/* ================= TEXTAREA ================= */}
                     {field.type === "textarea" && (
                       <>
                         {field.label && (
-                          <label className="block text-sm text-gray-700 mb-1">
+                          <label className="mb-1.5 block text-sm font-medium text-gray-700">
                             {field.label}
                             {field.required && (
-                              <span className="text-red-500 ml-1">*</span>
+                              <span className="ml-1 text-red-500">*</span>
                             )}
                           </label>
                         )}
+
                         <textarea
                           name={field.name}
                           value={(formData[field.name] as string) || ""}
                           onChange={(e) =>
                             updateField(field.name, e.target.value)
                           }
-                          rows={4}
-                          className={`w-full border-2 rounded-xl px-4 py-2 text-sm focus:outline-none transition-all bg-gray-50 hover:bg-white resize-none ${
-                            hasError ? "border-red-500" : "border-gray-200"
-                          }`}
-                          style={{
-                            borderColor: hasError ? "#ef4444" : "#e5e7eb",
-                          }}
-                          onFocus={(e) => {
-                            e.target.style.borderColor = hasError
-                              ? "#ef4444"
-                              : primaryColor;
-                            e.target.style.boxShadow = `0 0 0 4px ${hasError ? "#ef444420" : `${primaryColor}20`}`;
-                          }}
-                          onBlur={(e) => {
-                            e.target.style.borderColor = hasError
-                              ? "#ef4444"
-                              : "#e5e7eb";
-                            e.target.style.boxShadow = "none";
-                          }}
+                          rows={2}
                           placeholder={field.placeholder}
+                          className={`w-full resize-none rounded-xl border bg-white px-4 py-3 text-sm text-gray-700 outline-none transition-all placeholder:text-gray-400 ${
+                            hasError
+                              ? "border-red-500 focus:ring-4 focus:ring-red-100"
+                              : "border-[#f36d45]/40 focus:border-[#f36d45] focus:ring-4 focus:ring-[#f36d4520]"
+                          }`}
                           required={field.required}
                         />
+
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">
+                          <p className="mt-1 text-xs text-red-500">
                             {errors[field.name]}
                           </p>
                         )}
                       </>
                     )}
 
+                    {/* ================= BUTTON GROUP ================= */}
                     {field.type === "button-group" && (
                       <>
                         {field.label && (
-                          <label className="block text-sm text-gray-700 mb-1">
+                          <label className="mb-2 block text-sm font-medium text-gray-700">
                             {field.label}
                             {field.required && (
-                              <span className="text-red-500 ml-1">*</span>
+                              <span className="ml-1 text-red-500">*</span>
                             )}
                           </label>
                         )}
+
                         <div className="grid grid-cols-3 gap-3">
                           {field.options?.map((option) => {
                             const OptionIcon = option.icon;
+
                             const isSelected =
                               formData[field.name] === option.value;
+
                             return (
                               <motion.button
                                 key={option.value}
                                 type="button"
-                                whileHover={{ scale: 1.05 }}
-                                whileTap={{ scale: 0.95 }}
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
                                 onClick={() =>
                                   updateField(
                                     field.name,
                                     isSelected ? "" : option.value,
                                   )
                                 }
-                                className="p-3 rounded-xl border-2 text-sm transition-all"
+                                className="rounded-xl border p-3 text-sm transition-all"
                                 style={{
                                   background: isSelected
                                     ? `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`
-                                    : "#f9fafb",
-                                  color: isSelected ? "white" : "#374151",
+                                    : "#fff",
+                                  color: isSelected ? "#fff" : "#374151",
                                   borderColor: isSelected
-                                    ? "transparent"
+                                    ? primaryColor
                                     : hasError
                                       ? "#ef4444"
-                                      : "#e5e7eb",
+                                      : "#f36d45",
                                   boxShadow: isSelected
-                                    ? `0 4px 14px ${primaryColor}40`
+                                    ? `0 4px 14px ${primaryColor}30`
                                     : "none",
                                 }}
                               >
                                 {OptionIcon && (
-                                  <OptionIcon className="w-6 h-6 mx-auto mb-1" />
+                                  <OptionIcon className="mx-auto mb-1 h-6 w-6" />
                                 )}
+
                                 {option.label}
+
                                 {option.desc && (
-                                  <p className="text-xs mt-1 opacity-80">
+                                  <p className="mt-1 text-xs opacity-80">
                                     {option.desc}
                                   </p>
                                 )}
@@ -1039,142 +958,121 @@ export default function FormSection({
                             );
                           })}
                         </div>
+
                         {hasError && (
-                          <p className="text-red-500 text-xs mt-1">
+                          <p className="mt-1 text-xs text-red-500">
                             {errors[field.name]}
                           </p>
                         )}
                       </>
                     )}
 
-                   {field.type === "checkbox-group" && (
-  <>
-    <label className="block text-sm text-gray-700 mb-2">
-      {field.label}
-      <span className="text-gray-400 text-xs ml-1">
-        (select all that apply)
-      </span>
+                    {/* ================= CHECKBOX GROUP ================= */}
+                    {field.type === "checkbox-group" && (
+                      <>
+                        <label className="mb-2 block text-sm font-medium text-gray-700">
+                          {field.label}
 
-      {field.required && (
-        <span className="text-red-500 ml-1">*</span>
-      )}
-    </label>
+                          <span className="ml-1 text-xs text-gray-400">
+                            (select all that apply)
+                          </span>
 
-    <div className="grid grid-cols-3 gap-2.5">
-      {field.options?.map((option) => {
-        const OptionIcon = option.icon;
+                          {field.required && (
+                            <span className="ml-1 text-red-500">*</span>
+                          )}
+                        </label>
 
-        const isSelected = (
-          (formData[field.name] as string[]) || []
-        ).includes(option.value);
+                        <div className="grid grid-cols-3 gap-2.5">
+                          {field.options?.map((option) => {
+                            const OptionIcon = option.icon;
 
-        return (
-          <motion.button
-            key={option.value}
-            type="button"
-            whileHover={{ scale: 1.01 }}
-            whileTap={{ scale: 0.99 }}
-            onClick={() =>
-              toggleCheckboxGroup(field.name, option.value)
-            }
-            className={`
-              group
-              flex
-              items-center
-              gap-3
-              w-full
-              rounded-lg
-              border
-              px-3
-              py-3
-              text-left
-              transition-all
-              duration-200
-              ${
-                isSelected
-                  ? "border-[#F36C45] bg-[#FFF7F4]"
-                  : hasError
-                    ? "border-red-400 bg-white"
-                    : "border-gray-200 bg-white hover:border-gray-300"
-              }
-            `}
-          >
-            {/* Classical Checkbox */}
-            <span
-              className={`
-                flex
-                h-4
-                w-4
-                shrink-0
-                items-center
-                justify-center
-                rounded-[3px]
-                border
-                transition-all
-                duration-200
-                ${
-                  isSelected
-                    ? "border-[#F36C45] bg-[#F36C45]"
-                    : "border-gray-300 bg-white group-hover:border-[#F36C45]"
-                }
-              `}
-            >
-              {isSelected && (
-                <svg
-                  viewBox="0 0 12 12"
-                  fill="none"
-                  className="h-3 w-3 text-white"
-                >
-                  <path
-                    d="M2.5 6L5 8.5L9.5 3.5"
-                    stroke="currentColor"
-                    strokeWidth="1.8"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              )}
-            </span>
+                            const isSelected = (
+                              (formData[field.name] as string[]) || []
+                            ).includes(option.value);
 
-            {/* Icon */}
-            {OptionIcon && (
-              <OptionIcon
-                className={`
-                  h-4 w-4 shrink-0 transition-colors
-                  ${
-                    isSelected
-                      ? "text-[#F36C45]"
-                      : "text-gray-500"
-                  }
-                `}
-              />
-            )}
+                            return (
+                              <motion.button
+                                key={option.value}
+                                type="button"
+                                whileHover={{ scale: 1.01 }}
+                                whileTap={{ scale: 0.99 }}
+                                onClick={() =>
+                                  toggleCheckboxGroup(field.name, option.value)
+                                }
+                                className={`
+                      group flex w-full items-center gap-3
+                      rounded-xl border px-3 py-3
+                      text-left transition-all duration-200
+                      ${
+                        isSelected
+                          ? "border-[#f36d45]/40 bg-[#fff7f4]"
+                          : hasError
+                            ? "border-red-400 bg-white"
+                            : "border-[#f36d45]/40 bg-white hover:bg-[#fff7f4]"
+                      }
+                    `}
+                              >
+                                {/* Checkbox */}
+                                <span
+                                  className={`
+                        flex h-4 w-4 shrink-0 items-center
+                        justify-center rounded-[4px] border
+                        transition-all duration-200
+                        ${
+                          isSelected
+                            ? "border-[#f36d45] bg-[#f36d45]"
+                            : "border-[#f36d45]/40 bg-white"
+                        }
+                      `}
+                                >
+                                  {isSelected && (
+                                    <svg
+                                      viewBox="0 0 12 12"
+                                      fill="none"
+                                      className="h-3 w-3 text-white"
+                                    >
+                                      <path
+                                        d="M2.5 6L5 8.5L9.5 3.5"
+                                        stroke="currentColor"
+                                        strokeWidth="1.8"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    </svg>
+                                  )}
+                                </span>
 
-            {/* Label */}
-            <span
-              className={`
-                text-sm font-medium transition-colors
-                ${
-                  isSelected
-                    ? "text-[#D95732]"
-                    : "text-gray-700"
-                }
-              `}
-            >
-              {option.label}
-            </span>
-          </motion.button>
-        );
-      })}
-    </div>
+                                {/* Icon */}
+                                {OptionIcon && (
+                                  <OptionIcon
+                                    className={`
+                          h-4 w-4 shrink-0
+                          ${isSelected ? "text-[#f36d45]" : "text-gray-500"}
+                        `}
+                                  />
+                                )}
 
-    {hasError && (
-      <p className="text-red-500 text-xs mt-1">
-        {errors[field.name]}
-      </p>
-    )}
-  </>
-)}
+                                {/* Label */}
+                                <span
+                                  className={`
+                        text-sm font-medium
+                        ${isSelected ? "text-[#d95732]" : "text-gray-700"}
+                      `}
+                                >
+                                  {option.label}
+                                </span>
+                              </motion.button>
+                            );
+                          })}
+                        </div>
+
+                        {hasError && (
+                          <p className="mt-1 text-xs text-red-500">
+                            {errors[field.name]}
+                          </p>
+                        )}
+                      </>
+                    )}
                   </div>
                 );
               })}
@@ -1184,7 +1082,7 @@ export default function FormSection({
 
         {/* Navigation Buttons */}
         <div
-          className={`flex ${FORM_CONFIG.steps.length > 1 ? "justify-between" : "justify-center"} gap-4 mt-2 pt-4 border-t border-gray-200`}
+          className={`flex ${FORM_CONFIG.steps.length > 1 ? "justify-start" : "justify-start"} gap-4 mt-2  `}
         >
           {step > 1 && (
             <motion.button
@@ -1204,7 +1102,7 @@ export default function FormSection({
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={buttonConfig.action}
-            className="px-8 py-3 text-sm font-bold text-white rounded-xl transition-all shadow-lg hover:shadow-xl
+            className="px-8 py-3 text-sm font-bold text-white transition-all shadow-lg hover:shadow-xl
              flex items-center gap-2 cursor-pointer"
             style={{
               background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor})`,

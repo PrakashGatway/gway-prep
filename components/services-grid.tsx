@@ -107,7 +107,7 @@ function Card({ item,setIsPopupOpen }: CardProps) {
       </p>
       <div className="mt-2 flex justify-center">
         <button 
-          className="bg-[#f36d45] text-white px-5 py-2 rounded-full text-sm hover:bg-orange-600 transition cursor-pointer" 
+          className="bg-[#f36d45] text-white px-5 py-2 text-sm hover:bg-orange-600 transition cursor-pointer" 
           onClick={() => router.push(item.slug || setIsPopupOpen(true))}
         >
           {buttonText}

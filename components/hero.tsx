@@ -7,6 +7,7 @@ import { HomeCountUp } from '@/components/HomeCountUp';
 import FormSection from "./formSection";
 import PopupModal from "./popupModel";
 import { useRouter } from "next/navigation";
+import { GlobalProvider, useGlobal } from "@/hooks/AppStateContext";
 
 // ─── Sparkle ───
 function Sparkle({ x, y, delay, size }: { x: string; y: string; delay: number; size: number }) {
@@ -47,11 +48,12 @@ type HeroProps = {
 };
 
 export function Hero({ data, student }: HeroProps) {
+  const {UserNavigate} = useGlobal()
   const [index, setIndex] = useState(0);
   const [mounted, setMounted] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
-  const navigate = useRouter()
+ 
 
   useEffect(() => {
     setMounted(true);
@@ -140,12 +142,28 @@ export function Hero({ data, student }: HeroProps) {
                   whileHover={{ scale: 1.03, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   // onClick={() => setIsPopupOpen(true)}
-                  onClick={() => router.push('/auth')}
-                  className="group cursor-pointer relative flex items-center justify-center gap-2.5 bg-[#F36C45] text-white rounded-2xl py-4 px-2 text-base sm:text-base font-semibold transition-all duration-300 overflow-hidden"
+                  onClick={UserNavigate}
+                  className="group cursor-pointer relative flex items-center justify-center gap-2.5 bg-[#F36C45] text-white py-3.5 px-4 text-base sm:text-base font-semibold transition-all duration-300 overflow-hidden"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-[#e05a34] to-[#ff8a65] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <span className="relative flex items-center gap-2.5">
-                    <Phone size={20} /> Take free test now
+                    <Phone size={20} /> {data.fields.button1}
+                    <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
+                  </span>
+                  <span className="absolute inset-0 -z-10 rounded-2xl bg-[#F36C45]/30 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                </motion.button>
+
+                 <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.03, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => setIsPopupOpen(true)}
+                  // onClick={UserNavigate}
+                  className="group cursor-pointer relative flex items-center justify-center gap-2.5 bg-[#525252] text-white py-3.5 px-4 text-base sm:text-base font-semibold transition-all duration-300 overflow-hidden"
+                >
+                  <span className="absolute inset-0 bg-gradient-to-r from-[#e05a34] to-[#ff8a65] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <span className="relative flex items-center gap-2.5">
+                    <Book size={20} /> {data.fields.button2}
                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
                   <span className="absolute inset-0 -z-10 rounded-2xl bg-[#F36C45]/30 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />

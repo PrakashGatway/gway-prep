@@ -1,9 +1,11 @@
 "use client";
 
+import { useGlobal } from "@/hooks/AppStateContext";
 import { IndianRupee } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function PricingSection({ plans }: { plans: any }) {
+  const {UserNavigate} = useGlobal()
   const {
     testimonial = "",
     pricing_plans = [],
@@ -134,7 +136,7 @@ export default function PricingSection({ plans }: { plans: any }) {
 
                     {/* Button */}
                     <button
-                      onClick={() => router.push("/auth")}
+                      onClick={UserNavigate}
                       className={`mt-4 w-full rounded-xl py-3 cursor-pointer font-semibold transition
               ${
                 isHighlighted

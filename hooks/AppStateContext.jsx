@@ -16,6 +16,8 @@ export function GlobalProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  
+
   // console.log(drawer)
 
   useEffect(() => {
@@ -61,6 +63,10 @@ export function GlobalProvider({ children }) {
     }
   }, []);
 
+  const UserNavigate =()=>{
+    user && user ? router.push("https://dashboard.ooshasprep.com/") : router.push("/auth")
+  }
+
   return (
     <GlobalContext.Provider
       value={{
@@ -71,7 +77,9 @@ export function GlobalProvider({ children }) {
         error,
         drawer,
         setDrawer,
-        authChecked
+        authChecked,
+        UserNavigate
+
       }}
     >
       {children}

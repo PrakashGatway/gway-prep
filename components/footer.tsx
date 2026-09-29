@@ -171,7 +171,7 @@ export function Footer({ Data = [] }: FooterProps) {
                   <div className="mt-3 flex flex-wrap gap-3">
                     <Link
                       href={"/auth"}
-                      className="rounded-full bg-orange-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-700"
+                      className=" bg-[#f36d45] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-700"
                     >
                       Explore Courses
                     </Link>

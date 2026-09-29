@@ -27,7 +27,7 @@ interface NavbarProps {
 
 export function Navbar({ Data }: NavbarProps) {
   const router = useRouter();
-  const { user, logout, drawer, setDrawer } = useGlobal();
+  const { user, logout, drawer, setDrawer,UserNavigate } = useGlobal();
 
   const [isOpen, setIsOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
@@ -785,7 +785,7 @@ export function Navbar({ Data }: NavbarProps) {
               {!user?.email ? (
                 <button
                   type="button"
-                  onClick={() => router.push("/auth")}
+                  onClick={UserNavigate}
                   className="
                     flex
                     items-center
@@ -1712,7 +1712,7 @@ export function Navbar({ Data }: NavbarProps) {
                     type="button"
                     onClick={() => {
                       closeMobileMenu();
-                      router.push("/auth");
+                      UserNavigate
                     }}
                     className="
                       flex

@@ -29,6 +29,20 @@ export const pageData: any = {
             required: false,
             placeholder: "",
           },
+           {
+            name: "button1",
+            label: "Button1",
+            type: "text",
+            required: false,
+            placeholder: "",
+          },
+           {
+            name: "button2",
+            label: "Button2",
+            type: "text",
+            required: false,
+            placeholder: "",
+          },
           {
             name: "experience",
             label: "Experience",

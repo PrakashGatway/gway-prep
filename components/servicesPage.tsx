@@ -15,6 +15,11 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import PopupModal from "./popupModel";
+import { useGlobal } from "@/hooks/AppStateContext";
+
+
+
+
 
 // Helper function to get icon component by name
 const getIconComponent = (iconName: string) => {
@@ -35,6 +40,8 @@ const getIconComponent = (iconName: string) => {
 
 // Section Components
 function HeroSection({ data }: { data: any }) {
+
+
   if (!data) return null;
 
   return (
@@ -119,6 +126,8 @@ function ExamPillsSection({ data }: { data: any }) {
 
 function PracticeSection({ data }: { data: any }) {
   if (!data?.fields?.items?.length) return null;
+
+
   const Router = useRouter();
 
   const items = data.fields.items;
@@ -175,6 +184,8 @@ function PracticeSection({ data }: { data: any }) {
 
 function PortalSection({ data }: { data: any }) {
   if (!data) return null;
+  const {UserNavigate} = useGlobal()
+
 
   const title = data?.fields?.title || "";
   const subtitle = data?.fields?.subtitle || "";
@@ -204,7 +215,7 @@ function PortalSection({ data }: { data: any }) {
             />
             {buttonText && (
               <button
-                onClick={() => router.push("/auth")}
+                onClick={UserNavigate}
                 className="cursor-pointer mt-6 md:mt-8 bg-[#F36C45] px-6 md:px-8 py-2.5 md:py-3 text-white font-semibold rounded-full hover:bg-[#e85f35] transition"
               >
                 {buttonText}
@@ -230,6 +241,7 @@ function PortalSection({ data }: { data: any }) {
 
 function DashboardSection({ data }: { data: any }) {
   if (!data?.fields?.leftImage && !data?.fields?.rightImage) return null;
+  
 
   const leftImage = data.fields.leftImage || "";
   const rightImage = data.fields.rightImage || "";
@@ -261,6 +273,8 @@ function DashboardSection({ data }: { data: any }) {
 
 function AIStackSection({ data }: { data: any }) {
   if (!data?.fields?.items?.length) return null;
+  const {UserNavigate} = useGlobal()
+
 
   const items = data.fields.items;
   const title = data.fields.title || "";
@@ -343,7 +357,7 @@ function AIStackSection({ data }: { data: any }) {
         {buttonText && (
           <div className="flex justify-center mt-10 md:mt-14">
             <button
-              onClick={() => Router.push("/auth")}
+              onClick={UserNavigate}
               className="cursor-pointer rounded-full bg-[#F2643D] hover:bg-[#E95D35] transition-all px-6 md:px-8 py-3 md:py-4 font-semibold text-white shadow-lg text-sm md:text-base"
             >
               {buttonText}
@@ -435,6 +449,8 @@ function FeatureCard({ feature, className = "" }: FeatureCardProps) {
 
 function EnvironmentSection({ data }: { data: any }) {
   if (!data?.fields?.items?.length) return null;
+  const {UserNavigate} = useGlobal()
+
   const Router = useRouter();
 
   const items = data.fields.items;
@@ -480,7 +496,7 @@ function EnvironmentSection({ data }: { data: any }) {
         {buttonText && (
           <div className="flex justify-center md:justify-end mt-2 md:mt-4">
             <button
-              onClick={() => Router.push("/auth")}
+              onClick={UserNavigate}
               className="rounded-full cursor-pointer bg-[#F2643D] hover:bg-[#e45b33] transition-all text-white font-semibold px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base"
             >
               {buttonText}
@@ -642,6 +658,8 @@ export function EnvironmentCard({
 
 function ResourcesSection({ data }: { data: any }) {
   if (!data?.fields?.items?.length) return null;
+  const {UserNavigate} = useGlobal()
+
   const Router = useRouter();
   const items = data.fields.items;
   const title = data.fields.title || "";
@@ -689,7 +707,7 @@ function ResourcesSection({ data }: { data: any }) {
         {buttonText && (
           <div className="text-center mt-8">
             <button
-              onClick={() => Router.push("/auth")}
+              onClick={UserNavigate}
               className="cursor-pointer bg-primary text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold text-sm md:text-base shadow-sm transition"
             >
               {buttonText} →

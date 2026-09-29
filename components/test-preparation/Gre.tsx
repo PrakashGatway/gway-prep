@@ -27,6 +27,8 @@ import { StudentsSlider } from "../3dslider";
 import { useRouter } from "next/navigation";
 import PopupModal from "../popupModel";
 import EditorContent from "../editorContent";
+import { useGlobal } from "@/hooks/AppStateContext";
+
 
 function AIStudySection({ aiStudySection }: { aiStudySection: any }) {
   return (
@@ -207,31 +209,61 @@ function GreSection({
       </div>
 
       {/* Top Banner */}
-      <div
-        className="w-full bg-[#f06437] text-white rounded-2xl md:rounded-[30px]
-         px-4 sm:px-6 md:px-12  py-4 sm:py-2 md:py-4 flex relative mt-18
-       flex-col md:flex-row items-center justify-between gap-3 sm:gap-4 shadow-sm"
-      >
-        <div className=" flex items-center gap-2 sm:gap-3 text-center md:text-left">
-          <h2 className="text-base sm:text-lg md:text-xl lg:text-xl tracking-wide">
-            {cta_banner?.title}
-          </h2>
-        </div>
-        <div className="order-first md:order-none lg:absolute bottom-4 right-88">
-          <img
-            src="/pc.png"
-            alt="img"
-            className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 lg:w-30 lg:h-30 object-contain"
-          />
-        </div>
-        <a
-          href={`https://wa.me/9166146538?text=Hello`}
-          target="_blank"
-          className="bg-white hover:bg-gray-100 text-black font-semibold py-2 px-4 sm:px-6 rounded-full text-lg transition-colors duration-200 whitespace-nowrap w-full md:w-auto text-center"
-        >
-          {cta_banner?.buttonText || ""}
-        </a>
+     <div className="relative mt-18 w-full overflow-hidden rounded-2xl bg-[#f06437] px-5 py-5 text-white shadow-md sm:px-8 md:rounded-[28px] md:px-10 md:py-6">
+  {/* Decorative Circle */}
+  <div className="absolute -right-12 -top-16 h-40 w-40 rounded-full bg-white/10" />
+  <div className="absolute -bottom-20 right-24 h-36 w-36 rounded-full bg-white/5" />
+
+  <div className="relative z-10 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+
+    {/* Content */}
+    <div className="flex items-center gap-4">
+      {/* Image */}
+      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-white/15 p-2 backdrop-blur-sm sm:h-16 sm:w-16">
+        <img
+          src="/pc.png"
+          alt="Practice"
+          className="h-full w-full object-contain"
+        />
       </div>
+
+      {/* Text */}
+      <div>
+        <p className="mb-1 text-xs font-medium uppercase tracking-wider text-white/75">
+          Get Started
+        </p>
+
+        <h2 className="text-base font-semibold leading-snug tracking-wide sm:text-lg md:text-xl">
+          {cta_banner?.title}
+        </h2>
+      </div>
+    </div>
+
+    {/* Button */}
+    <a
+      href="https://wa.me/9166146538?text=Hello"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group flex w-full items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-[#f06437] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-lg md:w-auto md:min-w-[160px]"
+    >
+      <span>{cta_banner?.buttonText || "Get Started"}</span>
+
+      <svg
+        className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M13 7l5 5m0 0l-5 5m5-5H6"
+        />
+      </svg>
+    </a>
+  </div>
+</div>
     </section>
   );
 }
@@ -339,6 +371,8 @@ function GrePatternTable({ examPatternData }: { examPatternData: any }) {
 }
 
 function VideoExplanationSection({ videoData }: { videoData: any }) {
+const {UserNavigate} = useGlobal()
+
   const router = useRouter();
   return (
     <section className="relative overflow-hidden bg-white pt-8 sm:pt-12 md:pt-16 lg:pt-20 px-3 sm:px-4 md:px-6">
@@ -361,7 +395,7 @@ function VideoExplanationSection({ videoData }: { videoData: any }) {
                   "Want to go further? We also include 290+ curated lessons shaped by student feedback to deliver material in the way you learn best."}
               </p>
               <button
-                onClick={() => router.push("/auth")}
+                onClick={UserNavigate}
                 className="cursor-pointer mt-6 sm:mt-8 md:mt-10 bg-[#F36C45] hover:bg-[#ec5d34] transition-all duration-300 text-white font-semibold rounded-xl px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg shadow-lg w-full sm:w-auto"
               >
                 {videoData?.["button-text"] || "Watch Solution Now"}
@@ -401,6 +435,8 @@ function VideoExplanationSection({ videoData }: { videoData: any }) {
 }
 
 function FreeResources({ resourcesData }: { resourcesData: any }) {
+const {UserNavigate} = useGlobal()
+
   const router = useRouter();
   const resources = [
     {
@@ -468,7 +504,7 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
               </p>
               <div
                 className="mt-3 sm:mt-4 flex items-center gap-2 sm:gap-3 md:gap-4"
-                onClick={() => router.push("/auth")}
+                onClick={UserNavigate}
               >
                 <button
                   className={`cursor-pointer flex-1 rounded-xl py-2.5 px-3 sm:px-4 md:px-6 text-xs sm:text-sm font-semibold transition ${
@@ -495,6 +531,8 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
 }
 
 function DashboardSection({ dashboardData }: { dashboardData: any }) {
+const {UserNavigate} = useGlobal()
+
   const features = dashboardData?.Points?.map((p: any) => p.Points) || [];
   const router = useRouter();
 
@@ -521,12 +559,12 @@ function DashboardSection({ dashboardData }: { dashboardData: any }) {
 
             <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-5 justify-center lg:justify-start">
               <button
-                onClick={() => router.push("/auth")}
-                className="cursor-pointer rounded-xl bg-white px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-semibold text-[#FF5B36] transition hover:scale-105 hover:shadow-xl text-sm sm:text-base"
+                onClick={UserNavigate}
+                className="cursor-pointer bg-white px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-semibold text-[#FF5B36] transition hover:scale-105 hover:shadow-xl text-sm sm:text-base"
               >
                 Try Free for 3 Days →
               </button>
-              <button className="rounded-xl border border-white/30 bg-black/30 px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-semibold text-white backdrop-blur transition hover:bg-black/40 text-sm sm:text-base">
+              <button className=" border border-white/30 bg-black/30 px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-semibold text-white backdrop-blur transition hover:bg-black/40 text-sm sm:text-base">
                 ▶ Preview Dashboard
               </button>
             </div>
@@ -552,6 +590,8 @@ function DashboardSection({ dashboardData }: { dashboardData: any }) {
 }
 
 export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
+const {UserNavigate} = useGlobal()
+
   // console.log(pageInfo.seoMeta.duplicateOf ,'page data',slug);
   const [currentSlide, setCurrentSlide] = useState(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -705,17 +745,17 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
           <div className="bg-transparent flex flex-col sm:flex-row items-center justify-center pt-4 gap-4 max-w-2xl mx-auto">
             <button
               onClick={() => setIsPopupOpen(true)}
-              className="cursor-pointer bg-[#FF7324] hover:bg-[#e05f1b] rounded-2xl px-6 py-3 flex items-center justify-center gap-2 transition-all w-full sm:w-auto font-medium text-white text-base  shadow-[0_10px_25px_-5px_rgba(255,115,36,0.3)]"
+              className="cursor-pointer bg-[#FF7324] hover:bg-[#e05f1b] px-6 py-3 flex items-center justify-center gap-2 transition-all w-full sm:w-auto font-medium text-white text-base  shadow-[0_10px_25px_-5px_rgba(255,115,36,0.3)]"
             >
               {heroSection?.ctaButtonText || "Calculate My GRE Score"} →
             </button>
 
             <button
-              onClick={() => router.push("/auth")}
+              onClick={UserNavigate}
               style={{
                 backgroundColor: studentsData?.[0]?.colorCode || "#555",
               }}
-              className="cursor-pointer hover:bg-white/10 rounded-2xl px-6 py-3 flex items-center justify-center transition-all w-full sm:w-auto font-medium text-white text-base  bg-transparent"
+              className="cursor-pointer hover:bg-white/10 px-6 py-3 flex items-center justify-center transition-all w-full sm:w-auto font-medium text-white text-base  bg-transparent"
             >
               Take Mock Test
             </button>
@@ -787,8 +827,8 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
             </h2>
             <div className="pt-1 sm:pt-2">
               <button
-                onClick={() => router.push("/auth")}
-                className="cursor-pointer bg-[#FF6A39] hover:bg-[#e05626] text-white font-bold px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 rounded-xl shadow-md transition text-sm sm:text-base"
+                onClick={UserNavigate}
+                className="cursor-pointer bg-[#FF6A39] hover:bg-[#e05626] text-white font-bold px-5 sm:px-6 md:px-8 py-2 sm:py-2.5 md:py-3 shadow-md transition text-sm sm:text-base"
               >
                 {boostProfileSection.buttonText || "Enroll Now"}
               </button>
@@ -859,7 +899,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
             <div className="flex justify-center lg:justify-end">
               <button
                 className="cursor-pointer bg-gray-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl flex gap-2 items-center text-sm sm:text-base"
-                onClick={() => router.push("/auth")}
+                onClick={UserNavigate}
               >
                 <Play size={16} />{" "}
                 {officialQuestionsSection.buttonText || "Preview Dashboard"}
