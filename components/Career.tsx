@@ -913,12 +913,12 @@ export default function CareersPage({ sections }: any) {
             <p className="mt-4 text-lg ">{data.hero.description}</p>
             <div className="mt-8 flex gap-4 flex-wrap">
               <a href="#open-positions"
-                className="px-8 py-4 rounded-lg text-white text-base font-semibold hover:opacity-90 transition"
+                className="px-8 py-4  text-white text-base font-semibold hover:opacity-90 transition"
                 style={{ backgroundColor: orange }}
               >
                 {data.hero.buttons.primary}
               </a>
-              <a href="#open-positions" className="px-8 py-4 rounded-lg text-base font-semibold border-2 border-black text-black bg-white hover:bg-gray-50 transition">
+              <a href="#open-positions" className="px-8 py-4 text-base font-semibold border-2 border-black text-black bg-white hover:bg-gray-50 transition">
                 {data.hero.buttons.secondary}
               </a>
             </div>
@@ -983,7 +983,7 @@ export default function CareersPage({ sections }: any) {
                 <div className="mt-8 flex gap-4 flex-wrap">
                   <a
                     href="#open-positions"
-                    className="px-8 py-4 rounded-lg text-white text-base font-semibold hover:opacity-90 transition"
+                    className="px-8 py-4 text-white text-base font-semibold hover:opacity-90 transition"
                     style={{ backgroundColor: orange }}
                   >
                     {data.build.buttons.primary}

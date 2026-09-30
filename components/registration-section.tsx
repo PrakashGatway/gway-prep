@@ -293,7 +293,7 @@ export function RegistrationSection({ data }: any) {
             <div className="bg-white relative rounded-3xl p-6">
               {/* Optional: Add a header above the form */}
               <div className="mb-3 text-center lg:text-left  ">
-                <div className="w-90">
+                <div className="xl:w-90">
                   <h2 className="text-2xl font-bold text-gray-900 mb-px">
                     Start Your Preparation
                   </h2>

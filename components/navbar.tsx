@@ -15,6 +15,7 @@ import {
   ArrowRight,
   UserCircle,
   LogOut,
+  Book,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGlobal } from "@/hooks/AppStateContext";
@@ -27,7 +28,7 @@ interface NavbarProps {
 
 export function Navbar({ Data }: NavbarProps) {
   const router = useRouter();
-  const { user, logout, drawer, setDrawer,UserNavigate } = useGlobal();
+  const { user, logout, drawer, setDrawer, UserNavigate } = useGlobal();
 
   const [isOpen, setIsOpen] = React.useState(false);
   const [scrolled, setScrolled] = React.useState(false);
@@ -51,7 +52,6 @@ export function Navbar({ Data }: NavbarProps) {
   const [showProfileMenu, setShowProfileMenu] = React.useState(false);
 
   const profileMenuRef = React.useRef<HTMLDivElement>(null);
-
 
   const NAVDATA1 = React.useMemo(
     () =>
@@ -250,8 +250,8 @@ export function Navbar({ Data }: NavbarProps) {
           duration-300
           ${
             scrolled
-              ? "border-b py-2.5 border-gray-100 bg-white/90 shadow-lg backdrop-blur-xl"
-              : "border-b py-3 border-transparent bg-white backdrop-blur-sm"
+              ? "border-b py-3 border-gray-100 bg-white/90 shadow-lg backdrop-blur-xl"
+              : "border-b py-2 border-transparent bg-white backdrop-blur-sm"
           }
         `}
       >
@@ -264,38 +264,37 @@ export function Navbar({ Data }: NavbarProps) {
               gap-3
             "
           >
-
             <Link
               href="/"
               className="
-                group
-                flex
-                w-1/6
-                min-w-0
-                shrink-0
-                items-center
-              "
+    group
+    flex
+    w-1/4
+    min-w-0
+    shrink-0
+    items-center
+  "
               aria-label="Ooshas Prep Home"
             >
               <Image
                 src="/image/logo.png"
                 alt="Ooshas Prep Logo"
-                width={160}
-                height={80}
+                width={280}
+                height={110}
                 priority
                 className="
-                  h-10
-                  w-auto
-                  object-contain
-                  transition-transform
-                  duration-200
-                  group-hover:scale-[1.03]
-                  sm:h-11
-                  lg:h-14
-                "
+      h-16
+      w-auto
+      object-contain
+      transition-transform
+      duration-200
+      group-hover:scale-[1.03]
+      sm:h-[72px]
+      lg:h-20
+      xl:h-[70px]
+    "
               />
             </Link>
-
 
             <div className="ml-auto flex items-center gap-2 lg:hidden">
               {/* Phone */}
@@ -364,7 +363,7 @@ export function Navbar({ Data }: NavbarProps) {
                 DESKTOP NAVIGATION
             ================================================= */}
 
-            <div className="hidden items-center gap-1 lg:flex">
+            <div className="hidden min-w-0 flex-1 items-center justify-center gap-1 lg:flex">
               {navItems.map((item: any) => (
                 <div
                   key={item.name}
@@ -381,22 +380,24 @@ export function Navbar({ Data }: NavbarProps) {
                   <Link
                     href={item.href}
                     className={`
-                      flex
-                      items-center
-                      gap-1.5
-                      rounded-2xl
-                      px-3
-                      py-2.5
-                      text-[14px]
-                      font-medium
-                      transition-all
-                      duration-200
-                      ${
-                        activeDropdown === item.name
-                          ? "bg-orange-50 text-[#F36C45]"
-                          : "text-gray-800 hover:bg-orange-50/70 hover:text-[#F36C45]"
-                      }
-                    `}
+  flex
+  shrink-0
+  items-center
+  gap-1.5
+  whitespace-nowrap
+  rounded-2xl
+  px-2.5
+  py-2.5
+  text-[14px]
+  font-medium
+  transition-all
+  duration-200
+  ${
+    activeDropdown === item.name
+      ? "bg-orange-50 text-[#F36C45]"
+      : "text-gray-800 hover:bg-orange-50/70 hover:text-[#F36C45]"
+  }
+`}
                   >
                     <span>{item.name}</span>
 
@@ -411,7 +412,6 @@ export function Navbar({ Data }: NavbarProps) {
                       />
                     )}
                   </Link>
-
 
                   <AnimatePresence>
                     {item.hasDropdown && activeDropdown === item.name && (
@@ -572,7 +572,6 @@ export function Navbar({ Data }: NavbarProps) {
                                           </span>
                                         )}
                                       </div>
-
                                     </div>
 
                                     {/* Arrow */}
@@ -606,7 +605,6 @@ export function Navbar({ Data }: NavbarProps) {
                               );
                             })}
                           </div>
-
 
                           <AnimatePresence mode="wait">
                             {activeSubDropdown && (
@@ -707,8 +705,6 @@ export function Navbar({ Data }: NavbarProps) {
                                               <span className="block truncate text-sm text-gray-700 transition-colors group-hover/sub:text-[#F36C45]">
                                                 {sub.name}
                                               </span>
-
-                                            
                                             </div>
 
                                             <ArrowRight
@@ -736,7 +732,6 @@ export function Navbar({ Data }: NavbarProps) {
                 </div>
               ))}
             </div>
-
 
             <div className="hidden items-center gap-3 lg:flex">
               {/* Phone */}
@@ -790,7 +785,6 @@ export function Navbar({ Data }: NavbarProps) {
                     flex
                     items-center
                     gap-2
-                    rounded-2xl
                     bg-gradient-to-r
                     from-[#F36C45]
                     to-orange-500
@@ -1044,7 +1038,6 @@ export function Navbar({ Data }: NavbarProps) {
         </div>
       </nav>
 
-
       <AnimatePresence>
         {isOpen && (
           <>
@@ -1081,10 +1074,10 @@ export function Navbar({ Data }: NavbarProps) {
                 fixed
                 right-0
                 top-0
-                z-[700]
+                z-999
                 flex
                 h-[100dvh]
-                w-[90%]
+                w-full
                 max-w-[410px]
                 flex-col
                 overflow-hidden
@@ -1094,32 +1087,37 @@ export function Navbar({ Data }: NavbarProps) {
               "
               aria-label="Mobile navigation"
             >
-
               <div
                 className="
-                  flex
-                  min-h-[70px]
-                  shrink-0
-                  items-center
-                  justify-between
-                  border-b
-                  border-gray-100
-                  bg-white
-                  px-4
-                  sm:px-5
-                "
+    flex
+    min-h-[120px]
+    shrink-0
+    items-center
+    justify-between
+    border-b
+    border-gray-100
+    bg-white
+    px-4
+    sm:px-5
+  "
               >
                 <Link
                   href="/"
                   onClick={handleLinkClick}
-                  className="flex items-center"
+                  className="flex min-w-0 items-center"
                 >
                   <Image
                     src="/image/logo.png"
                     alt="Ooshas Prep Logo"
-                    width={145}
-                    height={70}
-                    className="h-9 w-auto object-contain sm:h-10"
+                    width={240}
+                    height={110}
+                    priority
+                    className="
+        h-16
+        w-auto
+        object-contain
+        sm:h-[72px]
+      "
                   />
                 </Link>
 
@@ -1128,24 +1126,24 @@ export function Navbar({ Data }: NavbarProps) {
                   onClick={closeMobileMenu}
                   aria-label="Close navigation menu"
                   className="
-                    flex
-                    h-10
-                    w-10
-                    items-center
-                    justify-center
-                    rounded-full
-                    bg-gray-100
-                    text-gray-700
-                    transition-all
-                    hover:bg-orange-50
-                    hover:text-[#F36C45]
-                    active:scale-95
-                  "
+      flex
+      h-10
+      w-10
+      shrink-0
+      items-center
+      justify-center
+      rounded-full
+      bg-gray-100
+      text-gray-700
+      transition-all
+      hover:bg-orange-50
+      hover:text-[#F36C45]
+      active:scale-95
+    "
                 >
                   <X size={21} />
                 </button>
               </div>
-
 
               {user?.email && (
                 <div className="shrink-0 px-4 pt-4 sm:px-5">
@@ -1230,11 +1228,11 @@ export function Navbar({ Data }: NavbarProps) {
                   overflow-y-auto
                   overscroll-contain
                   px-4
-                  py-4
+                  py-
                   sm:px-5
                 "
               >
-                <div className="space-y-1">
+                <div className="">
                   {navItems.map((item: any) => {
                     const isExpanded = mobileDropdown === item.name;
 
@@ -1247,7 +1245,6 @@ export function Navbar({ Data }: NavbarProps) {
                           last:border-b-0
                         "
                       >
-                        
                         {!item.hasDropdown ? (
                           <Link
                             href={item.href}
@@ -1282,7 +1279,6 @@ export function Navbar({ Data }: NavbarProps) {
                           </Link>
                         ) : (
                           <>
-
                             <button
                               type="button"
                               onClick={() => handleDropdownToggle(item.name)}
@@ -1375,8 +1371,6 @@ export function Navbar({ Data }: NavbarProps) {
                                           key={sub.slug}
                                           className="overflow-hidden"
                                         >
-                                          
-
                                           <div
                                             className="
                                                 flex
@@ -1508,7 +1502,6 @@ export function Navbar({ Data }: NavbarProps) {
                                               </button>
                                             )}
                                           </div>
-
 
                                           <AnimatePresence initial={false}>
                                             {hasSublinks && isSubOpen && (
@@ -1647,8 +1640,6 @@ export function Navbar({ Data }: NavbarProps) {
                 </div>
               </div>
 
-
-
               <div
                 className="
                   shrink-0
@@ -1659,8 +1650,6 @@ export function Navbar({ Data }: NavbarProps) {
                   sm:p-5
                 "
               >
-                
-
                 <a
                   href="tel:+919166146538"
                   className="
@@ -1706,13 +1695,12 @@ export function Navbar({ Data }: NavbarProps) {
                   </div>
                 </a>
 
-
                 {!user?.email ? (
                   <button
                     type="button"
                     onClick={() => {
                       closeMobileMenu();
-                      UserNavigate
+                      UserNavigate;
                     }}
                     className="
                       flex
@@ -1721,7 +1709,7 @@ export function Navbar({ Data }: NavbarProps) {
                       items-center
                       justify-center
                       gap-2
-                      rounded-xl
+                 
                       bg-gradient-to-r
                       from-[#F36C45]
                       to-orange-500
@@ -1741,8 +1729,6 @@ export function Navbar({ Data }: NavbarProps) {
                     Get Started
                   </button>
                 ) : (
-                  
-
                   <div className="space-y-1.5">
                     {/* Dashboard */}
 
@@ -1854,10 +1840,7 @@ export function Navbar({ Data }: NavbarProps) {
         )}
       </AnimatePresence>
 
-
       <AuthDrawer isOpen={drawer} setIsOpen={setDrawer} />
     </>
   );
 }
-
-

@@ -203,7 +203,7 @@ function ConnectSection({ data }: { data?: any }) {
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-8 py-3 bg-[#FF5E3A] hover:bg-[#e54a2a] text-white text-sm font-semibold rounded-xl transition-colors whitespace-nowrap"
+                    className="px-8 py-3 bg-[#FF5E3A] hover:bg-[#e54a2a] text-white text-sm font-semibold transition-colors whitespace-nowrap"
                   >
                     {item.buttonText}
                   </a>
@@ -448,10 +448,10 @@ export default function ContactPage({ Data }: any) {
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
               <a
                 href="tel:+919166146538"
-                className="bg-[#FF5E3A] text-white font-medium py-3 px-8 rounded-lg shadow-md hover:bg-[#e54a2a] transition-colors">
+                className="bg-[#FF5E3A] text-white font-medium py-3 px-8 shadow-md hover:bg-[#e54a2a] transition-colors">
                 {ctaPrimaryButton}
               </a>
-              <a href="#form" className="border border-[#FF5E3A] text-[#FF5E3A] font-medium py-3 px-8 rounded-lg hover:bg-[#FFF6F2] transition-colors">
+              <a href="#form" className="border border-[#FF5E3A] text-[#FF5E3A] font-medium py-3 px-8 hover:bg-[#FFF6F2] transition-colors">
                 {ctaSecondaryButton}
               </a>
             </div>

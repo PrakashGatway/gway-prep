@@ -4,7 +4,6 @@ import { Send } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-
 function SectionHeading({
   eyebrow,
   title,
@@ -29,31 +28,33 @@ function SectionHeading({
       {/* <EditorContent content_data={description} /> */}
       <p
         className={`mt-3 text-xm leading-5 sm:text-sm ${dark ? "text-blue-100/60" : "text-slate-500"}`}
-        dangerouslySetInnerHTML={{__html : description}}
+        dangerouslySetInnerHTML={{ __html: description }}
       />
-        {/* {description}
+      {/* {description}
       </p> */}
     </div>
   );
 }
 
-
-function QuestionsSection({page = "calculator", heading, css }: any) {
+function QuestionsSection({ page = "calculator", heading, css }: any) {
   const [comments, setComments] = useState<any[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [Score, setScore] = useState("");
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
-  const {userInfo,user} = useGlobal()
+  const { userInfo, user } = useGlobal();
+  const [isExpand, setIsExpand] = useState(false);
+
+  const visibleComments = isExpand ? comments : comments?.slice(0, 5);
 
   // const page = window.location.href;
-console.log(user)
+  console.log(user);
   // Get comments
   const fetchComments = async () => {
     try {
       const data = await axiosInstance.get("/comments", { params: { page } });
-      setComments( data?.data?.data || []);
+      setComments(data?.data?.data || []);
     } catch (error) {
       console.error("Fetch comments error:", error);
     }
@@ -75,25 +76,24 @@ console.log(user)
     try {
       setLoading(true);
 
-      const data = await axiosInstance.post('/comments',{
-          name,
-          email,
-          comment,
-          page,
-          Score,
-          status : true
-      })
-      toast.success("Comment Post Successfully")
-      
-    //   if (data?.data?.comment) {
-    //     setComments((prev) => [data?.data?.comment, ...prev]);
-    //   }
+      const data = await axiosInstance.post("/comments", {
+        name,
+        email,
+        comment,
+        page,
+        Score,
+        status: true,
+      });
+      toast.success("Comment Post Successfully");
+
+      //   if (data?.data?.comment) {
+      //     setComments((prev) => [data?.data?.comment, ...prev]);
+      //   }
 
       fetchComments();
       setName("");
       setEmail("");
       setComment("");
-
     } catch (error) {
       console.error("Post comment error:", error);
       alert("Failed to post comment");
@@ -101,8 +101,6 @@ console.log(user)
       setLoading(false);
     }
   };
-
-  
 
   return (
     <section className={css || "bg-[#fcf3ed] px-4 py-12"}>
@@ -114,30 +112,27 @@ console.log(user)
         />
 
         {/* Comment Form */}
-       {/* ================= COMMENT BOX ================= */}
-<form
-  onSubmit={handleSubmit}
-  className="mt-6"
->
-  <div className="flex items-start gap-3">
-    {/* Current User Avatar */}
-    <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#FFF1EC] text-xs font-semibold text-[#F36C45]">
-      {user?.name
-        ?.split(" ")
-        .map((word: string) => word[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase() || "U"}
-    </div>
+        {/* ================= COMMENT BOX ================= */}
+        <form onSubmit={handleSubmit} className="mt-6">
+          <div className="flex items-start gap-3">
+            {/* Current User Avatar */}
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#FFF1EC] text-xs font-semibold text-[#F36C45]">
+              {user?.name
+                ?.split(" ")
+                .map((word: string) => word[0])
+                .join("")
+                .slice(0, 2)
+                .toUpperCase() || "U"}
+            </div>
 
-    {/* Comment Input */}
-    <div className="relative flex-1">
-      <textarea
-        value={comment}
-        onChange={(e) => setComment(e.target.value)}
-        placeholder="Write your comment here..."
-        rows={3}
-        className="
+            {/* Comment Input */}
+            <div className="relative flex-1">
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Write your comment here..."
+                rows={3}
+                className="
           w-full
           resize-none
           rounded-xl
@@ -158,13 +153,13 @@ console.log(user)
           focus:ring-2
           focus:ring-[#F36C45]/10
         "
-      />
+              />
 
-      {/* Send Button */}
-      <button
-        type="submit"
-        disabled={loading || !comment.trim()}
-        className="
+              {/* Send Button */}
+              <button
+                type="submit"
+                disabled={loading || !comment.trim()}
+                className="
           absolute
           bottom-3
           right-3
@@ -184,98 +179,95 @@ console.log(user)
           disabled:cursor-not-allowed
           disabled:opacity-40
         "
-        aria-label="Post comment"
-      >
-        <Send className="h-4 w-4" />
-      </button>
-    </div>
-  </div>
-</form>
-
-
-{/* ================= COMMENTS ================= */}
-<div className="mt-7">
-  {/* Header */}
-  <div className="mb-5 flex items-center gap-2">
-    <h3 className="text-base font-semibold text-gray-900">
-      Comments
-    </h3>
-
-    <span className="text-xs text-gray-400">
-      ({comments?.length || 0})
-    </span>
-  </div>
-
-  {/* Comments List */}
-  <div className="space-y-5">
-    {comments?.map((item: any) => {
-    
-      const formattedDate = new Date(
-        item.createdAt
-      ).toLocaleDateString("en-US", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      });
-
-      return (
-        <div
-          key={item._id}
-          className="flex items-start gap-3 border-b border-gray-200 pb-2"
-        >
-          {/* User Avatar */}
-          <div
-            className="
-              flex
-              h-9
-              w-9
-              shrink-0
-              items-center
-              justify-center
-              rounded-full
-              bg-[#FFF1EC]
-              text-xs
-              font-semibold
-              text-[#F36C45]
-            "
-          >
-            {user?.name
-        ?.split(" ")
-        .map((word: string) => word[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase() || "U"}
-          </div>
-
-          {/* Comment Content */}
-          <div className="min-w-0 flex-1">
-            {/* User + Date */}
-            <div className="flex flex-wrap items-center gap-2">
-              <h4 className="text-sm font-semibold text-gray-900">
-                {user?.name}
-              </h4>
-
-              <span className="text-[11px] text-gray-400">
-                {formattedDate}
-              </span>
+                aria-label="Post comment"
+              >
+                <Send className="h-4 w-4" />
+              </button>
             </div>
-
-            {/* Comment */}
-            <p className="mt-1 text-sm leading-6 text-gray-600">
-              {item.comment}
-            </p>
           </div>
-        </div>
-      );
-    })}
+        </form>
+
+        {/* ================= COMMENTS ================= */}
+        <div className="mt-7">
+          {/* Header */}
+          <div className="mb-5 flex items-center gap-2">
+            <h3 className="text-base font-semibold text-gray-900">Comments</h3>
+
+            <span className="text-xs text-gray-400">
+              ({comments?.length || 0})
+            </span>
+          </div>
+
+          {/* Comments List */}
+          <div className="space-y-5">
+            {visibleComments?.map((item: any) => {
+              const formattedDate = new Date(item.createdAt).toLocaleDateString(
+                "en-US",
+                {
+                  day: "numeric",
+                  month: "short",
+                  year: "numeric",
+                },
+              );
+
+              return (
+            <div
+  key={item._id}
+  className="flex w-full min-w-0 items-start gap-3 border-b border-gray-200 pb-2"
+>
+  {/* User Avatar */}
+  <div
+    className="
+      flex h-9 w-9 shrink-0 items-center justify-center
+      rounded-full bg-[#FFF1EC]
+      text-xs font-semibold text-[#F36C45]
+    "
+  >
+    {user?.name
+      ?.split(" ")
+      .map((word: string) => word[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase() || "U"}
+  </div>
+
+  {/* Comment Content */}
+  <div className="min-w-0 flex-1">
+    {/* User + Date */}
+    <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+      <h4 className="min-w-0 max-w-full truncate text-sm font-semibold text-gray-900">
+        {user?.name}
+      </h4>
+
+      <span className="shrink-0 text-[11px] text-gray-400">
+        {formattedDate}
+      </span>
+    </div>
+
+    {/* Comment */}
+    <p className="mt-1 break-words text-sm leading-6 text-gray-600">
+      {item.comment}
+    </p>
   </div>
 </div>
+              );
+            })}
+          </div>
 
-   
+          {/* Expand / Collapse */}
+          {comments?.length > 5 && (
+            <button
+              type="button"
+              onClick={() => setIsExpand(!isExpand)}
+              className="mt-4 text-sm font-semibold text-[#F36C45] hover:underline"
+            >
+              {isExpand ? "Show Less" : "Show All Comments"}
+            </button>
+          )}
+        </div>
       </div>
     </section>
   );
 }
-
 
 export default QuestionsSection;

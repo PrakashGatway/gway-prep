@@ -396,7 +396,7 @@ const {UserNavigate} = useGlobal()
               </p>
               <button
                 onClick={UserNavigate}
-                className="cursor-pointer mt-6 sm:mt-8 md:mt-10 bg-[#F36C45] hover:bg-[#ec5d34] transition-all duration-300 text-white font-semibold rounded-xl px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg shadow-lg w-full sm:w-auto"
+                className="cursor-pointer mt-6 sm:mt-8 md:mt-10 bg-[#F36C45] hover:bg-[#ec5d34] transition-all duration-300 text-white font-semibold px-6 sm:px-8 md:px-10 py-2.5 sm:py-3 md:py-4 text-sm sm:text-base md:text-lg shadow-lg w-full sm:w-auto"
               >
                 {videoData?.["button-text"] || "Watch Solution Now"}
               </button>
@@ -507,7 +507,7 @@ const {UserNavigate} = useGlobal()
                 onClick={UserNavigate}
               >
                 <button
-                  className={`cursor-pointer flex-1 rounded-xl py-2.5 px-3 sm:px-4 md:px-6 text-xs sm:text-sm font-semibold transition ${
+                  className={`cursor-pointer flex-1  py-2.5 px-3 sm:px-4 md:px-6 text-xs sm:text-sm font-semibold transition ${
                     item.filled
                       ? "bg-gradient-to-r from-[#FF6B00] to-[#F54B00] text-white hover:shadow-lg"
                       : "border-2 border-[#FFB184] text-[#F5632A] hover:bg-orange-50"
@@ -898,7 +898,7 @@ const {UserNavigate} = useGlobal()
             </p>
             <div className="flex justify-center lg:justify-end">
               <button
-                className="cursor-pointer bg-gray-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl flex gap-2 items-center text-sm sm:text-base"
+                className="cursor-pointer bg-gray-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 flex gap-2 items-center text-sm sm:text-base"
                 onClick={UserNavigate}
               >
                 <Play size={16} />{" "}

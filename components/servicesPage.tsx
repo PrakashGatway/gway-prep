@@ -172,7 +172,7 @@ function PracticeSection({ data }: { data: any }) {
       <div className="flex justify-center mt-6 md:mt-8">
         <button
           onClick={() => setIsPopupOpen(!isPopupOpen)}
-          className="cursor-pointer flex items-center gap-2 rounded-full bg-primary px-6 md:px-8 py-2.5 md:py-3 text-white font-semibold text-base md:text-lg shadow-md hover:bg-[#e85f35] transition"
+          className="cursor-pointer flex items-center gap-2 bg-primary px-6 md:px-8 py-2.5 md:py-3 text-white font-semibold text-base md:text-lg shadow-md hover:bg-[#e85f35] transition"
         >
           {buttonText}
           <ArrowRight size={16} className="md:w-[18px] md:h-[18px]" />
@@ -216,7 +216,7 @@ function PortalSection({ data }: { data: any }) {
             {buttonText && (
               <button
                 onClick={UserNavigate}
-                className="cursor-pointer mt-6 md:mt-8 bg-[#F36C45] px-6 md:px-8 py-2.5 md:py-3 text-white font-semibold rounded-full hover:bg-[#e85f35] transition"
+                className="cursor-pointer mt-6 md:mt-8 bg-[#F36C45] px-6 md:px-8 py-2.5 md:py-3 text-white font-semibold hover:bg-[#e85f35] transition"
               >
                 {buttonText}
               </button>
@@ -358,7 +358,7 @@ function AIStackSection({ data }: { data: any }) {
           <div className="flex justify-center mt-10 md:mt-14">
             <button
               onClick={UserNavigate}
-              className="cursor-pointer rounded-full bg-[#F2643D] hover:bg-[#E95D35] transition-all px-6 md:px-8 py-3 md:py-4 font-semibold text-white shadow-lg text-sm md:text-base"
+              className="cursor-pointer bg-[#F2643D] hover:bg-[#E95D35] transition-all px-6 md:px-8 py-3 md:py-4 font-semibold text-white shadow-lg text-sm md:text-base"
             >
               {buttonText}
             </button>
@@ -497,7 +497,7 @@ function EnvironmentSection({ data }: { data: any }) {
           <div className="flex justify-center md:justify-end mt-2 md:mt-4">
             <button
               onClick={UserNavigate}
-              className="rounded-full cursor-pointer bg-[#F2643D] hover:bg-[#e45b33] transition-all text-white font-semibold px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base"
+              className=" cursor-pointer bg-[#F2643D] hover:bg-[#e45b33] transition-all text-white font-semibold px-6 md:px-8 py-2.5 md:py-3 text-sm md:text-base"
             >
               {buttonText}
             </button>
@@ -708,7 +708,7 @@ function ResourcesSection({ data }: { data: any }) {
           <div className="text-center mt-8">
             <button
               onClick={UserNavigate}
-              className="cursor-pointer bg-primary text-white px-6 md:px-8 py-2.5 md:py-3 rounded-full font-semibold text-sm md:text-base shadow-sm transition"
+              className="cursor-pointer bg-primary text-white px-6 md:px-8 py-2.5 md:py-3 font-semibold text-sm md:text-base shadow-sm transition"
             >
               {buttonText} →
             </button>
@@ -769,7 +769,7 @@ function SupportSection({ data }: { data: any }) {
             {card.button && (
               <button
                 onClick={() => router.push(`${card?.url}`)}
-                className={`cursor-pointer mt-2 md:mt-4 h-12 md:h-14 rounded-2xl text-sm md:text-[17px] font-semibold transition-all duration-300 flex items-center justify-center gap-2
+                className={`cursor-pointer mt-2 md:mt-4 h-12 md:h-14 text-sm md:text-[17px] font-semibold transition-all duration-300 flex items-center justify-center gap-2
                   ${
                     card.primary
                       ? "bg-[#FE6610] text-white hover:bg-[#e95a08]"
@@ -961,7 +961,7 @@ function CTASection({ data }: { data: any }) {
             {primaryButton && (
               <button
                 onClick={() => setIsPopupOpen(true)}
-                className="cursor-pointer bg-white text-[#222] px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold text-sm md:text-lg hover:scale-105 transition-all duration-300"
+                className="cursor-pointer bg-white text-[#222] px-6 md:px-8 py-3 md:py-4 font-semibold text-sm md:text-lg hover:scale-105 transition-all duration-300"
               >
                 {primaryButton}
               </button>
@@ -969,7 +969,7 @@ function CTASection({ data }: { data: any }) {
             {secondaryButton && (
               <button
                 onClick={() => route.push("/auth")}
-                className="cursor-pointer bg-[#3D1E16] text-white px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold text-sm md:text-lg hover:bg-[#2B140F] hover:scale-105 transition-all duration-300"
+                className="cursor-pointer bg-[#3D1E16] text-white px-6 md:px-8 py-3 md:py-4 font-semibold text-sm md:text-lg hover:bg-[#2B140F] hover:scale-105 transition-all duration-300"
               >
                 {secondaryButton}
               </button>

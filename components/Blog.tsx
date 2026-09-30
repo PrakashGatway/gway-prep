@@ -498,7 +498,7 @@ export default function BlogPage({
       <main className="mx-auto max-w-7xl px-6 xl:px-0 py-14">
         {/* Left column */}
         <div>
-          <div className="flex gap-4 justify-between mb-6">
+          <div className="xlflex gap-4 justify-between mb-6 ">
             {/* Latest blogs */}
             <h2 className="mb-5 text-left text-2xl font-bold md:text-3xl lg:text-4xl">
               Latest <span className="text-[#F0642C]">Blogs</span>

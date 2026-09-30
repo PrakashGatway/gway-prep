@@ -22,6 +22,7 @@ import { Consultants } from "@/components/destinations-consultants";
 import EditorContent from "../editorContent";
 import axiosInstance from "@/app/lib/axios";
 import QuestionsSection from "../comment";
+import PopupModal from "../popupModel";
 
 const ORANGE = "#ff7a2a";
 const NAVY = "#0b1e3f";
@@ -551,93 +552,113 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
 
   return (
     <main className="min-h-screen bg-[#fff] text-[#0b1e3f]">
-      <Hero data={pageInfo?.sections?.hero?.fields} />
+  <Hero data={pageInfo?.sections?.hero?.fields} />
 
-      <div className="mx-auto max-w-6xl px-4 pb-4 pt-8">
-        <div
-          className={`hidden flex flex-wrap justify-center gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm`}
+  <div className="mx-auto max-w-6xl px-4 pb-4 pt-8 sm:px-5 lg:px-6">
+    <div
+      className={`hidden flex flex-wrap justify-center gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm`}
+    >
+      {(Object.keys(examConfigs) as ExamType[]).map((exam) => (
+        <button
+          key={exam}
+          onClick={() => setSelectedExam(exam)}
+          className={`rounded-lg px-5 py-2.5 text-sm font-bold transition ${
+            selectedExam === exam
+              ? "bg-[#0b1e3f] text-white"
+              : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+          }`}
         >
-          {(Object.keys(examConfigs) as ExamType[]).map((exam) => (
-            <button
-              key={exam}
-              onClick={() => setSelectedExam(exam)}
-              className={`rounded-lg px-5 py-2.5 text-sm font-bold transition ${
-                selectedExam === exam
-                  ? "bg-[#0b1e3f] text-white"
-                  : "bg-slate-50 text-slate-600 hover:bg-slate-100"
-              }`}
-            >
-              {examConfigs[exam].label}
-            </button>
-          ))}
-        </div>
-      </div>
+          {examConfigs[exam].label}
+        </button>
+      ))}
+    </div>
+  </div>
 
-      <ScoreSection
-        data = {pageInfo?.sections?.calculator}
-        config={config}
-        sectionScores={sectionScores}
-        onScoreChange={handleScoreChange}
-        onAdaptiveChange={handleAdaptiveChange}
-        onCalculate={handleCalculate}
-        result={result && result.exam === selectedExam ? result : null}
-      />
+  <ScoreSection
+    data={pageInfo?.sections?.calculator}
+    config={config}
+    sectionScores={sectionScores}
+    onScoreChange={handleScoreChange}
+    onAdaptiveChange={handleAdaptiveChange}
+    onCalculate={handleCalculate}
+    result={result && result.exam === selectedExam ? result : null}
+  />
 
-      <ScoreVisualizationSection
-        data = {pageInfo?.sections?.chart}
-        config={config}
-        result={result && result.exam === selectedExam ? result : null}
-      />
+  <ScoreVisualizationSection
+    data={pageInfo?.sections?.chart}
+    config={config}
+    result={result && result.exam === selectedExam ? result : null}
+  />
 
-      <WhySection data={pageInfo?.sections?.whySection?.fields} />
-      <DifferenceSection data={pageInfo?.sections?.differenceSection?.fields} />
-      <BeyondNumberSection data={pageInfo?.sections?.beyondNumber?.fields} />
-      <QuestionsSection page={'Calculator'} heading={'Student Questions & Comments'} />
-      <Consultants data={pageInfo?.sections?.faq} />
-      <BottomCTA data={pageInfo?.sections?.bottomCTA?.fields} />
-    </main>
+  <WhySection
+    data={pageInfo?.sections?.whySection?.fields}
+  />
+
+  <DifferenceSection
+    data={pageInfo?.sections?.differenceSection?.fields}
+  />
+
+  <BeyondNumberSection
+    data={pageInfo?.sections?.beyondNumber?.fields}
+  />
+
+  <QuestionsSection
+    page="Calculator"
+    heading="Student Questions & Comments"
+  />
+
+  <Consultants
+    data={pageInfo?.sections?.faq}
+  />
+
+  <BottomCTA
+    data={pageInfo?.sections?.bottomCTA?.fields}
+  />
+</main>
   );
 }
 
 function Hero({ data }: { data: any }) {
   const title = data?.title || "";
-  const [firstPart, ...rest] = title.split("&");
+  const [firstPart, ...rest] = title.split("||");
 
   return (
-    <section className="relative overflow-hidden bg-[#fcf3ed]">
-      <div className="relative mx-auto max-w-7xl px-4 pb-14 pt-16 text-center sm:px-6 lg:pb-20 lg:pt-20">
-        <h1 className="mx-auto max-w-7xl text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
-          {rest.length > 0 ? (
-            <>
-              {firstPart.trim()} &
-              <span style={{ color: ORANGE }}>{rest.join("&")}</span>
-            </>
-          ) : (
-            title
-          )}
-        </h1>
+  <section className="relative overflow-hidden bg-[#fcf3ed]">
+  <div className="relative mx-auto max-w-7xl px-4 pb-12 pt-12 text-center sm:px-6 sm:pb-14 sm:pt-16 lg:pb-20 lg:pt-20">
+    <h1 className="mx-auto max-w-7xl text-3xl font-extrabold leading-[1.15] sm:text-4xl lg:text-5xl">
+      {rest.length > 0 ? (
+        <>
+          {firstPart.trim()} &{" "}
+          <span style={{ color: "#f36d45" }}>
+            {rest.join("&")}
+          </span>
+        </>
+      ) : (
+        title
+      )}
+    </h1>
 
-        <div
-          className=" mt-5  text-sm leading-6 sm:text-base"
-          dangerouslySetInnerHTML={{
-            __html: data?.description || "",
-          }}
-        />
+    <div
+      className="mx-auto mt-5 max-w-3xl text-sm leading-6 sm:text-base sm:leading-7"
+      dangerouslySetInnerHTML={{
+        __html: data?.description || "",
+      }}
+    />
 
-        <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-          {data?.primaryButtonText && (
-            <a
-              href={data?.primaryButtonUrl || "#calculator"}
-              className="inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5"
-              style={{ background: "#F36D45" }}
-            >
-              {data.primaryButtonText}
-              <ArrowRight className="h-4 w-4" />
-            </a>
-          )}
-        </div>
-      </div>
-    </section>
+    <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+      {data?.primaryButtonText && (
+        <a
+          href={data?.primaryButtonUrl || "#calculator"}
+          className="inline-flex w-full items-center justify-center gap-2 px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5 sm:w-auto"
+          style={{ background: "#F36D45" }}
+        >
+          {data.primaryButtonText}
+          <ArrowRight className="h-4 w-4" />
+        </a>
+      )}
+    </div>
+  </div>
+</section>
   );
 }
 
@@ -949,7 +970,7 @@ function ScoreSection({
             <button
               type="button"
               onClick={onCalculate}
-              className="mt-5 px-4  rounded-lg py-3 text-xm font-bold text-white transition hover:brightness-95"
+              className="mt-5 px-4 py-3 text-xm font-bold text-white transition hover:brightness-95"
               style={{ background: "#F36D45" }}
             >
               Calculate My Score
@@ -1418,6 +1439,7 @@ function BandGaugeChart({
 }
 
 function WhySection({ data }: { data: any }) {
+  const [isPopupOpen,setisPopupOpen] = useState(false)
   return (
     <section className="bg-[#fcf3ed] px-4 py-16 text-[#0b1e3f]">
       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center">
@@ -1437,7 +1459,8 @@ function WhySection({ data }: { data: any }) {
             }}
           />
           <button
-            className="mt-7 rounded-lg px-5 py-3 text-xm font-bold text-white"
+            className="mt-7  px-5 py-3 text-xm font-bold text-white"
+            onClick={() => setisPopupOpen(true)}
             style={{ background: "#F36D45" }}
           >
             Start Your Preparation
@@ -1457,6 +1480,8 @@ function WhySection({ data }: { data: any }) {
           ))}
         </div>
       </div>
+            <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setisPopupOpen}/>
+
     </section>
   );
 }
@@ -1538,7 +1563,10 @@ function BeyondNumberSection({ data }: { data: any }) {
 }
 
 function BottomCTA({ data }: { data: any }) {
+  const [isPopupOpen,setisPopupOpen] = useState(false)
+
   return (
+    <div>
     <section id="contact" className="bg-white px-4 pb-5">
       <div
         className="mx-auto max-w-7xl overflow-hidden rounded-xl px-6 py-10 text-center sm:px-10"
@@ -1557,8 +1585,8 @@ function BottomCTA({ data }: { data: any }) {
         <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
           {data?.primaryButtonText && (
             <a
-              href={data?.primaryButtonUrl || "#calculator"}
-              className="rounded-lg bg-[#0b1e3f] px-5 py-3 text-sm font-bold text-white"
+              onClick={() => setisPopupOpen(true)}
+              className=" bg-[#0b1e3f] px-5 py-3 text-sm font-bold text-white cursor-pointer"
             >
               {data.primaryButtonText}
             </a>
@@ -1567,7 +1595,7 @@ function BottomCTA({ data }: { data: any }) {
           {data?.secondaryButtonText && (
             <a
               href={data?.secondaryButtonUrl || "#"}
-              className="rounded-lg bg-white px-5 py-3 text-sm font-bold text-[#0b1e3f]"
+              className=" bg-white px-5 py-3 text-sm font-bold text-[#0b1e3f]"
             >
               {data.secondaryButtonText}
             </a>
@@ -1575,6 +1603,9 @@ function BottomCTA({ data }: { data: any }) {
         </div>
       </div>
     </section>
+      <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setisPopupOpen}/>
+      </div>
+
   );
 }
 
