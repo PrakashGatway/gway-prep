@@ -22,22 +22,27 @@ interface HomeCountUpProps {
   }>;
 }
 
-export const HomeCountUp: React.FC<HomeCountUpProps> = ({ 
-  data, 
+export const HomeCountUp: React.FC<HomeCountUpProps> = ({
+  data,
   className = "",
-  items 
+  items,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
+
   const [isVisible, setIsVisible] = useState(false);
   const [counterKey, setCounterKey] = useState(0);
 
-  // Track if container is in view
-  const isInView = useInView(containerRef, { 
-    once: false, 
-    amount: 0.2 
+  /*
+   * Detect when stats section enters viewport
+   */
+  const isInView = useInView(containerRef, {
+    once: false,
+    amount: 0.2,
   });
 
-  // Control animation state
+  /*
+   * Start / stop counter animation
+   */
   useEffect(() => {
     if (isInView) {
       setIsVisible(true);
@@ -45,83 +50,203 @@ export const HomeCountUp: React.FC<HomeCountUpProps> = ({
       const timer = setTimeout(() => {
         setIsVisible(false);
       }, 300);
+
       return () => clearTimeout(timer);
     }
   }, [isInView]);
 
-  // Force re-render when visibility changes
+  /*
+   * Restart CountUp whenever section becomes visible
+   */
   useEffect(() => {
     if (isVisible) {
-      setCounterKey(prev => prev + 1);
+      setCounterKey((prev) => prev + 1);
     }
   }, [isVisible]);
 
-  // Default items if not provided
-  const defaultItems = [
-    { key: 'experience' },
-    { key: 'Happystudent' },
-    { key: 'Rating' },
-    { key: 'Lectured' }
+  /*
+   * -----------------------------------------
+   * GET STATS FROM API RESPONSE
+   * -----------------------------------------
+   *
+   * data.fields:
+   *
+   * Happystudent: "Happy Students ||50,000+"
+   * Lectured: "Total Hours Lectured ||25,000+"
+   * Rating: "Overall Rating ||5"
+   * experience: "Years of Experience ||16+"
+   */
+
+  const defaultStats = [
+    { key: "experience" },
+    { key: "Happystudent" },
+    { key: "Rating" },
+    { key: "Lectured" },
   ];
 
-  const countItems = items || defaultItems;
+  /*
+   * If custom items are passed, use them.
+   * Otherwise use stats from API response.
+   */
+  const countItems = items?.length ? items : defaultStats;
 
-  // Helper function to get value from data
-  const getItemData = (key: string) => {
-    if (items) {
-      // If custom items are provided, use their values directly
-      const item = items.find(item => item.key === key);
+  /*
+   * -----------------------------------------
+   * PARSE API STAT DATA
+   * -----------------------------------------
+   */
+  const getItemData = (item: {
+    key: string;
+    label?: string;
+    value?: number;
+    suffix?: string;
+  }) => {
+    /*
+     * If custom items are provided
+     */
+    if (items?.length) {
       return {
-        label: item?.label || key,
-        value: item?.value || 0,
-        suffix: item?.suffix || (key === "Rating" ? '/5' : '+')
-      };
-    } else {
-      // Use data from props
-      const rawValue = data?.fields?.[key] || "";
-      const parts = rawValue.split("||");
-      return {
-        label: parts[0] || key,
-        value: parseInt(parts[1]) || 0,
-        suffix: key === "Rating" ? '/5' : '+'
+        label: item.label || item.key,
+        value: item.value || 0,
+        suffix:
+          item.suffix ||
+          (item.key === "Rating" ? "/5" : "+"),
       };
     }
+
+    /*
+     * Get value from API
+     */
+    const rawValue = data?.fields?.[item.key] || "";
+
+    /*
+     * Example:
+     *
+     * "Happy Students ||50,000+"
+     *
+     * becomes:
+     *
+     * ["Happy Students ", "50,000+"]
+     */
+    const parts = rawValue.split("||");
+
+    const label = parts[0]?.trim() || item.key;
+
+    /*
+     * Remove commas, +, %, etc.
+     *
+     * "50,000+" -> "50000"
+     * "25,000+" -> "25000"
+     * "16+"     -> "16"
+     * "5"       -> "5"
+     */
+    const numericValue = Number(
+      parts[1]?.replace(/[^\d.]/g, "") || 0
+    );
+
+    return {
+      label,
+      value: numericValue,
+      suffix: item.key === "Rating" ? "/5" : "+",
+    };
   };
 
+  console.log("HomeCountUp data:", data);
+
   return (
-    <div className={className}>
+    <div className={`w-full ${className}`}>
       <motion.div
         ref={containerRef}
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, amount: 0.2 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-        className="grid grid-cols-2 lg:grid-cols-4 justify-center  mx-4 md:mx-0 gap-6 md:gap-16 bg-white p-4 md:p-6 
-        rounded-[20px] md:rounded-[26px] shadow-sm "
+        initial={{
+          opacity: 0,
+          y: 20,
+        }}
+        whileInView={{
+          opacity: 1,
+          y: 0,
+        }}
+        viewport={{
+          once: false,
+          amount: 0.2,
+        }}
+        transition={{
+          duration: 0.6,
+          delay: 0.2,
+        }}
+        className="
+          mx-4
+          grid
+          grid-cols-2
+          justify-center
+          gap-6
+          rounded-[20px]
+          bg-white
+          p-4
+          shadow-sm
+          md:mx-0
+          md:gap-16
+          md:rounded-[26px]
+          md:p-6
+          lg:grid-cols-4
+        "
       >
         {countItems.map((item, idx) => {
-          const { label, value, suffix } = getItemData(item.key);
-          
+          const {
+            label,
+            value,
+            suffix,
+          } = getItemData(item);
+
           return (
-            <div key={idx} className="relative w-full sm:w-[15rem] md:min-w-[18rem] ">
-              {/* <div className="absolute w-full h-full border-2 border-[#F36C45] rounded-[20px] md:rounded-[26px] -rotate-3 md:-rotate-5" /> */}
-              <div className="text-center relative">
-                <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-[#F36C45] mb-1 md:mb-2">
+            <div
+              key={`${item.key}-${idx}`}
+              className="
+                relative
+                w-full
+                sm:w-[15rem]
+                md:min-w-[18rem]
+              "
+            >
+              <div className="relative text-center">
+                {/* Number */}
+                <p
+                  className="
+                    mb-1
+                    text-2xl
+                    font-bold
+                    text-[#F36C45]
+                    sm:text-3xl
+                    md:mb-2
+                    md:text-4xl
+                  "
+                >
                   {isVisible ? (
-                    <CountUp 
+                    <CountUp
                       key={`${item.key}-${counterKey}`}
-                      end={value} 
+                      end={value}
                       duration={1.5}
                       startOnMount={true}
                       delay={0.1 * idx}
                       preserveValue={false}
+                      separator=","
                     />
                   ) : (
                     <span>0</span>
                   )}
+
                   {suffix}
                 </p>
-                <p className="text-gray-600 text-sm sm:text-base md:text-xl capitalize">
+
+                {/* Label */}
+                <p
+                  className="
+                    text-sm
+                    capitalize
+                    text-gray-600
+                    sm:text-base
+                    md:text-xl
+                  "
+                >
                   {label}
                 </p>
               </div>

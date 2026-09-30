@@ -23,6 +23,7 @@ import EditorContent from "../editorContent";
 import axiosInstance from "@/app/lib/axios";
 import QuestionsSection from "../comment";
 import PopupModal from "../popupModel";
+import { useRouter } from "next/navigation";
 
 const ORANGE = "#ff7a2a";
 const NAVY = "#0b1e3f";
@@ -1440,6 +1441,8 @@ function BandGaugeChart({
 
 function WhySection({ data }: { data: any }) {
   const [isPopupOpen,setisPopupOpen] = useState(false)
+  const router = useRouter();
+  console.log(data,"hjkjk")
   return (
     <section className="bg-[#fcf3ed] px-4 py-16 text-[#0b1e3f]">
       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center">
@@ -1460,10 +1463,10 @@ function WhySection({ data }: { data: any }) {
           />
           <button
             className="mt-7  px-5 py-3 text-xm font-bold text-white"
-            onClick={() => setisPopupOpen(true)}
+            onClick={()=>router.push(data.buttonUrl)}
             style={{ background: "#F36D45" }}
           >
-            Start Your Preparation
+            {data?.buttonText ||"Start Your Preparation"}
           </button>
         </div>
         <div className="grid grid-cols-2 gap-3">

@@ -23,7 +23,8 @@ function SectionHeading({
       <h2
         className={`mt-3 text-2xl font-extrabold leading-tight sm:text-3xl ${dark ? "text-white" : "text-[#0b1e3f]"}`}
       >
-        {title}
+        <span>{title.split("&")[0]}</span>
+        <span className="text-[#f36d45]">&{title.split("&")[1]}</span>
       </h2>
       {/* <EditorContent content_data={description} /> */}
       <p
@@ -37,13 +38,13 @@ function SectionHeading({
 }
 
 function QuestionsSection({ page = "calculator", heading, css }: any) {
+  const { userInfo, user } = useGlobal();
   const [comments, setComments] = useState<any[]>([]);
-  const [name, setName] = useState("");
+  const [name, setName] = useState(user?.name&&user?.name || "User");
   const [email, setEmail] = useState("");
   const [Score, setScore] = useState("");
   const [comment, setComment] = useState("");
   const [loading, setLoading] = useState(false);
-  const { userInfo, user } = useGlobal();
   const [isExpand, setIsExpand] = useState(false);
 
   const visibleComments = isExpand ? comments : comments?.slice(0, 5);
@@ -104,7 +105,7 @@ function QuestionsSection({ page = "calculator", heading, css }: any) {
 
   return (
     <section className={css || "bg-[#fcf3ed] px-4 py-12"}>
-      <div className=" max-w-7xl mx-auto">
+      <div className=" max-w-6xl mx-auto bg-white p-6 rounded-2xl">
         <SectionHeading
           eyebrow="COMMUNITY"
           title={heading || "Student Questions & Comments"}
@@ -113,10 +114,13 @@ function QuestionsSection({ page = "calculator", heading, css }: any) {
 
         {/* Comment Form */}
         {/* ================= COMMENT BOX ================= */}
-        <form onSubmit={handleSubmit} className="mt-6">
+        <form
+          onSubmit={handleSubmit}
+          className="mt-6 bg-orange-50 p-6 rounded-2xl"
+        >
           <div className="flex items-start gap-3">
             {/* Current User Avatar */}
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[#FFF1EC] text-xs font-semibold text-[#F36C45]">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white text-xs font-semibold text-[#F36C45]">
               {user?.name
                 ?.split(" ")
                 .map((word: string) => word[0])
@@ -135,6 +139,7 @@ function QuestionsSection({ page = "calculator", heading, css }: any) {
                 className="
           w-full
           resize-none
+          bg-white
           rounded-xl
           border
           border-slate-200
@@ -199,7 +204,7 @@ function QuestionsSection({ page = "calculator", heading, css }: any) {
           </div>
 
           {/* Comments List */}
-          <div className="space-y-5">
+          <div className="space-y-2">
             {visibleComments?.map((item: any) => {
               const formattedDate = new Date(item.createdAt).toLocaleDateString(
                 "en-US",
@@ -211,45 +216,45 @@ function QuestionsSection({ page = "calculator", heading, css }: any) {
               );
 
               return (
-            <div
-  key={item._id}
-  className="flex w-full min-w-0 items-start gap-3 border-b border-gray-200 pb-2"
->
-  {/* User Avatar */}
-  <div
-    className="
+                <div
+                  key={item._id}
+                  className="flex w-full min-w-0 items-start gap-1 border border-orange-200 rounded-xl p-4 shadow-md shadow-orange-500/10"
+                >
+                  {/* User Avatar */}
+                  <div
+                    className="
       flex h-9 w-9 shrink-0 items-center justify-center
       rounded-full bg-[#FFF1EC]
       text-xs font-semibold text-[#F36C45]
     "
-  >
-    {user?.name
-      ?.split(" ")
-      .map((word: string) => word[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase() || "U"}
-  </div>
+                  >
+                    {user?.name
+                      ?.split(" ")
+                      .map((word: string) => word[0])
+                      .join("")
+                      .slice(0, 2)
+                      .toUpperCase() || "U"}
+                  </div>
 
-  {/* Comment Content */}
-  <div className="min-w-0 flex-1">
-    {/* User + Date */}
-    <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-      <h4 className="min-w-0 max-w-full truncate text-sm font-semibold text-gray-900">
-        {user?.name}
-      </h4>
+                  {/* Comment Content */}
+                  <div className="min-w-0 flex-1">
+                    {/* User + Date */}
+                    <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+                      <h4 className="min-w-0 max-w-full truncate text-sm font-semibold text-gray-900">
+                        {item?.name}
+                      </h4>
 
-      <span className="shrink-0 text-[11px] text-gray-400">
-        {formattedDate}
-      </span>
-    </div>
+                      <span className="shrink-0 text-[11px] text-gray-400">
+                        {formattedDate}
+                      </span>
+                    </div>
 
-    {/* Comment */}
-    <p className="mt-1 break-words text-sm leading-6 text-gray-600">
-      {item.comment}
-    </p>
-  </div>
-</div>
+                    {/* Comment */}
+                    <p className="mt-1 break-words text-sm leading-6 text-gray-600">
+                      {item.comment}
+                    </p>
+                  </div>
+                </div>
               );
             })}
           </div>
