@@ -178,10 +178,9 @@ const GreForm: React.FC<GreFormProps> = ({ studentsData,formSection }) => {
 
                               {/* Scrollable Message */}
                               <div className="flex-1 overflow-y-auto pr-2 mt-2 custom-scrollbar">
-                                <p className="text-sm sm:text-base lg:text-lg leading-[1.5] italic font-serif text-[#2C2C2C]">
-                                  {ele.message ||
-                                    "Data Insights was the section I ignored longest-turns out it was worth the most points."}
-                                </p>
+                                <div className="text-sm sm:text-base lg:text-lg leading-[1.5] italic font-serif text-[#2C2C2C]" dangerouslySetInnerHTML={{__html: ele.message ||
+                                    "Data Insights was the section I ignored longest-turns out it was worth the most points."}}/>
+                        
                               </div>
 
                               {/* Score */}
