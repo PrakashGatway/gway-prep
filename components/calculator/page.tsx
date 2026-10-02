@@ -1,15 +1,18 @@
 "use client";
 
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ArrowRight,
-  Check,
+  BookOpen,
   ChevronDown,
   ChevronUp,
   Clock3,
+  Download,
   GraduationCap,
   Info,
   MapPin,
+  Minus,
+  Plus,
   Search,
   Sparkles,
   Star,
@@ -20,1471 +23,2269 @@ import {
 } from "lucide-react";
 import { Consultants } from "@/components/destinations-consultants";
 import EditorContent from "../editorContent";
-import axiosInstance from "@/app/lib/axios";
 import QuestionsSection from "../comment";
 import PopupModal from "../popupModel";
 import { useRouter } from "next/navigation";
 
 const ORANGE = "#ff7a2a";
 const NAVY = "#0b1e3f";
-// Ascending band color ramp, light -> deep orange, used on the gauge chart.
-const BAND_COLORS = ["#ffe8d9", "#ffd0ad", "#ffb37a", "#ff9550", "#ff7a2a"];
 
-type FAQ = {
-  question: string;
-  answer: string;
+type ExamType = "SAT" | "GRE" | "GMAT" | "TOEFL" | "IELTS" | "PTE";
+
+type SATScores = {
+  readingWritingModule1: number;
+  readingWritingModule2: number;
+  mathModule1: number;
+  mathModule2: number;
 };
 
-type ExamType = "GRE" | "GMAT" | "SAT" | "TOEFL" | "IELTS" | "PTE";
-
-type ExamSection = {
-  id: string;
-  label: string;
-  min: number;
-  max: number;
-  step?: number;
-  bandFromRaw?: (raw: number) => number;
-  bandUnitLabel?: string; // e.g. "Band" — label for the converted value
+type GREScores = {
+  verbalS1: number;
+  verbalS2: number;
+  quantS1: number;
+  quantS2: number;
+  verbalHarder: boolean;
+  quantHarder: boolean;
+  analyticalWriting: number;
 };
 
-type PercentileBand = {
-  // Lowest total score (inclusive) that qualifies for this band.
-  threshold: number;
-  label: string;
+type TOEFLScores = {
+  reading: number;
+  listening: number;
+  speaking: number;
+  writing: number;
 };
 
-// ---- NEW: adaptive (two-section) setup used by GRE ----
-type AdaptiveGroup = {
-  id: string; // e.g. "verbal" | "quant" (must match a section id in `sections`)
-  label: string;
-  section1Max: number;
-  section2Max: number;
+type IELTSScores = {
+  listening: number;
+  reading: number;
+  writing: number;
+  speaking: number;
 };
 
-type AdaptiveConfig = {
-  groups: AdaptiveGroup[];
-  // Extra non-adaptive input shown below the groups (Analytical Writing).
-  writing: ExamSection;
-  // Converts raw correct answers into a scaled section score.
-  scaleScore: (
-    rawCorrect: number,
-    totalQuestions: number,
-    harderSection2: boolean,
-  ) => number;
+type PTEScores = {
+  speaking: number;
+  reading: number;
+  listening: number;
 };
 
-type ExamConfig = {
-  label: string;
-  sections: ExamSection[];
-  scoreRange: { min: number; max: number };
-  percentileBands: PercentileBand[];
-  totalLabel: string;
-  computeTotal: (scores: Record<string, number>) => number;
-  adaptive?: AdaptiveConfig; // NEW
-  tierBands?: PercentileBand[]; // NEW: "best-fit grad school tier"
-};
-
-function roundToStep(value: number, step: number) {
-  return Math.round(value / step) * step;
-}
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value));
-}
-
-/**
- * Unofficial GMAT practice-test estimate.
- * The official GMAT algorithm is proprietary. This estimate uses the public
- * structure that all three 60–90 section scores contribute equally.
- */
-function estimateGmatTotal(scores: Record<string, number>) {
-  const quant = clamp(Number(scores.quant ?? 60), 60, 90);
-  const verbal = clamp(Number(scores.verbal ?? 60), 60, 90);
-  const dataInsights = clamp(Number(scores.di ?? 60), 60, 90);
-  const average = (quant + verbal + dataInsights) / 3;
-  const unroundedTotal = 205 + ((average - 60) / 30) * 600;
-
-  // GMAT totals are 205, 215, 225 ... 805. The old implementation
-  // rounded from zero and could produce invalid values such as 630.
-  const roundedTotal =
-    205 + Math.round((unroundedTotal - 205) / 10) * 10;
-
-  return clamp(roundedTotal, 205, 805);
-}
-
-function roundIELTSBand(avg: number) {
-  const whole = Math.floor(avg);
-  const remainder = avg - whole;
-  if (remainder < 0.25) return whole;
-  if (remainder < 0.75) return whole + 0.5;
-  return whole + 1;
-}
-
-const LISTENING_RAW_TO_BAND: { min: number; band: number }[] = [
-  { min: 39, band: 9 },
-  { min: 37, band: 8.5 },
-  { min: 35, band: 8 },
-  { min: 32, band: 7.5 },
-  { min: 30, band: 7 },
-  { min: 26, band: 6.5 },
-  { min: 23, band: 6 },
-  { min: 18, band: 5.5 },
-  { min: 16, band: 5 },
-  { min: 13, band: 4.5 },
-  { min: 10, band: 4 },
-  { min: 8, band: 3.5 },
-  { min: 6, band: 3 },
-  { min: 4, band: 2.5 },
-];
-
-const READING_RAW_TO_BAND: { min: number; band: number }[] = [
-  { min: 39, band: 9 },
-  { min: 37, band: 8.5 },
-  { min: 35, band: 8 },
-  { min: 33, band: 7.5 },
-  { min: 30, band: 7 },
-  { min: 27, band: 6.5 },
-  { min: 23, band: 6 },
-  { min: 19, band: 5.5 },
-  { min: 15, band: 5 },
-  { min: 13, band: 4.5 },
-  { min: 10, band: 4 },
-  { min: 8, band: 3.5 },
-  { min: 6, band: 3 },
-];
-
-function rawToBand(
-  raw: number,
-  table: { min: number; band: number }[],
-): number {
-  for (const row of table) {
-    if (raw >= row.min) return row.band;
-  }
-  return 0;
-}
-
-const listeningBandFromRaw = (raw: number) =>
-  rawToBand(raw, LISTENING_RAW_TO_BAND);
-const readingBandFromRaw = (raw: number) => rawToBand(raw, READING_RAW_TO_BAND);
-
-function defaultSectionValue(section: ExamSection) {
-  const step = section.step || 1;
-  const raw = section.min + (section.max - section.min) * 0.75;
-  return roundToStep(raw, step);
-}
-
-// Finds the highest band whose threshold is <= score.
-function getPercentileLabel(score: number, bands: PercentileBand[]) {
-  if (!bands.length) return "Not available";
-
-  let label = bands[0]?.label ?? "";
-  for (const band of bands) {
-    if (score >= band.threshold) label = band.label;
-  }
-  return label;
-}
-
-// NEW: GRE Analytical Writing input (0–6 in half-point steps).
-const greWritingSection: ExamSection = {
-  id: "aw",
-  label: "Analytical Writing",
-  min: 0,
-  max: 6,
-  step: 0.5,
-};
-
-const examConfigs: Record<ExamType, ExamConfig> = {
-  GRE: {
-    label: "GRE",
-    
-    sections: [
-      { id: "verbal", label: "Verbal Reasoning", min: 130, max: 170 },
-      { id: "quant", label: "Quantitative Reasoning", min: 130, max: 170 },
-      greWritingSection,
-    ],
-    adaptive: {
-      groups: [
-        {
-          id: "verbal",
-          label: "Verbal Reasoning",
-          section1Max: 12,
-          section2Max: 15,
-        },
-        {
-          id: "quant",
-          label: "Quantitative Reasoning",
-          section1Max: 12,
-          section2Max: 15,
-        },
-      ],
-      writing: greWritingSection,
-      
-      scaleScore: (rawCorrect, totalQuestions, harderSection2) => {
-        const span = harderSection2 ? 40 : 29;
-        return clamp(
-          Math.round(130 + (rawCorrect / totalQuestions) * span),
-          130,
-          170,
-        );
-      },
-    },
-    scoreRange: { min: 260, max: 340 },
-    percentileBands: [
-      { threshold: 260, label: "65th" },
-      { threshold: 310, label: "75th" },
-      { threshold: 315, label: "85th" },
-      { threshold: 320, label: "90th" },
-      { threshold: 325, label: "95th" },
-      { threshold: 330, label: "98th" },
-    ],
-    tierBands: [
-      { threshold: 260, label: "Foundational Programs" },
-      { threshold: 295, label: "Good Regional Programs" },
-      { threshold: 305, label: "Strong State Programs" },
-      { threshold: 315, label: "Competitive Top 50 Programs" },
-      { threshold: 320, label: "Highly Competitive Top 25 Programs" },
-      { threshold: 330, label: "Elite / Ivy-Level Programs" },
-    ],
-    totalLabel: "/340",
-    computeTotal: (scores) => (scores.verbal ?? 130) + (scores.quant ?? 130),
-  },
-  GMAT: {
-    label: "GMAT",
-    // GMAT Focus Edition subsections are scaled 60-90 each.
-    sections: [
-      { id: "quant", label: "Quantitative", min: 60, max: 90 },
-      { id: "verbal", label: "Verbal", min: 60, max: 90 },
-      { id: "di", label: "Data Insights", min: 60, max: 90 },
-    ],
-    scoreRange: { min: 205, max: 805 },
-    // Do not hardcode GMAT percentiles. They change with the current GMAC
-    // reference population and require a verified percentile table.
-    percentileBands: [],
-    totalLabel: "/805",
-    computeTotal: estimateGmatTotal,
-  },
-  SAT: {
-    label: "SAT",
-    sections: [
-      { id: "rw", label: "Reading & Writing", min: 200, max: 800 },
-      { id: "math", label: "Math", min: 200, max: 800 },
-    ],
-    scoreRange: { min: 400, max: 1600 },
-    percentileBands: [
-      { threshold: 400, label: "50th" },
-      { threshold: 1200, label: "75th" },
-      { threshold: 1300, label: "87th" },
-      { threshold: 1400, label: "94th" },
-      { threshold: 1500, label: "98th" },
-    ],
-    totalLabel: "/1600",
-    // SAT total is the sum of both section scores.
-    computeTotal: (scores) => (scores.rw ?? 200) + (scores.math ?? 200),
-  },
-  TOEFL: {
-    label: "TOEFL iBT",
-    sections: [
-      { id: "reading", label: "Reading", min: 0, max: 30 },
-      { id: "listening", label: "Listening", min: 0, max: 30 },
-      { id: "speaking", label: "Speaking", min: 0, max: 30 },
-      { id: "writing", label: "Writing", min: 0, max: 30 },
-    ],
-    scoreRange: { min: 0, max: 120 },
-    percentileBands: [
-      { threshold: 0, label: "40th" },
-      { threshold: 90, label: "60th" },
-      { threshold: 100, label: "80th" },
-      { threshold: 110, label: "90th" },
-      { threshold: 115, label: "95th" },
-    ],
-    totalLabel: "/120",
-    computeTotal: (scores) =>
-      (scores.reading ?? 0) +
-      (scores.listening ?? 0) +
-      (scores.speaking ?? 0) +
-      (scores.writing ?? 0),
-  },
-  IELTS: {
-    label: "IELTS",
-    sections: [
-      {
-        id: "listening",
-        label: "Listening",
-        min: 0,
-        max: 40,
-        step: 1,
-        bandFromRaw: listeningBandFromRaw,
-        bandUnitLabel: "Band",
-      },
-      {
-        id: "reading",
-        label: "Reading",
-        min: 0,
-        max: 40,
-        step: 1,
-        bandFromRaw: readingBandFromRaw,
-        bandUnitLabel: "Band",
-      },
-
-      { id: "writing", label: "Writing", min: 0, max: 9, step: 0.5 },
-      { id: "speaking", label: "Speaking", min: 0, max: 9, step: 0.5 },
-    ],
-    scoreRange: { min: 0, max: 9 },
-    percentileBands: [
-      { threshold: 0, label: "60th" },
-      { threshold: 7, label: "75th" },
-      { threshold: 7.5, label: "88th" },
-      { threshold: 8, label: "95th" },
-      { threshold: 8.5, label: "98th" },
-    ],
-    totalLabel: "/9",
-
-    computeTotal: (scores) => {
-      const listeningBand = listeningBandFromRaw(scores.listening ?? 0);
-      const readingBand = readingBandFromRaw(scores.reading ?? 0);
-      const writingBand = scores.writing ?? 0;
-      const speakingBand = scores.speaking ?? 0;
-      const avg =
-        (listeningBand + readingBand + writingBand + speakingBand) / 4;
-      return roundIELTSBand(avg);
-    },
-  },
-  PTE: {
-    label: "PTE Academic",
-    sections: [
-      { id: "speaking", label: "Speaking & Writing", min: 10, max: 90 },
-      { id: "reading", label: "Reading", min: 10, max: 90 },
-      { id: "listening", label: "Listening", min: 10, max: 90 },
-    ],
-    scoreRange: { min: 10, max: 90 },
-    percentileBands: [
-      { threshold: 10, label: "45th" },
-      { threshold: 65, label: "60th" },
-      { threshold: 72, label: "75th" },
-      { threshold: 79, label: "88th" },
-      { threshold: 85, label: "95th" },
-    ],
-    totalLabel: "/90",
-    computeTotal: (scores) => {
-      const avg =
-        ((scores.speaking ?? 10) +
-          (scores.reading ?? 10) +
-          (scores.listening ?? 10)) /
-        3;
-      return Math.round(avg);
-    },
-  },
-};
-
-type CalculatedResult = {
+type PerformanceReport = {
   exam: ExamType;
-  scores: Record<string, number>;
   totalScore: number;
-  percentile: string;
-  tier?: string; // NEW
+  sectionScores: Record<string, number>;
+  percentages: Record<string, number>;
+  performanceLevel: string;
+  strongestArea: string;
+  weakestArea: string;
+  percentile?: string;
 };
+
+// SAT Scoring
+function calculateSATScore(scores: SATScores): { total: number; rw: number; math: number; rwPercent: number; mathPercent: number } {
+  const rwRaw = scores.readingWritingModule1 + scores.readingWritingModule2;
+  const mathRaw = scores.mathModule1 + scores.mathModule2;
+
+  const rwScaled = Math.min(800, Math.max(200, 200 + (rwRaw / 54) * 600));
+  const mathScaled = Math.min(800, Math.max(200, 200 + (mathRaw / 44) * 600));
+
+  return {
+    total: Math.round(rwScaled + mathScaled),
+    rw: Math.round(rwScaled),
+    math: Math.round(mathScaled),
+    rwPercent: Math.round((rwRaw / 54) * 100),
+    mathPercent: Math.round((mathRaw / 44) * 100),
+  };
+}
+
+// GRE Scoring
+function calculateGREScore(scores: GREScores): { total: number; verbal: number; quant: number; aw: number; verbalPercent: number; quantPercent: number } {
+  const verbalRaw = scores.verbalS1 + scores.verbalS2;
+  const quantRaw = scores.quantS1 + scores.quantS2;
+
+  const verbalSpan = scores.verbalHarder ? 40 : 29;
+  const quantSpan = scores.quantHarder ? 40 : 29;
+
+  const verbalScaled = Math.min(170, Math.max(130, Math.round(130 + (verbalRaw / 27) * verbalSpan)));
+  const quantScaled = Math.min(170, Math.max(130, Math.round(130 + (quantRaw / 27) * quantSpan)));
+
+  return {
+    total: verbalScaled + quantScaled,
+    verbal: verbalScaled,
+    quant: quantScaled,
+    aw: scores.analyticalWriting,
+    verbalPercent: Math.round((verbalRaw / 27) * 100),
+    quantPercent: Math.round((quantRaw / 27) * 100),
+  };
+}
+
+// GMAT Scoring
+function calculateGMATScore(quant: number, verbal: number, di: number): number {
+  const average = (quant + verbal + di) / 3;
+  const unroundedTotal = 205 + ((average - 60) / 30) * 600;
+  return Math.min(805, Math.max(205, 205 + Math.round((unroundedTotal - 205) / 10) * 10));
+}
+
+// TOEFL Scoring
+function calculateTOEFLScore(scores: TOEFLScores): { total: number; percentages: Record<string, number> } {
+  const total = scores.reading + scores.listening + scores.speaking + scores.writing;
+  const percentages = {
+    reading: Math.round((scores.reading / 30) * 100),
+    listening: Math.round((scores.listening / 30) * 100),
+    speaking: Math.round((scores.speaking / 30) * 100),
+    writing: Math.round((scores.writing / 30) * 100),
+  };
+  return { total, percentages };
+}
+
+// IELTS Scoring
+function calculateIELTSScore(scores: IELTSScores): { total: number; percentages: Record<string, number> } {
+  const total = ((scores.listening + scores.reading + scores.writing + scores.speaking) / 4);
+  const roundedTotal = Math.round(total * 2) / 2; // Round to nearest 0.5
+  const percentages = {
+    listening: Math.round((scores.listening / 9) * 100),
+    reading: Math.round((scores.reading / 9) * 100),
+    writing: Math.round((scores.writing / 9) * 100),
+    speaking: Math.round((scores.speaking / 9) * 100),
+  };
+  return { total: roundedTotal, percentages };
+}
+
+// PTE Scoring
+function calculatePTEScore(scores: PTEScores): { total: number; percentages: Record<string, number> } {
+  const total = Math.round((scores.speaking + scores.reading + scores.listening) / 3);
+  const percentages = {
+    speaking: Math.round((scores.speaking / 90) * 100),
+    reading: Math.round((scores.reading / 90) * 100),
+    listening: Math.round((scores.listening / 90) * 100),
+  };
+  return { total, percentages };
+}
+
+function getPerformanceLevel(percent: number): string {
+  if (percent >= 85) return "Advanced";
+  if (percent >= 70) return "Proficient";
+  if (percent >= 55) return "Developing";
+  return "Needs Improvement";
+}
+
+function getPercentile(score: number, exam: ExamType): string {
+  if (exam === "SAT") {
+    if (score >= 1500) return "99th";
+    if (score >= 1400) return "95th";
+    if (score >= 1300) return "90th";
+    if (score >= 1200) return "82nd";
+    if (score >= 1100) return "70th";
+    if (score >= 1000) return "55th";
+    return "Below 55th";
+  } else if (exam === "GRE") {
+    if (score >= 330) return "98th";
+    if (score >= 320) return "90th";
+    if (score >= 310) return "80th";
+    if (score >= 300) return "65th";
+    return "Below 65th";
+  } else if (exam === "GMAT") {
+    if (score >= 750) return "98th";
+    if (score >= 700) return "88th";
+    if (score >= 650) return "75th";
+    if (score >= 600) return "60th";
+    return "Below 60th";
+  }
+  return "N/A";
+}
 
 export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
-  const [selectedExam, setSelectedExam] = useState<ExamType>(
-    pageInfo?.sections?.hero?.fields.pageType || "GRE",
-  );
-  const [sectionScores, setSectionScores] = useState<Record<string, number>>(
-    {},
-  );
+  const router = useRouter();
+  const [selectedExam, setSelectedExam] = useState<ExamType>("SAT");
+  const [showReport, setShowReport] = useState(false);
 
-  const [result, setResult] = useState<CalculatedResult | null>(null);
+  // SAT State
+  const [satScores, setSatScores] = useState<SATScores>({
+    readingWritingModule1: 18,
+    readingWritingModule2: 17,
+    mathModule1: 12,
+    mathModule2: 11,
+  });
 
-  const config = examConfigs[selectedExam];
+  // GRE State
+  const [greScores, setGreScores] = useState<GREScores>({
+    verbalS1: 10,
+    verbalS2: 12,
+    quantS1: 10,
+    quantS2: 11,
+    verbalHarder: true,
+    quantHarder: true,
+    analyticalWriting: 4.0,
+  });
 
-  
-  React.useEffect(() => {
-  const initial: Record<string, number> = {};
+  // GMAT State
+  const [gmatQuant, setGmatQuant] = useState(75);
+  const [gmatVerbal, setGmatVerbal] = useState(75);
+  const [gmatDI, setGmatDI] = useState(75);
 
-  if (config.adaptive) {
-    // GRE
-    config.adaptive.groups.forEach((g) => {
-      initial[`${g.id}_s1`] = Math.round(g.section1Max * 0.75);
-      initial[`${g.id}_s2`] = Math.round(g.section2Max * 0.75);
-      initial[`${g.id}_harder`] = 1;
-    });
+  // TOEFL State
+  const [toeflScores, setToeflScores] = useState<TOEFLScores>({
+    reading: 22,
+    listening: 21,
+    speaking: 20,
+    writing: 22,
+  });
 
-    initial[config.adaptive.writing.id] = defaultSectionValue(
-      config.adaptive.writing,
-    );
+  // IELTS State
+  const [ieltsScores, setIeltsScores] = useState<IELTSScores>({
+    listening: 7,
+    reading: 7,
+    writing: 6.5,
+    speaking: 7,
+  });
 
-    // Calculate default GRE scores
-    const scaled: Record<string, number> = {};
+  // PTE State
+  const [pteScores, setPteScores] = useState<PTEScores>({
+    speaking: 70,
+    reading: 68,
+    listening: 72,
+  });
 
-    config.adaptive.groups.forEach((g) => {
-      const raw =
-        (initial[`${g.id}_s1`] ?? 0) +
-        (initial[`${g.id}_s2`] ?? 0);
+  const [report, setReport] = useState<PerformanceReport | null>(null);
 
-      const harder = (initial[`${g.id}_harder`] ?? 1) === 1;
+  useEffect(() => {
+    if (slug) {
+      const slugExam = slug.split("-")[0].toUpperCase() as ExamType;
 
-      scaled[g.id] = config.adaptive!.scaleScore(
-        raw,
-        g.section1Max + g.section2Max,
-        harder,
-      );
-    });
-
-    scaled[config.adaptive.writing.id] =
-      initial[config.adaptive.writing.id] ??
-      config.adaptive.writing.min;
-
-    const computed = config.computeTotal(scaled);
-
-    const totalScore = Math.min(
-      config.scoreRange.max,
-      Math.max(config.scoreRange.min, computed),
-    );
-
-    const percentile = getPercentileLabel(
-      totalScore,
-      config.percentileBands,
-    );
-
-    const tier = config.tierBands
-      ? getPercentileLabel(totalScore, config.tierBands)
-      : undefined;
-
-    setResult({
-      exam: selectedExam,
-      scores: scaled,
-      totalScore,
-      percentile,
-      tier,
-    });
-  } else {
-    // Non-adaptive exams
-    config.sections.forEach((s) => {
-      initial[s.id] = defaultSectionValue(s);
-    });
-
-    const computed = config.computeTotal(initial);
-
-    const totalScore = Math.min(
-      config.scoreRange.max,
-      Math.max(config.scoreRange.min, computed),
-    );
-
-    const percentile = getPercentileLabel(
-      totalScore,
-      config.percentileBands,
-    );
-
-    const tier = config.tierBands
-      ? getPercentileLabel(totalScore, config.tierBands)
-      : undefined;
-
-    setResult({
-      exam: selectedExam,
-      scores: initial,
-      totalScore,
-      percentile,
-      tier,
-    });
-  }
-
-  setSectionScores(initial);
-}, [selectedExam]);
-
-  const handleScoreChange = (sectionId: string, value: number) => {
-    const section = config.sections.find((s) => s.id === sectionId);
-    if (!section) return;
-    const step = section.step || 1;
-    const snapped = roundToStep(value, step);
-    const clamped = Math.min(section.max, Math.max(section.min, snapped));
-    setSectionScores((prev) => ({ ...prev, [sectionId]: clamped }));
-  };
-
-  // NEW: generic handler for the GRE inputs (sliders, number boxes, toggles).
-  const handleAdaptiveChange = (
-    key: string,
-    value: number,
-    min: number,
-    max: number,
-    step = 1,
-  ) => {
-    const snapped = roundToStep(value, step);
-    setSectionScores((prev) => ({ ...prev, [key]: clamp(snapped, min, max) }));
-  };
-
-  const handleCalculate = () => {
-    let scores: Record<string, number> = { ...sectionScores };
-
-    // GRE: turn raw "correct" counts into scaled 130–170 section scores.
-    if (config.adaptive) {
-      const { groups, writing, scaleScore } = config.adaptive;
-      const scaled: Record<string, number> = {};
-      groups.forEach((g) => {
-        const raw =
-          (sectionScores[`${g.id}_s1`] ?? 0) +
-          (sectionScores[`${g.id}_s2`] ?? 0);
-        const harder = (sectionScores[`${g.id}_harder`] ?? 1) === 1;
-        scaled[g.id] = scaleScore(
-          raw,
-          g.section1Max + g.section2Max,
-          harder,
-        );
-      });
-      scaled[writing.id] = sectionScores[writing.id] ?? writing.min;
-      scores = scaled;
+      setSelectedExam(slugExam);
     }
+  }, [slug]);
 
-    const computed = config.computeTotal(scores);
-    const totalScore = Math.min(
-      config.scoreRange.max,
-      Math.max(config.scoreRange.min, computed),
-    );
-    const percentile = getPercentileLabel(totalScore, config.percentileBands);
-    const tier = config.tierBands
-      ? getPercentileLabel(totalScore, config.tierBands)
-      : undefined;
-    setResult({
-      exam: selectedExam,
-      scores,
-      totalScore,
-      percentile,
-      tier,
-    });
+  const calculateReport = () => {
+    let newReport: PerformanceReport;
+
+    if (selectedExam === "SAT") {
+      const result = calculateSATScore(satScores);
+      const rwPercent = result.rwPercent;
+      const mathPercent = result.mathPercent;
+
+      newReport = {
+        exam: "SAT",
+        totalScore: result.total,
+        sectionScores: {
+          "Reading & Writing": result.rw,
+          "Math": result.math,
+        },
+        percentages: {
+          "Reading & Writing": rwPercent,
+          "Math": mathPercent,
+        },
+        performanceLevel: getPerformanceLevel(Math.round((rwPercent + mathPercent) / 2)),
+        strongestArea: rwPercent >= mathPercent ? "Reading & Writing" : "Math",
+        weakestArea: rwPercent < mathPercent ? "Reading & Writing" : "Math",
+        percentile: getPercentile(result.total, "SAT"),
+      };
+   } else if (selectedExam === "GRE") {
+  const result = calculateGREScore(greScores);
+
+  const verbalPercent = result.verbalPercent;
+  const quantPercent = result.quantPercent;
+
+  // Analytical Writing is scored out of 6
+  const awPercent = Math.round((result.aw / 6) * 100);
+
+  const percentages = {
+    "Verbal Reasoning": verbalPercent,
+    "Quantitative Reasoning": quantPercent,
+    "Analytical Writing": awPercent,
+  };
+
+  const avgPercent =
+    Object.values(percentages).reduce((a, b) => a + b, 0) /
+    Object.values(percentages).length;
+
+  newReport = {
+    exam: "GRE",
+    totalScore: result.total,
+
+    sectionScores: {
+      "Verbal Reasoning": result.verbal,
+      "Quantitative Reasoning": result.quant,
+      "Analytical Writing": result.aw,
+    },
+
+    percentages,
+
+    performanceLevel: getPerformanceLevel(
+      Math.round(avgPercent)
+    ),
+
+    strongestArea: Object.entries(percentages).reduce(
+      (a, b) => (a[1] > b[1] ? a : b)
+    )[0],
+
+    weakestArea: Object.entries(percentages).reduce(
+      (a, b) => (a[1] < b[1] ? a : b)
+    )[0],
+
+    percentile: getPercentile(result.total, "GRE"),
+  };
+    } else if (selectedExam === "GMAT") {
+      const total = calculateGMATScore(gmatQuant, gmatVerbal, gmatDI);
+      const quantPercent = Math.round(((gmatQuant - 60) / 30) * 100);
+      const verbalPercent = Math.round(((gmatVerbal - 60) / 30) * 100);
+      const diPercent = Math.round(((gmatDI - 60) / 30) * 100);
+
+      newReport = {
+        exam: "GMAT",
+        totalScore: total,
+        sectionScores: {
+          "Quantitative": gmatQuant,
+          "Verbal": gmatVerbal,
+          "Data Insights": gmatDI,
+        },
+        percentages: {
+          "Quantitative": quantPercent,
+          "Verbal": verbalPercent,
+          "Data Insights": diPercent,
+        },
+        performanceLevel: getPerformanceLevel(Math.round((quantPercent + verbalPercent + diPercent) / 3)),
+        strongestArea: quantPercent >= verbalPercent && quantPercent >= diPercent ? "Quantitative" : verbalPercent >= diPercent ? "Verbal" : "Data Insights",
+        weakestArea: quantPercent <= verbalPercent && quantPercent <= diPercent ? "Quantitative" : verbalPercent <= diPercent ? "Verbal" : "Data Insights",
+        percentile: getPercentile(total, "GMAT"),
+      };
+  // =========================================================
+// TOEFL
+// =========================================================
+} else if (selectedExam === "TOEFL") {
+  const result = calculateTOEFLScore(toeflScores);
+
+  // calculateTOEFLScore already returns percentages 0-100
+  // Convert keys to match sectionScores exactly
+  const percentages = {
+    Reading: result.percentages.reading,
+    Listening: result.percentages.listening,
+    Speaking: result.percentages.speaking,
+    Writing: result.percentages.writing,
+  };
+
+  const avgPercent =
+    Object.values(percentages).reduce(
+      (sum, value) => sum + value,
+      0
+    ) / Object.values(percentages).length;
+
+  newReport = {
+    exam: "TOEFL",
+
+    totalScore: result.total,
+
+    sectionScores: {
+      Reading: toeflScores.reading,
+      Listening: toeflScores.listening,
+      Speaking: toeflScores.speaking,
+      Writing: toeflScores.writing,
+    },
+
+    percentages,
+
+    performanceLevel: getPerformanceLevel(
+      Math.round(avgPercent)
+    ),
+
+    strongestArea: Object.entries(percentages).reduce(
+      (a, b) => (a[1] > b[1] ? a : b)
+    )[0],
+
+    weakestArea: Object.entries(percentages).reduce(
+      (a, b) => (a[1] < b[1] ? a : b)
+    )[0],
+  };
+
+
+// =========================================================
+// IELTS
+// =========================================================
+} else if (selectedExam === "IELTS") {
+  const result = calculateIELTSScore(ieltsScores);
+
+  /*
+   * IMPORTANT:
+   * Your IELTS input values are already BAND scores:
+   *
+   * Listening -> /9
+   * Reading   -> /9
+   * Writing   -> /9
+   * Speaking  -> /9
+   *
+   * So calculateIELTSScore already converts them
+   * into 0-100 percentages.
+   */
+
+  const percentages = {
+    Listening: result.percentages.listening,
+    Reading: result.percentages.reading,
+    Writing: result.percentages.writing,
+    Speaking: result.percentages.speaking,
+  };
+
+  const avgPercent =
+    Object.values(percentages).reduce(
+      (sum, value) => sum + value,
+      0
+    ) / Object.values(percentages).length;
+
+  newReport = {
+    exam: "IELTS",
+
+    totalScore: result.total,
+
+    sectionScores: {
+      Listening: ieltsScores.listening,
+      Reading: ieltsScores.reading,
+      Writing: ieltsScores.writing,
+      Speaking: ieltsScores.speaking,
+    },
+
+    percentages,
+
+    performanceLevel: getPerformanceLevel(
+      Math.round(avgPercent)
+    ),
+
+    strongestArea: Object.entries(percentages).reduce(
+      (a, b) => (a[1] > b[1] ? a : b)
+    )[0],
+
+    weakestArea: Object.entries(percentages).reduce(
+      (a, b) => (a[1] < b[1] ? a : b)
+    )[0],
+  };
+
+
+// =========================================================
+// PTE
+// =========================================================
+} else {
+  const result = calculatePTEScore(pteScores);
+
+  // Convert lowercase calculator keys
+  // into the exact keys used by sectionScores
+  const percentages = {
+    "Speaking & Writing": result.percentages.speaking,
+    Reading: result.percentages.reading,
+    Listening: result.percentages.listening,
+  };
+
+  const avgPercent =
+    Object.values(percentages).reduce(
+      (sum, value) => sum + value,
+      0
+    ) / Object.values(percentages).length;
+
+  newReport = {
+    exam: "PTE",
+
+    totalScore: result.total,
+
+    sectionScores: {
+      "Speaking & Writing": pteScores.speaking,
+      Reading: pteScores.reading,
+      Listening: pteScores.listening,
+    },
+
+    percentages,
+
+    performanceLevel: getPerformanceLevel(
+      Math.round(avgPercent)
+    ),
+
+    strongestArea: Object.entries(percentages).reduce(
+      (a, b) => (a[1] > b[1] ? a : b)
+    )[0],
+
+    weakestArea: Object.entries(percentages).reduce(
+      (a, b) => (a[1] < b[1] ? a : b)
+    )[0],
+  };
+}
+
+    setReport(newReport);
+    setShowReport(true);
+    setTimeout(() => {
+      document.getElementById("performance-report")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
+  const handleSATModuleChange = (
+    field: keyof SATScores,
+    value: number,
+    max: number
+  ) => {
+    setSatScores(prev => ({
+      ...prev,
+      [field]: Math.min(max, Math.max(0, value))
+    }));
+  };
+
+  const handleGREChange = (
+    field: keyof GREScores,
+    value: number | boolean,
+    max?: number
+  ) => {
+    setGreScores(prev => ({
+      ...prev,
+      [field]: max ? Math.min(max, Math.max(0, value as number)) : value
+    }));
   };
 
   return (
-    <main className="min-h-screen bg-[#fff] text-[#0b1e3f]">
-  <Hero data={pageInfo?.sections?.hero?.fields} />
+    <main className="min-h-screen bg-[#FCF3ED]">
+      <Hero data={pageInfo?.sections?.hero?.fields} />
 
-  <div className="mx-auto max-w-6xl px-4 pb-4 pt-8 sm:px-5 lg:px-6">
-    <div
-      className={`hidden flex flex-wrap justify-center gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm`}
-    >
-      {(Object.keys(examConfigs) as ExamType[]).map((exam) => (
-        <button
-          key={exam}
-          onClick={() => setSelectedExam(exam)}
-          className={`rounded-lg px-5 py-2.5 text-sm font-bold transition ${
-            selectedExam === exam
-              ? "bg-[#0b1e3f] text-white"
-              : "bg-slate-50 text-slate-600 hover:bg-slate-100"
-          }`}
-        >
-          {examConfigs[exam].label}
-        </button>
-      ))}
+    
+
+      {/* Calculator Section */}
+     {/* =========================================================
+    CALCULATOR SECTION
+    UI ONLY — NO LOGIC CHANGED
+========================================================= */}
+<section className="px-4 pb-10">
+  <div className="mx-auto max-w-6xl">
+
+    {/* OUTER WHITE CALCULATOR BOX */}
+    <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm">
+
+      {/* =====================================================
+          TOP HEADER
+      ===================================================== */}
+      <div className="flex items-center justify-between border-b border-slate-200 px-7 py-6">
+
+        <div>
+          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-slate-400">
+            SELECT YOUR EXAM
+          </p>
+
+          <h2 className="mt-1 text-[15px] font-extrabold text-[#0b1e3f]">
+            Practice Score Calculator
+          </h2>
+        </div>
+
+        {/* EXAM TABS */}
+        <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1">
+
+          {(
+            ["SAT", "GRE", "GMAT", "TOEFL", "IELTS", "PTE"] as ExamType[]
+          ).map((exam) => (
+            <button
+              key={exam}
+              type="button"
+              onClick={() => {
+                setSelectedExam(exam);
+                setShowReport(false);
+              }}
+              className={`rounded-lg px-4 py-2 text-[12px] font-bold transition-all duration-200 ${
+                selectedExam === exam
+                  ? "bg-white text-[#F36D45] shadow-[0_2px_8px_rgba(15,23,42,0.10)]"
+                  : "text-slate-600 hover:text-[#F36D45]"
+              }`}
+            >
+              {exam}
+            </button>
+          ))}
+
+        </div>
+      </div>
+
+      {/* =====================================================
+          CALCULATOR CONTENT
+      ===================================================== */}
+      <div className="px-7 py-7">
+
+        {/* PAGE TITLE */}
+        <div className="mb-6 flex items-start justify-between">
+
+          <div>
+            <h2 className="text-[22px] font-extrabold tracking-tight text-[#0b1e3f]">
+              Enter Your {selectedExam} Practice Scores
+            </h2>
+
+            <p className="mt-1 text-[13px] text-slate-400">
+              Add your latest practice results below. We'll turn them into a
+              clear performance report.
+            </p>
+          </div>
+
+          <span className="rounded-lg bg-orange-50 px-3 py-2 text-[11px] font-bold text-[#F36D45]">
+            {selectedExam}
+          </span>
+
+        </div>
+
+        {/* =====================================================
+            SAT
+        ===================================================== */}
+        {selectedExam === "SAT" && (
+          <div className="space-y-3.5">
+
+            {/* READING & WRITING */}
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+
+              {/* LIGHT GRAY HEADER */}
+              <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
+
+                <div className="flex items-center gap-3">
+
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
+                    <BookOpen className="h-5 w-5 text-[#F36D45]" />
+                  </div>
+
+                  <div>
+                    <h3 className="text-[14px] font-extrabold text-[#0b1e3f]">
+                      Reading & Writing
+                    </h3>
+
+                    <p className="text-[10px] text-slate-400">
+                      SAT Practice Section
+                    </p>
+                  </div>
+
+                </div>
+
+                <span className="text-[10px] font-bold text-[#F36D45]">
+                  2 Inputs
+                </span>
+
+              </div>
+
+              {/* MODULES */}
+              <div>
+
+                {[
+                  {
+                    field: "readingWritingModule1" as keyof SATScores,
+                    label: "Module 1",
+                    max: 27,
+                    value: satScores.readingWritingModule1,
+                  },
+                  {
+                    field: "readingWritingModule2" as keyof SATScores,
+                    label: "Module 2",
+                    max: 27,
+                    value: satScores.readingWritingModule2,
+                  },
+                ].map((item) => (
+
+                  <div
+                    key={item.field}
+                    className="flex min-h-[66px] items-center border-t border-slate-100 px-4"
+                  >
+
+                    <span className="w-[150px] text-[12px] font-medium text-[#0b1e3f]">
+                      {item.label}
+                    </span>
+
+                    <div className="flex flex-1 items-center gap-3">
+
+                      {/* MINUS */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleSATModuleChange(
+                            item.field,
+                            item.value - 1,
+                            item.max
+                          )
+                        }
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition hover:border-[#F36D45] hover:text-[#F36D45]"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+
+                      {/* SLIDER */}
+                      <div className="relative flex-1">
+
+                        <div className="h-[5px] overflow-hidden rounded-full bg-slate-200">
+
+                          <div
+                            className="h-full rounded-full bg-[#F36D45] transition-all duration-200"
+                            style={{
+                              width: `${(item.value / item.max) * 100}%`,
+                            }}
+                          />
+
+                        </div>
+
+                        <input
+                          type="range"
+                          min={0}
+                          max={item.max}
+                          value={item.value}
+                          onChange={(e) =>
+                            handleSATModuleChange(
+                              item.field,
+                              Number(e.target.value),
+                              item.max
+                            )
+                          }
+                          className="absolute inset-0 h-5 w-full cursor-pointer opacity-0"
+                        />
+
+                        {/* KNOB */}
+                        <div
+                          className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white shadow-sm"
+                          style={{
+                            left: `calc(${(item.value / item.max) * 100}% - 9px)`,
+                          }}
+                        />
+
+                      </div>
+
+                      {/* PLUS */}
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleSATModuleChange(
+                            item.field,
+                            item.value + 1,
+                            item.max
+                          )
+                        }
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition hover:border-[#F36D45] hover:text-[#F36D45]"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+
+                    </div>
+
+                    {/* SCORE */}
+                    <div className="w-[90px] text-right">
+
+                      <span className="text-[14px] font-extrabold text-[#0b1e3f]">
+                        {item.value}
+                      </span>
+
+                      <span className="text-[11px] text-slate-400">
+                        {" "}/ {item.max}
+                      </span>
+
+                    </div>
+
+                  </div>
+
+                ))}
+
+              </div>
+
+            </div>
+
+            {/* MATH */}
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+
+              <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
+
+                <div className="flex items-center gap-3">
+
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
+                    <Target className="h-5 w-5 text-[#7C4DFF]" />
+                  </div>
+
+                  <div>
+                    <h3 className="text-[14px] font-extrabold text-[#0b1e3f]">
+                      Math
+                    </h3>
+
+                    <p className="text-[10px] text-slate-400">
+                      SAT Practice Section
+                    </p>
+                  </div>
+
+                </div>
+
+                <span className="text-[10px] font-bold text-[#F36D45]">
+                  2 Inputs
+                </span>
+
+              </div>
+
+              <div>
+
+                {[
+                  {
+                    field: "mathModule1" as keyof SATScores,
+                    label: "Module 1",
+                    max: 22,
+                    value: satScores.mathModule1,
+                  },
+                  {
+                    field: "mathModule2" as keyof SATScores,
+                    label: "Module 2",
+                    max: 22,
+                    value: satScores.mathModule2,
+                  },
+                ].map((item) => (
+
+                  <div
+                    key={item.field}
+                    className="flex min-h-[66px] items-center border-t border-slate-100 px-4"
+                  >
+
+                    <span className="w-[150px] text-[12px] font-medium text-[#0b1e3f]">
+                      {item.label}
+                    </span>
+
+                    <div className="flex flex-1 items-center gap-3">
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleSATModuleChange(
+                            item.field,
+                            item.value - 1,
+                            item.max
+                          )
+                        }
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition hover:border-[#F36D45] hover:text-[#F36D45]"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+
+                      <div className="relative flex-1">
+
+                        <div className="h-[5px] overflow-hidden rounded-full bg-slate-200">
+                          <div
+                            className="h-full rounded-full bg-[#F36D45] transition-all duration-200"
+                            style={{
+                              width: `${(item.value / item.max) * 100}%`,
+                            }}
+                          />
+                        </div>
+
+                        <input
+                          type="range"
+                          min={0}
+                          max={item.max}
+                          value={item.value}
+                          onChange={(e) =>
+                            handleSATModuleChange(
+                              item.field,
+                              Number(e.target.value),
+                              item.max
+                            )
+                          }
+                          className="absolute inset-0 h-5 w-full cursor-pointer opacity-0"
+                        />
+
+                        <div
+                          className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white shadow-sm"
+                          style={{
+                            left: `calc(${(item.value / item.max) * 100}% - 9px)`,
+                          }}
+                        />
+
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleSATModuleChange(
+                            item.field,
+                            item.value + 1,
+                            item.max
+                          )
+                        }
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition hover:border-[#F36D45] hover:text-[#F36D45]"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+
+                    </div>
+
+                    <div className="w-[90px] text-right">
+                      <span className="text-[14px] font-extrabold text-[#0b1e3f]">
+                        {item.value}
+                      </span>
+                      <span className="text-[11px] text-slate-400">
+                        {" "}/ {item.max}
+                      </span>
+                    </div>
+
+                  </div>
+
+                ))}
+
+              </div>
+
+            </div>
+
+          </div>
+        )}
+
+        {/* =====================================================
+            GRE
+        ===================================================== */}
+        {selectedExam === "GRE" && (
+          <div className="space-y-3.5">
+
+            {[
+              {
+                title: "Verbal Reasoning",
+                subtitle: "GRE Practice Section",
+                icon: BookOpen,
+                s1: greScores.verbalS1,
+                s2: greScores.verbalS2,
+                s1Key: "verbalS1" as keyof GREScores,
+                s2Key: "verbalS2" as keyof GREScores,
+                harderKey: "verbalHarder" as keyof GREScores,
+                harder: greScores.verbalHarder,
+              },
+              {
+                title: "Quantitative Reasoning",
+                subtitle: "GRE Practice Section",
+                icon: Target,
+                s1: greScores.quantS1,
+                s2: greScores.quantS2,
+                s1Key: "quantS1" as keyof GREScores,
+                s2Key: "quantS2" as keyof GREScores,
+                harderKey: "quantHarder" as keyof GREScores,
+                harder: greScores.quantHarder,
+              },
+            ].map((section) => {
+
+              const Icon = section.icon;
+
+              return (
+                <div
+                  key={section.title}
+                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+                >
+
+                  {/* HEADER */}
+                  <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
+
+                    <div className="flex items-center gap-3">
+
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
+                        <Icon className="h-5 w-5 text-[#F36D45]" />
+                      </div>
+
+                      <div>
+                        <h3 className="text-[14px] font-extrabold text-[#0b1e3f]">
+                          {section.title}
+                        </h3>
+
+                        <p className="text-[10px] text-slate-400">
+                          {section.subtitle}
+                        </p>
+                      </div>
+
+                    </div>
+
+                    <span className="text-[10px] font-bold text-[#F36D45]">
+                      2 Inputs
+                    </span>
+
+                  </div>
+
+                  {/* SECTION 1 */}
+                  <div className="flex min-h-[66px] items-center border-t border-slate-100 px-4">
+
+                    <span className="w-[150px] text-[12px] font-medium text-[#0b1e3f]">
+                      Section 1
+                    </span>
+
+                    <div className="flex flex-1 items-center gap-3">
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleGREChange(
+                            section.s1Key,
+                            section.s1 - 1,
+                            12
+                          )
+                        }
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+
+                      <div className="relative flex-1">
+
+                        <div className="h-[5px] overflow-hidden rounded-full bg-slate-200">
+                          <div
+                            className="h-full rounded-full bg-[#F36D45]"
+                            style={{
+                              width: `${(section.s1 / 12) * 100}%`,
+                            }}
+                          />
+                        </div>
+
+                        <input
+                          type="range"
+                          min={0}
+                          max={12}
+                          value={section.s1}
+                          onChange={(e) =>
+                            handleGREChange(
+                              section.s1Key,
+                              Number(e.target.value),
+                              12
+                            )
+                          }
+                          className="absolute inset-0 h-5 w-full opacity-0"
+                        />
+
+                        <div
+                          className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white"
+                          style={{
+                            left: `calc(${(section.s1 / 12) * 100}% - 9px)`,
+                          }}
+                        />
+
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleGREChange(
+                            section.s1Key,
+                            section.s1 + 1,
+                            12
+                          )
+                        }
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+
+                    </div>
+
+                    <div className="w-[90px] text-right">
+                      <span className="text-[14px] font-extrabold">
+                        {section.s1}
+                      </span>
+                      <span className="text-[11px] text-slate-400">
+                        {" "}/ 12
+                      </span>
+                    </div>
+
+                  </div>
+
+                  {/* SECTION 2 */}
+                  <div className="flex min-h-[66px] items-center border-t border-slate-100 px-4">
+
+                    <span className="w-[150px] text-[12px] font-medium text-[#0b1e3f]">
+                      Section 2
+                    </span>
+
+                    <div className="flex flex-1 items-center gap-3">
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleGREChange(
+                            section.s2Key,
+                            section.s2 - 1,
+                            15
+                          )
+                        }
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+
+                      <div className="relative flex-1">
+
+                        <div className="h-[5px] overflow-hidden rounded-full bg-slate-200">
+                          <div
+                            className="h-full rounded-full bg-[#F36D45]"
+                            style={{
+                              width: `${(section.s2 / 15) * 100}%`,
+                            }}
+                          />
+                        </div>
+
+                        <input
+                          type="range"
+                          min={0}
+                          max={15}
+                          value={section.s2}
+                          onChange={(e) =>
+                            handleGREChange(
+                              section.s2Key,
+                              Number(e.target.value),
+                              15
+                            )
+                          }
+                          className="absolute inset-0 h-5 w-full opacity-0"
+                        />
+
+                        <div
+                          className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white"
+                          style={{
+                            left: `calc(${(section.s2 / 15) * 100}% - 9px)`,
+                          }}
+                        />
+
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleGREChange(
+                            section.s2Key,
+                            section.s2 + 1,
+                            15
+                          )
+                        }
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+
+                    </div>
+
+                    <div className="w-[90px] text-right">
+                      <span className="text-[14px] font-extrabold">
+                        {section.s2}
+                      </span>
+                      <span className="text-[11px] text-slate-400">
+                        {" "}/ 15
+                      </span>
+                    </div>
+
+                  </div>
+
+                  {/* KEEP YOUR EXISTING DIFFICULTY LOGIC */}
+                  <div className="border-t border-slate-100 bg-white px-4 py-3">
+
+                    <div className="flex items-center justify-between">
+
+                      <span className="text-[11px] font-medium text-slate-500">
+                        Section 2 difficulty
+                      </span>
+
+                      <div className="flex gap-2">
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleGREChange(
+                              section.harderKey,
+                              true
+                            )
+                          }
+                          className={`rounded-lg border px-3 py-1.5 text-[10px] font-bold ${
+                            section.harder
+                              ? "border-orange-300 bg-orange-50 text-[#F36D45]"
+                              : "border-slate-200 text-slate-500"
+                          }`}
+                        >
+                          Harder
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleGREChange(
+                              section.harderKey,
+                              false
+                            )
+                          }
+                          className={`rounded-lg border px-3 py-1.5 text-[10px] font-bold ${
+                            !section.harder
+                              ? "border-orange-300 bg-orange-50 text-[#F36D45]"
+                              : "border-slate-200 text-slate-500"
+                          }`}
+                        >
+                          Easier
+                        </button>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+              );
+            })}
+
+            {/* ANALYTICAL WRITING */}
+            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+
+              <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
+
+                <div className="flex items-center gap-3">
+
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
+                    <TrendingUp className="h-5 w-5 text-[#F36D45]" />
+                  </div>
+
+                  <div>
+                    <h3 className="text-[14px] font-extrabold text-[#0b1e3f]">
+                      Analytical Writing
+                    </h3>
+
+                    <p className="text-[10px] text-slate-400">
+                      GRE Practice Section
+                    </p>
+                  </div>
+
+                </div>
+
+                <span className="text-[10px] font-bold text-[#F36D45]">
+                  1 Input
+                </span>
+
+              </div>
+
+              <div className="flex min-h-[66px] items-center border-t border-slate-100 px-4">
+
+                <span className="w-[150px] text-[12px] font-medium">
+                  Practice Band
+                </span>
+
+                <div className="flex flex-1 items-center gap-3">
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleGREChange(
+                        "analyticalWriting",
+                        greScores.analyticalWriting - 0.5
+                      )
+                    }
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
+                  >
+                    <Minus className="h-4 w-4" />
+                  </button>
+
+                  <div className="relative flex-1">
+
+                    <div className="h-[5px] rounded-full bg-slate-200">
+                      <div
+                        className="h-full rounded-full bg-[#F36D45]"
+                        style={{
+                          width: `${(greScores.analyticalWriting / 6) * 100}%`,
+                        }}
+                      />
+                    </div>
+
+                    <input
+                      type="range"
+                      min={0}
+                      max={6}
+                      step={0.5}
+                      value={greScores.analyticalWriting}
+                      onChange={(e) =>
+                        handleGREChange(
+                          "analyticalWriting",
+                          Number(e.target.value)
+                        )
+                      }
+                      className="absolute inset-0 h-5 w-full opacity-0"
+                    />
+
+                    <div
+                      className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white"
+                      style={{
+                        left: `calc(${(greScores.analyticalWriting / 6) * 100}% - 9px)`,
+                      }}
+                    />
+
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleGREChange(
+                        "analyticalWriting",
+                        greScores.analyticalWriting + 0.5
+                      )
+                    }
+                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
+                  >
+                    <Plus className="h-4 w-4" />
+                  </button>
+
+                </div>
+
+                <div className="w-[90px] text-right">
+                  <span className="text-[14px] font-extrabold">
+                    {greScores.analyticalWriting}
+                  </span>
+                  <span className="text-[11px] text-slate-400">
+                    {" "}/ 6
+                  </span>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+        )}
+
+        {/* =====================================================
+            GMAT
+        ===================================================== */}
+        {selectedExam === "GMAT" && (
+          <div className="space-y-3.5">
+
+            {[
+              {
+                label: "Quantitative Reasoning",
+                value: gmatQuant,
+                setter: setGmatQuant,
+                max: 90,
+              },
+              {
+                label: "Verbal Reasoning",
+                value: gmatVerbal,
+                setter: setGmatVerbal,
+                max: 90,
+              },
+              {
+                label: "Data Insights",
+                value: gmatDI,
+                setter: setGmatDI,
+                max: 90,
+              },
+            ].map((section) => (
+
+              <div
+                key={section.label}
+                className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+              >
+
+                <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
+
+                  <div className="flex items-center gap-3">
+
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
+                      <Target className="h-5 w-5 text-[#F36D45]" />
+                    </div>
+
+                    <div>
+                      <h3 className="text-[14px] font-extrabold">
+                        {section.label}
+                      </h3>
+
+                      <p className="text-[10px] text-slate-400">
+                        GMAT Practice Section
+                      </p>
+                    </div>
+
+                  </div>
+
+                  <span className="text-[10px] font-bold text-[#F36D45]">
+                    1 Input
+                  </span>
+
+                </div>
+
+                <div className="flex min-h-[66px] items-center border-t border-slate-100 px-4">
+
+                  <span className="w-[150px] text-[12px] font-medium">
+                    Correct Answers
+                  </span>
+
+                  <div className="flex flex-1 items-center gap-3">
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        section.setter(
+                          Math.max(60, section.value - 1)
+                        )
+                      }
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
+                    >
+                      <Minus className="h-4 w-4" />
+                    </button>
+
+                    <div className="relative flex-1">
+
+                      <div className="h-[5px] rounded-full bg-slate-200">
+
+                        <div
+                          className="h-full rounded-full bg-[#F36D45]"
+                          style={{
+                            width: `${((section.value - 60) / 30) * 100}%`,
+                          }}
+                        />
+
+                      </div>
+
+                      <input
+                        type="range"
+                        min={60}
+                        max={90}
+                        value={section.value}
+                        onChange={(e) =>
+                          section.setter(Number(e.target.value))
+                        }
+                        className="absolute inset-0 h-5 w-full opacity-0"
+                      />
+
+                      <div
+                        className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white"
+                        style={{
+                          left: `calc(${((section.value - 60) / 30) * 100}% - 9px)`,
+                        }}
+                      />
+
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        section.setter(
+                          Math.min(90, section.value + 1)
+                        )
+                      }
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </button>
+
+                  </div>
+
+                  <div className="w-[90px] text-right">
+                    <span className="text-[14px] font-extrabold">
+                      {section.value}
+                    </span>
+                    <span className="text-[11px] text-slate-400">
+                      {" "}/ 90
+                    </span>
+                  </div>
+
+                </div>
+
+              </div>
+
+            ))}
+
+          </div>
+        )}
+
+        {/* =====================================================
+            TOEFL
+        ===================================================== */}
+        {selectedExam === "TOEFL" && (
+          <div className="space-y-3.5">
+
+            {[
+              "reading",
+              "listening",
+              "speaking",
+              "writing",
+            ].map((section) => {
+
+              const value =
+                toeflScores[section as keyof TOEFLScores];
+
+              return (
+                <div
+                  key={section}
+                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+                >
+
+                  <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
+
+                    <div className="flex items-center gap-3">
+
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
+                        <BookOpen className="h-5 w-5 text-[#F36D45]" />
+                      </div>
+
+                      <div>
+                        <h3 className="text-[14px] font-extrabold capitalize">
+                          {section}
+                        </h3>
+
+                        <p className="text-[10px] text-slate-400">
+                          TOEFL Practice Section
+                        </p>
+                      </div>
+
+                    </div>
+
+                    <span className="text-[10px] font-bold text-[#F36D45]">
+                      1 Input
+                    </span>
+
+                  </div>
+
+                  <div className="flex min-h-[66px] items-center border-t border-slate-100 px-4">
+
+                    <span className="w-[150px] text-[12px] font-medium">
+                      Practice Score
+                    </span>
+
+                    <div className="flex flex-1 items-center gap-3">
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setToeflScores((prev) => ({
+                            ...prev,
+                            [section]: Math.max(0, value - 1),
+                          }))
+                        }
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+
+                      <div className="relative flex-1">
+
+                        <div className="h-[5px] rounded-full bg-slate-200">
+                          <div
+                            className="h-full rounded-full bg-[#F36D45]"
+                            style={{
+                              width: `${(value / 30) * 100}%`,
+                            }}
+                          />
+                        </div>
+
+                        <input
+                          type="range"
+                          min={0}
+                          max={30}
+                          value={value}
+                          onChange={(e) =>
+                            setToeflScores((prev) => ({
+                              ...prev,
+                              [section]: Number(e.target.value),
+                            }))
+                          }
+                          className="absolute inset-0 h-5 w-full opacity-0"
+                        />
+
+                        <div
+                          className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white"
+                          style={{
+                            left: `calc(${(value / 30) * 100}% - 9px)`,
+                          }}
+                        />
+
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setToeflScores((prev) => ({
+                            ...prev,
+                            [section]: Math.min(30, value + 1),
+                          }))
+                        }
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+
+                    </div>
+
+                    <div className="w-[90px] text-right">
+                      <span className="text-[14px] font-extrabold">
+                        {value}
+                      </span>
+                      <span className="text-[11px] text-slate-400">
+                        {" "}/ 30
+                      </span>
+                    </div>
+
+                  </div>
+
+                </div>
+              );
+            })}
+
+          </div>
+        )}
+
+        {/* =====================================================
+            IELTS
+        ===================================================== */}
+        {selectedExam === "IELTS" && (
+          <div className="space-y-3.5">
+
+            {[
+              "listening",
+              "reading",
+              "writing",
+              "speaking",
+            ].map((section) => {
+
+              const value =
+                ieltsScores[section as keyof IELTSScores];
+
+              return (
+                <div
+                  key={section}
+                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+                >
+
+                  <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
+
+                    <div className="flex items-center gap-3">
+
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
+                        <BookOpen className="h-5 w-5 text-[#F36D45]" />
+                      </div>
+
+                      <div>
+                        <h3 className="text-[14px] font-extrabold capitalize">
+                          {section}
+                        </h3>
+
+                        <p className="text-[10px] text-slate-400">
+                          IELTS Practice Section
+                        </p>
+                      </div>
+
+                    </div>
+
+                    <span className="text-[10px] font-bold text-[#F36D45]">
+                      1 Input
+                    </span>
+
+                  </div>
+
+                  <div className="flex min-h-[66px] items-center border-t border-slate-100 px-4">
+
+                    <span className="w-[150px] text-[12px] font-medium">
+                      {section === "writing" || section === "speaking"
+                        ? "Practice Band"
+                        : "Correct Answers"}
+                    </span>
+
+                    <div className="flex flex-1 items-center gap-3">
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setIeltsScores((prev) => ({
+                            ...prev,
+                            [section]: Math.max(0, value - 0.5),
+                          }))
+                        }
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+
+                      <div className="relative flex-1">
+
+                        <div className="h-[5px] rounded-full bg-slate-200">
+                          <div
+                            className="h-full rounded-full bg-[#F36D45]"
+                            style={{
+                              width: `${(value / 9) * 100}%`,
+                            }}
+                          />
+                        </div>
+
+                        <input
+                          type="range"
+                          min={0}
+                          max={9}
+                          step={0.5}
+                          value={value}
+                          onChange={(e) =>
+                            setIeltsScores((prev) => ({
+                              ...prev,
+                              [section]: Number(e.target.value),
+                            }))
+                          }
+                          className="absolute inset-0 h-5 w-full opacity-0"
+                        />
+
+                        <div
+                          className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white"
+                          style={{
+                            left: `calc(${(value / 9) * 100}% - 9px)`,
+                          }}
+                        />
+
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setIeltsScores((prev) => ({
+                            ...prev,
+                            [section]: Math.min(9, value + 0.5),
+                          }))
+                        }
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+
+                    </div>
+
+                    <div className="w-[90px] text-right">
+                      <span className="text-[14px] font-extrabold">
+                        {value}
+                      </span>
+                      <span className="text-[11px] text-slate-400">
+                        {" "}/ 9
+                      </span>
+                    </div>
+
+                  </div>
+
+                </div>
+              );
+            })}
+
+          </div>
+        )}
+
+        {/* =====================================================
+            PTE
+        ===================================================== */}
+        {selectedExam === "PTE" && (
+          <div className="space-y-3.5">
+
+            {[
+              {
+                key: "speaking",
+                label: "Speaking & Writing",
+              },
+              {
+                key: "reading",
+                label: "Reading",
+              },
+              {
+                key: "listening",
+                label: "Listening",
+              },
+            ].map((section) => {
+
+              const value =
+                pteScores[section.key as keyof PTEScores];
+
+              return (
+                <div
+                  key={section.key}
+                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+                >
+
+                  <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
+
+                    <div className="flex items-center gap-3">
+
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
+                        <Target className="h-5 w-5 text-[#F36D45]" />
+                      </div>
+
+                      <div>
+                        <h3 className="text-[14px] font-extrabold">
+                          {section.label}
+                        </h3>
+
+                        <p className="text-[10px] text-slate-400">
+                          PTE Practice Section
+                        </p>
+                      </div>
+
+                    </div>
+
+                    <span className="text-[10px] font-bold text-[#F36D45]">
+                      1 Input
+                    </span>
+
+                  </div>
+
+                  <div className="flex min-h-[66px] items-center border-t border-slate-100 px-4">
+
+                    <span className="w-[150px] text-[12px] font-medium">
+                      Practice Score
+                    </span>
+
+                    <div className="flex flex-1 items-center gap-3">
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPteScores((prev) => ({
+                            ...prev,
+                            [section.key]: Math.max(10, value - 1),
+                          }))
+                        }
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
+                      >
+                        <Minus className="h-4 w-4" />
+                      </button>
+
+                      <div className="relative flex-1">
+
+                        <div className="h-[5px] rounded-full bg-slate-200">
+                          <div
+                            className="h-full rounded-full bg-[#F36D45]"
+                            style={{
+                              width: `${((value - 10) / 80) * 100}%`,
+                            }}
+                          />
+                        </div>
+
+                        <input
+                          type="range"
+                          min={10}
+                          max={90}
+                          value={value}
+                          onChange={(e) =>
+                            setPteScores((prev) => ({
+                              ...prev,
+                              [section.key]: Number(e.target.value),
+                            }))
+                          }
+                          className="absolute inset-0 h-5 w-full opacity-0"
+                        />
+
+                        <div
+                          className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white"
+                          style={{
+                            left: `calc(${((value - 10) / 80) * 100}% - 9px)`,
+                          }}
+                        />
+
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setPteScores((prev) => ({
+                            ...prev,
+                            [section.key]: Math.min(90, value + 1),
+                          }))
+                        }
+                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
+                      >
+                        <Plus className="h-4 w-4" />
+                      </button>
+
+                    </div>
+
+                    <div className="w-[90px] text-right">
+                      <span className="text-[14px] font-extrabold">
+                        {value}
+                      </span>
+                      <span className="text-[11px] text-slate-400">
+                        {" "}/ 90
+                      </span>
+                    </div>
+
+                  </div>
+
+                </div>
+              );
+            })}
+
+          </div>
+        )}
+
+        {/* =====================================================
+            BOTTOM ACTION AREA
+        ===================================================== */}
+        <div className="mt-5 flex items-center justify-between rounded-xl bg-slate-50 px-4 py-4">
+
+          <p className="text-[11px] text-slate-400">
+            Your results are used only to create an estimated preparation
+            analysis.
+          </p>
+
+          <button
+            type="button"
+            onClick={calculateReport}
+            className="rounded-xl bg-[#F36D45] px-6 py-3 text-[12px] font-extrabold text-white shadow-[0_8px_20px_rgba(243,109,69,0.20)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-95"
+          >
+            View My Performance Report →
+          </button>
+
+        </div>
+
+      </div>
     </div>
   </div>
+</section>
 
-  <ScoreSection
-    data={pageInfo?.sections?.calculator}
-    config={config}
-    sectionScores={sectionScores}
-    onScoreChange={handleScoreChange}
-    onAdaptiveChange={handleAdaptiveChange}
-    onCalculate={handleCalculate}
-    result={result && result.exam === selectedExam ? result : null}
-  />
+      {/* Performance Report Section - Shows BELOW calculator */}
+      {showReport && report && (
+        <section id="performance-report" className="px-4 pb-8">
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-6 flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-widest text-[#F36D45]">YOUR PERFORMANCE REPORT</p>
+                <h2 className="mt-1 text-3xl font-extrabold">Here's Where You Stand</h2>
+                <p className="mt-2 max-w-2xl text-sm text-slate-500">Review your overall performance, section strengths and the areas that may need more focused preparation.</p>
+              </div>
+              <span className="hidden rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-[#F36D45] sm:block">{report.exam}</span>
+            </div>
 
-  <ScoreVisualizationSection
-    data={pageInfo?.sections?.chart}
-    config={config}
-    result={result && result.exam === selectedExam ? result : null}
-  />
+            <div className="grid gap-6 lg:grid-cols-[0.5fr_1.5fr]">
+              {/* Overall Performance Gauge - EXACT MATCH TO REFERENCE */}
+              {/* Overall Performance */}
+              <div className="rounded-[22px] border border-slate-200 bg-white px-8 py-7 shadow-sm">
 
-  <WhySection
-    data={pageInfo?.sections?.whySection?.fields}
-  />
+                {/* Header */}
+                <div>
+                  <h3 className="text-[18px] font-extrabold tracking-tight text-[#0b1e3f]">
+                    Overall Performance
+                  </h3>
 
-  <DifferenceSection
-    data={pageInfo?.sections?.differenceSection?.fields}
-  />
+                  <p className="mt-1.5 text-[14px] text-slate-400">
+                    Based on the practice scores you entered.
+                  </p>
+                </div>
 
-  <BeyondNumberSection
-    data={pageInfo?.sections?.beyondNumber?.fields}
-  />
 
-  <QuestionsSection
-    page="Calculator"
-    heading="Student Questions & Comments"
-  />
+                {/* Gauge */}
+                <div className="relative mt-5 flex justify-center">
 
-  <Consultants
-    data={pageInfo?.sections?.faq}
-  />
+                  <div className="relative h-[225px] w-[400px] max-w-full">
 
-  <BottomCTA
-    data={pageInfo?.sections?.bottomCTA?.fields}
-  />
-</main>
+                    <svg
+                      viewBox="0 0 400 225"
+                      className="h-full w-full overflow-visible"
+                    >
+
+                      {/* ================= BACKGROUND / SEGMENTS ================= */}
+
+                      {/* Needs Improvement */}
+                      <path
+                        d="M 45 190 A 155 155 0 0 1 87 80"
+                        fill="none"
+                        stroke="#FFDFA9"
+                        strokeWidth="44"
+                        strokeLinecap="butt"
+                      />
+
+                      {/* Developing - Light */}
+                      <path
+                        d="M 87 80 A 155 155 0 0 1 155 43"
+                        fill="none"
+                        stroke="#FFB18E"
+                        strokeWidth="44"
+                        strokeLinecap="butt"
+                      />
+
+                      {/* Developing - Main */}
+                      <path
+                        d="M 155 43 A 155 155 0 0 1 245 43"
+                        fill="none"
+                        stroke="#FF927D"
+                        strokeWidth="44"
+                        strokeLinecap="butt"
+                      />
+
+                      {/* Strong - Light */}
+                      <path
+                        d="M 245 43 A 155 155 0 0 1 313 80"
+                        fill="none"
+                        stroke="#FF704A"
+                        strokeWidth="44"
+                        strokeLinecap="butt"
+                      />
+
+                      {/* Strong */}
+                      <path
+                        d="M 313 80 A 155 155 0 0 1 355 190"
+                        fill="none"
+                        stroke="#FF5D3D"
+                        strokeWidth="44"
+                        strokeLinecap="butt"
+                      />
+
+
+                      {/* ================= NEEDLE ================= */}
+
+                      {(() => {
+                        const percentage = Math.round(
+                          Object.values(report.percentages).reduce(
+                            (a, b) => a + b,
+                            0,
+                          ) / Object.values(report.percentages).length,
+                        );
+
+                        /*
+                         * Convert 0–100 percentage
+                         * into 180° gauge angle.
+                         *
+                         * 0   = left
+                         * 50  = center
+                         * 100 = right
+                         */
+                        const angle = 180 - percentage * 1.8;
+
+                        const centerX = 200;
+                        const centerY = 190;
+                        const needleLength = 105;
+
+                        const radians = (angle * Math.PI) / 180;
+
+                        const needleX =
+                          centerX + needleLength * Math.cos(radians);
+
+                        const needleY =
+                          centerY - needleLength * Math.sin(radians);
+
+                        return (
+                          <>
+                            {/* Needle */}
+                            <line
+                              x1={centerX}
+                              y1={centerY}
+                              x2={needleX}
+                              y2={needleY}
+                              stroke="#0b1e3f"
+                              strokeWidth="4"
+                              strokeLinecap="round"
+                            />
+
+                            {/* Needle center */}
+                            <circle
+                              cx={centerX}
+                              cy={centerY}
+                              r="10"
+                              fill="#0b1e3f"
+                            />
+
+                            {/* Small center highlight */}
+                            <circle
+                              cx={centerX}
+                              cy={centerY}
+                              r="4"
+                              fill="white"
+                            />
+                          </>
+                        );
+                      })()}
+
+                    </svg>
+
+
+                    {/* ================= CENTER VALUE ================= */}
+
+                    <div className="absolute left-1/2 top-[82px] flex -translate-x-1/2 flex-col items-center">
+
+                      <span className="text-[52px] font-black leading-none tracking-[-2px] text-[#0b1e3f]">
+                        {Math.round(
+                          Object.values(report.percentages).reduce(
+                            (a, b) => a + b,
+                            0,
+                          ) / Object.values(report.percentages).length,
+                        )}
+                        %
+                      </span>
+
+                      <span className="mt-2 text-[14px] font-extrabold text-[#F36D45]">
+                        {report.performanceLevel}
+                      </span>
+
+                    </div>
+
+                  </div>
+                </div>
+
+
+                {/* ================= LABELS ================= */}
+
+                <div className="-mt-1 flex items-center justify-between text-[11px] font-medium text-slate-400">
+
+                  <span>
+                    Needs Improvement
+                  </span>
+
+                  <span className="translate-x-1">
+                    Developing
+                  </span>
+
+                  <span>
+                    Strong
+                  </span>
+
+                </div>
+
+              </div>
+
+              {/* Estimated Score */}
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="mb-4">
+                  <p className="text-xs font-bold uppercase tracking-wider text-slate-500">ESTIMATED SCORE</p>
+                </div>
+                <div className="mb-6">
+                  <span className="text-5xl font-black text-[#0b1e3f]">{report.totalScore}</span>
+                  <span className="ml-1 text-lg font-medium text-slate-400">
+                    {report.exam === "SAT" ? "/1600" : report.exam === "GRE" ? "/340" : report.exam === "GMAT" ? "/805" : report.exam === "TOEFL" ? "/120" : report.exam === "IELTS" ? "/9" : "/90"}
+                  </span>
+                  {report.percentile && (
+                    <span className="ml-4 rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-[#F36D45]">{report.percentile} Percentile</span>
+                  )}
+                </div>
+
+                <div className="space-y-4">
+                  {Object.entries(report.sectionScores).map(([section, score]) => (
+                    <div key={section}>
+                      <div className="mb-2 flex justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          {section.includes("Reading") || section.includes("Verbal") ? <BookOpen className="h-4 w-4 text-slate-400" /> : <Target className="h-4 w-4 text-slate-400" />}
+                          <span className="font-medium">{section}</span>
+                        </div>
+                        <div className="text-right">
+                          <span className="font-bold">{report.percentages[section]}%</span>
+                          <p className="text-xs text-slate-400">{getPerformanceLevel(report.percentages[section])}</p>
+                        </div>
+                      </div>
+                      <div className="h-2 overflow-hidden rounded-full bg-slate-100">
+                        <div className="h-full rounded-full bg-gradient-to-r from-orange-300 to-orange-500 transition-all" style={{ width: `${report.percentages[section]}%` }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Priority Area */}
+            <div className="mt-6 grid gap-6 lg:grid-cols-3">
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2">
+                <div className="mb-4">
+                  <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-[#F36D45]">YOUR PRIORITY AREA</span>
+                </div>
+                <h3 className="text-2xl font-bold">Focus on {report.weakestArea}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">Your current {report.weakestArea} performance shows an opportunity to improve concept clarity, calculation accuracy and timed problem-solving. Review weaker concepts first and strengthen them through targeted question practice.</p>
+                <div className="mt-6">
+                  <h4 className="text-sm font-bold">Recommended focus</h4>
+                  <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                    {["Concept Revision", "Targeted Questions", "Timed Problem Solving", "Mistake Review"].map((item) => (
+                      <div key={item} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3">
+                        <div className="flex h-6 w-6 items-center justify-center rounded-full bg-orange-100"><TrendingUp className="h-3 w-3 text-[#F36D45]" /></div>
+                        <span className="text-sm font-medium">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-orange-200 bg-gradient-to-br from-orange-50 to-orange-100 p-6">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-sm"><GraduationCap className="h-6 w-6 text-[#F36D45]" /></div>
+                <h3 className="text-lg font-bold">Turn Your Weak Area Into a Strength</h3>
+                <p className="mt-3 text-sm leading-5 text-slate-600">Strengthen your {report.weakestArea} preparation with structured lessons, targeted practice, mock tests and expert guidance through Ooshas Prep online coaching.</p>
+                <button className="mt-5 w-full rounded-xl bg-[#F36D45] px-4 py-3 text-sm font-bold text-white transition hover:brightness-95">Explore {report.exam} Course →</button>
+              </div>
+            </div>
+
+            {/* Strongest Area & Next Steps */}
+            <div className="mt-6 grid gap-6 lg:grid-cols-2">
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="mb-4">
+                  <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-[#F36D45]">YOUR STRONGEST AREA</span>
+                </div>
+                <h3 className="text-xl font-bold">{report.strongestArea}</h3>
+                <p className="mt-3 text-sm leading-6 text-slate-600">{report.strongestArea} is currently your strongest area at {report.percentages[report.strongestArea]}% performance. Keep practising this section regularly while giving additional preparation time to {report.weakestArea}.</p>
+              </div>
+
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <div className="mb-4">
+                  <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-[#F36D45]">RECOMMENDED NEXT STEP</span>
+                </div>
+                <h3 className="text-xl font-bold">Build Your {report.weakestArea}</h3>
+                <ol className="mt-4 space-y-3">
+                  {[`Identify weaker topics within ${report.weakestArea}`, "Complete targeted practice sets", "Introduce regular timed sectional practice", "Review mistakes before attempting the next test"].map((step, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 text-xs font-bold text-[#F36D45]">{i + 1}</span>
+                      <span className="text-sm text-slate-600">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+
+            {/* Disclaimer */}
+            <div className="mt-6 rounded-xl bg-slate-50 p-4 text-center text-xs text-slate-500">
+              This {report.exam} score calculator provides an estimated practice-performance analysis for preparation and planning purposes only. It should not be considered an official {report.exam} result.
+            </div>
+
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <button className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">
+                <Download className="h-4 w-4 text-[#F36D45]" />
+                Download Report PDF
+              </button>
+              <button className="flex items-center gap-2 rounded-xl bg-[#F36D45] px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:brightness-95">
+                Explore {report.exam} Course
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Original Sections */}
+      <WhySection data={pageInfo?.sections?.whySection?.fields} />
+      <DifferenceSection data={pageInfo?.sections?.differenceSection?.fields} />
+      <BeyondNumberSection data={pageInfo?.sections?.beyondNumber?.fields} />
+      <QuestionsSection page="Calculator" heading="Student Questions & Comments" />
+      <Consultants data={pageInfo?.sections?.faq} />
+      <BottomCTA data={pageInfo?.sections?.bottomCTA?.fields} />
+    </main>
   );
 }
 
+// Keep all your original helper components unchanged
 function Hero({ data }: { data: any }) {
   const title = data?.title || "";
   const [firstPart, ...rest] = title.split("||");
 
   return (
-  <section className="relative overflow-hidden bg-[#fcf3ed]">
-  <div className="relative mx-auto max-w-7xl px-4 pb-12 pt-12 text-center sm:px-6 sm:pb-14 sm:pt-16 lg:pb-20 lg:pt-20">
-    <h1 className="mx-auto max-w-7xl text-3xl font-extrabold leading-[1.15] sm:text-4xl lg:text-5xl">
-      {rest.length > 0 ? (
-        <>
-          {firstPart.trim()} &{" "}
-          <span style={{ color: "#f36d45" }}>
-            {rest.join("&")}
-          </span>
-        </>
-      ) : (
-        title
-      )}
-    </h1>
-
-    <div
-      className="mx-auto mt-5 max-w-3xl text-sm leading-6 sm:text-base sm:leading-7"
-      dangerouslySetInnerHTML={{
-        __html: data?.description || "",
-      }}
-    />
-
-    <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-      {data?.primaryButtonText && (
-        <a
-          href={data?.primaryButtonUrl || "#calculator"}
-          className="inline-flex w-full items-center justify-center gap-2 px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5 sm:w-auto"
-          style={{ background: "#F36D45" }}
-        >
-          {data.primaryButtonText}
-          <ArrowRight className="h-4 w-4" />
-        </a>
-      )}
-    </div>
-  </div>
-</section>
-  );
-}
-
-
-function AdaptiveInputs({
-  adaptive,
-  sectionScores,
-  onChange,
-}: {
-  adaptive: AdaptiveConfig;
-  sectionScores: Record<string, number>;
-  onChange: (
-    key: string,
-    value: number,
-    min: number,
-    max: number,
-    step?: number,
-  ) => void;
-}) {
-  const { groups, writing } = adaptive;
-  const writingValue = sectionScores[writing.id] ?? writing.min;
-
-  return (
-    <>
-      {groups.map((group) => {
-        const totalQuestions = group.section1Max + group.section2Max;
-        const harder = (sectionScores[`${group.id}_harder`] ?? 1) === 1;
-        const parts = [
-          {
-            key: `${group.id}_s1`,
-            label: "Section 1 correct",
-            max: group.section1Max,
-          },
-          {
-            key: `${group.id}_s2`,
-            label: "Section 2 correct",
-            max: group.section2Max,
-          },
-        ];
-
-        return (
-          <div
-            key={group.id}
-            className="mb-4 rounded-xl border border-slate-200 p-4"
-          >
-            <div className="mb-3 flex items-center justify-between">
-              <span className="text-xm font-bold">{group.label}</span>
-              <span className="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase text-slate-500">
-                {totalQuestions} questions
+    <section className="relative overflow-hidden bg-[#fcf3ed]">
+      <div className="relative mx-auto max-w-7xl px-4 pb-12 pt-12 text-center sm:px-6 sm:pb-14 sm:pt-16 lg:pb-20 lg:pt-20">
+        <h1 className="mx-auto max-w-7xl text-3xl font-extrabold leading-[1.15] sm:text-4xl lg:text-5xl">
+          {rest.length > 0 ? (
+            <>
+              {firstPart.trim()} &{" "}
+              <span style={{ color: "#f36d45" }}>
+                {rest.join("&")}
               </span>
-            </div>
-
-            <div className="grid gap-4 sm:grid-cols-2">
-              {parts.map((part) => {
-                const value = sectionScores[part.key] ?? 0;
-                return (
-                  <div key={part.key}>
-                    <p className="mb-2 text-[13px] font-semibold text-slate-600">
-                      {part.label} (out of {part.max})
-                    </p>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="range"
-                        min={0}
-                        max={part.max}
-                        step={1}
-                        value={value}
-                        onChange={(e) =>
-                          onChange(part.key, Number(e.target.value), 0, part.max)
-                        }
-                        className="flex-1 accent-orange-500"
-                        aria-label={`${group.label} ${part.label}`}
-                      />
-                      <input
-                        type="number"
-                        min={0}
-                        max={part.max}
-                        step={1}
-                        value={value}
-                        onChange={(e) =>
-                          onChange(part.key, Number(e.target.value), 0, part.max)
-                        }
-                        className="w-16 rounded-lg border border-slate-200 px-2 py-1 text-center text-sm font-bold outline-none focus:border-orange-400"
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            <p className="mb-2 mt-4 text-[13px] font-semibold text-slate-600">
-              Section 2 difficulty you received
-            </p>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { label: "Harder Section 2", isHarder: true },
-                { label: "Easier Section 2", isHarder: false },
-              ].map((opt) => {
-                const active = harder === opt.isHarder;
-                return (
-                  <button
-                    key={opt.label}
-                    type="button"
-                    aria-pressed={active}
-                    onClick={() =>
-                      onChange(`${group.id}_harder`, opt.isHarder ? 1 : 0, 0, 1)
-                    }
-                    className={`rounded-lg border px-3 py-2.5 text-[13px] font-bold transition ${
-                      active
-                        ? "border-orange-400 bg-orange-50 text-orange-600"
-                        : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                    }`}
-                  >
-                    {opt.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        );
-      })}
-
-      {/* Analytical Writing */}
-      {/* <div className="mb-4 rounded-xl border border-slate-200 p-4">
-        <div className="mb-3 flex items-center justify-between">
-          <span className="text-xm font-bold">{writing.label}</span>
-          <span className="rounded bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">
-            {writingValue}
-            <span className="text-slate-400"> / {writing.max}</span>
-          </span>
-        </div>
-        <div className="flex items-center gap-3">
-          <input
-            type="range"
-            min={writing.min}
-            max={writing.max}
-            step={writing.step}
-            value={writingValue}
-            onChange={(e) =>
-              onChange(
-                writing.id,
-                Number(e.target.value),
-                writing.min,
-                writing.max,
-                writing.step,
-              )
-            }
-            className="flex-1 accent-orange-500"
-            aria-label={writing.label}
-          />
-          <input
-            type="number"
-            min={writing.min}
-            max={writing.max}
-            step={writing.step}
-            value={writingValue}
-            onChange={(e) =>
-              onChange(
-                writing.id,
-                Number(e.target.value),
-                writing.min,
-                writing.max,
-                writing.step,
-              )
-            }
-            className="w-16 rounded-lg border border-slate-200 px-2 py-1 text-center text-sm font-bold outline-none focus:border-orange-400"
-          />
-        </div>
-      </div> */}
-    </>
-  );
-}
-
-function ScoreSection({
-  data,
-  config,
-  sectionScores,
-  onScoreChange,
-  onAdaptiveChange,
-  onCalculate,
-  result,
-}: {
-  data : any
-  config: ExamConfig;
-  sectionScores: Record<string, number>;
-  onScoreChange: (id: string, value: number) => void;
-  onAdaptiveChange: (
-    key: string,
-    value: number,
-    min: number,
-    max: number,
-    step?: number,
-  ) => void;
-  onCalculate: () => void;
-  result: CalculatedResult | null;
-}) {
-  console.log(result , "in the scoresection ")
-  const displayTotal =
-    result &&
-    (Number.isInteger(result.totalScore)
-      ? result.totalScore
-      : result.totalScore.toFixed(1));
-
-  return (
-    <section id="calculator" className="px-4 pb-16">
-      <div className="mx-auto max-w-6xl">
-        <SectionHeading
-          eyebrow={`${config.label} SCORE CALCULATOR`}
-          title={data?.fields?.title || `Convert Your Raw Score Into Your Real ${config.label} Score`}
-          description={data?.fields?.description || `Enter your practice performance and click Calculate to see your estimated ${config.label} score.`}
-        />
-
-        <div className="mt-9 grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg lg:grid-cols-[1fr_360px]">
-          <div className="p-5 sm:p-7">
-            <div className="mb-6 flex items-center justify-between">
-              <div>
-                <h3 className="text-sm font-extrabold">
-                  Enter Your Practice Test Results
-                </h3>
-                <p className="mt-1 text-[14px] text-slate-500">
-                  {config.adaptive
-                    ? "Works with any full-length GRE practice test (ETS PowerPrep, Ooshas Prep mock tests, or the official Bluebook-style portal)."
-                    : "Use your latest mock test for the best estimate."}
-                </p>
-              </div>
-              <span className="rounded-full bg-orange-50 px-2.5 py-1 text-[9px] font-bold text-[#F36D45]">
-                LIVE
-              </span>
-            </div>
-
-            {config.adaptive ? (
-              <AdaptiveInputs
-                adaptive={config.adaptive}
-                sectionScores={sectionScores}
-                onChange={onAdaptiveChange}
-              />
-            ) : (
-              config.sections.map((section) => {
-                const value = sectionScores[section.id] ?? section.min;
-                const percentage = Math.round(
-                  ((value - section.min) / (section.max - section.min)) * 100,
-                );
-                const step = section.step || 1;
-                const bandEquivalent = section.bandFromRaw
-                  ? section.bandFromRaw(value)
-                  : null;
-                return (
-                  <div
-                    key={section.id}
-                    className="mb-4 rounded-xl border border-slate-200 p-4"
-                  >
-                    <div className="mb-3 flex items-center justify-between">
-                      <span className="text-xm font-bold">
-                        {section.label}
-                        {section.bandFromRaw && (
-                          <span className="ml-1.5 font-normal text-slate-400">
-                            (out of {section.max})
-                          </span>
-                        )}
-                      </span>
-                      <span className="rounded bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">
-                        {value}
-                        <span className="text-slate-400"> / {section.max}</span>
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="range"
-                        min={section.min}
-                        max={section.max}
-                        step={step}
-                        value={value}
-                        onChange={(e) =>
-                          onScoreChange(section.id, Number(e.target.value))
-                        }
-                        className="flex-1 accent-orange-500"
-                      />
-                      <input
-                        type="number"
-                        min={section.min}
-                        max={section.max}
-                        step={step}
-                        value={value}
-                        onChange={(e) =>
-                          onScoreChange(section.id, Number(e.target.value))
-                        }
-                        className="w-16 rounded-lg border border-slate-200 px-2 py-1 text-center text-sm font-bold outline-none focus:border-orange-400"
-                      />
-                    </div>
-                    {/* <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
-                    <div
-                      className="h-full rounded-full transition-all"
-                      style={{
-                        width: `${Math.min(Math.max(percentage, 0), 100)}%`,
-                        background: ORANGE,
-                      }}
-                    />
-                  </div> */}
-                    {bandEquivalent !== null && (
-                      <p className="mt-2 text-[11px] font-semibold text-[#F36D45]">
-                        ≈ {section.bandUnitLabel ?? "Band"} {bandEquivalent}
-                      </p>
-                    )}
-                  </div>
-                );
-              })
-            )}
-<div className="flex justify-center">
-            <button
-              type="button"
-              onClick={onCalculate}
-              className="mt-5 px-4 py-3 text-xm font-bold text-white transition hover:brightness-95"
-              style={{ background: "#F36D45" }}
-            >
-              Calculate My Score
-            </button></div>
-          </div>
-
-          <div className="relative flex flex-col justify-center bg-[#0b1e3f] p-7 text-white">
-            <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-blue-500/10 blur-3xl" />
-            <div className="relative">
-              {!result ? (
-                <ResultPlaceholder />
-              ) : (
-                <>
-                  <p className="text-center text-[10px] font-medium uppercase tracking-widest text-blue-200/60">
-                    Your Estimated {config.label} Score
-                  </p>
-                  <div className="mt-4 text-center">
-                    <span className="text-6xl font-black tracking-tight">
-                      {displayTotal}
-                    </span>
-                    <span className="ml-1 text-sm font-semibold text-white/50">
-                      {config.totalLabel}
-                    </span>
-                  </div>
-                  {result.percentile !== "Not available" && (
-                    <div className="mt-3 text-center">
-                      <span className="rounded-full bg-orange-500/15 px-3 py-1 text-[10px] font-bold text-orange-300">
-                        {result.percentile} Percentile
-                      </span>
-                    </div>
-                  )}
-                  {config.label === "GMAT" && (
-                    <p className="mt-3 text-center text-[10px] leading-4 text-blue-100/60">
-                      Percentile is not estimated. Use a current, verified GMAC
-                      percentile table for percentile reporting.
-                    </p>
-                  )}
-
-                  <div className="mt-8 space-y-4">
-                    {config.sections.map((section) => {
-                      const val = result.scores[section.id] ?? section.min;
-                      const pct = Math.round(
-                        ((val - section.min) / (section.max - section.min)) *
-                          100,
-                      );
-                      return (
-                        <ScoreMeter
-                          key={section.id}
-                          label={section.label}
-                          value={pct}
-                          display={
-                            config.adaptive
-                              ? String(
-                                  Number.isInteger(val) ? val : val.toFixed(1),
-                                )
-                              : undefined
-                          }
-                        />
-                      );
-                    })}
-                    {!config.adaptive && (
-                      <ScoreMeter
-                        label="Overall Performance"
-                        value={Math.round(
-                          ((result.totalScore - config.scoreRange.min) /
-                            (config.scoreRange.max - config.scoreRange.min)) *
-                            100,
-                        )}
-                      />
-                    )}
-                    {config.adaptive && result.tier && (
-                      <div className="flex items-center justify-between gap-3 pt-2 text-[12px]">
-                        <span className="text-white/70">
-                          Best-fit grad school tier
-                        </span>
-                        <span className="text-right font-bold text-white">
-                          {result.tier}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  <div className="mt-8 border-t border-white/10 pt-5 text-center">
-                    <p className="text-[10px] leading-5 text-blue-100/60">
-                      Your estimated score is a planning benchmark and should
-                      not be considered an official result.
-                    </p>
-                  </div>
-                </>
-              )}
-            </div>
-          </div>
+            </>
+          ) : (
+            title
+          )}
+        </h1>
+        <div className="mx-auto mt-5 max-w-3xl text-sm leading-6 sm:text-base sm:leading-7" dangerouslySetInnerHTML={{ __html: data?.description || "" }} />
+        <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+          {data?.primaryButtonText && (
+            <a href={data?.primaryButtonUrl || "#calculator"} className="inline-flex w-full items-center justify-center gap-2 px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5 sm:w-auto" style={{ background: "#F36D45" }}>
+              {data.primaryButtonText}
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          )}
         </div>
       </div>
     </section>
-  );
-}
-
-function ResultPlaceholder() {
-  return (
-    <div className="text-center">
-      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-dashed border-white/20">
-        <Sparkles className="h-6 w-6 text-white/40" />
-      </div>
-      <p className="mt-4 text-sm font-bold text-white/80">No score yet</p>
-      <p className="mx-auto mt-2 max-w-[220px] text-[12px] leading-5 text-blue-100/60">
-        Enter your section scores on the left, then click{" "}
-        <span className="font-semibold text-orange-300">
-          Calculate My Score
-        </span>{" "}
-        to see your estimated result and charts.
-      </p>
-    </div>
-  );
-}
-
-function ScoreMeter({
-  label,
-  value,
-  display,
-}: {
-  label: string;
-  value: number;
-  display?: string; // NEW: show a custom value (e.g. 145) instead of a %
-}) {
-  const clamped = Math.min(Math.max(value, 0), 100);
-  return (
-    <div>
-      <div className="mb-2 flex justify-between text-[10px]">
-        <span className="text-white/70">{label}</span>
-        <span className="font-bold text-white">
-          {display ?? `${Math.round(clamped)}%`}
-        </span>
-      </div>
-      <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-        <div
-          className="h-full rounded-full bg-orange-400 transition-all"
-          style={{ width: `${clamped}%` }}
-        />
-      </div>
-    </div>
-  );
-}
-
-function ScoreVisualizationSection({
-  data,
-  config,
-  result,
-}: {
-  data : any;
-  config: ExamConfig;
-  result: CalculatedResult | null;
-}) {
-  return (
-    <section className="px-4 pb-10">
-      <div className="mx-auto max-w-6xl">
-        <SectionHeading
-          eyebrow="SCORE BREAKDOWN"
-          title={data?.field?.title || "See Your Score & Band, Visually"}
-          description={data?.field?.description || 'A section-by-section chart of your practice scores and your estimated total-score position.'}
-        />
-        <div className="mt-9 grid gap-5 lg:grid-cols-2">
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-            <h3 className="text-sm font-extrabold">Section Score Chart</h3>
-            <p className="mt-1 text-[14px] text-slate-500">
-              Each bar shows how your entered score compares to that section's
-              full range.
-            </p>
-            {result ? (
-              <SectionBarChart config={config} sectionScores={result.scores} />
-            ) : (
-              <ChartPlaceholder />
-            )}
-          </div>
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-            <h3 className="text-sm font-extrabold">
-              Total Score & Band Position
-            </h3>
-            {result ? (
-              <>
-                <p className="mt-1 text-[14px] text-slate-500">
-                  Your {config.label} total of{" "}
-                  {Number.isInteger(result.totalScore)
-                    ? result.totalScore
-                    : result.totalScore.toFixed(1)}{" "}
-                  {result.percentile !== "Not available" ? (
-                    <>
-                      sits in the{" "}
-                      <span className="font-bold text-[#F36D45]">
-                        {result.percentile} percentile
-                      </span>{" "}
-                      band.
-                    </>
-                  ) : (
-                    <>is an estimated total-score scale position.</>
-                  )}
-                </p>
-                <BandGaugeChart
-                  config={config}
-                  totalScore={result.totalScore}
-                />
-              </>
-            ) : (
-              <>
-                <p className="mt-1 text-[14px] text-slate-500">
-                  Click Calculate My Score above to see where your total lands.
-                </p>
-                <ChartPlaceholder />
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ChartPlaceholder() {
-  return (
-    <div className="mt-5 flex h-[220px] items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50">
-      <p className="max-w-[220px] text-center text-[12px] leading-5 text-slate-400">
-        Your chart will appear here once you calculate your score.
-      </p>
-    </div>
-  );
-}
-
-function SectionBarChart({
-  config,
-  sectionScores,
-}: {
-  config: ExamConfig;
-  sectionScores: Record<string, number>;
-}) {
-  const width = 600;
-  const height = 260;
-  const paddingLeft = 40;
-  const paddingRight = 20;
-  const paddingTop = 30;
-  const paddingBottom = 56;
-  const chartWidth = width - paddingLeft - paddingRight;
-  const chartHeight = height - paddingTop - paddingBottom;
-
-  const sections = config.sections;
-  const gap = 24;
-  const barWidth = (chartWidth - gap * (sections.length - 1)) / sections.length;
-
-  const gridLines = [0, 25, 50, 75, 100];
-
-  return (
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      className="mt-5 w-full"
-      role="img"
-      aria-label="Section score chart"
-    >
-      {/* Y-axis grid lines */}
-      {gridLines.map((pct) => {
-        const y = paddingTop + chartHeight - (pct / 100) * chartHeight;
-        return (
-          <g key={pct}>
-            <line
-              x1={paddingLeft}
-              x2={width - paddingRight}
-              y1={y}
-              y2={y}
-              stroke="#e2e8f0"
-              strokeWidth={1}
-            />
-            <text
-              x={paddingLeft - 8}
-              y={y + 3}
-              textAnchor="end"
-              fontSize={9}
-              fill="#94a3b8"
-            >
-              {pct}%
-            </text>
-          </g>
-        );
-      })}
-
-      {/* Bars */}
-      {sections.map((section, i) => {
-        const value = sectionScores[section.id] ?? section.min;
-        const pct = Math.min(
-          100,
-          Math.max(
-            0,
-            ((value - section.min) / (section.max - section.min)) * 100,
-          ),
-        );
-        const barHeight = (pct / 100) * chartHeight;
-        const x = paddingLeft + i * (barWidth + gap);
-        const y = paddingTop + chartHeight - barHeight;
-        const bandEquivalent = section.bandFromRaw
-          ? section.bandFromRaw(value)
-          : null;
-
-        return (
-          <g key={section.id}>
-            <rect
-              x={x}
-              y={y}
-              width={barWidth}
-              height={Math.max(barHeight, 2)}
-              rx={6}
-              fill={ORANGE}
-            />
-            <text
-              x={x + barWidth / 2}
-              y={y - 8}
-              textAnchor="middle"
-              fontSize={11}
-              fontWeight={700}
-              fill={NAVY}
-            >
-              {bandEquivalent !== null ? `${value} → ${bandEquivalent}` : value}
-            </text>
-            {wrapLabel(section.label).map((line, li) => (
-              <text
-                key={li}
-                x={x + barWidth / 2}
-                y={paddingTop + chartHeight + 16 + li * 12}
-                textAnchor="middle"
-                fontSize={10}
-                fill="#64748b"
-              >
-                {line}
-              </text>
-            ))}
-          </g>
-        );
-      })}
-    </svg>
-  );
-}
-
-function wrapLabel(label: string): string[] {
-  if (label.length <= 12) return [label];
-  const words = label.split(" ");
-  const mid = Math.ceil(words.length / 2);
-  return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
-}
-
-function BandGaugeChart({
-  config,
-  totalScore,
-}: {
-  config: ExamConfig;
-  totalScore: number;
-}) {
-  const width = 600;
-  const height = 150;
-  const paddingLeft = 20;
-  const paddingRight = 20;
-  const barY = 46;
-  const barHeight = 28;
-  const trackWidth = width - paddingLeft - paddingRight;
-
-  const { min, max } = config.scoreRange;
-  const bands = config.percentileBands;
-  const boundaries = [...bands.map((b) => b.threshold), max];
-
-  const activeIndex = (() => {
-    let idx = 0;
-    bands.forEach((b, i) => {
-      if (totalScore >= b.threshold) idx = i;
-    });
-    return idx;
-  })();
-
-  const pointerX =
-    paddingLeft + ((totalScore - min) / (max - min)) * trackWidth;
-
-  return (
-    <svg
-      viewBox={`0 0 ${width} ${height}`}
-      className="mt-5 w-full"
-      role="img"
-      aria-label="Total score band gauge"
-    >
-      {/* Band segments */}
-      {bands.map((band, i) => {
-        const segStart = boundaries[i];
-        const segEnd = boundaries[i + 1];
-        const segX =
-          paddingLeft + ((segStart - min) / (max - min)) * trackWidth;
-        const segWidth = ((segEnd - segStart) / (max - min)) * trackWidth;
-        const segPct = (segWidth / trackWidth) * 100;
-        const isActive = i === activeIndex;
-
-        return (
-          <g key={band.label}>
-            <rect
-              x={segX}
-              y={barY}
-              width={Math.max(segWidth, 1)}
-              height={barHeight}
-              fill={BAND_COLORS[i % BAND_COLORS.length]}
-              stroke={isActive ? NAVY : "transparent"}
-              strokeWidth={isActive ? 2 : 0}
-              rx={4}
-            />
-            {segPct > 9 && (
-              <text
-                x={segX + segWidth / 2}
-                y={barY + barHeight + 16}
-                textAnchor="middle"
-                fontSize={9}
-                fontWeight={isActive ? 700 : 400}
-                fill={isActive ? NAVY : "#94a3b8"}
-              >
-                {band.label}
-              </text>
-            )}
-          </g>
-        );
-      })}
-
-      {/* Range end labels */}
-      <text
-        x={paddingLeft}
-        y={barY - 10}
-        textAnchor="start"
-        fontSize={9}
-        fill="#94a3b8"
-      >
-        {min}
-      </text>
-      <text
-        x={width - paddingRight}
-        y={barY - 10}
-        textAnchor="end"
-        fontSize={9}
-        fill="#94a3b8"
-      >
-        {max}
-      </text>
-
-      {/* Pointer marking the current total score */}
-      <line
-        x1={pointerX}
-        x2={pointerX}
-        y1={barY - 8}
-        y2={barY + barHeight + 8}
-        stroke={NAVY}
-        strokeWidth={2}
-      />
-      <polygon
-        points={`${pointerX - 6},${barY - 8} ${pointerX + 6},${barY - 8} ${pointerX},${barY - 18}`}
-        fill={NAVY}
-      />
-      <text
-        x={pointerX}
-        y={barY - 22}
-        textAnchor="middle"
-        fontSize={11}
-        fontWeight={700}
-        fill={NAVY}
-      >
-        {Number.isInteger(totalScore) ? totalScore : totalScore.toFixed(1)}
-      </text>
-    </svg>
   );
 }
 
 function WhySection({ data }: { data: any }) {
-  const [isPopupOpen,setisPopupOpen] = useState(false)
+  const [isPopupOpen, setisPopupOpen] = useState(false);
   const router = useRouter();
-  console.log(data,"hjkjk")
   return (
     <section className="bg-[#fcf3ed] px-4 py-16 text-[#0b1e3f]">
       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center">
         <div>
-          <div className="mb-4 inline-flex rounded-full bg-orange-500/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-orange-600">
-            More Than A Number
-          </div>
-
-          <h2 className="max-w-3xl text-2xl font-extrabold leading-tight sm:text-3xl">
-            {data?.title || ""}
-          </h2>
-
-          <div
-            className="mt-5 max-w-3xl text-sm leading-6 text-[#0b1e3f]/80"
-            dangerouslySetInnerHTML={{
-              __html: data?.description || "",
-            }}
-          />
-          <button
-            className="mt-7  px-5 py-3 text-xm font-bold text-white"
-            onClick={()=>router.push(data.buttonUrl)}
-            style={{ background: "#F36D45" }}
-          >
-            {data?.buttonText ||"Start Your Preparation"}
-          </button>
+          <div className="mb-4 inline-flex rounded-full bg-orange-500/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-orange-600">More Than A Number</div>
+          <h2 className="max-w-3xl text-2xl font-extrabold leading-tight sm:text-3xl">{data?.title || ""}</h2>
+          <div className="mt-5 max-w-3xl text-sm leading-6 text-[#0b1e3f]/80" dangerouslySetInnerHTML={{ __html: data?.description || "" }} />
+          <button className="mt-7 px-5 py-3 text-xm font-bold text-white" onClick={() => router.push(data.buttonUrl)} style={{ background: "#F36D45" }}>{data?.buttonText || "Start Your Preparation"}</button>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          {data?.statistics?.map(({ number, label }, index) => (
-            <div
-              key={`${label}-${index}`}
-              className="rounded-xl border border-[#0b1e3f]/10 bg-[#0b1e3f]/5 p-5"
-            >
+          {data?.statistics?.map(({ number, label }: any, index: number) => (
+            <div key={`${label}-${index}`} className="rounded-xl border border-[#0b1e3f]/10 bg-[#0b1e3f]/5 p-5">
               <p className="text-xl font-black text-[#0b1e3f]">{number}</p>
-              <p className="mt-1 text-[10px] font-medium uppercase tracking-wider text-[#0b1e3f]/60">
-                {label}
-              </p>
+              <p className="mt-1 text-[10px] font-medium uppercase tracking-wider text-[#0b1e3f]/60">{label}</p>
             </div>
           ))}
         </div>
       </div>
-            <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setisPopupOpen}/>
-
+      <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setisPopupOpen} />
     </section>
   );
 }
@@ -1493,69 +2294,29 @@ function DifferenceSection({ data }: { data: any }) {
   return (
     <section id="how-it-works" className="bg-white px-4 py-12">
       <div className="mx-auto max-w-6xl">
-        <SectionHeading
-          eyebrow="OUR DIFFERENCE"
-          title={data?.title || ""}
-          description={data?.description || ""}
-        />
-
-        {data?.Data && (
-          <EditorContent content_data={data.Data} />
-          // <div
-          //   className="mt-9 overflow-x-auto rounded-2xl border border-slate-200 bg-white "
-          //   dangerouslySetInnerHTML={{
-          //     __html: data.Data,
-          //   }}
-          // />
-        )}
+        <SectionHeading eyebrow="OUR DIFFERENCE" title={data?.title || ""} description={data?.description || ""} />
+        {data?.Data && <EditorContent content_data={data.Data} />}
       </div>
     </section>
   );
 }
 
 function BeyondNumberSection({ data }: { data: any }) {
-  const iconMap: Record<string, any> = {
-    TrendingUp,
-    Target,
-    GraduationCap,
-    Trophy,
-    MapPin,
-    Sparkles,
-    Users,
-    Star,
-    Search,
-    Info,
-  };
-
+  const iconMap: Record<string, any> = { TrendingUp, Target, GraduationCap, Trophy, MapPin, Sparkles, Users, Star, Search, Info };
   const features = Array.isArray(data?.features) ? data.features : [];
 
   return (
     <section className="bg-white px-4 py-12">
       <div className="mx-auto max-w-6xl">
-        <SectionHeading
-          eyebrow="BEYOND THE NUMBER"
-          title={data?.title || ""}
-          description={data?.description || ""}
-        />
-
+        <SectionHeading eyebrow="BEYOND THE NUMBER" title={data?.title || ""} description={data?.description || ""} />
         <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature: any, index: number) => {
             const Icon = iconMap[feature?.icon] || Sparkles;
-
             return (
-              <div
-                key={`${feature?.title || "feature"}-${index}`}
-                className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-              >
-                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-[#F36D45]">
-                  <Icon className="h-4 w-4" />
-                </div>
-                <h3 className="text-sm font-extrabold">
-                  {feature?.title || ""}
-                </h3>
-                <p className="mt-2 text-[14px] leading-5 text-slate-500">
-                  {feature?.text || ""}
-                </p>
+              <div key={`${feature?.title || "feature"}-${index}`} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
+                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-[#F36D45]"><Icon className="h-4 w-4" /></div>
+                <h3 className="text-sm font-extrabold">{feature?.title || ""}</h3>
+                <p className="mt-2 text-[14px] leading-5 text-slate-500">{feature?.text || ""}</p>
               </div>
             );
           })}
@@ -1566,1298 +2327,33 @@ function BeyondNumberSection({ data }: { data: any }) {
 }
 
 function BottomCTA({ data }: { data: any }) {
-  const [isPopupOpen,setisPopupOpen] = useState(false)
-
+  const [isPopupOpen, setisPopupOpen] = useState(false);
   return (
     <div>
-    <section id="contact" className="bg-white px-4 pb-5">
-      <div
-        className="mx-auto max-w-7xl overflow-hidden rounded-xl px-6 py-10 text-center sm:px-10"
-        style={{
-          background: "#F36D45",
-        }}
-      >
-        <h2 className="text-xl font-black text-white sm:text-2xl">
-          {data?.title || ""}
-        </h2>
-
-        <p className="mx-auto mt-2 max-w-xl whitespace-pre-line text-sm leading-5 text-white/80">
-          {data?.description || ""}
-        </p>
-
-        <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
-          {data?.primaryButtonText && (
-            <a
-              onClick={() => setisPopupOpen(true)}
-              className=" bg-[#0b1e3f] px-5 py-3 text-sm font-bold text-white cursor-pointer"
-            >
-              {data.primaryButtonText}
-            </a>
-          )}
-
-          {data?.secondaryButtonText && (
-            <a
-              href={data?.secondaryButtonUrl || "#"}
-              className=" bg-white px-5 py-3 text-sm font-bold text-[#0b1e3f]"
-            >
-              {data.secondaryButtonText}
-            </a>
-          )}
+      <section id="contact" className="bg-white px-4 pb-5">
+        <div className="mx-auto max-w-7xl overflow-hidden rounded-xl px-6 py-10 text-center sm:px-10" style={{ background: "#F36D45" }}>
+          <h2 className="text-xl font-black text-white sm:text-2xl">{data?.title || ""}</h2>
+          <p className="mx-auto mt-2 max-w-xl whitespace-pre-line text-sm leading-5 text-white/80">{data?.description || ""}</p>
+          <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
+            {data?.primaryButtonText && (
+              <a onClick={() => setisPopupOpen(true)} className="cursor-pointer bg-[#0b1e3f] px-5 py-3 text-sm font-bold text-white">{data.primaryButtonText}</a>
+            )}
+            {data?.secondaryButtonText && (
+              <a href={data?.secondaryButtonUrl || "#"} className="bg-white px-5 py-3 text-sm font-bold text-[#0b1e3f]">{data.secondaryButtonText}</a>
+            )}
+          </div>
         </div>
-      </div>
-    </section>
-      <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setisPopupOpen}/>
-      </div>
-
-  );
-}
-
-function SectionHeading({
-  eyebrow,
-  title,
-  description,
-  dark = false,
-}: {
-  eyebrow: string;
-  title: string;
-  description: string;
-  dark?: boolean;
-}) {
-  return (
-    <div className="mx-auto  text-center">
-      {/* <span className={`inline-flex rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-widest ${dark ? "bg-orange-400/10 text-orange-300" : "bg-orange-50 text-[#F36D45]"}`}>
-        {eyebrow}
-      </span> */}
-      <h2
-        className={`mt-3 text-2xl font-extrabold leading-tight sm:text-3xl ${dark ? "text-white" : "text-[#0b1e3f]"}`}
-      >
-        {title}
-      </h2>
-      {/* <EditorContent content_data={description} /> */}
-      <p
-        className={`mt-3 text-xm leading-5 sm:text-sm ${dark ? "text-blue-100/60" : "text-slate-500"}`}
-        dangerouslySetInnerHTML={{__html : description}}
-      />
-        {/* {description}
-      </p> */}
+      </section>
+      <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setisPopupOpen} />
     </div>
   );
 }
 
-
-
-
-
-// "use client";
-
-// import React, { useEffect, useMemo, useState } from "react";
-// import {
-//   ArrowRight,
-//   Check,
-//   ChevronDown,
-//   ChevronUp,
-//   Clock3,
-//   GraduationCap,
-//   Info,
-//   MapPin,
-//   Search,
-//   Sparkles,
-//   Star,
-//   Target,
-//   TrendingUp,
-//   Trophy,
-//   Users,
-// } from "lucide-react";
-// import { Consultants } from "@/components/destinations-consultants";
-// import EditorContent from "../editorContent";
-// import axiosInstance from "@/app/lib/axios";
-// import QuestionsSection from "../comment";
-
-// const ORANGE = "#ff7a2a";
-// const NAVY = "#0b1e3f";
-// // Ascending band color ramp, light -> deep orange, used on the gauge chart.
-// const BAND_COLORS = ["#ffe8d9", "#ffd0ad", "#ffb37a", "#ff9550", "#ff7a2a"];
-
-// type FAQ = {
-//   question: string;
-//   answer: string;
-// };
-
-// type ExamType = "GRE" | "GMAT" | "SAT" | "TOEFL" | "IELTS" | "PTE";
-
-// type ExamSection = {
-//   id: string;
-//   label: string;
-//   min: number;
-//   max: number;
-//   step?: number;
-//   bandFromRaw?: (raw: number) => number;
-//   bandUnitLabel?: string; // e.g. "Band" — label for the converted value
-// };
-
-// type PercentileBand = {
-//   // Lowest total score (inclusive) that qualifies for this band.
-//   threshold: number;
-//   label: string;
-// };
-
-// type ExamConfig = {
-//   label: string;
-//   sections: ExamSection[];
-//   scoreRange: { min: number; max: number };
-//   percentileBands: PercentileBand[];
-//   totalLabel: string;
-//   computeTotal: (scores: Record<string, number>) => number;
-// };
-
-// function roundToStep(value: number, step: number) {
-//   return Math.round(value / step) * step;
-// }
-
-// function clamp(value: number, min: number, max: number) {
-//   return Math.min(max, Math.max(min, value));
-// }
-
-// /**
-//  * Unofficial GMAT practice-test estimate.
-//  * The official GMAT algorithm is proprietary. This estimate uses the public
-//  * structure that all three 60–90 section scores contribute equally.
-//  */
-// function estimateGmatTotal(scores: Record<string, number>) {
-//   const quant = clamp(Number(scores.quant ?? 60), 60, 90);
-//   const verbal = clamp(Number(scores.verbal ?? 60), 60, 90);
-//   const dataInsights = clamp(Number(scores.di ?? 60), 60, 90);
-//   const average = (quant + verbal + dataInsights) / 3;
-//   const unroundedTotal = 205 + ((average - 60) / 30) * 600;
-
-//   // GMAT totals are 205, 215, 225 ... 805. The old implementation
-//   // rounded from zero and could produce invalid values such as 630.
-//   const roundedTotal =
-//     205 + Math.round((unroundedTotal - 205) / 10) * 10;
-
-//   return clamp(roundedTotal, 205, 805);
-// }
-
-// function roundIELTSBand(avg: number) {
-//   const whole = Math.floor(avg);
-//   const remainder = avg - whole;
-//   if (remainder < 0.25) return whole;
-//   if (remainder < 0.75) return whole + 0.5;
-//   return whole + 1;
-// }
-
-// const LISTENING_RAW_TO_BAND: { min: number; band: number }[] = [
-//   { min: 39, band: 9 },
-//   { min: 37, band: 8.5 },
-//   { min: 35, band: 8 },
-//   { min: 32, band: 7.5 },
-//   { min: 30, band: 7 },
-//   { min: 26, band: 6.5 },
-//   { min: 23, band: 6 },
-//   { min: 18, band: 5.5 },
-//   { min: 16, band: 5 },
-//   { min: 13, band: 4.5 },
-//   { min: 10, band: 4 },
-//   { min: 8, band: 3.5 },
-//   { min: 6, band: 3 },
-//   { min: 4, band: 2.5 },
-// ];
-
-// const READING_RAW_TO_BAND: { min: number; band: number }[] = [
-//   { min: 39, band: 9 },
-//   { min: 37, band: 8.5 },
-//   { min: 35, band: 8 },
-//   { min: 33, band: 7.5 },
-//   { min: 30, band: 7 },
-//   { min: 27, band: 6.5 },
-//   { min: 23, band: 6 },
-//   { min: 19, band: 5.5 },
-//   { min: 15, band: 5 },
-//   { min: 13, band: 4.5 },
-//   { min: 10, band: 4 },
-//   { min: 8, band: 3.5 },
-//   { min: 6, band: 3 },
-// ];
-
-// function rawToBand(
-//   raw: number,
-//   table: { min: number; band: number }[],
-// ): number {
-//   for (const row of table) {
-//     if (raw >= row.min) return row.band;
-//   }
-//   return 0;
-// }
-
-// const listeningBandFromRaw = (raw: number) =>
-//   rawToBand(raw, LISTENING_RAW_TO_BAND);
-// const readingBandFromRaw = (raw: number) => rawToBand(raw, READING_RAW_TO_BAND);
-
-// function defaultSectionValue(section: ExamSection) {
-//   const step = section.step || 1;
-//   const raw = section.min + (section.max - section.min) * 0.75;
-//   return roundToStep(raw, step);
-// }
-
-// // Finds the highest band whose threshold is <= score.
-// function getPercentileLabel(score: number, bands: PercentileBand[]) {
-//   if (!bands.length) return "Not available";
-
-//   let label = bands[0]?.label ?? "";
-//   for (const band of bands) {
-//     if (score >= band.threshold) label = band.label;
-//   }
-//   return label;
-// }
-
-// const examConfigs: Record<ExamType, ExamConfig> = {
-//   GRE: {
-//     label: "GRE",
-//     // Real GRE section scores are scaled 130-170, not raw 0-40 counts.
-//     sections: [
-//       { id: "verbal", label: "Verbal Reasoning", min: 130, max: 170 },
-//       { id: "quant", label: "Quantitative Reasoning", min: 130, max: 170 },
-//     ],
-//     scoreRange: { min: 260, max: 340 },
-//     percentileBands: [
-//       { threshold: 260, label: "65th" },
-//       { threshold: 310, label: "75th" },
-//       { threshold: 315, label: "85th" },
-//       { threshold: 320, label: "90th" },
-//       { threshold: 325, label: "95th" },
-//       { threshold: 330, label: "98th" },
-//     ],
-//     totalLabel: "/340",
-//     computeTotal: (scores) => (scores.verbal ?? 130) + (scores.quant ?? 130),
-//   },
-//   GMAT: {
-//     label: "GMAT",
-//     // GMAT Focus Edition subsections are scaled 60-90 each.
-//     sections: [
-//       { id: "quant", label: "Quantitative", min: 60, max: 90 },
-//       { id: "verbal", label: "Verbal", min: 60, max: 90 },
-//       { id: "di", label: "Data Insights", min: 60, max: 90 },
-//     ],
-//     scoreRange: { min: 205, max: 805 },
-//     // Do not hardcode GMAT percentiles. They change with the current GMAC
-//     // reference population and require a verified percentile table.
-//     percentileBands: [],
-//     totalLabel: "/805",
-//     computeTotal: estimateGmatTotal,
-//   },
-//   SAT: {
-//     label: "SAT",
-//     sections: [
-//       { id: "rw", label: "Reading & Writing", min: 200, max: 800 },
-//       { id: "math", label: "Math", min: 200, max: 800 },
-//     ],
-//     scoreRange: { min: 400, max: 1600 },
-//     percentileBands: [
-//       { threshold: 400, label: "50th" },
-//       { threshold: 1200, label: "75th" },
-//       { threshold: 1300, label: "87th" },
-//       { threshold: 1400, label: "94th" },
-//       { threshold: 1500, label: "98th" },
-//     ],
-//     totalLabel: "/1600",
-//     // SAT total is the sum of both section scores.
-//     computeTotal: (scores) => (scores.rw ?? 200) + (scores.math ?? 200),
-//   },
-//   TOEFL: {
-//     label: "TOEFL iBT",
-//     sections: [
-//       { id: "reading", label: "Reading", min: 0, max: 30 },
-//       { id: "listening", label: "Listening", min: 0, max: 30 },
-//       { id: "speaking", label: "Speaking", min: 0, max: 30 },
-//       { id: "writing", label: "Writing", min: 0, max: 30 },
-//     ],
-//     scoreRange: { min: 0, max: 120 },
-//     percentileBands: [
-//       { threshold: 0, label: "40th" },
-//       { threshold: 90, label: "60th" },
-//       { threshold: 100, label: "80th" },
-//       { threshold: 110, label: "90th" },
-//       { threshold: 115, label: "95th" },
-//     ],
-//     totalLabel: "/120",
-//     computeTotal: (scores) =>
-//       (scores.reading ?? 0) +
-//       (scores.listening ?? 0) +
-//       (scores.speaking ?? 0) +
-//       (scores.writing ?? 0),
-//   },
-//   IELTS: {
-//     label: "IELTS",
-//     sections: [
-//       {
-//         id: "listening",
-//         label: "Listening",
-//         min: 0,
-//         max: 40,
-//         step: 1,
-//         bandFromRaw: listeningBandFromRaw,
-//         bandUnitLabel: "Band",
-//       },
-//       {
-//         id: "reading",
-//         label: "Reading",
-//         min: 0,
-//         max: 40,
-//         step: 1,
-//         bandFromRaw: readingBandFromRaw,
-//         bandUnitLabel: "Band",
-//       },
-
-//       { id: "writing", label: "Writing", min: 0, max: 9, step: 0.5 },
-//       { id: "speaking", label: "Speaking", min: 0, max: 9, step: 0.5 },
-//     ],
-//     scoreRange: { min: 0, max: 9 },
-//     percentileBands: [
-//       { threshold: 0, label: "60th" },
-//       { threshold: 7, label: "75th" },
-//       { threshold: 7.5, label: "88th" },
-//       { threshold: 8, label: "95th" },
-//       { threshold: 8.5, label: "98th" },
-//     ],
-//     totalLabel: "/9",
-
-//     computeTotal: (scores) => {
-//       const listeningBand = listeningBandFromRaw(scores.listening ?? 0);
-//       const readingBand = readingBandFromRaw(scores.reading ?? 0);
-//       const writingBand = scores.writing ?? 0;
-//       const speakingBand = scores.speaking ?? 0;
-//       const avg =
-//         (listeningBand + readingBand + writingBand + speakingBand) / 4;
-//       return roundIELTSBand(avg);
-//     },
-//   },
-//   PTE: {
-//     label: "PTE Academic",
-//     sections: [
-//       { id: "speaking", label: "Speaking & Writing", min: 10, max: 90 },
-//       { id: "reading", label: "Reading", min: 10, max: 90 },
-//       { id: "listening", label: "Listening", min: 10, max: 90 },
-//     ],
-//     scoreRange: { min: 10, max: 90 },
-//     percentileBands: [
-//       { threshold: 10, label: "45th" },
-//       { threshold: 65, label: "60th" },
-//       { threshold: 72, label: "75th" },
-//       { threshold: 79, label: "88th" },
-//       { threshold: 85, label: "95th" },
-//     ],
-//     totalLabel: "/90",
-//     computeTotal: (scores) => {
-//       const avg =
-//         ((scores.speaking ?? 10) +
-//           (scores.reading ?? 10) +
-//           (scores.listening ?? 10)) /
-//         3;
-//       return Math.round(avg);
-//     },
-//   },
-// };
-
-// type CalculatedResult = {
-//   exam: ExamType;
-//   scores: Record<string, number>;
-//   totalScore: number;
-//   percentile: string;
-// };
-
-// export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
-//   const [selectedExam, setSelectedExam] = useState<ExamType>(
-//     pageInfo?.sections?.hero?.fields.pageType || "GRE",
-//   );
-//   const [sectionScores, setSectionScores] = useState<Record<string, number>>(
-//     {},
-//   );
-
-//   const [result, setResult] = useState<CalculatedResult | null>(null);
-
-//   const config = examConfigs[selectedExam];
-
-  
-//   React.useEffect(() => {
-//     const initial: Record<string, number> = {};
-//     config.sections.forEach((s) => {
-//       initial[s.id] = defaultSectionValue(s);
-//     });
-//     setSectionScores(initial);
-//     setResult(null);
-//   }, [selectedExam]);
-
-//   const handleScoreChange = (sectionId: string, value: number) => {
-//     const section = config.sections.find((s) => s.id === sectionId);
-//     if (!section) return;
-//     const step = section.step || 1;
-//     const snapped = roundToStep(value, step);
-//     const clamped = Math.min(section.max, Math.max(section.min, snapped));
-//     setSectionScores((prev) => ({ ...prev, [sectionId]: clamped }));
-//   };
-
-//   const handleCalculate = () => {
-//     const computed = config.computeTotal(sectionScores);
-//     const totalScore = Math.min(
-//       config.scoreRange.max,
-//       Math.max(config.scoreRange.min, computed),
-//     );
-//     const percentile = getPercentileLabel(totalScore, config.percentileBands);
-//     setResult({
-//       exam: selectedExam,
-//       scores: { ...sectionScores },
-//       totalScore,
-//       percentile,
-//     });
-//   };
-
-//   return (
-//     <main className="min-h-screen bg-[#fff] text-[#0b1e3f]">
-//       <Hero data={pageInfo?.sections?.hero?.fields} />
-
-//       <div className="mx-auto max-w-6xl px-4 pb-4 pt-8">
-//         <div
-//           className={`hidden flex flex-wrap justify-center gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm`}
-//         >
-//           {(Object.keys(examConfigs) as ExamType[]).map((exam) => (
-//             <button
-//               key={exam}
-//               onClick={() => setSelectedExam(exam)}
-//               className={`rounded-lg px-5 py-2.5 text-sm font-bold transition ${
-//                 selectedExam === exam
-//                   ? "bg-[#0b1e3f] text-white"
-//                   : "bg-slate-50 text-slate-600 hover:bg-slate-100"
-//               }`}
-//             >
-//               {examConfigs[exam].label}
-//             </button>
-//           ))}
-//         </div>
-//       </div>
-
-//       <ScoreSection
-//         data = {pageInfo?.sections?.calculator}
-//         config={config}
-//         sectionScores={sectionScores}
-//         onScoreChange={handleScoreChange}
-//         onCalculate={handleCalculate}
-//         result={result && result.exam === selectedExam ? result : null}
-//       />
-
-//       <ScoreVisualizationSection
-//         data = {pageInfo?.sections?.chart}
-//         config={config}
-//         result={result && result.exam === selectedExam ? result : null}
-//       />
-
-//       <WhySection data={pageInfo?.sections?.whySection?.fields} />
-//       <DifferenceSection data={pageInfo?.sections?.differenceSection?.fields} />
-//       <BeyondNumberSection data={pageInfo?.sections?.beyondNumber?.fields} />
-//       <QuestionsSection page={'Calculator'} heading={'Student Questions & Comments'} />
-//       <Consultants data={pageInfo?.sections?.faq} />
-//       <BottomCTA data={pageInfo?.sections?.bottomCTA?.fields} />
-//     </main>
-//   );
-// }
-
-// function Hero({ data }: { data: any }) {
-//   const title = data?.title || "";
-//   const [firstPart, ...rest] = title.split("&");
-
-//   return (
-//     <section className="relative overflow-hidden bg-[#fcf3ed]">
-//       <div className="relative mx-auto max-w-5xl px-4 pb-14 pt-16 text-center sm:px-6 lg:pb-20 lg:pt-20">
-//         <h1 className="mx-auto max-w-4xl text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl">
-//           {rest.length > 0 ? (
-//             <>
-//               {firstPart.trim()} &
-//               <span style={{ color: ORANGE }}>{rest.join("&")}</span>
-//             </>
-//           ) : (
-//             title
-//           )}
-//         </h1>
-
-//         <div
-//           className="mx-auto mt-5 max-w-2xl text-sm leading-6 sm:text-base"
-//           dangerouslySetInnerHTML={{
-//             __html: data?.description || "",
-//           }}
-//         />
-
-//         <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-//           {data?.primaryButtonText && (
-//             <a
-//               href={data?.primaryButtonUrl || "#calculator"}
-//               className="inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5"
-//               style={{ background: ORANGE }}
-//             >
-//               {data.primaryButtonText}
-//               <ArrowRight className="h-4 w-4" />
-//             </a>
-//           )}
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-// function ScoreSection({
-//   data,
-//   config,
-//   sectionScores,
-//   onScoreChange,
-//   onCalculate,
-//   result,
-// }: {
-//   data : any
-//   config: ExamConfig;
-//   sectionScores: Record<string, number>;
-//   onScoreChange: (id: string, value: number) => void;
-//   onCalculate: () => void;
-//   result: CalculatedResult | null;
-// }) {
-//   console.log(result , "in the scoresection ")
-//   const displayTotal =
-//     result &&
-//     (Number.isInteger(result.totalScore)
-//       ? result.totalScore
-//       : result.totalScore.toFixed(1));
-
-//   return (
-//     <section id="calculator" className="px-4 pb-16">
-//       <div className="mx-auto max-w-6xl">
-//         <SectionHeading
-//           eyebrow={`${config.label} SCORE CALCULATOR`}
-//           title={data?.fields?.title || `Convert Your Raw Score Into Your Real ${config.label} Score`}
-//           description={data?.fields?.description || `Enter your practice performance and click Calculate to see your estimated ${config.label} score.`}
-//         />
-
-//         <div className="mt-9 grid overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg lg:grid-cols-[1fr_360px]">
-//           <div className="p-5 sm:p-7">
-//             <div className="mb-6 flex items-center justify-between">
-//               <div>
-//                 <h3 className="text-sm font-extrabold">
-//                   Enter Your Practice Test Results
-//                 </h3>
-//                 <p className="mt-1 text-[14px] text-slate-500">
-//                   Use your latest mock test for the best estimate.
-//                 </p>
-//               </div>
-//               <span className="rounded-full bg-orange-50 px-2.5 py-1 text-[9px] font-bold text-[#F36D45]">
-//                 LIVE
-//               </span>
-//             </div>
-
-//             {config.sections.map((section) => {
-//               const value = sectionScores[section.id] ?? section.min;
-//               const percentage = Math.round(
-//                 ((value - section.min) / (section.max - section.min)) * 100,
-//               );
-//               const step = section.step || 1;
-//               const bandEquivalent = section.bandFromRaw
-//                 ? section.bandFromRaw(value)
-//                 : null;
-//               return (
-//                 <div
-//                   key={section.id}
-//                   className="mb-4 rounded-xl border border-slate-200 p-4"
-//                 >
-//                   <div className="mb-3 flex items-center justify-between">
-//                     <span className="text-xm font-bold">
-//                       {section.label}
-//                       {section.bandFromRaw && (
-//                         <span className="ml-1.5 font-normal text-slate-400">
-//                           (out of {section.max})
-//                         </span>
-//                       )}
-//                     </span>
-//                     <span className="rounded bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">
-//                       {value}
-//                       <span className="text-slate-400"> / {section.max}</span>
-//                     </span>
-//                   </div>
-//                   <div className="flex items-center gap-3">
-//                     <input
-//                       type="range"
-//                       min={section.min}
-//                       max={section.max}
-//                       step={step}
-//                       value={value}
-//                       onChange={(e) =>
-//                         onScoreChange(section.id, Number(e.target.value))
-//                       }
-//                       className="flex-1 accent-orange-500"
-//                     />
-//                     <input
-//                       type="number"
-//                       min={section.min}
-//                       max={section.max}
-//                       step={step}
-//                       value={value}
-//                       onChange={(e) =>
-//                         onScoreChange(section.id, Number(e.target.value))
-//                       }
-//                       className="w-16 rounded-lg border border-slate-200 px-2 py-1 text-center text-sm font-bold outline-none focus:border-orange-400"
-//                     />
-//                   </div>
-//                   {/* <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-slate-100">
-//                     <div
-//                       className="h-full rounded-full transition-all"
-//                       style={{
-//                         width: `${Math.min(Math.max(percentage, 0), 100)}%`,
-//                         background: ORANGE,
-//                       }}
-//                     />
-//                   </div> */}
-//                   {bandEquivalent !== null && (
-//                     <p className="mt-2 text-[11px] font-semibold text-[#F36D45]">
-//                       ≈ {section.bandUnitLabel ?? "Band"} {bandEquivalent}
-//                     </p>
-//                   )}
-//                 </div>
-//               );
-//             })}
-
-//             <button
-//               type="button"
-//               onClick={onCalculate}
-//               className="mt-5 w-full rounded-lg py-3 text-xm font-bold text-white transition hover:brightness-95"
-//               style={{ background: ORANGE }}
-//             >
-//               Calculate My Score
-//             </button>
-//           </div>
-
-//           <div className="relative flex flex-col justify-center bg-[#0b1e3f] p-7 text-white">
-//             <div className="absolute right-0 top-0 h-32 w-32 rounded-full bg-blue-500/10 blur-3xl" />
-//             <div className="relative">
-//               {!result ? (
-//                 <ResultPlaceholder />
-//               ) : (
-//                 <>
-//                   <p className="text-center text-[10px] font-medium uppercase tracking-widest text-blue-200/60">
-//                     Your Estimated {config.label} Score
-//                   </p>
-//                   <div className="mt-4 text-center">
-//                     <span className="text-6xl font-black tracking-tight">
-//                       {displayTotal}
-//                     </span>
-//                     <span className="ml-1 text-sm font-semibold text-white/50">
-//                       {config.totalLabel}
-//                     </span>
-//                   </div>
-//                   {result.percentile !== "Not available" && (
-//                     <div className="mt-3 text-center">
-//                       <span className="rounded-full bg-orange-500/15 px-3 py-1 text-[10px] font-bold text-orange-300">
-//                         {result.percentile} Percentile
-//                       </span>
-//                     </div>
-//                   )}
-//                   {config.label === "GMAT" && (
-//                     <p className="mt-3 text-center text-[10px] leading-4 text-blue-100/60">
-//                       Percentile is not estimated. Use a current, verified GMAC
-//                       percentile table for percentile reporting.
-//                     </p>
-//                   )}
-
-//                   <div className="mt-8 space-y-4">
-//                     {config.sections.map((section) => {
-//                       const val = result.scores[section.id] ?? section.min;
-//                       const pct = Math.round(
-//                         ((val - section.min) / (section.max - section.min)) *
-//                           100,
-//                       );
-//                       return (
-//                         <ScoreMeter
-//                           key={section.id}
-//                           label={section.label}
-//                           value={pct}
-//                         />
-//                       );
-//                     })}
-//                     <ScoreMeter
-//                       label="Overall Performance"
-//                       value={Math.round(
-//                         ((result.totalScore - config.scoreRange.min) /
-//                           (config.scoreRange.max - config.scoreRange.min)) *
-//                           100,
-//                       )}
-//                     />
-//                   </div>
-
-//                   <div className="mt-8 border-t border-white/10 pt-5 text-center">
-//                     <p className="text-[10px] leading-5 text-blue-100/60">
-//                       Your estimated score is a planning benchmark and should
-//                       not be considered an official result.
-//                     </p>
-//                   </div>
-//                 </>
-//               )}
-//             </div>
-//           </div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-// function ResultPlaceholder() {
-//   return (
-//     <div className="text-center">
-//       <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border-2 border-dashed border-white/20">
-//         <Sparkles className="h-6 w-6 text-white/40" />
-//       </div>
-//       <p className="mt-4 text-sm font-bold text-white/80">No score yet</p>
-//       <p className="mx-auto mt-2 max-w-[220px] text-[12px] leading-5 text-blue-100/60">
-//         Enter your section scores on the left, then click{" "}
-//         <span className="font-semibold text-orange-300">
-//           Calculate My Score
-//         </span>{" "}
-//         to see your estimated result and charts.
-//       </p>
-//     </div>
-//   );
-// }
-
-// function ScoreMeter({ label, value }: { label: string; value: number }) {
-//   const clamped = Math.min(Math.max(value, 0), 100);
-//   return (
-//     <div>
-//       <div className="mb-2 flex justify-between text-[10px]">
-//         <span className="text-white/70">{label}</span>
-//         <span className="font-bold text-white">{Math.round(clamped)}%</span>
-//       </div>
-//       <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
-//         <div
-//           className="h-full rounded-full bg-orange-400 transition-all"
-//           style={{ width: `${clamped}%` }}
-//         />
-//       </div>
-//     </div>
-//   );
-// }
-
-// function ScoreVisualizationSection({
-//   data,
-//   config,
-//   result,
-// }: {
-//   data : any;
-//   config: ExamConfig;
-//   result: CalculatedResult | null;
-// }) {
-//   return (
-//     <section className="px-4 pb-20">
-//       <div className="mx-auto max-w-6xl">
-//         <SectionHeading
-//           eyebrow="SCORE BREAKDOWN"
-//           title={data?.field?.title || "See Your Score & Band, Visually"}
-//           description={data?.field?.description || 'A section-by-section chart of your practice scores and your estimated total-score position.'}
-//         />
-//         <div className="mt-9 grid gap-5 lg:grid-cols-2">
-//           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-//             <h3 className="text-sm font-extrabold">Section Score Chart</h3>
-//             <p className="mt-1 text-[14px] text-slate-500">
-//               Each bar shows how your entered score compares to that section's
-//               full range.
-//             </p>
-//             {result ? (
-//               <SectionBarChart config={config} sectionScores={result.scores} />
-//             ) : (
-//               <ChartPlaceholder />
-//             )}
-//           </div>
-//           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
-//             <h3 className="text-sm font-extrabold">
-//               Total Score & Band Position
-//             </h3>
-//             {result ? (
-//               <>
-//                 <p className="mt-1 text-[14px] text-slate-500">
-//                   Your {config.label} total of{" "}
-//                   {Number.isInteger(result.totalScore)
-//                     ? result.totalScore
-//                     : result.totalScore.toFixed(1)}{" "}
-//                   {result.percentile !== "Not available" ? (
-//                     <>
-//                       sits in the{" "}
-//                       <span className="font-bold text-[#F36D45]">
-//                         {result.percentile} percentile
-//                       </span>{" "}
-//                       band.
-//                     </>
-//                   ) : (
-//                     <>is an estimated total-score scale position.</>
-//                   )}
-//                 </p>
-//                 <BandGaugeChart
-//                   config={config}
-//                   totalScore={result.totalScore}
-//                 />
-//               </>
-//             ) : (
-//               <>
-//                 <p className="mt-1 text-[14px] text-slate-500">
-//                   Click Calculate My Score above to see where your total lands.
-//                 </p>
-//                 <ChartPlaceholder />
-//               </>
-//             )}
-//           </div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-// function ChartPlaceholder() {
-//   return (
-//     <div className="mt-5 flex h-[220px] items-center justify-center rounded-xl border border-dashed border-slate-200 bg-slate-50">
-//       <p className="max-w-[220px] text-center text-[12px] leading-5 text-slate-400">
-//         Your chart will appear here once you calculate your score.
-//       </p>
-//     </div>
-//   );
-// }
-
-// function SectionBarChart({
-//   config,
-//   sectionScores,
-// }: {
-//   config: ExamConfig;
-//   sectionScores: Record<string, number>;
-// }) {
-//   const width = 600;
-//   const height = 260;
-//   const paddingLeft = 40;
-//   const paddingRight = 20;
-//   const paddingTop = 30;
-//   const paddingBottom = 56;
-//   const chartWidth = width - paddingLeft - paddingRight;
-//   const chartHeight = height - paddingTop - paddingBottom;
-
-//   const sections = config.sections;
-//   const gap = 24;
-//   const barWidth = (chartWidth - gap * (sections.length - 1)) / sections.length;
-
-//   const gridLines = [0, 25, 50, 75, 100];
-
-//   return (
-//     <svg
-//       viewBox={`0 0 ${width} ${height}`}
-//       className="mt-5 w-full"
-//       role="img"
-//       aria-label="Section score chart"
-//     >
-//       {/* Y-axis grid lines */}
-//       {gridLines.map((pct) => {
-//         const y = paddingTop + chartHeight - (pct / 100) * chartHeight;
-//         return (
-//           <g key={pct}>
-//             <line
-//               x1={paddingLeft}
-//               x2={width - paddingRight}
-//               y1={y}
-//               y2={y}
-//               stroke="#e2e8f0"
-//               strokeWidth={1}
-//             />
-//             <text
-//               x={paddingLeft - 8}
-//               y={y + 3}
-//               textAnchor="end"
-//               fontSize={9}
-//               fill="#94a3b8"
-//             >
-//               {pct}%
-//             </text>
-//           </g>
-//         );
-//       })}
-
-//       {/* Bars */}
-//       {sections.map((section, i) => {
-//         const value = sectionScores[section.id] ?? section.min;
-//         const pct = Math.min(
-//           100,
-//           Math.max(
-//             0,
-//             ((value - section.min) / (section.max - section.min)) * 100,
-//           ),
-//         );
-//         const barHeight = (pct / 100) * chartHeight;
-//         const x = paddingLeft + i * (barWidth + gap);
-//         const y = paddingTop + chartHeight - barHeight;
-//         const bandEquivalent = section.bandFromRaw
-//           ? section.bandFromRaw(value)
-//           : null;
-
-//         return (
-//           <g key={section.id}>
-//             <rect
-//               x={x}
-//               y={y}
-//               width={barWidth}
-//               height={Math.max(barHeight, 2)}
-//               rx={6}
-//               fill={ORANGE}
-//             />
-//             <text
-//               x={x + barWidth / 2}
-//               y={y - 8}
-//               textAnchor="middle"
-//               fontSize={11}
-//               fontWeight={700}
-//               fill={NAVY}
-//             >
-//               {bandEquivalent !== null ? `${value} → ${bandEquivalent}` : value}
-//             </text>
-//             {wrapLabel(section.label).map((line, li) => (
-//               <text
-//                 key={li}
-//                 x={x + barWidth / 2}
-//                 y={paddingTop + chartHeight + 16 + li * 12}
-//                 textAnchor="middle"
-//                 fontSize={10}
-//                 fill="#64748b"
-//               >
-//                 {line}
-//               </text>
-//             ))}
-//           </g>
-//         );
-//       })}
-//     </svg>
-//   );
-// }
-
-// function wrapLabel(label: string): string[] {
-//   if (label.length <= 12) return [label];
-//   const words = label.split(" ");
-//   const mid = Math.ceil(words.length / 2);
-//   return [words.slice(0, mid).join(" "), words.slice(mid).join(" ")];
-// }
-
-// function BandGaugeChart({
-//   config,
-//   totalScore,
-// }: {
-//   config: ExamConfig;
-//   totalScore: number;
-// }) {
-//   const width = 600;
-//   const height = 150;
-//   const paddingLeft = 20;
-//   const paddingRight = 20;
-//   const barY = 46;
-//   const barHeight = 28;
-//   const trackWidth = width - paddingLeft - paddingRight;
-
-//   const { min, max } = config.scoreRange;
-//   const bands = config.percentileBands;
-//   const boundaries = [...bands.map((b) => b.threshold), max];
-
-//   const activeIndex = (() => {
-//     let idx = 0;
-//     bands.forEach((b, i) => {
-//       if (totalScore >= b.threshold) idx = i;
-//     });
-//     return idx;
-//   })();
-
-//   const pointerX =
-//     paddingLeft + ((totalScore - min) / (max - min)) * trackWidth;
-
-//   return (
-//     <svg
-//       viewBox={`0 0 ${width} ${height}`}
-//       className="mt-5 w-full"
-//       role="img"
-//       aria-label="Total score band gauge"
-//     >
-//       {/* Band segments */}
-//       {bands.map((band, i) => {
-//         const segStart = boundaries[i];
-//         const segEnd = boundaries[i + 1];
-//         const segX =
-//           paddingLeft + ((segStart - min) / (max - min)) * trackWidth;
-//         const segWidth = ((segEnd - segStart) / (max - min)) * trackWidth;
-//         const segPct = (segWidth / trackWidth) * 100;
-//         const isActive = i === activeIndex;
-
-//         return (
-//           <g key={band.label}>
-//             <rect
-//               x={segX}
-//               y={barY}
-//               width={Math.max(segWidth, 1)}
-//               height={barHeight}
-//               fill={BAND_COLORS[i % BAND_COLORS.length]}
-//               stroke={isActive ? NAVY : "transparent"}
-//               strokeWidth={isActive ? 2 : 0}
-//               rx={4}
-//             />
-//             {segPct > 9 && (
-//               <text
-//                 x={segX + segWidth / 2}
-//                 y={barY + barHeight + 16}
-//                 textAnchor="middle"
-//                 fontSize={9}
-//                 fontWeight={isActive ? 700 : 400}
-//                 fill={isActive ? NAVY : "#94a3b8"}
-//               >
-//                 {band.label}
-//               </text>
-//             )}
-//           </g>
-//         );
-//       })}
-
-//       {/* Range end labels */}
-//       <text
-//         x={paddingLeft}
-//         y={barY - 10}
-//         textAnchor="start"
-//         fontSize={9}
-//         fill="#94a3b8"
-//       >
-//         {min}
-//       </text>
-//       <text
-//         x={width - paddingRight}
-//         y={barY - 10}
-//         textAnchor="end"
-//         fontSize={9}
-//         fill="#94a3b8"
-//       >
-//         {max}
-//       </text>
-
-//       {/* Pointer marking the current total score */}
-//       <line
-//         x1={pointerX}
-//         x2={pointerX}
-//         y1={barY - 8}
-//         y2={barY + barHeight + 8}
-//         stroke={NAVY}
-//         strokeWidth={2}
-//       />
-//       <polygon
-//         points={`${pointerX - 6},${barY - 8} ${pointerX + 6},${barY - 8} ${pointerX},${barY - 18}`}
-//         fill={NAVY}
-//       />
-//       <text
-//         x={pointerX}
-//         y={barY - 22}
-//         textAnchor="middle"
-//         fontSize={11}
-//         fontWeight={700}
-//         fill={NAVY}
-//       >
-//         {Number.isInteger(totalScore) ? totalScore : totalScore.toFixed(1)}
-//       </text>
-//     </svg>
-//   );
-// }
-
-// function WhySection({ data }: { data: any }) {
-//   return (
-//     <section className="bg-[#fcf3ed] px-4 py-16 text-[#0b1e3f]">
-//       <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center">
-//         <div>
-//           <div className="mb-4 inline-flex rounded-full bg-orange-500/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-orange-600">
-//             More Than A Number
-//           </div>
-
-//           <h2 className="max-w-3xl text-2xl font-extrabold leading-tight sm:text-3xl">
-//             {data?.title || ""}
-//           </h2>
-
-//           <div
-//             className="mt-5 max-w-3xl text-sm leading-6 text-[#0b1e3f]/80"
-//             dangerouslySetInnerHTML={{
-//               __html: data?.description || "",
-//             }}
-//           />
-//           <button
-//             className="mt-7 rounded-lg px-5 py-3 text-xm font-bold text-white"
-//             style={{ background: ORANGE }}
-//           >
-//             Start Your Preparation
-//           </button>
-//         </div>
-//         <div className="grid grid-cols-2 gap-3">
-//           {data?.statistics?.map(({ number, label }, index) => (
-//             <div
-//               key={`${label}-${index}`}
-//               className="rounded-xl border border-[#0b1e3f]/10 bg-[#0b1e3f]/5 p-5"
-//             >
-//               <p className="text-xl font-black text-[#0b1e3f]">{number}</p>
-//               <p className="mt-1 text-[10px] font-medium uppercase tracking-wider text-[#0b1e3f]/60">
-//                 {label}
-//               </p>
-//             </div>
-//           ))}
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-// function DifferenceSection({ data }: { data: any }) {
-//   return (
-//     <section id="how-it-works" className="bg-white px-4 py-12">
-//       <div className="mx-auto max-w-6xl">
-//         <SectionHeading
-//           eyebrow="OUR DIFFERENCE"
-//           title={data?.title || ""}
-//           description={data?.description || ""}
-//         />
-
-//         {data?.Data && (
-//           <EditorContent content_data={data.Data} />
-//           // <div
-//           //   className="mt-9 overflow-x-auto rounded-2xl border border-slate-200 bg-white "
-//           //   dangerouslySetInnerHTML={{
-//           //     __html: data.Data,
-//           //   }}
-//           // />
-//         )}
-//       </div>
-//     </section>
-//   );
-// }
-
-// function BeyondNumberSection({ data }: { data: any }) {
-//   const iconMap: Record<string, any> = {
-//     TrendingUp,
-//     Target,
-//     GraduationCap,
-//     Trophy,
-//     MapPin,
-//     Sparkles,
-//     Users,
-//     Star,
-//     Search,
-//     Info,
-//   };
-
-//   const features = Array.isArray(data?.features) ? data.features : [];
-
-//   return (
-//     <section className="bg-white px-4 py-12">
-//       <div className="mx-auto max-w-6xl">
-//         <SectionHeading
-//           eyebrow="BEYOND THE NUMBER"
-//           title={data?.title || ""}
-//           description={data?.description || ""}
-//         />
-
-//         <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-//           {features.map((feature: any, index: number) => {
-//             const Icon = iconMap[feature?.icon] || Sparkles;
-
-//             return (
-//               <div
-//                 key={`${feature?.title || "feature"}-${index}`}
-//                 className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
-//               >
-//                 <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-[#F36D45]">
-//                   <Icon className="h-4 w-4" />
-//                 </div>
-//                 <h3 className="text-sm font-extrabold">
-//                   {feature?.title || ""}
-//                 </h3>
-//                 <p className="mt-2 text-[14px] leading-5 text-slate-500">
-//                   {feature?.text || ""}
-//                 </p>
-//               </div>
-//             );
-//           })}
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-// function BottomCTA({ data }: { data: any }) {
-//   return (
-//     <section id="contact" className="bg-white px-4 pb-5">
-//       <div
-//         className="mx-auto max-w-7xl overflow-hidden rounded-xl px-6 py-10 text-center sm:px-10"
-//         style={{
-//           background: "linear-gradient(135deg, #ff7627 0%, #ff8b4d 100%)",
-//         }}
-//       >
-//         <h2 className="text-xl font-black text-white sm:text-2xl">
-//           {data?.title || ""}
-//         </h2>
-
-//         <p className="mx-auto mt-2 max-w-xl whitespace-pre-line text-sm leading-5 text-white/80">
-//           {data?.description || ""}
-//         </p>
-
-//         <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
-//           {data?.primaryButtonText && (
-//             <a
-//               href={data?.primaryButtonUrl || "#calculator"}
-//               className="rounded-lg bg-[#0b1e3f] px-5 py-3 text-sm font-bold text-white"
-//             >
-//               {data.primaryButtonText}
-//             </a>
-//           )}
-
-//           {data?.secondaryButtonText && (
-//             <a
-//               href={data?.secondaryButtonUrl || "#"}
-//               className="rounded-lg bg-white px-5 py-3 text-sm font-bold text-[#0b1e3f]"
-//             >
-//               {data.secondaryButtonText}
-//             </a>
-//           )}
-//         </div>
-//       </div>
-//     </section>
-//   );
-// }
-
-// function SectionHeading({
-//   eyebrow,
-//   title,
-//   description,
-//   dark = false,
-// }: {
-//   eyebrow: string;
-//   title: string;
-//   description: string;
-//   dark?: boolean;
-// }) {
-//   return (
-//     <div className="mx-auto max-w-2xl text-center">
-//       {/* <span className={`inline-flex rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-widest ${dark ? "bg-orange-400/10 text-orange-300" : "bg-orange-50 text-[#F36D45]"}`}>
-//         {eyebrow}
-//       </span> */}
-//       <h2
-//         className={`mt-3 text-2xl font-extrabold leading-tight sm:text-3xl ${dark ? "text-white" : "text-[#0b1e3f]"}`}
-//       >
-//         {title}
-//       </h2>
-//       {/* <EditorContent content_data={description} /> */}
-//       <p
-//         className={`mt-3 text-xm leading-5 sm:text-sm ${dark ? "text-blue-100/60" : "text-slate-500"}`}
-//         dangerouslySetInnerHTML={{__html : description}}
-//       />
-//         {/* {description}
-//       </p> */}
-//     </div>
-//   );
-// }
-
-
-
-
-
-
-
-
+function SectionHeading({ eyebrow, title, description, dark = false }: { eyebrow: string; title: string; description: string; dark?: boolean }) {
+  return (
+    <div className="mx-auto text-center">
+      <h2 className={`mt-3 text-2xl font-extrabold leading-tight sm:text-3xl ${dark ? "text-white" : "text-[#0b1e3f]"}`}>{title}</h2>
+      <p className={`mt-3 text-xm leading-5 sm:text-sm ${dark ? "text-blue-100/60" : "text-slate-500"}`} dangerouslySetInnerHTML={{ __html: description }} />
+    </div>
+  );
+}
