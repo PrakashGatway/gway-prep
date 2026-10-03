@@ -150,28 +150,23 @@ export default async function Home() {
 
   return (
     <main className="">
-      {/* FAQ Schema */}
-      {sections["Home-f&q"]?.fields?.items && (
-        <script
-          type="application/ld+json"
-          async={true}
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              mainEntity: sections["Home-f&q"].fields.items.map((item) => ({
-                "@type": "Question",
-                name: item.question,
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: item.answer,
-                },
-              })),
-            }),
-          }}
-        />
-      )}
+
+      <script
+        type="application/ld+json"
+        async={true}
+        strategy="afterInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Ooshas Prep",
+            url: "https://www.ooshasprep.com",
+            logo: "https://www.ooshasprep.com/image/logo.png",
+            description:
+              "Ooshas Prep is an online test preparation platform providing coaching and preparation for IELTS, GRE, GMAT, SAT, TOEFL and PTE.",
+          }),
+        }}
+      />
 
       <Hero data={sections["Home-hero-section"]} student={studentsData} />
       <RegistrationSection data={sections["Registations"]} />

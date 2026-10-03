@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import ExamDetails from "@/components/examDetails";
 import ScoreCalculatorPage from "@/components/calculator/page";
 import axiosInstance from "@/app/lib/axios";
+import Script from "next/script";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -123,20 +124,16 @@ export async function generateMetadata({
 
 export default async function PreparationPage({ params }: PageProps) {
   const { slug } = await params;
- 
 
   const cleanText = decodeURIComponent(decodeURIComponent(slug));
   const rowtext = cleanText.toLowerCase().replace(/\s+/g, "-");
-
- 
 
   if (!rowtext || rowtext.toLowerCase() === "home") {
     redirect("/");
   }
 
   const pageData = await getPageInfo(rowtext);
-  const Data = await getPages(300)
-
+  const Data = await getPages(300);
 
   const hasValidData =
     pageData &&
@@ -215,20 +212,28 @@ export default async function PreparationPage({ params }: PageProps) {
         }
       : null;
 
+  let Blogdata = [];
 
-         let Blogdata = [];
+  try {
+    const response = await axiosInstance.get(
+      "/admin/blogs?limit=8&isPublished=true",
+    );
 
-try {
-  const response = await axiosInstance.get(
-    "/admin/blogs?limit=8&isPublished=true"
-  );
+    Blogdata = response?.data;
+  } catch (error) {
+    console.error("Failed to fetch blogs:", error);
+  }
 
-  Blogdata = response?.data;
-} catch (error) {
-  console.error("Failed to fetch blogs:", error);
-}
+  const reviewSchema: Record<string, { name: string; rating: string }> = {
+    gmat: { name: "GMAT", rating: "4.8" },
+    gre: { name: "GRE", rating: "4.9" },
+    sat: { name: "SAT", rating: "4.7" },
+    toefl: { name: "TOEFL", rating: "4.8" },
+    pte: { name: "PTE", rating: "4.9" },
+    ielts: { name: "IELTS", rating: "4.5" },
+  };
 
-
+  const examName = reviewSchema[rowtext];
 
   return (
     <>
@@ -239,35 +244,55 @@ try {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
 
-      <script
+      <Script
         type="application/ld+json"
         async={true}
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(courseSchema),
+          __html: JSON.stringify({
+            ...courseSchema,
+
+            ...(examName && {
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: examName.rating,
+                bestRating: "5",
+                worstRating: "1",
+                ratingCount: "10000",
+              },
+
+              review: [
+                {
+                  "@type": "Review",
+                  author: {
+                    "@type": "Person",
+                    name: "Student",
+                  },
+                  reviewRating: {
+                    "@type": "Rating",
+                    ratingValue: examName.rating,
+                    bestRating: "5",
+                  },
+                  reviewBody: `Ooshas Prep helped me prepare effectively and improve my confidence for my ${examName.name} exam.`,
+                },
+              ],
+            }),
+          }),
         }}
       />
-
-      {faqSchema && (
-        <script
-          type="application/ld+json"
-          async={true}
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(faqSchema),
-          }}
-        />
-      )}
 
       {pageData?.template === "preparation" ? (
         <Gre pageInfo={pageData} slug={rowtext} />
       ) : pageData?.template === "calculator" ? (
-        <ScoreCalculatorPage pageInfo={pageData} slug={rowtext}/>
+        <ScoreCalculatorPage pageInfo={pageData} slug={rowtext} />
       ) : (
-        <ExamDetails pagedata={pageData} Data={Data} slug={slug} Blogdata={Blogdata.data} />
+        <ExamDetails
+          pagedata={pageData}
+          Data={Data}
+          slug={slug}
+          Blogdata={Blogdata.data}
+        />
       )}
-
-
     </>
   );
 }

@@ -63,6 +63,27 @@ export function Navbar({ Data }: NavbarProps) {
     [Data],
   );
 
+  const calculator = React.useMemo(
+    () =>
+      Data?.filter((item: any) => {
+        return (
+          item?.seoMeta?.template?.toLowerCase() === "calculator" &&
+          item?.seoMeta?.isPublished === true
+        );
+      }) || [],
+    [Data],
+  );
+
+  const courseData1 = React.useMemo(
+    () =>
+      Data?.filter(
+        (item: any) =>
+          item?.seoMeta?.template?.toLowerCase() === "examdetails" &&
+          item?.seoMeta?.isPublished === true,
+      ) || [],
+    [Data],
+  );
+
   const NAVDATA = React.useMemo(
     () =>
       Data?.filter(
@@ -81,6 +102,9 @@ export function Navbar({ Data }: NavbarProps) {
         icon: null,
       },
 
+      // =========================
+      // TEST PREP
+      // =========================
       {
         name: "Test Prep",
         href: "#",
@@ -114,37 +138,76 @@ export function Navbar({ Data }: NavbarProps) {
         }),
       },
 
+      // =========================
+      // ABOUT
+      // =========================
       {
         name: "About Us",
         href: "/about",
         icon: null,
       },
 
+      // =========================
+      // RESOURCES
+      // =========================
       {
-        name: "Services",
-        href: "/services",
+        name: "Resources",
+        href: "#",
+        hasDropdown: true,
         icon: null,
+
+        dropdownItems: calculator.map((resource: any) => ({
+          name: resource?.seoMeta?.navTitle,
+          img: resource?.seoMeta?.navIcon || null,
+          slug: resource?.seoMeta?.canonicalUrl,
+          description: resource?.seoMeta?.navSubtitle || "",
+          badge: resource?.seoMeta?.badge || null,
+
+          // No nested dropdown
+          sublink: [],
+        })),
       },
 
+      // =========================
+      // EXAM DETAILS
+      // =========================
+      {
+        name: "Exam Details",
+        href: "#",
+        hasDropdown: true,
+        icon: null,
+
+        dropdownItems: courseData1.map((item: any) => ({
+          name: item?.seoMeta?.navTitle,
+          img: item?.seoMeta?.navIcon || null,
+          slug: item?.seoMeta?.canonicalUrl,
+          description: item?.seoMeta?.navSubtitle || "",
+          badge: item?.seoMeta?.badge || null,
+
+          // No nested dropdown
+          sublink: [],
+        })),
+      },
+
+      // =========================
+      // BLOGS
+      // =========================
       {
         name: "Blogs",
         href: "/blog",
         icon: null,
       },
 
-      {
-        name: "Career",
-        href: "/career",
-        icon: null,
-      },
-
+      // =========================
+      // CONTACT
+      // =========================
       {
         name: "Contact Us",
         href: "/contact",
         icon: null,
       },
     ],
-    [NAVDATA],
+    [NAVDATA, calculator, courseData1],
   );
 
   React.useEffect(() => {
@@ -269,7 +332,7 @@ export function Navbar({ Data }: NavbarProps) {
               className="
     group
     flex
-    w-1/4
+ 
     min-w-0
     shrink-0
     items-center
@@ -291,12 +354,12 @@ export function Navbar({ Data }: NavbarProps) {
       group-hover:scale-[1.03]
       sm:h-[72px]
       lg:h-20
-      xl:h-[70px]
+      xl:h-[60px]
     "
               />
             </Link>
 
-            <div className="ml-auto flex items-center gap-2 lg:hidden">
+            <div className="ml-auto flex items-center gap-2 xl:hidden">
               {/* Phone */}
 
               <a
@@ -363,7 +426,7 @@ export function Navbar({ Data }: NavbarProps) {
                 DESKTOP NAVIGATION
             ================================================= */}
 
-            <div className="hidden min-w-0 flex-1 items-center justify-center gap-1 lg:flex">
+            <div className="hidden min-w-0 flex-1 items-center justify-center gap-1 xl:flex">
               {navItems.map((item: any) => (
                 <div
                   key={item.name}
@@ -733,7 +796,7 @@ export function Navbar({ Data }: NavbarProps) {
               ))}
             </div>
 
-            <div className="hidden items-center gap-3 lg:flex">
+            <div className="hidden items-center gap-3  xl:flex">
               {/* Phone */}
 
               <a
@@ -1055,7 +1118,7 @@ export function Navbar({ Data }: NavbarProps) {
                 z-[600]
                 bg-black/45
                 backdrop-blur-[3px]
-                lg:hidden
+                xl:hidden
               "
             />
 
@@ -1083,7 +1146,7 @@ export function Navbar({ Data }: NavbarProps) {
                 overflow-hidden
                 bg-white
                 shadow-2xl
-                lg:hidden
+                xl:hidden
               "
               aria-label="Mobile navigation"
             >
