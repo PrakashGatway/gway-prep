@@ -150,58 +150,51 @@ export function Footer({ Data = [] }: FooterProps) {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto">
+      <div className="mx-3 sm:mx-6 lg:mx-12 xl:mx-16 my-8">
         {groupedArray.length > 0 && (
-          <div className="px-4 sm:px-0 mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="rounded-2xl w-full mx-auto bg-orange-50 p-6 border border-orange-100">
-                <div className="max-w-4xl">
-                  <h3 className="text-2xl sm:text-2xl font-bold text-gray-900 mb-1">
-                    Ready to Improve Your Test Score?
-                  </h3>
+          <section className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-orange-100/80 bg-[#FDF4EF] px-4 py-5 sm:px-6 sm:py-7">
 
-                  <p className="text-sm sm:text-base leading-7 text-gray-600">
-                    Prepare smarter with OoshasPrep through expert-led online
-                    classes, personalized study plans, mock tests, performance
-                    analysis, and one-to-one doubt support. Build your skills,
-                    fix weak areas, and stay focused on your target score with a
-                    preparation plan designed around your needs.
-                  </p>
 
-                  <div className="mt-3 flex flex-wrap gap-3">
-                    <Link
-                      href={"/auth"}
-                      className=" bg-[#f36d45] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-orange-700"
-                    >
-                      Explore Courses
-                    </Link>
-                  </div>
-                </div>
-              </div>
+            <div className="relative z-10">
+            
 
-              <div className="col-span-2 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-2">
+              {/* Category Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
                 {groupedArray.map((group) => (
-                  <div key={group.key}>
-                    <h4 className="text-base font-semibold text-gray-800 mb-1 capitalize">
-                      {group.base?.seoMeta?.navTitle || group.key}
-                    </h4>
-                    <ul className="space-y-0 text-sm text-[#444]">
-                      {group.base && (
-                        <li
-                          onClick={() => router.push(`/${group.base.slug}`)}
-                          className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
-                        >
-                          {/* {group.base.seoMeta?.navTitle || group.base.name} */}
-                        </li>
-                      )}
+                  <div
+                    key={group.key}
+                    className="group rounded-xl border-orange-100/80 bg-white/80 p-3 sm:p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-orange-200 hover:bg-white hover:shadow-md hover:shadow-orange-100/50"
+                  >
+                    {/* Category Title */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        group.base?.slug && router.push(`/${group.base.slug}`)
+                      }
+                      className="flex w-full items-center gap-2 text-left mb-2.5"
+                    >
+                     
+
+                      <h4 className="text-xs sm:text-[13px] font-bold text-gray-900 capitalize leading-snug group-hover:text-[#F36D45] transition-colors">
+                        {group.base?.seoMeta?.navTitle || group.key}
+                      </h4>
+                    </button>
+
+                    {/* Course Links */}
+                    <ul className="space-y-1 border-t border-gray-100 pt-2.5">
                       {group.variants.map((course: any) => (
-                        <li
-                          key={course._id}
-                          onClick={() => router.push(`/${course.slug}`)}
-                          className="cursor-pointer flex items-center hover:text-[#FF6D4D] text-xs transition-colors"
-                        >
-                          <Dot className="w-6 h-6 shrink-0" />{" "}
-                          {course.seoMeta?.navTitle || course.name}
+                        <li key={course._id}>
+                          <button
+                            type="button"
+                            onClick={() => router.push(`/${course.slug}`)}
+                            className="w-full flex items-start gap-1.5 text-left text-[10px] sm:text-xs leading-relaxed text-gray-500 hover:text-[#F36D45] transition-colors"
+                          >
+                            <span className="mt-[5px] w-1 h-1 shrink-0 rounded-full bg-orange-300 group-hover:bg-orange-500" />
+
+                            <span className="min-w-0 break-words">
+                              {course.seoMeta?.navTitle || course.name}
+                            </span>
+                          </button>
                         </li>
                       ))}
                     </ul>
@@ -209,7 +202,7 @@ export function Footer({ Data = [] }: FooterProps) {
                 ))}
               </div>
             </div>
-          </div>
+          </section>
         )}
       </div>
       <footer className="bg-[#FDF4EF] mt-2 mx-4 sm:mx-8 lg:mx-16 overflow-hidden border-2 border-primary rounded-t-[2rem] sm:rounded-t-[3rem] lg:rounded-t-[3.5rem] mt-10">

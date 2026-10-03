@@ -29,7 +29,6 @@ import PopupModal from "../popupModel";
 import EditorContent from "../editorContent";
 import { useGlobal } from "@/hooks/AppStateContext";
 
-
 function AIStudySection({ aiStudySection }: { aiStudySection: any }) {
   return (
     <section className="px-4 bg-white">
@@ -209,61 +208,60 @@ function GreSection({
       </div>
 
       {/* Top Banner */}
-     <div className="relative mt-18 w-full overflow-hidden rounded-2xl bg-[#f06437] px-5 py-5 text-white shadow-md sm:px-8 md:rounded-[28px] md:px-10 md:py-6">
-  {/* Decorative Circle */}
-  <div className="absolute -right-12 -top-16 h-40 w-40 rounded-full bg-white/10" />
-  <div className="absolute -bottom-20 right-24 h-36 w-36 rounded-full bg-white/5" />
+      <div className="relative mt-18 w-full overflow-hidden rounded-2xl bg-[#f06437] px-5 py-5 text-white shadow-md sm:px-8 md:rounded-[28px] md:px-10 md:py-6">
+        {/* Decorative Circle */}
+        <div className="absolute -right-12 -top-16 h-40 w-40 rounded-full bg-white/10" />
+        <div className="absolute -bottom-20 right-24 h-36 w-36 rounded-full bg-white/5" />
 
-  <div className="relative z-10 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+        <div className="relative z-10 flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+          {/* Content */}
+          <div className="flex items-center gap-4">
+            {/* Image */}
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-white/15 p-2 backdrop-blur-sm sm:h-16 sm:w-16">
+              <img
+                src="/pc.png"
+                alt="Practice"
+                className="h-full w-full object-contain"
+              />
+            </div>
 
-    {/* Content */}
-    <div className="flex items-center gap-4">
-      {/* Image */}
-      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-white/15 p-2 backdrop-blur-sm sm:h-16 sm:w-16">
-        <img
-          src="/pc.png"
-          alt="Practice"
-          className="h-full w-full object-contain"
-        />
+            {/* Text */}
+            <div>
+              <p className="mb-1 text-xs font-medium uppercase tracking-wider text-white/75">
+                Get Started
+              </p>
+
+              <h2 className="text-base font-semibold leading-snug tracking-wide sm:text-lg md:text-xl">
+                {cta_banner?.title}
+              </h2>
+            </div>
+          </div>
+
+          {/* Button */}
+          <a
+            href="https://wa.me/9166146538?text=Hello"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex w-full items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-[#f06437] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-lg md:w-auto md:min-w-[160px]"
+          >
+            <span>{cta_banner?.buttonText || "Get Started"}</span>
+
+            <svg
+              className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M13 7l5 5m0 0l-5 5m5-5H6"
+              />
+            </svg>
+          </a>
+        </div>
       </div>
-
-      {/* Text */}
-      <div>
-        <p className="mb-1 text-xs font-medium uppercase tracking-wider text-white/75">
-          Get Started
-        </p>
-
-        <h2 className="text-base font-semibold leading-snug tracking-wide sm:text-lg md:text-xl">
-          {cta_banner?.title}
-        </h2>
-      </div>
-    </div>
-
-    {/* Button */}
-    <a
-      href="https://wa.me/9166146538?text=Hello"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group flex w-full items-center justify-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-semibold text-[#f06437] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-gray-50 hover:shadow-lg md:w-auto md:min-w-[160px]"
-    >
-      <span>{cta_banner?.buttonText || "Get Started"}</span>
-
-      <svg
-        className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M13 7l5 5m0 0l-5 5m5-5H6"
-        />
-      </svg>
-    </a>
-  </div>
-</div>
     </section>
   );
 }
@@ -371,7 +369,7 @@ function GrePatternTable({ examPatternData }: { examPatternData: any }) {
 }
 
 function VideoExplanationSection({ videoData }: { videoData: any }) {
-const {UserNavigate} = useGlobal()
+  const { UserNavigate } = useGlobal();
 
   const router = useRouter();
   return (
@@ -435,7 +433,7 @@ const {UserNavigate} = useGlobal()
 }
 
 function FreeResources({ resourcesData }: { resourcesData: any }) {
-const {UserNavigate} = useGlobal()
+  const { UserNavigate } = useGlobal();
 
   const router = useRouter();
   const resources = [
@@ -516,10 +514,7 @@ const {UserNavigate} = useGlobal()
                   {item.button}
                 </button>
                 <button className="cursor-pointer w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-[#FFC29C] flex items-center justify-center text-[#F5632A] transition hover:bg-[#F5632A] hover:text-white flex-shrink-0">
-                  <ArrowRight
-                    size={16}
-                    className="sm:w-[20px] sm:h-[20px]"
-                  />
+                  <ArrowRight size={16} className="sm:w-[20px] sm:h-[20px]" />
                 </button>
               </div>
             </div>
@@ -531,7 +526,7 @@ const {UserNavigate} = useGlobal()
 }
 
 function DashboardSection({ dashboardData }: { dashboardData: any }) {
-const {UserNavigate} = useGlobal()
+  const { UserNavigate } = useGlobal();
 
   const features = dashboardData?.Points?.map((p: any) => p.Points) || [];
   const router = useRouter();
@@ -590,7 +585,7 @@ const {UserNavigate} = useGlobal()
 }
 
 export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
-const {UserNavigate} = useGlobal()
+  const { UserNavigate } = useGlobal();
 
   // console.log(pageInfo.seoMeta.duplicateOf ,'page data',slug);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -718,11 +713,13 @@ const {UserNavigate} = useGlobal()
     <div className="font-medium">
       <section
         className="relative overflow-visible"
-        style={{ scrollbarWidth: "none" , backgroundImage: "url('image/exam-bg.webp')",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundRepeat: "no-repeat",
- }}
+        style={{
+          scrollbarWidth: "none",
+          backgroundImage: "url('image/exam-bg.webp')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
       >
         <div className="max-w-7xl mx-auto py-8 sm:py-10 px-4 sm:px-2">
           {/* Heading */}
@@ -859,23 +856,27 @@ const {UserNavigate} = useGlobal()
             {scoreGuaranteeSection.subtitle}
           </p>
         </div>
-        <div className=" max-w-7xl px-4 mx-autu grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full gap-3 sm:gap-4 md:gap-6 mx-auto mt-6 sm:mt-8 md:mt-10">
-          {scoreGuaranteeSection.features?.map((ele: any, idx: number) => (
-            <div
-              key={idx}
-              className="text-black/80 flex flex-col relative isolate "
-            >
-              <span className="absolute top-0 -left-2 h-12 sm:h-14 md:h-18 w-8 sm:w-10 md:w-12 bg-orange-600 rounded-2xl z-[-1]" />
-              <div className="p-4 sm:p-5 md:p-6 lg:p-8 bg-white border rounded-xl h-54 overflow-auto">
-                <h3 className="font-bold text-base sm:text-lg md:text-xl mb-1 sm:mb-2">
-                  {ele.title}
-                </h3>
-                <p className="text-gray-600 text-sm sm:text-base leading-relaxed overflow-auto ">
-                  {ele.description}
-                </p>
+        <div className="w-full max-w-7xl mx-auto px-2 mt-8">
+          {/* Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+            {scoreGuaranteeSection.features?.map((ele: any, idx: number) => (
+              <div key={idx} className="group relative h-full min-w-0">
+                <div className="relative flex flex-col h-full min-h-[155px] p-4 sm:p-5 rounded-2xl bg-white border-2 border-orange-300 shadow-[0_3px_15px_rgba(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_12px_30px_rgba(234,88,12,0.10)] overflow-hidden">
+
+                  {/* Text */}
+                  <div className="relative flex-1">
+                    <h3 className="text-base sm:text-lg font-bold text-gray-900 leading-snug mb-1.5 group-hover:text-orange-600 transition-colors">
+                      {ele.title}
+                    </h3>
+
+                    <p className="text-gray-500 text-[13px] sm:text-sm leading-relaxed break-words">
+                      {ele.description}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
         <PricingSection plans={pricingData.pricing_plans} />
       </section>
@@ -911,8 +912,7 @@ const {UserNavigate} = useGlobal()
 
       <VideoExplanationSection videoData={studentVideo} />
       <div className="py-8">
-      <FreeResources resourcesData={freeResourcesSection} />
-
+        <FreeResources resourcesData={freeResourcesSection} />
       </div>
       <TextTestimonials testimonialsSection={testimonialsSection} />
       <Consultants data={faqSection} finalCtaSection={finalCtaSection} />

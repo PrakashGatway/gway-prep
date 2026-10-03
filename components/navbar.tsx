@@ -89,7 +89,7 @@ export function Navbar({ Data }: NavbarProps) {
 
         dropdownItems: NAVDATA.filter(
           (subItem: any) => !subItem?.seoMeta?.duplicateOf,
-        ).map((item: any) => {
+        )?.reverse().map((item: any) => {
           return {
             name: item?.seoMeta?.navTitle,
             img: item?.seoMeta?.navIcon,
