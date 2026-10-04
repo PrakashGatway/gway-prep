@@ -250,7 +250,6 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
   useEffect(() => {
     if (slug) {
       const slugExam = slug.split("-")[0].toUpperCase() as ExamType;
-
       setSelectedExam(slugExam);
     }
   }, [slug]);
@@ -279,51 +278,34 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
         weakestArea: rwPercent < mathPercent ? "Reading & Writing" : "Math",
         percentile: getPercentile(result.total, "SAT"),
       };
-   } else if (selectedExam === "GRE") {
-  const result = calculateGREScore(greScores);
+    } else if (selectedExam === "GRE") {
+      const result = calculateGREScore(greScores);
+      const verbalPercent = result.verbalPercent;
+      const quantPercent = result.quantPercent;
+      const awPercent = Math.round((result.aw / 6) * 100);
 
-  const verbalPercent = result.verbalPercent;
-  const quantPercent = result.quantPercent;
+      const percentages = {
+        "Verbal Reasoning": verbalPercent,
+        "Quantitative Reasoning": quantPercent,
+        "Analytical Writing": awPercent,
+      };
 
-  // Analytical Writing is scored out of 6
-  const awPercent = Math.round((result.aw / 6) * 100);
+      const avgPercent = Object.values(percentages).reduce((a, b) => a + b, 0) / Object.values(percentages).length;
 
-  const percentages = {
-    "Verbal Reasoning": verbalPercent,
-    "Quantitative Reasoning": quantPercent,
-    "Analytical Writing": awPercent,
-  };
-
-  const avgPercent =
-    Object.values(percentages).reduce((a, b) => a + b, 0) /
-    Object.values(percentages).length;
-
-  newReport = {
-    exam: "GRE",
-    totalScore: result.total,
-
-    sectionScores: {
-      "Verbal Reasoning": result.verbal,
-      "Quantitative Reasoning": result.quant,
-      "Analytical Writing": result.aw,
-    },
-
-    percentages,
-
-    performanceLevel: getPerformanceLevel(
-      Math.round(avgPercent)
-    ),
-
-    strongestArea: Object.entries(percentages).reduce(
-      (a, b) => (a[1] > b[1] ? a : b)
-    )[0],
-
-    weakestArea: Object.entries(percentages).reduce(
-      (a, b) => (a[1] < b[1] ? a : b)
-    )[0],
-
-    percentile: getPercentile(result.total, "GRE"),
-  };
+      newReport = {
+        exam: "GRE",
+        totalScore: result.total,
+        sectionScores: {
+          "Verbal Reasoning": result.verbal,
+          "Quantitative Reasoning": result.quant,
+          "Analytical Writing": result.aw,
+        },
+        percentages,
+        performanceLevel: getPerformanceLevel(Math.round(avgPercent)),
+        strongestArea: Object.entries(percentages).reduce((a, b) => (a[1] > b[1] ? a : b))[0],
+        weakestArea: Object.entries(percentages).reduce((a, b) => (a[1] < b[1] ? a : b))[0],
+        percentile: getPercentile(result.total, "GRE"),
+      };
     } else if (selectedExam === "GMAT") {
       const total = calculateGMATScore(gmatQuant, gmatVerbal, gmatDI);
       const quantPercent = Math.round(((gmatQuant - 60) / 30) * 100);
@@ -348,161 +330,77 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
         weakestArea: quantPercent <= verbalPercent && quantPercent <= diPercent ? "Quantitative" : verbalPercent <= diPercent ? "Verbal" : "Data Insights",
         percentile: getPercentile(total, "GMAT"),
       };
-  // =========================================================
-// TOEFL
-// =========================================================
-} else if (selectedExam === "TOEFL") {
-  const result = calculateTOEFLScore(toeflScores);
+    } else if (selectedExam === "TOEFL") {
+      const result = calculateTOEFLScore(toeflScores);
+      const percentages = {
+        Reading: result.percentages.reading,
+        Listening: result.percentages.listening,
+        Speaking: result.percentages.speaking,
+        Writing: result.percentages.writing,
+      };
+      const avgPercent = Object.values(percentages).reduce((sum, value) => sum + value, 0) / Object.values(percentages).length;
 
-  // calculateTOEFLScore already returns percentages 0-100
-  // Convert keys to match sectionScores exactly
-  const percentages = {
-    Reading: result.percentages.reading,
-    Listening: result.percentages.listening,
-    Speaking: result.percentages.speaking,
-    Writing: result.percentages.writing,
-  };
+      newReport = {
+        exam: "TOEFL",
+        totalScore: result.total,
+        sectionScores: {
+          Reading: toeflScores.reading,
+          Listening: toeflScores.listening,
+          Speaking: toeflScores.speaking,
+          Writing: toeflScores.writing,
+        },
+        percentages,
+        performanceLevel: getPerformanceLevel(Math.round(avgPercent)),
+        strongestArea: Object.entries(percentages).reduce((a, b) => (a[1] > b[1] ? a : b))[0],
+        weakestArea: Object.entries(percentages).reduce((a, b) => (a[1] < b[1] ? a : b))[0],
+      };
+    } else if (selectedExam === "IELTS") {
+      const result = calculateIELTSScore(ieltsScores);
+      const percentages = {
+        Listening: result.percentages.listening,
+        Reading: result.percentages.reading,
+        Writing: result.percentages.writing,
+        Speaking: result.percentages.speaking,
+      };
+      const avgPercent = Object.values(percentages).reduce((sum, value) => sum + value, 0) / Object.values(percentages).length;
 
-  const avgPercent =
-    Object.values(percentages).reduce(
-      (sum, value) => sum + value,
-      0
-    ) / Object.values(percentages).length;
+      newReport = {
+        exam: "IELTS",
+        totalScore: result.total,
+        sectionScores: {
+          Listening: ieltsScores.listening,
+          Reading: ieltsScores.reading,
+          Writing: ieltsScores.writing,
+          Speaking: ieltsScores.speaking,
+        },
+        percentages,
+        performanceLevel: getPerformanceLevel(Math.round(avgPercent)),
+        strongestArea: Object.entries(percentages).reduce((a, b) => (a[1] > b[1] ? a : b))[0],
+        weakestArea: Object.entries(percentages).reduce((a, b) => (a[1] < b[1] ? a : b))[0],
+      };
+    } else {
+      const result = calculatePTEScore(pteScores);
+      const percentages = {
+        "Speaking & Writing": result.percentages.speaking,
+        Reading: result.percentages.reading,
+        Listening: result.percentages.listening,
+      };
+      const avgPercent = Object.values(percentages).reduce((sum, value) => sum + value, 0) / Object.values(percentages).length;
 
-  newReport = {
-    exam: "TOEFL",
-
-    totalScore: result.total,
-
-    sectionScores: {
-      Reading: toeflScores.reading,
-      Listening: toeflScores.listening,
-      Speaking: toeflScores.speaking,
-      Writing: toeflScores.writing,
-    },
-
-    percentages,
-
-    performanceLevel: getPerformanceLevel(
-      Math.round(avgPercent)
-    ),
-
-    strongestArea: Object.entries(percentages).reduce(
-      (a, b) => (a[1] > b[1] ? a : b)
-    )[0],
-
-    weakestArea: Object.entries(percentages).reduce(
-      (a, b) => (a[1] < b[1] ? a : b)
-    )[0],
-  };
-
-
-// =========================================================
-// IELTS
-// =========================================================
-} else if (selectedExam === "IELTS") {
-  const result = calculateIELTSScore(ieltsScores);
-
-  /*
-   * IMPORTANT:
-   * Your IELTS input values are already BAND scores:
-   *
-   * Listening -> /9
-   * Reading   -> /9
-   * Writing   -> /9
-   * Speaking  -> /9
-   *
-   * So calculateIELTSScore already converts them
-   * into 0-100 percentages.
-   */
-
-  const percentages = {
-    Listening: result.percentages.listening,
-    Reading: result.percentages.reading,
-    Writing: result.percentages.writing,
-    Speaking: result.percentages.speaking,
-  };
-
-  const avgPercent =
-    Object.values(percentages).reduce(
-      (sum, value) => sum + value,
-      0
-    ) / Object.values(percentages).length;
-
-  newReport = {
-    exam: "IELTS",
-
-    totalScore: result.total,
-
-    sectionScores: {
-      Listening: ieltsScores.listening,
-      Reading: ieltsScores.reading,
-      Writing: ieltsScores.writing,
-      Speaking: ieltsScores.speaking,
-    },
-
-    percentages,
-
-    performanceLevel: getPerformanceLevel(
-      Math.round(avgPercent)
-    ),
-
-    strongestArea: Object.entries(percentages).reduce(
-      (a, b) => (a[1] > b[1] ? a : b)
-    )[0],
-
-    weakestArea: Object.entries(percentages).reduce(
-      (a, b) => (a[1] < b[1] ? a : b)
-    )[0],
-  };
-
-
-// =========================================================
-// PTE
-// =========================================================
-} else {
-  const result = calculatePTEScore(pteScores);
-
-  // Convert lowercase calculator keys
-  // into the exact keys used by sectionScores
-  const percentages = {
-    "Speaking & Writing": result.percentages.speaking,
-    Reading: result.percentages.reading,
-    Listening: result.percentages.listening,
-  };
-
-  const avgPercent =
-    Object.values(percentages).reduce(
-      (sum, value) => sum + value,
-      0
-    ) / Object.values(percentages).length;
-
-  newReport = {
-    exam: "PTE",
-
-    totalScore: result.total,
-
-    sectionScores: {
-      "Speaking & Writing": pteScores.speaking,
-      Reading: pteScores.reading,
-      Listening: pteScores.listening,
-    },
-
-    percentages,
-
-    performanceLevel: getPerformanceLevel(
-      Math.round(avgPercent)
-    ),
-
-    strongestArea: Object.entries(percentages).reduce(
-      (a, b) => (a[1] > b[1] ? a : b)
-    )[0],
-
-    weakestArea: Object.entries(percentages).reduce(
-      (a, b) => (a[1] < b[1] ? a : b)
-    )[0],
-  };
-}
+      newReport = {
+        exam: "PTE",
+        totalScore: result.total,
+        sectionScores: {
+          "Speaking & Writing": pteScores.speaking,
+          Reading: pteScores.reading,
+          Listening: pteScores.listening,
+        },
+        percentages,
+        performanceLevel: getPerformanceLevel(Math.round(avgPercent)),
+        strongestArea: Object.entries(percentages).reduce((a, b) => (a[1] > b[1] ? a : b))[0],
+        weakestArea: Object.entries(percentages).reduce((a, b) => (a[1] < b[1] ? a : b))[0],
+      };
+    }
 
     setReport(newReport);
     setShowReport(true);
@@ -511,1405 +409,477 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
     }, 100);
   };
 
-  const handleSATModuleChange = (
-    field: keyof SATScores,
-    value: number,
-    max: number
-  ) => {
+  const handleSATModuleChange = (field: keyof SATScores, value: number, max: number) => {
     setSatScores(prev => ({
       ...prev,
       [field]: Math.min(max, Math.max(0, value))
     }));
   };
 
-  const handleGREChange = (
-    field: keyof GREScores,
-    value: number | boolean,
-    max?: number
-  ) => {
+  const handleGREChange = (field: keyof GREScores, value: number | boolean, max?: number) => {
     setGreScores(prev => ({
       ...prev,
       [field]: max ? Math.min(max, Math.max(0, value as number)) : value
     }));
   };
 
+  // NEW: Calculates total score dynamically based on current state (prevents "0" on first load)
+  const getCurrentTotalScore = () => {
+    switch (selectedExam) {
+      case "SAT":
+        return calculateSATScore(satScores).total;
+      case "GRE":
+        return calculateGREScore(greScores).total;
+      case "GMAT":
+        return calculateGMATScore(gmatQuant, gmatVerbal, gmatDI);
+      case "TOEFL":
+        return calculateTOEFLScore(toeflScores).total;
+      case "IELTS":
+        return calculateIELTSScore(ieltsScores).total;
+      case "PTE":
+        return calculatePTEScore(pteScores).total;
+      default:
+        return 0;
+    }
+  };
+
+  // NEW: Properly resets all values to their exact defaults and hides the report
+  const handleReset = () => {
+    if (selectedExam === "SAT") {
+      setSatScores({ readingWritingModule1: 18, readingWritingModule2: 17, mathModule1: 12, mathModule2: 11 });
+    } else if (selectedExam === "GRE") {
+      setGreScores({ verbalS1: 10, verbalS2: 12, quantS1: 10, quantS2: 11, verbalHarder: true, quantHarder: true, analyticalWriting: 4.0 });
+    } else if (selectedExam === "GMAT") {
+      setGmatQuant(75);
+      setGmatVerbal(75);
+      setGmatDI(75);
+    } else if (selectedExam === "TOEFL") {
+      setToeflScores({ reading: 22, listening: 21, speaking: 20, writing: 22 });
+    } else if (selectedExam === "IELTS") {
+      setIeltsScores({ listening: 7, reading: 7, writing: 6.5, speaking: 7 });
+    } else if (selectedExam === "PTE") {
+      setPteScores({ speaking: 70, reading: 68, listening: 72 });
+    }
+    setShowReport(false);
+  };
+
+  // Helper to get section config for results display
+  const getResultsSections = () => {
+    switch (selectedExam) {
+      case "SAT":
+        return [
+          { label: "Reading and Writing", value: calculateSATScore(satScores).rw },
+          { label: "Math", value: calculateSATScore(satScores).math }
+        ];
+      case "GRE":
+        return [
+          { label: "Verbal Reasoning", value: calculateGREScore(greScores).verbal },
+          { label: "Quantitative Reasoning", value: calculateGREScore(greScores).quant }
+        ];
+      case "GMAT":
+        return [
+          { label: "Quantitative", value: gmatQuant },
+          { label: "Verbal", value: gmatVerbal },
+          { label: "Data Insights", value: gmatDI }
+        ];
+      case "TOEFL":
+        return [
+          { label: "Reading", value: toeflScores.reading },
+          { label: "Listening", value: toeflScores.listening },
+          { label: "Speaking", value: toeflScores.speaking },
+          { label: "Writing", value: toeflScores.writing }
+        ];
+      case "IELTS":
+        return [
+          { label: "Listening", value: ieltsScores.listening },
+          { label: "Reading", value: ieltsScores.reading },
+          { label: "Writing", value: ieltsScores.writing },
+          { label: "Speaking", value: ieltsScores.speaking }
+        ];
+      case "PTE":
+        return [
+          { label: "Speaking & Writing", value: pteScores.speaking },
+          { label: "Reading", value: pteScores.reading },
+          { label: "Listening", value: pteScores.listening }
+        ];
+      default:
+        return [];
+    }
+  };
+
+  const getMaxScore = () => {
+    switch (selectedExam) {
+      case "SAT": return "1600";
+      case "GRE": return "340";
+      case "GMAT": return "805";
+      case "TOEFL": return "120";
+      case "IELTS": return "9";
+      case "PTE": return "90";
+      default: return "0";
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#FCF3ED]">
       <Hero data={pageInfo?.sections?.hero?.fields} />
 
-    
-
       {/* Calculator Section */}
-     {/* =========================================================
-    CALCULATOR SECTION
-    UI ONLY — NO LOGIC CHANGED
-========================================================= */}
-<section className="px-4 pb-10">
-  <div className="mx-auto max-w-6xl">
+      <section className="px-0 py-10">
+        <div className="mx-auto max-w-6xl grid grid-cols-[1.3fr_0.7fr] gap-7">
 
-    {/* OUTER WHITE CALCULATOR BOX */}
-    <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm">
+          {/* OUTER WHITE CALCULATOR BOX */}
+          <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm pt-8">
 
-      {/* =====================================================
-          TOP HEADER
-      ===================================================== */}
-      <div className="flex items-center justify-between border-b border-slate-200 px-7 py-6">
+            {/* CALCULATOR CONTENT */}
+            <div className="px-7 py-4">
 
-        <div>
-          <p className="text-[10px] font-bold uppercase tracking-[0.08em] text-slate-400">
-            SELECT YOUR EXAM
-          </p>
+              {/* PAGE TITLE */}
+              <div className="mb-4 flex items-start justify-between">
+                <div>
+                  <h2 className="text-3xl font-extrabold tracking-tight text-[#0b1e3f]">
+                    Enter Your {selectedExam} Practice Scores
+                  </h2>
+                  <p className="mt-1 text-[13px] text-slate-400">
+                    Add your latest practice results below. We'll turn them into a clear performance report.
+                  </p>
+                </div>
+                <span className="rounded-lg bg-orange-50 px-3 py-2 text-[11px] font-bold text-[#F36D45]">
+                  {selectedExam}
+                </span>
+              </div>
 
-          <h2 className="mt-1 text-[15px] font-extrabold text-[#0b1e3f]">
-            Practice Score Calculator
-          </h2>
-        </div>
-
-        {/* EXAM TABS */}
-        <div className="flex items-center gap-1 rounded-xl bg-slate-100 p-1">
-
-          {(
-            ["SAT", "GRE", "GMAT", "TOEFL", "IELTS", "PTE"] as ExamType[]
-          ).map((exam) => (
-            <button
-              key={exam}
-              type="button"
-              onClick={() => {
-                setSelectedExam(exam);
-                setShowReport(false);
-              }}
-              className={`rounded-lg px-4 py-2 text-[12px] font-bold transition-all duration-200 ${
-                selectedExam === exam
-                  ? "bg-white text-[#F36D45] shadow-[0_2px_8px_rgba(15,23,42,0.10)]"
-                  : "text-slate-600 hover:text-[#F36D45]"
-              }`}
-            >
-              {exam}
-            </button>
-          ))}
-
-        </div>
-      </div>
-
-      {/* =====================================================
-          CALCULATOR CONTENT
-      ===================================================== */}
-      <div className="px-7 py-7">
-
-        {/* PAGE TITLE */}
-        <div className="mb-6 flex items-start justify-between">
-
-          <div>
-            <h2 className="text-[22px] font-extrabold tracking-tight text-[#0b1e3f]">
-              Enter Your {selectedExam} Practice Scores
-            </h2>
-
-            <p className="mt-1 text-[13px] text-slate-400">
-              Add your latest practice results below. We'll turn them into a
-              clear performance report.
-            </p>
-          </div>
-
-          <span className="rounded-lg bg-orange-50 px-3 py-2 text-[11px] font-bold text-[#F36D45]">
-            {selectedExam}
-          </span>
-
-        </div>
-
-        {/* =====================================================
-            SAT
-        ===================================================== */}
-        {selectedExam === "SAT" && (
-          <div className="space-y-3.5">
-
-            {/* READING & WRITING */}
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-
-              {/* LIGHT GRAY HEADER */}
-              <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
-
-                <div className="flex items-center gap-3">
-
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
-                    <BookOpen className="h-5 w-5 text-[#F36D45]" />
-                  </div>
-
+              {/* SAT */}
+              {selectedExam === "SAT" && (
+                <div className="space-y-1">
+                  {/* Reading & Writing */}
                   <div>
-                    <h3 className="text-[14px] font-extrabold text-[#0b1e3f]">
-                      Reading & Writing
-                    </h3>
-
-                    <p className="text-[10px] text-slate-400">
-                      SAT Practice Section
-                    </p>
-                  </div>
-
-                </div>
-
-                <span className="text-[10px] font-bold text-[#F36D45]">
-                  2 Inputs
-                </span>
-
-              </div>
-
-              {/* MODULES */}
-              <div>
-
-                {[
-                  {
-                    field: "readingWritingModule1" as keyof SATScores,
-                    label: "Module 1",
-                    max: 27,
-                    value: satScores.readingWritingModule1,
-                  },
-                  {
-                    field: "readingWritingModule2" as keyof SATScores,
-                    label: "Module 2",
-                    max: 27,
-                    value: satScores.readingWritingModule2,
-                  },
-                ].map((item) => (
-
-                  <div
-                    key={item.field}
-                    className="flex min-h-[66px] items-center border-t border-slate-100 px-4"
-                  >
-
-                    <span className="w-[150px] text-[12px] font-medium text-[#0b1e3f]">
-                      {item.label}
-                    </span>
-
-                    <div className="flex flex-1 items-center gap-3">
-
-                      {/* MINUS */}
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleSATModuleChange(
-                            item.field,
-                            item.value - 1,
-                            item.max
-                          )
-                        }
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition hover:border-[#F36D45] hover:text-[#F36D45]"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </button>
-
-                      {/* SLIDER */}
-                      <div className="relative flex-1">
-
-                        <div className="h-[5px] overflow-hidden rounded-full bg-slate-200">
-
-                          <div
-                            className="h-full rounded-full bg-[#F36D45] transition-all duration-200"
-                            style={{
-                              width: `${(item.value / item.max) * 100}%`,
-                            }}
-                          />
-
-                        </div>
-
-                        <input
-                          type="range"
-                          min={0}
-                          max={item.max}
-                          value={item.value}
-                          onChange={(e) =>
-                            handleSATModuleChange(
-                              item.field,
-                              Number(e.target.value),
-                              item.max
-                            )
-                          }
-                          className="absolute inset-0 h-5 w-full cursor-pointer opacity-0"
-                        />
-
-                        {/* KNOB */}
-                        <div
-                          className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white shadow-sm"
-                          style={{
-                            left: `calc(${(item.value / item.max) * 100}% - 9px)`,
-                          }}
-                        />
-
-                      </div>
-
-                      {/* PLUS */}
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleSATModuleChange(
-                            item.field,
-                            item.value + 1,
-                            item.max
-                          )
-                        }
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition hover:border-[#F36D45] hover:text-[#F36D45]"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
-
+                    <div className="mb-2">
+                      <h3 className="text-[21px] font-bold text-[#252525]">Reading & Writing</h3>
+                      <p className="mt-1 text-[14px] text-[#777777]">SAT Practice Section</p>
                     </div>
-
-                    {/* SCORE */}
-                    <div className="w-[90px] text-right">
-
-                      <span className="text-[14px] font-extrabold text-[#0b1e3f]">
-                        {item.value}
-                      </span>
-
-                      <span className="text-[11px] text-slate-400">
-                        {" "}/ {item.max}
-                      </span>
-
-                    </div>
-
-                  </div>
-
-                ))}
-
-              </div>
-
-            </div>
-
-            {/* MATH */}
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-
-              <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
-
-                <div className="flex items-center gap-3">
-
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
-                    <Target className="h-5 w-5 text-[#7C4DFF]" />
-                  </div>
-
-                  <div>
-                    <h3 className="text-[14px] font-extrabold text-[#0b1e3f]">
-                      Math
-                    </h3>
-
-                    <p className="text-[10px] text-slate-400">
-                      SAT Practice Section
-                    </p>
-                  </div>
-
-                </div>
-
-                <span className="text-[10px] font-bold text-[#F36D45]">
-                  2 Inputs
-                </span>
-
-              </div>
-
-              <div>
-
-                {[
-                  {
-                    field: "mathModule1" as keyof SATScores,
-                    label: "Module 1",
-                    max: 22,
-                    value: satScores.mathModule1,
-                  },
-                  {
-                    field: "mathModule2" as keyof SATScores,
-                    label: "Module 2",
-                    max: 22,
-                    value: satScores.mathModule2,
-                  },
-                ].map((item) => (
-
-                  <div
-                    key={item.field}
-                    className="flex min-h-[66px] items-center border-t border-slate-100 px-4"
-                  >
-
-                    <span className="w-[150px] text-[12px] font-medium text-[#0b1e3f]">
-                      {item.label}
-                    </span>
-
-                    <div className="flex flex-1 items-center gap-3">
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleSATModuleChange(
-                            item.field,
-                            item.value - 1,
-                            item.max
-                          )
-                        }
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition hover:border-[#F36D45] hover:text-[#F36D45]"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </button>
-
-                      <div className="relative flex-1">
-
-                        <div className="h-[5px] overflow-hidden rounded-full bg-slate-200">
-                          <div
-                            className="h-full rounded-full bg-[#F36D45] transition-all duration-200"
-                            style={{
-                              width: `${(item.value / item.max) * 100}%`,
-                            }}
-                          />
-                        </div>
-
-                        <input
-                          type="range"
-                          min={0}
-                          max={item.max}
-                          value={item.value}
-                          onChange={(e) =>
-                            handleSATModuleChange(
-                              item.field,
-                              Number(e.target.value),
-                              item.max
-                            )
-                          }
-                          className="absolute inset-0 h-5 w-full cursor-pointer opacity-0"
-                        />
-
-                        <div
-                          className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white shadow-sm"
-                          style={{
-                            left: `calc(${(item.value / item.max) * 100}% - 9px)`,
-                          }}
-                        />
-
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleSATModuleChange(
-                            item.field,
-                            item.value + 1,
-                            item.max
-                          )
-                        }
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 transition hover:border-[#F36D45] hover:text-[#F36D45]"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
-
-                    </div>
-
-                    <div className="w-[90px] text-right">
-                      <span className="text-[14px] font-extrabold text-[#0b1e3f]">
-                        {item.value}
-                      </span>
-                      <span className="text-[11px] text-slate-400">
-                        {" "}/ {item.max}
-                      </span>
-                    </div>
-
-                  </div>
-
-                ))}
-
-              </div>
-
-            </div>
-
-          </div>
-        )}
-
-        {/* =====================================================
-            GRE
-        ===================================================== */}
-        {selectedExam === "GRE" && (
-          <div className="space-y-3.5">
-
-            {[
-              {
-                title: "Verbal Reasoning",
-                subtitle: "GRE Practice Section",
-                icon: BookOpen,
-                s1: greScores.verbalS1,
-                s2: greScores.verbalS2,
-                s1Key: "verbalS1" as keyof GREScores,
-                s2Key: "verbalS2" as keyof GREScores,
-                harderKey: "verbalHarder" as keyof GREScores,
-                harder: greScores.verbalHarder,
-              },
-              {
-                title: "Quantitative Reasoning",
-                subtitle: "GRE Practice Section",
-                icon: Target,
-                s1: greScores.quantS1,
-                s2: greScores.quantS2,
-                s1Key: "quantS1" as keyof GREScores,
-                s2Key: "quantS2" as keyof GREScores,
-                harderKey: "quantHarder" as keyof GREScores,
-                harder: greScores.quantHarder,
-              },
-            ].map((section) => {
-
-              const Icon = section.icon;
-
-              return (
-                <div
-                  key={section.title}
-                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
-                >
-
-                  {/* HEADER */}
-                  <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
-
-                    <div className="flex items-center gap-3">
-
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
-                        <Icon className="h-5 w-5 text-[#F36D45]" />
-                      </div>
-
-                      <div>
-                        <h3 className="text-[14px] font-extrabold text-[#0b1e3f]">
-                          {section.title}
-                        </h3>
-
-                        <p className="text-[10px] text-slate-400">
-                          {section.subtitle}
-                        </p>
-                      </div>
-
-                    </div>
-
-                    <span className="text-[10px] font-bold text-[#F36D45]">
-                      2 Inputs
-                    </span>
-
-                  </div>
-
-                  {/* SECTION 1 */}
-                  <div className="flex min-h-[66px] items-center border-t border-slate-100 px-4">
-
-                    <span className="w-[150px] text-[12px] font-medium text-[#0b1e3f]">
-                      Section 1
-                    </span>
-
-                    <div className="flex flex-1 items-center gap-3">
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleGREChange(
-                            section.s1Key,
-                            section.s1 - 1,
-                            12
-                          )
-                        }
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </button>
-
-                      <div className="relative flex-1">
-
-                        <div className="h-[5px] overflow-hidden rounded-full bg-slate-200">
-                          <div
-                            className="h-full rounded-full bg-[#F36D45]"
-                            style={{
-                              width: `${(section.s1 / 12) * 100}%`,
-                            }}
-                          />
-                        </div>
-
-                        <input
-                          type="range"
-                          min={0}
-                          max={12}
-                          value={section.s1}
-                          onChange={(e) =>
-                            handleGREChange(
-                              section.s1Key,
-                              Number(e.target.value),
-                              12
-                            )
-                          }
-                          className="absolute inset-0 h-5 w-full opacity-0"
-                        />
-
-                        <div
-                          className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white"
-                          style={{
-                            left: `calc(${(section.s1 / 12) * 100}% - 9px)`,
-                          }}
-                        />
-
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleGREChange(
-                            section.s1Key,
-                            section.s1 + 1,
-                            12
-                          )
-                        }
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
-
-                    </div>
-
-                    <div className="w-[90px] text-right">
-                      <span className="text-[14px] font-extrabold">
-                        {section.s1}
-                      </span>
-                      <span className="text-[11px] text-slate-400">
-                        {" "}/ 12
-                      </span>
-                    </div>
-
-                  </div>
-
-                  {/* SECTION 2 */}
-                  <div className="flex min-h-[66px] items-center border-t border-slate-100 px-4">
-
-                    <span className="w-[150px] text-[12px] font-medium text-[#0b1e3f]">
-                      Section 2
-                    </span>
-
-                    <div className="flex flex-1 items-center gap-3">
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleGREChange(
-                            section.s2Key,
-                            section.s2 - 1,
-                            15
-                          )
-                        }
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </button>
-
-                      <div className="relative flex-1">
-
-                        <div className="h-[5px] overflow-hidden rounded-full bg-slate-200">
-                          <div
-                            className="h-full rounded-full bg-[#F36D45]"
-                            style={{
-                              width: `${(section.s2 / 15) * 100}%`,
-                            }}
-                          />
-                        </div>
-
-                        <input
-                          type="range"
-                          min={0}
-                          max={15}
-                          value={section.s2}
-                          onChange={(e) =>
-                            handleGREChange(
-                              section.s2Key,
-                              Number(e.target.value),
-                              15
-                            )
-                          }
-                          className="absolute inset-0 h-5 w-full opacity-0"
-                        />
-
-                        <div
-                          className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white"
-                          style={{
-                            left: `calc(${(section.s2 / 15) * 100}% - 9px)`,
-                          }}
-                        />
-
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleGREChange(
-                            section.s2Key,
-                            section.s2 + 1,
-                            15
-                          )
-                        }
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
-
-                    </div>
-
-                    <div className="w-[90px] text-right">
-                      <span className="text-[14px] font-extrabold">
-                        {section.s2}
-                      </span>
-                      <span className="text-[11px] text-slate-400">
-                        {" "}/ 15
-                      </span>
-                    </div>
-
-                  </div>
-
-                  {/* KEEP YOUR EXISTING DIFFICULTY LOGIC */}
-                  <div className="border-t border-slate-100 bg-white px-4 py-3">
-
-                    <div className="flex items-center justify-between">
-
-                      <span className="text-[11px] font-medium text-slate-500">
-                        Section 2 difficulty
-                      </span>
-
-                      <div className="flex gap-2">
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleGREChange(
-                              section.harderKey,
-                              true
-                            )
-                          }
-                          className={`rounded-lg border px-3 py-1.5 text-[10px] font-bold ${
-                            section.harder
-                              ? "border-orange-300 bg-orange-50 text-[#F36D45]"
-                              : "border-slate-200 text-slate-500"
-                          }`}
-                        >
-                          Harder
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            handleGREChange(
-                              section.harderKey,
-                              false
-                            )
-                          }
-                          className={`rounded-lg border px-3 py-1.5 text-[10px] font-bold ${
-                            !section.harder
-                              ? "border-orange-300 bg-orange-50 text-[#F36D45]"
-                              : "border-slate-200 text-slate-500"
-                          }`}
-                        >
-                          Easier
-                        </button>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                </div>
-              );
-            })}
-
-            {/* ANALYTICAL WRITING */}
-            <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-
-              <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
-
-                <div className="flex items-center gap-3">
-
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
-                    <TrendingUp className="h-5 w-5 text-[#F36D45]" />
-                  </div>
-
-                  <div>
-                    <h3 className="text-[14px] font-extrabold text-[#0b1e3f]">
-                      Analytical Writing
-                    </h3>
-
-                    <p className="text-[10px] text-slate-400">
-                      GRE Practice Section
-                    </p>
-                  </div>
-
-                </div>
-
-                <span className="text-[10px] font-bold text-[#F36D45]">
-                  1 Input
-                </span>
-
-              </div>
-
-              <div className="flex min-h-[66px] items-center border-t border-slate-100 px-4">
-
-                <span className="w-[150px] text-[12px] font-medium">
-                  Practice Band
-                </span>
-
-                <div className="flex flex-1 items-center gap-3">
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleGREChange(
-                        "analyticalWriting",
-                        greScores.analyticalWriting - 0.5
-                      )
-                    }
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
-                  >
-                    <Minus className="h-4 w-4" />
-                  </button>
-
-                  <div className="relative flex-1">
-
-                    <div className="h-[5px] rounded-full bg-slate-200">
-                      <div
-                        className="h-full rounded-full bg-[#F36D45]"
-                        style={{
-                          width: `${(greScores.analyticalWriting / 6) * 100}%`,
-                        }}
-                      />
-                    </div>
-
-                    <input
-                      type="range"
-                      min={0}
-                      max={6}
-                      step={0.5}
-                      value={greScores.analyticalWriting}
-                      onChange={(e) =>
-                        handleGREChange(
-                          "analyticalWriting",
-                          Number(e.target.value)
-                        )
-                      }
-                      className="absolute inset-0 h-5 w-full opacity-0"
-                    />
-
-                    <div
-                      className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white"
-                      style={{
-                        left: `calc(${(greScores.analyticalWriting / 6) * 100}% - 9px)`,
-                      }}
-                    />
-
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      handleGREChange(
-                        "analyticalWriting",
-                        greScores.analyticalWriting + 0.5
-                      )
-                    }
-                    className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
-                  >
-                    <Plus className="h-4 w-4" />
-                  </button>
-
-                </div>
-
-                <div className="w-[90px] text-right">
-                  <span className="text-[14px] font-extrabold">
-                    {greScores.analyticalWriting}
-                  </span>
-                  <span className="text-[11px] text-slate-400">
-                    {" "}/ 6
-                  </span>
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-        )}
-
-        {/* =====================================================
-            GMAT
-        ===================================================== */}
-        {selectedExam === "GMAT" && (
-          <div className="space-y-3.5">
-
-            {[
-              {
-                label: "Quantitative Reasoning",
-                value: gmatQuant,
-                setter: setGmatQuant,
-                max: 90,
-              },
-              {
-                label: "Verbal Reasoning",
-                value: gmatVerbal,
-                setter: setGmatVerbal,
-                max: 90,
-              },
-              {
-                label: "Data Insights",
-                value: gmatDI,
-                setter: setGmatDI,
-                max: 90,
-              },
-            ].map((section) => (
-
-              <div
-                key={section.label}
-                className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
-              >
-
-                <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
-
-                  <div className="flex items-center gap-3">
-
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
-                      <Target className="h-5 w-5 text-[#F36D45]" />
-                    </div>
-
                     <div>
-                      <h3 className="text-[14px] font-extrabold">
-                        {section.label}
-                      </h3>
-
-                      <p className="text-[10px] text-slate-400">
-                        GMAT Practice Section
-                      </p>
+                      {[
+                        { field: "readingWritingModule1" as keyof SATScores, label: "Module 1", max: 27, value: satScores.readingWritingModule1 },
+                        { field: "readingWritingModule2" as keyof SATScores, label: "Module 2", max: 27, value: satScores.readingWritingModule2 },
+                      ].map((item) => (
+                        <div key={item.field} className="grid min-h-[72px] grid-cols-[115px_minmax(0,1fr)_65px] items-center gap-4 border-t border-[#EEEEEE]">
+                          <span className="text-[15px] font-medium text-[#252525]">{item.label}</span>
+                          <div className="relative">
+                            <div className="h-[14px] overflow-hidden rounded-full bg-[#E7E7E7]">
+                              <div className="h-full rounded-full transition-all duration-200" style={{ width: `${(item.value / item.max) * 100}%`, background: "linear-gradient(90deg, #F36D45 0%, #FFD79F 100%)" }} />
+                            </div>
+                            <input type="range" min={0} max={item.max} value={item.value} onChange={(e) => handleSATModuleChange(item.field, Number(e.target.value), item.max)} className="absolute inset-0 h-6 w-full cursor-pointer opacity-0" />
+                          </div>
+                          <div className="text-right whitespace-nowrap">
+                            <span className="text-[15px] font-bold text-[#252525]">{item.value}</span>
+                            <span className="text-[11px] text-[#555555]"> / {item.max}</span>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-
                   </div>
 
-                  <span className="text-[10px] font-bold text-[#F36D45]">
-                    1 Input
-                  </span>
-
+                  {/* Math */}
+                  <div>
+                    <div className="mb-4">
+                      <h3 className="text-[21px] font-bold text-[#252525]">Math</h3>
+                      <p className="mt-1 text-[14px] text-[#777777]">SAT Practice Section</p>
+                    </div>
+                    <div>
+                      {[
+                        { field: "mathModule1" as keyof SATScores, label: "Module 1", max: 22, value: satScores.mathModule1 },
+                        { field: "mathModule2" as keyof SATScores, label: "Module 2", max: 22, value: satScores.mathModule2 },
+                      ].map((item) => (
+                        <div key={item.field} className="grid min-h-[72px] grid-cols-[115px_minmax(0,1fr)_65px] items-center gap-4 border-t border-[#EEEEEE]">
+                          <span className="text-[15px] font-medium text-[#252525]">{item.label}</span>
+                          <div className="relative">
+                            <div className="h-[14px] overflow-hidden rounded-full bg-[#E7E7E7]">
+                              <div className="h-full rounded-full transition-all duration-200" style={{ width: `${(item.value / item.max) * 100}%`, background: "linear-gradient(90deg, #F36D45 0%, #FFD79F 100%)" }} />
+                            </div>
+                            <input type="range" min={0} max={item.max} value={item.value} onChange={(e) => handleSATModuleChange(item.field, Number(e.target.value), item.max)} className="absolute inset-0 h-6 w-full cursor-pointer opacity-0" />
+                          </div>
+                          <div className="text-right whitespace-nowrap">
+                            <span className="text-[15px] font-bold text-[#252525]">{item.value}</span>
+                            <span className="text-[11px] text-[#555555]"> / {item.max}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
+              )}
 
-                <div className="flex min-h-[66px] items-center border-t border-slate-100 px-4">
+              {/* GRE */}
+              {selectedExam === "GRE" && (
+                <div className="space-y-1">
+                  {/* Verbal Reasoning */}
+                  <div>
+                    <div className="mb-2">
+                      <h3 className="text-[21px] font-bold text-[#252525]">Verbal Reasoning</h3>
+                      <p className="mt-1 text-[14px] text-[#777777]">GRE Practice Section</p>
+                    </div>
+                    <div>
+                      {[
+                        { label: "Section 1", max: 12, value: greScores.verbalS1, onChange: (v: number) => handleGREChange("verbalS1", v, 12) },
+                        { label: "Section 2", max: 15, value: greScores.verbalS2, onChange: (v: number) => handleGREChange("verbalS2", v, 15) },
+                      ].map((item, idx) => (
+                        <div key={idx} className="grid min-h-[72px] grid-cols-[115px_minmax(0,1fr)_65px] items-center gap-4 border-t border-[#EEEEEE]">
+                          <span className="text-[15px] font-medium text-[#252525]">{item.label}</span>
+                          <div className="relative">
+                            <div className="h-[14px] overflow-hidden rounded-full bg-[#E7E7E7]">
+                              <div className="h-full rounded-full transition-all duration-200" style={{ width: `${(item.value / item.max) * 100}%`, background: "linear-gradient(90deg, #F36D45 0%, #FFD79F 100%)" }} />
+                            </div>
+                            <input type="range" min={0} max={item.max} value={item.value} onChange={(e) => item.onChange(Number(e.target.value))} className="absolute inset-0 h-6 w-full cursor-pointer opacity-0" />
+                          </div>
+                          <div className="text-right whitespace-nowrap">
+                            <span className="text-[15px] font-bold text-[#252525]">{item.value}</span>
+                            <span className="text-[11px] text-[#555555]"> / {item.max}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-                  <span className="w-[150px] text-[12px] font-medium">
-                    Correct Answers
-                  </span>
+                  {/* Quantitative Reasoning */}
+                  <div>
+                    <div className="mb-2">
+                      <h3 className="text-[21px] font-bold text-[#252525]">Quantitative Reasoning</h3>
+                      <p className="mt-1 text-[14px] text-[#777777]">GRE Practice Section</p>
+                    </div>
+                    <div>
+                      {[
+                        { label: "Section 1", max: 12, value: greScores.quantS1, onChange: (v: number) => handleGREChange("quantS1", v, 12) },
+                        { label: "Section 2", max: 15, value: greScores.quantS2, onChange: (v: number) => handleGREChange("quantS2", v, 15) },
+                      ].map((item, idx) => (
+                        <div key={idx} className="grid min-h-[72px] grid-cols-[115px_minmax(0,1fr)_65px] items-center gap-4 border-t border-[#EEEEEE]">
+                          <span className="text-[15px] font-medium text-[#252525]">{item.label}</span>
+                          <div className="relative">
+                            <div className="h-[14px] overflow-hidden rounded-full bg-[#E7E7E7]">
+                              <div className="h-full rounded-full transition-all duration-200" style={{ width: `${(item.value / item.max) * 100}%`, background: "linear-gradient(90deg, #F36D45 0%, #FFD79F 100%)" }} />
+                            </div>
+                            <input type="range" min={0} max={item.max} value={item.value} onChange={(e) => item.onChange(Number(e.target.value))} className="absolute inset-0 h-6 w-full cursor-pointer opacity-0" />
+                          </div>
+                          <div className="text-right whitespace-nowrap">
+                            <span className="text-[15px] font-bold text-[#252525]">{item.value}</span>
+                            <span className="text-[11px] text-[#555555]"> / {item.max}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-                  <div className="flex flex-1 items-center gap-3">
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        section.setter(
-                          Math.max(60, section.value - 1)
-                        )
-                      }
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
-                    >
-                      <Minus className="h-4 w-4" />
-                    </button>
-
-                    <div className="relative flex-1">
-
-                      <div className="h-[5px] rounded-full bg-slate-200">
-
-                        <div
-                          className="h-full rounded-full bg-[#F36D45]"
-                          style={{
-                            width: `${((section.value - 60) / 30) * 100}%`,
-                          }}
-                        />
-
+                  {/* Analytical Writing */}
+                  <div>
+                    <div className="mb-2">
+                      <h3 className="text-[21px] font-bold text-[#252525]">Analytical Writing</h3>
+                      <p className="mt-1 text-[14px] text-[#777777]">GRE Practice Section</p>
+                    </div>
+                    <div className="grid min-h-[72px] grid-cols-[115px_minmax(0,1fr)_65px] items-center gap-4 border-t border-[#EEEEEE]">
+                      <span className="text-[15px] font-medium text-[#252525]">Practice Band</span>
+                      <div className="relative">
+                        <div className="h-[14px] overflow-hidden rounded-full bg-[#E7E7E7]">
+                          <div className="h-full rounded-full transition-all duration-200" style={{ width: `${(greScores.analyticalWriting / 6) * 100}%`, background: "linear-gradient(90deg, #F36D45 0%, #FFD79F 100%)" }} />
+                        </div>
+                        <input type="range" min={0} max={6} step={0.5} value={greScores.analyticalWriting} onChange={(e) => handleGREChange("analyticalWriting", Number(e.target.value))} className="absolute inset-0 h-6 w-full cursor-pointer opacity-0" />
                       </div>
-
-                      <input
-                        type="range"
-                        min={60}
-                        max={90}
-                        value={section.value}
-                        onChange={(e) =>
-                          section.setter(Number(e.target.value))
-                        }
-                        className="absolute inset-0 h-5 w-full opacity-0"
-                      />
-
-                      <div
-                        className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white"
-                        style={{
-                          left: `calc(${((section.value - 60) / 30) * 100}% - 9px)`,
-                        }}
-                      />
-
+                      <div className="text-right whitespace-nowrap">
+                        <span className="text-[15px] font-bold text-[#252525]">{greScores.analyticalWriting}</span>
+                        <span className="text-[11px] text-[#555555]"> / 6</span>
+                      </div>
                     </div>
-
-                    <button
-                      type="button"
-                      onClick={() =>
-                        section.setter(
-                          Math.min(90, section.value + 1)
-                        )
-                      }
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
-                    >
-                      <Plus className="h-4 w-4" />
-                    </button>
-
                   </div>
-
-                  <div className="w-[90px] text-right">
-                    <span className="text-[14px] font-extrabold">
-                      {section.value}
-                    </span>
-                    <span className="text-[11px] text-slate-400">
-                      {" "}/ 90
-                    </span>
-                  </div>
-
                 </div>
+              )}
 
+              {/* GMAT */}
+              {selectedExam === "GMAT" && (
+                <div className="space-y-1">
+                  {[
+                    { label: "Quantitative Reasoning", value: gmatQuant, setter: setGmatQuant, max: 90 },
+                    { label: "Verbal Reasoning", value: gmatVerbal, setter: setGmatVerbal, max: 90 },
+                    { label: "Data Insights", value: gmatDI, setter: setGmatDI, max: 90 },
+                  ].map((section, idx) => (
+                    <div key={idx}>
+                      <div className="mb-2">
+                        <h3 className="text-[21px] font-bold text-[#252525]">{section.label}</h3>
+                        <p className="mt-1 text-[14px] text-[#777777]">GMAT Practice Section</p>
+                      </div>
+                      <div className="grid min-h-[72px] grid-cols-[115px_minmax(0,1fr)_65px] items-center gap-4 border-t border-[#EEEEEE]">
+                        <span className="text-[15px] font-medium text-[#252525]">Correct Answers</span>
+                        <div className="relative">
+                          <div className="h-[14px] overflow-hidden rounded-full bg-[#E7E7E7]">
+                            <div className="h-full rounded-full transition-all duration-200" style={{ width: `${((section.value - 60) / 30) * 100}%`, background: "linear-gradient(90deg, #F36D45 0%, #FFD79F 100%)" }} />
+                          </div>
+                          <input type="range" min={60} max={90} value={section.value} onChange={(e) => section.setter(Math.min(90, Math.max(60, Number(e.target.value))))} className="absolute inset-0 h-6 w-full cursor-pointer opacity-0" />
+                        </div>
+                        <div className="text-right whitespace-nowrap">
+                          <span className="text-[15px] font-bold text-[#252525]">{section.value}</span>
+                          <span className="text-[11px] text-[#555555]"> / {section.max}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* TOEFL */}
+              {selectedExam === "TOEFL" && (
+                <div className="space-y-1">
+                  {["reading", "listening", "speaking", "writing"].map((section, idx) => {
+                    const value = toeflScores[section as keyof TOEFLScores];
+                    return (
+                      <div key={idx}>
+                        <div className="mb-2">
+                          <h3 className="text-[21px] font-bold text-[#252525] capitalize">{section}</h3>
+                          <p className="mt-1 text-[14px] text-[#777777]">TOEFL Practice Section</p>
+                        </div>
+                        <div className="grid min-h-[72px] grid-cols-[115px_minmax(0,1fr)_65px] items-center gap-4 border-t border-[#EEEEEE]">
+                          <span className="text-[15px] font-medium text-[#252525]">Practice Score</span>
+                          <div className="relative">
+                            <div className="h-[14px] overflow-hidden rounded-full bg-[#E7E7E7]">
+                              <div className="h-full rounded-full transition-all duration-200" style={{ width: `${(value / 30) * 100}%`, background: "linear-gradient(90deg, #F36D45 0%, #FFD79F 100%)" }} />
+                            </div>
+                            <input type="range" min={0} max={30} value={value} onChange={(e) => setToeflScores((prev) => ({ ...prev, [section]: Number(e.target.value) }))} className="absolute inset-0 h-6 w-full cursor-pointer opacity-0" />
+                          </div>
+                          <div className="text-right whitespace-nowrap">
+                            <span className="text-[15px] font-bold text-[#252525]">{value}</span>
+                            <span className="text-[11px] text-[#555555]"> / 30</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* IELTS */}
+              {selectedExam === "IELTS" && (
+                <div className="space-y-1">
+                  {["listening", "reading", "writing", "speaking"].map((section, idx) => {
+                    const value = ieltsScores[section as keyof IELTSScores];
+                    return (
+                      <div key={idx}>
+                        <div className="mb-2">
+                          <h3 className="text-[21px] font-bold text-[#252525] capitalize">{section}</h3>
+                          <p className="mt-1 text-[14px] text-[#777777]">IELTS Practice Section</p>
+                        </div>
+                        <div className="grid min-h-[72px] grid-cols-[115px_minmax(0,1fr)_65px] items-center gap-4 border-t border-[#EEEEEE]">
+                          <span className="text-[15px] font-medium text-[#252525]">{section === "writing" || section === "speaking" ? "Practice Band" : "Correct Answers"}</span>
+                          <div className="relative">
+                            <div className="h-[14px] overflow-hidden rounded-full bg-[#E7E7E7]">
+                              <div className="h-full rounded-full transition-all duration-200" style={{ width: `${(value / 9) * 100}%`, background: "linear-gradient(90deg, #F36D45 0%, #FFD79F 100%)" }} />
+                            </div>
+                            <input type="range" min={0} max={9} step={0.5} value={value} onChange={(e) => setIeltsScores((prev) => ({ ...prev, [section]: Number(e.target.value) }))} className="absolute inset-0 h-6 w-full cursor-pointer opacity-0" />
+                          </div>
+                          <div className="text-right whitespace-nowrap">
+                            <span className="text-[15px] font-bold text-[#252525]">{value}</span>
+                            <span className="text-[11px] text-[#555555]"> / 9</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* PTE */}
+              {selectedExam === "PTE" && (
+                <div className="space-y-1">
+                  {[
+                    { key: "speaking", label: "Speaking & Writing" },
+                    { key: "reading", label: "Reading" },
+                    { key: "listening", label: "Listening" },
+                  ].map((section, idx) => {
+                    const value = pteScores[section.key as keyof PTEScores];
+                    return (
+                      <div key={idx}>
+                        <div className="mb-2">
+                          <h3 className="text-[21px] font-bold text-[#252525]">{section.label}</h3>
+                          <p className="mt-1 text-[14px] text-[#777777]">PTE Practice Section</p>
+                        </div>
+                        <div className="grid min-h-[72px] grid-cols-[115px_minmax(0,1fr)_65px] items-center gap-4 border-t border-[#EEEEEE]">
+                          <span className="text-[15px] font-medium text-[#252525]">Practice Score</span>
+                          <div className="relative">
+                            <div className="h-[14px] overflow-hidden rounded-full bg-[#E7E7E7]">
+                              <div className="h-full rounded-full transition-all duration-200" style={{ width: `${((value - 10) / 80) * 100}%`, background: "linear-gradient(90deg, #F36D45 0%, #FFD79F 100%)" }} />
+                            </div>
+                            <input type="range" min={10} max={90} value={value} onChange={(e) => setPteScores((prev) => ({ ...prev, [section.key]: Math.min(90, Math.max(10, Number(e.target.value))) }))} className="absolute inset-0 h-6 w-full cursor-pointer opacity-0" />
+                          </div>
+                          <div className="text-right whitespace-nowrap">
+                            <span className="text-[15px] font-bold text-[#252525]">{value}</span>
+                            <span className="text-[11px] text-[#555555]"> / 90</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+            </div>
+          </div>
+
+          {/* RIGHT SIDE - RESULTS CARDS */}
+          <div className="flex w-full flex-col gap-5">
+            {/* RESULTS CARD */}
+            <div className="w-full rounded-[26px] bg-[#FF702C] px-6 py-8 text-white sm:px-8 sm:py-4">
+              <h2 className="text-center text-[32px] font-extrabold leading-tight sm:text-[36px]">Results</h2>
+              <div className="mt-4 space-y-3">
+                {getResultsSections().map((section, idx, arr) => (
+                  <div key={idx} className={`flex items-center justify-between ${idx < arr.length - 1 ? 'border-b border-white/70 pb-5' : ''}`}>
+                    <span className="text-[18px] font-bold sm:text-[21px]">{section.label}</span>
+                    <span className="text-[18px] font-bold sm:text-[21px]">{section.value}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* TOTAL SCORE CARD */}
+            <div className="relative min-h-[430px] w-full overflow-hidden rounded-[26px] bg-[#294584] px-7 py-7 sm:min-h-[330px] sm:px-8 sm:py-8">
+              <div className="absolute -bottom-[85px] -left-[15%] h-[150px] w-[130%] rounded-[50%] bg-[#183267]" />
+              
+              <div className="relative z-10 w-[255px] rounded-[20px] bg-white px-7 py-5 sm:w-[255px]">
+                <p className="text-[18px] font-bold text-[#294584]">Total Score</p>
+                <div className="mt-0 text-[70px] font-extrabold leading-none tracking-[-4px] text-[#294584]">
+                  {/* UPDATED: Uses dynamic calculation so it never shows 0 on first load */}
+                  {getCurrentTotalScore()}
+                </div>
+             
               </div>
 
-            ))}
+              <div className="absolute bottom-[5px] right-[25px] z-10">
+                <img src="/image/stick-mg.webp" alt="Score illustration" className="h-[275px] w-auto object-contain" />
+              </div>
 
-          </div>
-        )}
+              <div className="absolute top-50 left-7 z-20 sm:left-8">
+                <button type="button" className="rounded-full bg-[#FF7043] px-5 py-3 text-sm font-bold text-white shadow-md transition-all duration-200 hover:-translate-y-0.5 hover:brightness-95">
+                  Practice on Ooshas Prep →
+                </button>
+              </div>
 
-        {/* =====================================================
-            TOEFL
-        ===================================================== */}
-        {selectedExam === "TOEFL" && (
-          <div className="space-y-3.5">
-
-            {[
-              "reading",
-              "listening",
-              "speaking",
-              "writing",
-            ].map((section) => {
-
-              const value =
-                toeflScores[section as keyof TOEFLScores];
-
-              return (
-                <div
-                  key={section}
-                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
+              <div className="absolute bottom-[42px] left-7 z-20 sm:left-8">
+                {/* UPDATED: Calls the new handleReset function */}
+                <button 
+                  type="button" 
+                  onClick={handleReset} 
+                  className="rounded-full border border-white px-5 py-1 text-[15px] font-medium text-white transition-all duration-200 hover:bg-white hover:text-[#294584]"
                 >
-
-                  <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
-
-                    <div className="flex items-center gap-3">
-
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
-                        <BookOpen className="h-5 w-5 text-[#F36D45]" />
-                      </div>
-
-                      <div>
-                        <h3 className="text-[14px] font-extrabold capitalize">
-                          {section}
-                        </h3>
-
-                        <p className="text-[10px] text-slate-400">
-                          TOEFL Practice Section
-                        </p>
-                      </div>
-
-                    </div>
-
-                    <span className="text-[10px] font-bold text-[#F36D45]">
-                      1 Input
-                    </span>
-
-                  </div>
-
-                  <div className="flex min-h-[66px] items-center border-t border-slate-100 px-4">
-
-                    <span className="w-[150px] text-[12px] font-medium">
-                      Practice Score
-                    </span>
-
-                    <div className="flex flex-1 items-center gap-3">
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setToeflScores((prev) => ({
-                            ...prev,
-                            [section]: Math.max(0, value - 1),
-                          }))
-                        }
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </button>
-
-                      <div className="relative flex-1">
-
-                        <div className="h-[5px] rounded-full bg-slate-200">
-                          <div
-                            className="h-full rounded-full bg-[#F36D45]"
-                            style={{
-                              width: `${(value / 30) * 100}%`,
-                            }}
-                          />
-                        </div>
-
-                        <input
-                          type="range"
-                          min={0}
-                          max={30}
-                          value={value}
-                          onChange={(e) =>
-                            setToeflScores((prev) => ({
-                              ...prev,
-                              [section]: Number(e.target.value),
-                            }))
-                          }
-                          className="absolute inset-0 h-5 w-full opacity-0"
-                        />
-
-                        <div
-                          className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white"
-                          style={{
-                            left: `calc(${(value / 30) * 100}% - 9px)`,
-                          }}
-                        />
-
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setToeflScores((prev) => ({
-                            ...prev,
-                            [section]: Math.min(30, value + 1),
-                          }))
-                        }
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
-
-                    </div>
-
-                    <div className="w-[90px] text-right">
-                      <span className="text-[14px] font-extrabold">
-                        {value}
-                      </span>
-                      <span className="text-[11px] text-slate-400">
-                        {" "}/ 30
-                      </span>
-                    </div>
-
-                  </div>
-
-                </div>
-              );
-            })}
-
+                  Reset ↻
+                </button>
+              </div>
+            </div>
           </div>
-        )}
+        </div>
 
-        {/* =====================================================
-            IELTS
-        ===================================================== */}
-        {selectedExam === "IELTS" && (
-          <div className="space-y-3.5">
-
-            {[
-              "listening",
-              "reading",
-              "writing",
-              "speaking",
-            ].map((section) => {
-
-              const value =
-                ieltsScores[section as keyof IELTSScores];
-
-              return (
-                <div
-                  key={section}
-                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
-                >
-
-                  <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
-
-                    <div className="flex items-center gap-3">
-
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
-                        <BookOpen className="h-5 w-5 text-[#F36D45]" />
-                      </div>
-
-                      <div>
-                        <h3 className="text-[14px] font-extrabold capitalize">
-                          {section}
-                        </h3>
-
-                        <p className="text-[10px] text-slate-400">
-                          IELTS Practice Section
-                        </p>
-                      </div>
-
-                    </div>
-
-                    <span className="text-[10px] font-bold text-[#F36D45]">
-                      1 Input
-                    </span>
-
-                  </div>
-
-                  <div className="flex min-h-[66px] items-center border-t border-slate-100 px-4">
-
-                    <span className="w-[150px] text-[12px] font-medium">
-                      {section === "writing" || section === "speaking"
-                        ? "Practice Band"
-                        : "Correct Answers"}
-                    </span>
-
-                    <div className="flex flex-1 items-center gap-3">
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setIeltsScores((prev) => ({
-                            ...prev,
-                            [section]: Math.max(0, value - 0.5),
-                          }))
-                        }
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </button>
-
-                      <div className="relative flex-1">
-
-                        <div className="h-[5px] rounded-full bg-slate-200">
-                          <div
-                            className="h-full rounded-full bg-[#F36D45]"
-                            style={{
-                              width: `${(value / 9) * 100}%`,
-                            }}
-                          />
-                        </div>
-
-                        <input
-                          type="range"
-                          min={0}
-                          max={9}
-                          step={0.5}
-                          value={value}
-                          onChange={(e) =>
-                            setIeltsScores((prev) => ({
-                              ...prev,
-                              [section]: Number(e.target.value),
-                            }))
-                          }
-                          className="absolute inset-0 h-5 w-full opacity-0"
-                        />
-
-                        <div
-                          className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white"
-                          style={{
-                            left: `calc(${(value / 9) * 100}% - 9px)`,
-                          }}
-                        />
-
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setIeltsScores((prev) => ({
-                            ...prev,
-                            [section]: Math.min(9, value + 0.5),
-                          }))
-                        }
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
-
-                    </div>
-
-                    <div className="w-[90px] text-right">
-                      <span className="text-[14px] font-extrabold">
-                        {value}
-                      </span>
-                      <span className="text-[11px] text-slate-400">
-                        {" "}/ 9
-                      </span>
-                    </div>
-
-                  </div>
-
-                </div>
-              );
-            })}
-
-          </div>
-        )}
-
-        {/* =====================================================
-            PTE
-        ===================================================== */}
-        {selectedExam === "PTE" && (
-          <div className="space-y-3.5">
-
-            {[
-              {
-                key: "speaking",
-                label: "Speaking & Writing",
-              },
-              {
-                key: "reading",
-                label: "Reading",
-              },
-              {
-                key: "listening",
-                label: "Listening",
-              },
-            ].map((section) => {
-
-              const value =
-                pteScores[section.key as keyof PTEScores];
-
-              return (
-                <div
-                  key={section.key}
-                  className="overflow-hidden rounded-2xl border border-slate-200 bg-white"
-                >
-
-                  <div className="flex items-center justify-between bg-slate-50 px-4 py-4">
-
-                    <div className="flex items-center gap-3">
-
-                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-orange-50">
-                        <Target className="h-5 w-5 text-[#F36D45]" />
-                      </div>
-
-                      <div>
-                        <h3 className="text-[14px] font-extrabold">
-                          {section.label}
-                        </h3>
-
-                        <p className="text-[10px] text-slate-400">
-                          PTE Practice Section
-                        </p>
-                      </div>
-
-                    </div>
-
-                    <span className="text-[10px] font-bold text-[#F36D45]">
-                      1 Input
-                    </span>
-
-                  </div>
-
-                  <div className="flex min-h-[66px] items-center border-t border-slate-100 px-4">
-
-                    <span className="w-[150px] text-[12px] font-medium">
-                      Practice Score
-                    </span>
-
-                    <div className="flex flex-1 items-center gap-3">
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setPteScores((prev) => ({
-                            ...prev,
-                            [section.key]: Math.max(10, value - 1),
-                          }))
-                        }
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
-                      >
-                        <Minus className="h-4 w-4" />
-                      </button>
-
-                      <div className="relative flex-1">
-
-                        <div className="h-[5px] rounded-full bg-slate-200">
-                          <div
-                            className="h-full rounded-full bg-[#F36D45]"
-                            style={{
-                              width: `${((value - 10) / 80) * 100}%`,
-                            }}
-                          />
-                        </div>
-
-                        <input
-                          type="range"
-                          min={10}
-                          max={90}
-                          value={value}
-                          onChange={(e) =>
-                            setPteScores((prev) => ({
-                              ...prev,
-                              [section.key]: Number(e.target.value),
-                            }))
-                          }
-                          className="absolute inset-0 h-5 w-full opacity-0"
-                        />
-
-                        <div
-                          className="pointer-events-none absolute top-1/2 h-[18px] w-[18px] -translate-y-1/2 rounded-full border-[4px] border-[#F36D45] bg-white"
-                          style={{
-                            left: `calc(${((value - 10) / 80) * 100}% - 9px)`,
-                          }}
-                        />
-
-                      </div>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          setPteScores((prev) => ({
-                            ...prev,
-                            [section.key]: Math.min(90, value + 1),
-                          }))
-                        }
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-400 hover:border-[#F36D45] hover:text-[#F36D45]"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </button>
-
-                    </div>
-
-                    <div className="w-[90px] text-right">
-                      <span className="text-[14px] font-extrabold">
-                        {value}
-                      </span>
-                      <span className="text-[11px] text-slate-400">
-                        {" "}/ 90
-                      </span>
-                    </div>
-
-                  </div>
-
-                </div>
-              );
-            })}
-
-          </div>
-        )}
-
-        {/* =====================================================
-            BOTTOM ACTION AREA
-        ===================================================== */}
-        <div className="mt-5 flex items-center justify-between rounded-xl bg-slate-50 px-4 py-4">
-
-          <p className="text-[11px] text-slate-400">
-            Your results are used only to create an estimated preparation
-            analysis.
-          </p>
-
-          <button
-            type="button"
-            onClick={calculateReport}
-            className="rounded-xl bg-[#F36D45] px-6 py-3 text-[12px] font-extrabold text-white shadow-[0_8px_20px_rgba(243,109,69,0.20)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-95"
-          >
+        <div className="mt-5 flex items-center justify-between rounded-xl bg-white px-4 py-4 max-w-6xl mx-auto">
+          <p className="text-lg text-slate-400">Your results are used only to create an estimated preparation analysis.</p>
+          <button type="button" onClick={calculateReport} className="rounded-xl bg-[#F36D45] px-6 py-3 text-[12px] font-extrabold text-white shadow-[0_8px_20px_rgba(243,109,69,0.20)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-95">
             View My Performance Report →
           </button>
-
         </div>
+      </section>
 
-      </div>
-    </div>
-  </div>
-</section>
-
-      {/* Performance Report Section - Shows BELOW calculator */}
+      {/* Performance Report Section */}
       {showReport && report && (
         <section id="performance-report" className="px-4 pb-8">
           <div className="mx-auto max-w-6xl">
@@ -1923,189 +893,51 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
             </div>
 
             <div className="grid gap-6 lg:grid-cols-[0.5fr_1.5fr]">
-              {/* Overall Performance Gauge - EXACT MATCH TO REFERENCE */}
-              {/* Overall Performance */}
+              {/* Overall Performance Gauge */}
               <div className="rounded-[22px] border border-slate-200 bg-white px-8 py-7 shadow-sm">
-
-                {/* Header */}
                 <div>
-                  <h3 className="text-[18px] font-extrabold tracking-tight text-[#0b1e3f]">
-                    Overall Performance
-                  </h3>
-
-                  <p className="mt-1.5 text-[14px] text-slate-400">
-                    Based on the practice scores you entered.
-                  </p>
+                  <h3 className="text-[18px] font-extrabold tracking-tight text-[#0b1e3f]">Overall Performance</h3>
+                  <p className="mt-1.5 text-[14px] text-slate-400">Based on the practice scores you entered.</p>
                 </div>
-
-
-                {/* Gauge */}
                 <div className="relative mt-5 flex justify-center">
-
                   <div className="relative h-[225px] w-[400px] max-w-full">
-
-                    <svg
-                      viewBox="0 0 400 225"
-                      className="h-full w-full overflow-visible"
-                    >
-
-                      {/* ================= BACKGROUND / SEGMENTS ================= */}
-
-                      {/* Needs Improvement */}
-                      <path
-                        d="M 45 190 A 155 155 0 0 1 87 80"
-                        fill="none"
-                        stroke="#FFDFA9"
-                        strokeWidth="44"
-                        strokeLinecap="butt"
-                      />
-
-                      {/* Developing - Light */}
-                      <path
-                        d="M 87 80 A 155 155 0 0 1 155 43"
-                        fill="none"
-                        stroke="#FFB18E"
-                        strokeWidth="44"
-                        strokeLinecap="butt"
-                      />
-
-                      {/* Developing - Main */}
-                      <path
-                        d="M 155 43 A 155 155 0 0 1 245 43"
-                        fill="none"
-                        stroke="#FF927D"
-                        strokeWidth="44"
-                        strokeLinecap="butt"
-                      />
-
-                      {/* Strong - Light */}
-                      <path
-                        d="M 245 43 A 155 155 0 0 1 313 80"
-                        fill="none"
-                        stroke="#FF704A"
-                        strokeWidth="44"
-                        strokeLinecap="butt"
-                      />
-
-                      {/* Strong */}
-                      <path
-                        d="M 313 80 A 155 155 0 0 1 355 190"
-                        fill="none"
-                        stroke="#FF5D3D"
-                        strokeWidth="44"
-                        strokeLinecap="butt"
-                      />
-
-
-                      {/* ================= NEEDLE ================= */}
-
+                    <svg viewBox="0 0 400 225" className="h-full w-full overflow-visible">
+                      <path d="M 45 190 A 155 155 0 0 1 87 80" fill="none" stroke="#FFDFA9" strokeWidth="44" strokeLinecap="butt" />
+                      <path d="M 87 80 A 155 155 0 0 1 155 43" fill="none" stroke="#FFB18E" strokeWidth="44" strokeLinecap="butt" />
+                      <path d="M 155 43 A 155 155 0 0 1 245 43" fill="none" stroke="#FF927D" strokeWidth="44" strokeLinecap="butt" />
+                      <path d="M 245 43 A 155 155 0 0 1 313 80" fill="none" stroke="#FF704A" strokeWidth="44" strokeLinecap="butt" />
+                      <path d="M 313 80 A 155 155 0 0 1 355 190" fill="none" stroke="#FF5D3D" strokeWidth="44" strokeLinecap="butt" />
                       {(() => {
-                        const percentage = Math.round(
-                          Object.values(report.percentages).reduce(
-                            (a, b) => a + b,
-                            0,
-                          ) / Object.values(report.percentages).length,
-                        );
-
-                        /*
-                         * Convert 0–100 percentage
-                         * into 180° gauge angle.
-                         *
-                         * 0   = left
-                         * 50  = center
-                         * 100 = right
-                         */
+                        const percentage = Math.round(Object.values(report.percentages).reduce((a, b) => a + b, 0) / Object.values(report.percentages).length);
                         const angle = 180 - percentage * 1.8;
-
                         const centerX = 200;
                         const centerY = 190;
                         const needleLength = 105;
-
                         const radians = (angle * Math.PI) / 180;
-
-                        const needleX =
-                          centerX + needleLength * Math.cos(radians);
-
-                        const needleY =
-                          centerY - needleLength * Math.sin(radians);
-
+                        const needleX = centerX + needleLength * Math.cos(radians);
+                        const needleY = centerY - needleLength * Math.sin(radians);
                         return (
                           <>
-                            {/* Needle */}
-                            <line
-                              x1={centerX}
-                              y1={centerY}
-                              x2={needleX}
-                              y2={needleY}
-                              stroke="#0b1e3f"
-                              strokeWidth="4"
-                              strokeLinecap="round"
-                            />
-
-                            {/* Needle center */}
-                            <circle
-                              cx={centerX}
-                              cy={centerY}
-                              r="10"
-                              fill="#0b1e3f"
-                            />
-
-                            {/* Small center highlight */}
-                            <circle
-                              cx={centerX}
-                              cy={centerY}
-                              r="4"
-                              fill="white"
-                            />
+                            <line x1={centerX} y1={centerY} x2={needleX} y2={needleY} stroke="#0b1e3f" strokeWidth="4" strokeLinecap="round" />
+                            <circle cx={centerX} cy={centerY} r="10" fill="#0b1e3f" />
+                            <circle cx={centerX} cy={centerY} r="4" fill="white" />
                           </>
                         );
                       })()}
-
                     </svg>
-
-
-                    {/* ================= CENTER VALUE ================= */}
-
                     <div className="absolute left-1/2 top-[82px] flex -translate-x-1/2 flex-col items-center">
-
                       <span className="text-[52px] font-black leading-none tracking-[-2px] text-[#0b1e3f]">
-                        {Math.round(
-                          Object.values(report.percentages).reduce(
-                            (a, b) => a + b,
-                            0,
-                          ) / Object.values(report.percentages).length,
-                        )}
-                        %
+                        {Math.round(Object.values(report.percentages).reduce((a, b) => a + b, 0) / Object.values(report.percentages).length)}%
                       </span>
-
-                      <span className="mt-2 text-[14px] font-extrabold text-[#F36D45]">
-                        {report.performanceLevel}
-                      </span>
-
+                      <span className="mt-2 text-[14px] font-extrabold text-[#F36D45]">{report.performanceLevel}</span>
                     </div>
-
                   </div>
                 </div>
-
-
-                {/* ================= LABELS ================= */}
-
                 <div className="-mt-1 flex items-center justify-between text-[11px] font-medium text-slate-400">
-
-                  <span>
-                    Needs Improvement
-                  </span>
-
-                  <span className="translate-x-1">
-                    Developing
-                  </span>
-
-                  <span>
-                    Strong
-                  </span>
-
+                  <span>Needs Improvement</span>
+                  <span className="translate-x-1">Developing</span>
+                  <span>Strong</span>
                 </div>
-
               </div>
 
               {/* Estimated Score */}
@@ -2115,14 +947,11 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                 </div>
                 <div className="mb-6">
                   <span className="text-5xl font-black text-[#0b1e3f]">{report.totalScore}</span>
-                  <span className="ml-1 text-lg font-medium text-slate-400">
-                    {report.exam === "SAT" ? "/1600" : report.exam === "GRE" ? "/340" : report.exam === "GMAT" ? "/805" : report.exam === "TOEFL" ? "/120" : report.exam === "IELTS" ? "/9" : "/90"}
-                  </span>
+                  <span className="ml-1 text-lg font-medium text-slate-400">/{getMaxScore()}</span>
                   {report.percentile && (
                     <span className="ml-4 rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-[#F36D45]">{report.percentile} Percentile</span>
                   )}
                 </div>
-
                 <div className="space-y-4">
                   {Object.entries(report.sectionScores).map(([section, score]) => (
                     <div key={section}>
@@ -2236,12 +1065,12 @@ function Hero({ data }: { data: any }) {
   const [firstPart, ...rest] = title.split("||");
 
   return (
-    <section className="relative overflow-hidden bg-[#fcf3ed]">
-      <div className="relative mx-auto max-w-7xl px-4 pb-12 pt-12 text-center sm:px-6 sm:pb-14 sm:pt-16 lg:pb-20 lg:pt-20">
-        <h1 className="mx-auto max-w-7xl text-3xl font-extrabold leading-[1.15] sm:text-4xl lg:text-5xl">
+    <section className="relative xl:h-140 overflow-hidden bg-[#fcf3ed] bg-cover bg-no-repeat" style={{ backgroundImage: `url("/image/calculator-hero.webp")` }}>
+      <div className="relative max-w-6xl mx-auto px-4 pb-12 pt-12 sm:px-0 sm:pb-14 sm:pt-10 lg:py-40">
+        <h1 className="max-w-3xl text-3xl font-extrabold leading-[1.15] sm:text-4xl lg:text-5xl">
           {rest.length > 0 ? (
             <>
-              {firstPart.trim()} &{" "}
+              {firstPart.trim()}{" "}
               <span style={{ color: "#f36d45" }}>
                 {rest.join("&")}
               </span>
@@ -2250,8 +1079,8 @@ function Hero({ data }: { data: any }) {
             title
           )}
         </h1>
-        <div className="mx-auto mt-5 max-w-3xl text-sm leading-6 sm:text-base sm:leading-7" dangerouslySetInnerHTML={{ __html: data?.description || "" }} />
-        <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
+        <div className="mt-5 max-w-3xl text-sm leading-6 sm:text-lg sm:leading-7" dangerouslySetInnerHTML={{ __html: data?.description || "" }} />
+        <div className="mt-7 flex flex-col justify-start gap-3 sm:flex-row">
           {data?.primaryButtonText && (
             <a href={data?.primaryButtonUrl || "#calculator"} className="inline-flex w-full items-center justify-center gap-2 px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5 sm:w-auto" style={{ background: "#F36D45" }}>
               {data.primaryButtonText}
