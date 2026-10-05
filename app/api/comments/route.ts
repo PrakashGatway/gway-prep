@@ -13,7 +13,9 @@ export async function POST(request: NextRequest) {
       email,
       comment,
       page,
+      status,
       Score,
+      refrenceSlug
     } = body;
 
     // Validation
@@ -43,7 +45,9 @@ export async function POST(request: NextRequest) {
       email: typeof email === "string" ? email.trim().toLowerCase() : "",
       comment: comment.trim(),
       page: page.trim(),
+      status: typeof status === "string" ? status : "pending",
       Score: typeof Score === "string" ? Score.trim() : "",
+      refrenceSlug: typeof refrenceSlug === "string" ? refrenceSlug.trim() : "",
     });
 
     return NextResponse.json(
@@ -84,6 +88,7 @@ export async function PUT(request: NextRequest) {
       comment,
       page,
       Score,
+      status
     } = body;
 
     // Validate ID
@@ -133,6 +138,7 @@ export async function PUT(request: NextRequest) {
             typeof Score === "string"
               ? Score.trim()
               : "",
+              status: typeof status === "string" ? status : "pending",
         },
       },
       {
@@ -183,27 +189,103 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
 
     const page = searchParams.get("page");
-    const publish = searchParams.get("publish");
+    const search = searchParams.get("search")?.trim();
+    const status = searchParams.get("status")?.trim();
 
+    // Pagination
+    const pageNumber = Math.max(
+      Number(searchParams.get("pageNumber")) || 1,
+      1
+    );
+
+    const limit = Math.max(
+      Number(searchParams.get("limit")) || 10,
+      1
+    );
+
+    const skip = (pageNumber - 1) * limit;
+
+    // Filter
     const filter: Record<string, any> = {};
 
+    // Page filter
     if (page) {
       filter.page = page;
     }
 
-    if (publish !== null) {
-      filter.publish = publish === "true";
+    // Status filter
+    if (
+      status &&
+      ["approved", "rejected", "pending"].includes(status)
+    ) {
+      filter.status = status;
     }
 
+    // Search filter
+    if (search) {
+      filter.$or = [
+        {
+          name: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+        {
+          email: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+        {
+          comment: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+        {
+          page: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+        {
+          refrenceSlug: {
+            $regex: search,
+            $options: "i",
+          },
+        },
+      ];
+    }
+
+    // Total comments
+    const totalComments = await Comments.countDocuments(filter);
+
+    // Paginated comments
     const comments = await Comments.find(filter)
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
       .lean();
+
+    const totalPages = Math.ceil(
+      totalComments / limit
+    );
 
     return NextResponse.json({
       success: true,
-      count: comments.length,
+
       data: comments,
+
+      pagination: {
+        currentPage: pageNumber,
+        limit,
+        totalComments,
+        totalPages,
+        hasNextPage: pageNumber < totalPages,
+        hasPreviousPage: pageNumber > 1,
+      },
     });
+
   } catch (error) {
     console.error("Get Comments Error:", error);
 

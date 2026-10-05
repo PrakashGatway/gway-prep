@@ -357,8 +357,9 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
                     ))}
 
                     <QuestionsSection
-                      page={"ExamDetails"}
+                      page={"examdetails"}
                       css={" py-6 my-6"}
+                    
                     />
                   </div>
 

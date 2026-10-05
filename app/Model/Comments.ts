@@ -3,10 +3,12 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 export interface IComment extends Document {
   name?: string;
   email?: string;
-  comment: string;
+  phone?: Number;
+  comment?: string;
+  refrenceSlug?: String;
   page: string;
   publish: boolean;
-  status: boolean;
+  status: "approved" | "pending" | "rejected";
   Score: String;
   createdAt: Date;
   updatedAt: Date;
@@ -19,7 +21,14 @@ const CommentSchema = new Schema<IComment>(
       required: false,
       trim: true,
     },
-
+    phone: {
+      type: Number,
+      required: false,
+    },
+    refrenceSlug: {
+      type: String,
+      required: false,
+    },
     email: {
       type: String,
       required: false,
@@ -46,21 +55,20 @@ const CommentSchema = new Schema<IComment>(
       default: true,
     },
 
-    status : {
-        type : Boolean,
-        default : true
+    status: {
+      type: String,
+      default: "pending",
+      enum: ["approved", "pending", "rejected"],
     },
 
-    Score : String
-
+    Score: String,
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 const Comments: Model<IComment> =
-  mongoose.models.Comment ||
-  mongoose.model<IComment>("Comment", CommentSchema);
+  mongoose.models.Comment || mongoose.model<IComment>("Comment", CommentSchema);
 
 export default Comments;

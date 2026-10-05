@@ -26,6 +26,7 @@ import EditorContent from "../editorContent";
 import QuestionsSection from "../comment";
 import PopupModal from "../popupModel";
 import { useRouter } from "next/navigation";
+import { GlobalProvider, useGlobal } from "@/hooks/AppStateContext";
 
 const ORANGE = "#ff7a2a";
 const NAVY = "#0b1e3f";
@@ -195,6 +196,7 @@ function getPercentile(score: number, exam: ExamType): string {
 
 export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
   const router = useRouter();
+  const { userInfo, user } = useGlobal();
   const [selectedExam, setSelectedExam] = useState<ExamType>("SAT");
   const [showReport, setShowReport] = useState(false);
 
@@ -216,7 +218,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
     quantHarder: true,
     analyticalWriting: 4.0,
   });
-
+console.log(user,"nn")
   // GMAT State
   const [gmatQuant, setGmatQuant] = useState(75);
   const [gmatVerbal, setGmatVerbal] = useState(75);
@@ -525,7 +527,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
 
       {/* Calculator Section */}
       <section className="px-0 py-10">
-        <div className="mx-auto max-w-6xl grid grid-cols-[1.3fr_0.7fr] gap-7">
+        <div className="mx-auto max-w-7xl grid grid-cols-[1.3fr_0.7fr] gap-7">
 
           {/* OUTER WHITE CALCULATOR BOX */}
           <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white shadow-sm pt-8">
@@ -843,6 +845,8 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                 <div className="mt-0 text-[70px] font-extrabold leading-none tracking-[-4px] text-[#294584]">
                   {/* UPDATED: Uses dynamic calculation so it never shows 0 on first load */}
                   {getCurrentTotalScore()}
+                  <span className="ml-1 text-lg font-medium text-slate-400">/{getMaxScore()}</span>
+
                 </div>
              
               </div>
@@ -871,7 +875,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
           </div>
         </div>
 
-        <div className="mt-5 flex items-center justify-between rounded-xl bg-white px-4 py-4 max-w-6xl mx-auto">
+        <div className="mt-5 flex items-center justify-between rounded-xl bg-white px-4 py-4 max-w-7xl mx-auto">
           <p className="text-lg text-slate-400">Your results are used only to create an estimated preparation analysis.</p>
           <button type="button" onClick={calculateReport} className="rounded-xl bg-[#F36D45] px-6 py-3 text-[12px] font-extrabold text-white shadow-[0_8px_20px_rgba(243,109,69,0.20)] transition-all duration-200 hover:-translate-y-0.5 hover:brightness-95">
             View My Performance Report →
@@ -882,7 +886,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
       {/* Performance Report Section */}
       {showReport && report && (
         <section id="performance-report" className="px-4 pb-8">
-          <div className="mx-auto max-w-6xl">
+          <div className="mx-auto max-w-7xl">
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <p className="text-xs font-bold uppercase tracking-widest text-[#F36D45]">YOUR PERFORMANCE REPORT</p>
@@ -1049,10 +1053,10 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
       )}
 
       {/* Original Sections */}
-      <WhySection data={pageInfo?.sections?.whySection?.fields} />
+      {/* <WhySection data={pageInfo?.sections?.whySection?.fields} /> */}
       <DifferenceSection data={pageInfo?.sections?.differenceSection?.fields} />
       <BeyondNumberSection data={pageInfo?.sections?.beyondNumber?.fields} />
-      <QuestionsSection page="Calculator" heading="Student Questions & Comments" />
+      <QuestionsSection page="calculator" heading="Student Questions & Comments" slug={slug} />
       <Consultants data={pageInfo?.sections?.faq} />
       <BottomCTA data={pageInfo?.sections?.bottomCTA?.fields} />
     </main>
@@ -1066,8 +1070,8 @@ function Hero({ data }: { data: any }) {
 
   return (
     <section className="relative xl:h-140 overflow-hidden bg-[#fcf3ed] bg-cover bg-no-repeat" style={{ backgroundImage: `url("/image/calculator-hero.webp")` }}>
-      <div className="relative max-w-6xl mx-auto px-4 pb-12 pt-12 sm:px-0 sm:pb-14 sm:pt-10 lg:py-40">
-        <h1 className="max-w-3xl text-3xl font-extrabold leading-[1.15] sm:text-4xl lg:text-5xl">
+      <div className="relative max-w-7xl mx-auto px-4 pb-12 pt-12 sm:px-0 sm:pb-14 sm:pt-10 lg:py-40">
+        <h1 className="max-w-3xl text-3xl font-extrabold leading-[1.15] sm:text-4xl lg:text-4xl">
           {rest.length > 0 ? (
             <>
               {firstPart.trim()}{" "}
@@ -1098,7 +1102,7 @@ function WhySection({ data }: { data: any }) {
   const router = useRouter();
   return (
     <section className="bg-[#fcf3ed] px-4 py-16 text-[#0b1e3f]">
-      <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center">
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_420px] lg:items-center">
         <div>
           <div className="mb-4 inline-flex rounded-full bg-orange-500/10 px-3 py-1 text-[9px] font-bold uppercase tracking-widest text-orange-600">More Than A Number</div>
           <h2 className="max-w-3xl text-2xl font-extrabold leading-tight sm:text-3xl">{data?.title || ""}</h2>
@@ -1122,7 +1126,7 @@ function WhySection({ data }: { data: any }) {
 function DifferenceSection({ data }: { data: any }) {
   return (
     <section id="how-it-works" className="bg-white px-4 py-12">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <SectionHeading eyebrow="OUR DIFFERENCE" title={data?.title || ""} description={data?.description || ""} />
         {data?.Data && <EditorContent content_data={data.Data} />}
       </div>
@@ -1136,7 +1140,7 @@ function BeyondNumberSection({ data }: { data: any }) {
 
   return (
     <section className="bg-white px-4 py-12">
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
         <SectionHeading eyebrow="BEYOND THE NUMBER" title={data?.title || ""} description={data?.description || ""} />
         <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature: any, index: number) => {

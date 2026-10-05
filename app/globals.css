@@ -143,6 +143,12 @@
 
 }
 
+@keyframes skeletonShimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 .heading1{
   font-size: 38px;
   line-height: 44px;
