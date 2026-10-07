@@ -1,19 +1,26 @@
-
-
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import BlogDetails from "@/components/Blogdetail";
 import axiosInstance from "@/app/lib/axios";
+import Script from "next/script";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-const SITE_URL = "https://www.ooshasprep.com";
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://www.ooshasprep.com";
+
+const ORGANIZATION_ID = `${SITE_URL}/#organization`;
+const WEBSITE_ID = `${SITE_URL}/#website`;
+const LOGO_ID = `${SITE_URL}/#logo`;
 
 async function getBlogData(slug: string) {
   try {
-    const response = await axiosInstance.get(`/admin/blogs/${slug}`);
+    const response = await axiosInstance.get(
+      `/admin/blogs/${slug}`
+    );
+
     return response.data;
   } catch (error) {
     console.error("Blog fetch error:", error);
@@ -23,12 +30,17 @@ async function getBlogData(slug: string) {
 
 async function getRelatedBlogs() {
   try {
-    
-    const response = await axiosInstance.get(`/admin/blogs?page=1&limit=4`);
-    return response.data?.data || [];
+    const response = await axiosInstance.get(
+      `/admin/blogs?page=1&limit=4&isPublished=true`
+    );
 
+    return response.data?.data || [];
   } catch (error) {
-    console.error("Related blogs fetch error:", error);
+    console.error(
+      "Related blogs fetch error:",
+      error
+    );
+
     return [];
   }
 }
@@ -38,37 +50,50 @@ export async function generateMetadata({
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
 
-  const Allblog = await getBlogData(slug);
-  const blog = Allblog.data
+  const response = await getBlogData(slug);
+  const blog = response?.data;
 
   if (!blog) {
     return {
       title: "Blog Not Found | Ooshas Prep",
-      description: "The requested blog could not be found.",
+      description:
+        "The requested blog could not be found.",
+      robots: {
+        index: false,
+        follow: false,
+      },
     };
   }
 
   const title =
-    blog?.metaTitle ||
-    blog?.title
+    blog?.metaTitle?.trim() ||
+    blog?.title?.trim() ||
+    "Ooshas Prep Blog";
 
   const description =
-    blog?.metaDescription ||
-    blog?.summary
+    blog?.metaDescription?.trim() ||
+    blog?.summary?.trim() ||
+    "";
 
   const image =
     blog?.image ||
     blog?.featuredImage ||
-    `${SITE_URL}/og-image.jpg`;
+    `${SITE_URL}/image/logo.png`;
 
-  const canonicalUrl = `${SITE_URL}/blog/${slug}`;
+  const canonicalUrl =
+    blog?.canonicalUrl ||
+    `${SITE_URL}/blog/${slug}`;
 
   return {
     metadataBase: new URL(SITE_URL),
 
     title,
-
     description,
+
+    keywords:
+      blog?.keywords ||
+      blog?.tags ||
+      undefined,
 
     alternates: {
       canonical: canonicalUrl,
@@ -77,38 +102,56 @@ export async function generateMetadata({
     openGraph: {
       title,
       description,
+
       url: canonicalUrl,
+
       siteName: "Ooshas Prep",
+
       type: "article",
 
-      ...(image && {
-        images: [
-          {
-            url: image,
-            width: 1200,
-            height: 630,
-            alt: blog?.title || "Ooshas Prep Blog",
-          },
-        ],
+      locale: "en_US",
+
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt:
+            blog?.title ||
+            "Ooshas Prep Blog",
+        },
+      ],
+
+      ...(blog?.createdAt && {
+        publishedTime: blog.createdAt,
       }),
 
-      publishedTime: blog?.createdAt,
-      modifiedTime: blog?.updatedAt,
+      ...(blog?.updatedAt && {
+        modifiedTime: blog.updatedAt,
+      }),
     },
 
     twitter: {
       card: "summary_large_image",
+
       title,
+
       description,
 
-      ...(image && {
-        images: [image],
-      }),
+      images: [image],
     },
 
     robots: {
       index: true,
       follow: true,
+
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
     },
   };
 }
@@ -118,109 +161,321 @@ export default async function BlogDetailsPage({
 }: PageProps) {
   const { slug } = await params;
 
-  // Fetch blog
-  const blog = await getBlogData(slug);
+  const response = await getBlogData(slug);
 
-  // Show Next.js 404 page if blog doesn't exist
+  const blog = response?.data;
+
   if (!blog) {
     notFound();
   }
 
-  // Fetch related blogs
-  const res = await getRelatedBlogs();
 
+  const res = await getRelatedBlogs();
   const blogUrl = `${SITE_URL}/blog/${slug}`;
 
-  console.log("blog :",blog)
+  const blogTitle =
+    blog?.title ||
+    blog?.metaTitle ||
+    "Ooshas Prep Blog";
+
+  const blogDescription =
+    blog?.metaDescription ||
+    blog?.summary ||
+    "";
+
+  const blogImage =
+    blog?.image ||
+    blog?.featuredImage ||
+    `${SITE_URL}/image/logo.png`;
+
+
+  const organizationSchema = {
+    "@type": "EducationalOrganization",
+
+    "@id": ORGANIZATION_ID,
+
+    name: "Ooshas Prep",
+
+    url: SITE_URL,
+
+    logo: {
+      "@type": "ImageObject",
+
+      "@id": LOGO_ID,
+
+      url: `${SITE_URL}/image/logo.png`,
+
+      contentUrl: `${SITE_URL}/image/logo.png`,
+    },
+
+    description:
+      "Ooshas Prep is an online test preparation platform for IELTS, GRE, GMAT, SAT, TOEFL and PTE.",
+
+    telephone: "+91-9166146538",
+
+    email: "info@ooshasprep.com",
+
+    sameAs: [
+      "https://www.instagram.com/ooshasprep",
+      "https://www.facebook.com/share/18aH5VifRr/?mibextid=wwXIfr",
+      "https://x.com/ooshasprep",
+      "https://youtube.com/@ooshasprep",
+    ],
+  };
+
+  /*
+   * -------------------------------------------------------
+   * WEBSITE SCHEMA
+   * -------------------------------------------------------
+   */
+
+  const websiteSchema = {
+    "@type": "WebSite",
+
+    "@id": WEBSITE_ID,
+
+    url: SITE_URL,
+
+    name: "Ooshas Prep",
+
+    description:
+      "Online test preparation and coaching platform for IELTS, GRE, GMAT, SAT, TOEFL and PTE.",
+
+    publisher: {
+      "@id": ORGANIZATION_ID,
+    },
+
+    inLanguage: "en-US",
+  };
+
+  /*
+   * -------------------------------------------------------
+   * IMAGE SCHEMA
+   * -------------------------------------------------------
+   */
+
+  const imageSchema = {
+    "@type": "ImageObject",
+
+    "@id": `${blogUrl}#primaryimage`,
+
+    url: blogImage,
+
+    contentUrl: blogImage,
+
+    caption: blogTitle,
+  };
+
+  /*
+   * -------------------------------------------------------
+   * BREADCRUMB SCHEMA
+   * -------------------------------------------------------
+   */
+
   const breadcrumbSchema = {
-    "@context": "https://schema.org",
     "@type": "BreadcrumbList",
+
+    "@id": `${blogUrl}#breadcrumb`,
 
     itemListElement: [
       {
         "@type": "ListItem",
+
         position: 1,
+
         name: "Home",
+
         item: SITE_URL,
       },
+
       {
         "@type": "ListItem",
+
         position: 2,
+
         name: "Blog",
+
         item: `${SITE_URL}/blog`,
       },
+
       {
         "@type": "ListItem",
+
         position: 3,
-        name: blog?.data?.title,
+
+        name: blogTitle,
+
         item: blogUrl,
       },
     ],
   };
 
-  const blogSchema = {
-    "@context": "https://schema.org",
+  /*
+   * -------------------------------------------------------
+   * WEBPAGE SCHEMA
+   * -------------------------------------------------------
+   */
+
+  const webPageSchema = {
+    "@type": "WebPage",
+
+    "@id": `${blogUrl}#webpage`,
+
+    url: blogUrl,
+
+    name: blogTitle,
+
+    description: blogDescription,
+
+    isPartOf: {
+      "@id": WEBSITE_ID,
+    },
+
+    about: {
+      "@id": ORGANIZATION_ID,
+    },
+
+    primaryImageOfPage: {
+      "@id": `${blogUrl}#primaryimage`,
+    },
+
+    breadcrumb: {
+      "@id": `${blogUrl}#breadcrumb`,
+    },
+
+    inLanguage: "en-US",
+
+    mainEntity: {
+      "@id": `${blogUrl}#article`,
+    },
+  };
+
+  /*
+   * -------------------------------------------------------
+   * AUTHOR
+   * -------------------------------------------------------
+   */
+
+  const authorSchema = blog?.author
+    ? {
+        "@type": "Person",
+
+        "@id": `${blogUrl}#author`,
+
+        name:
+          typeof blog.author === "string"
+            ? blog.author
+            : blog.author?.name,
+
+        ...(typeof blog.author === "object" &&
+          blog.author?.url && {
+            url: blog.author.url,
+          }),
+      }
+    : {
+        "@type": "Organization",
+
+        "@id": ORGANIZATION_ID,
+
+        name: "Ooshas Prep",
+
+        url: SITE_URL,
+      };
+
+  /*
+   * -------------------------------------------------------
+   * BLOG POSTING SCHEMA
+   * -------------------------------------------------------
+   */
+
+  const blogPostingSchema = {
     "@type": "BlogPosting",
 
-    headline: blog.title,
+    "@id": `${blogUrl}#article`,
 
-    description:
-      blog?.metaDescription ||
-      blog?.summary ||
-      "",
+    headline: blogTitle,
+
+    description: blogDescription,
 
     url: blogUrl,
 
     mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": blogUrl,
+      "@id": `${blogUrl}#webpage`,
     },
 
-    ...(blog?.image && {
-      image: [blog.image],
-    }),
+    image: {
+      "@id": `${blogUrl}#primaryimage`,
+    },
+
+    author: authorSchema,
+
+    publisher: {
+      "@id": ORGANIZATION_ID,
+    },
 
     ...(blog?.createdAt && {
-      datePublished: blog.createdAt,
+      datePublished: new Date(
+        blog.createdAt
+      ).toISOString(),
     }),
 
     ...(blog?.updatedAt && {
-      dateModified: blog.updatedAt,
+      dateModified: new Date(
+        blog.updatedAt
+      ).toISOString(),
     }),
 
-    author: {
-      "@type": "Organization",
-      name: "Ooshas Prep",
-      url: SITE_URL,
-    },
+    ...(blog?.category && {
+      articleSection:
+        typeof blog.category === "string"
+          ? blog.category
+          : blog.category?.name,
+    }),
 
-    publisher: {
-      "@type": "Organization",
-      name: "Ooshas Prep",
-      url: SITE_URL,
+    ...(blog?.tags &&
+      Array.isArray(blog.tags) && {
+        keywords: blog.tags.join(", "),
+      }),
+
+    inLanguage: "en-US",
+
+    isPartOf: {
+      "@id": WEBSITE_ID,
     },
+  };
+
+  /*
+   * -------------------------------------------------------
+   * FINAL SCHEMA GRAPH
+   * -------------------------------------------------------
+   */
+
+  const pageSchema = {
+    "@context": "https://schema.org",
+
+    "@graph": [
+      organizationSchema,
+      websiteSchema,
+      imageSchema,
+      breadcrumbSchema,
+      webPageSchema,
+      blogPostingSchema,
+    ],
   };
 
   return (
     <>
-      {/* Breadcrumb Schema */}
-      <script
+      <Script
+        id="blog-detail-structured-data"
         type="application/ld+json"
+        strategy="afterInteractive"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(breadcrumbSchema),
-        }}
-      />
-
-      {/* Blog Schema */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(blogSchema),
+          __html: JSON.stringify(pageSchema),
         }}
       />
 
       <BlogDetails
-        blog={blog}
+        blog={response}
         loading={false}
         res={res}
         slug={slug}
@@ -228,103 +483,3 @@ export default async function BlogDetailsPage({
     </>
   );
 }
-  
-
-
-
-
-
-// import { Metadata } from "next";
-// import { notFound } from "next/navigation";
-// import BlogDetails from "@/components/Blogdetail";
-// import axiosInstance from "@/app/lib/axios";
-
-// interface PageProps {
-//   params: Promise<{ slug: string }>;
-// }
-
-
-// async function getBlogData(slug: string) {
-//   try {
-//     const response = await axiosInstance(`/admin/blogs/${slug}`);
-//     return response.data;
-//   } catch (error) {
-//     console.error("Server-side fetch error:", error);
-//     return null;
-//   }
-// }
-
-// export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-
-//   const { slug } = await params;
-//   const blog = await getBlogData(slug);
-
-//   if (!blog) {
-//     return { title: "Blog Not Found" };
-//   }
-
-//   return {
-//     title: blog?.metaTitle || blog.title || "Blog Details",
-//     description: blog?.metaDescription || blog.summary || "Read our latest blog post.",
-//   };
-// }
-
-
-// export default async function BlogDetailsPage({ params }: PageProps) {
-//   const { slug } = await params;
-
-//   const blog = await getBlogData(slug);
-
-//   const api = await axiosInstance(`/admin/blogs?page=1&limit=4`);
-//   const res = api.data.data;
-
-//   if (!blog) {
-//     notFound();
-//   }
-
-//   const SITE_URL = "https://www.ooshasprep.com";
-
-//   const breadcrumbSchema = {
-//     "@context": "https://schema.org",
-//     "@type": "BreadcrumbList",
-//     itemListElement: [
-//       {
-//         "@type": "ListItem",
-//         position: 1,
-//         name: "Home",
-//         item: SITE_URL,
-//       },
-//       {
-//         "@type": "ListItem",
-//         position: 2,
-//         name: "Blog",
-//         item: `${SITE_URL}/blog`,
-//       },
-//       {
-//         "@type": "ListItem",
-//         position: 3,
-//         name: blog.title,
-//         item: `${SITE_URL}/blog/${slug}`,
-//       },
-//     ],
-//   };
-
-//   return (
-//     <>
-//       <script
-//         type="application/ld+json"
-//         dangerouslySetInnerHTML={{
-//           __html: JSON.stringify(breadcrumbSchema),
-//         }}
-//       />
-
-//       <BlogDetails
-//         blog={blog}
-//         loading={false}
-//         res={res}
-//         slug={slug}
-//       />
-//     </>
-//   );
-// }
-

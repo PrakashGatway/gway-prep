@@ -151,8 +151,6 @@ export const HomeCountUp: React.FC<HomeCountUpProps> = ({
     };
   };
 
-  console.log("HomeCountUp data:", data);
-
   return (
     <div className={`w-full ${className}`}>
       <motion.div
@@ -182,7 +180,6 @@ export const HomeCountUp: React.FC<HomeCountUpProps> = ({
           rounded-[20px]
           bg-white
           p-4
-          shadow-sm
           md:mx-0
           md:gap-16
           md:rounded-[26px]

@@ -217,31 +217,6 @@ export function Hero({ data, student }: HeroProps) {
       {/* ─── Popup Modal ─── */}
       <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen}/>
       
-      <style jsx global>{`
-        @keyframes gradient-x {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
-        .animate-gradient-x {
-          animation: gradient-x 4s ease infinite;
-        }
-
-        /* Custom scrollbar for popup */
-        .max-h-\\[70vh\\]::-webkit-scrollbar {
-          width: 4px;
-        }
-        .max-h-\\[70vh\\]::-webkit-scrollbar-track {
-          background: #f1f1f1;
-          border-radius: 10px;
-        }
-        .max-h-\\[70vh\\]::-webkit-scrollbar-thumb {
-          background: #F36C45;
-          border-radius: 10px;
-        }
-        .max-h-\\[70vh\\]::-webkit-scrollbar-thumb:hover {
-          background: #e05a34;
-        }
-      `}</style>
     </section>
   );
 }

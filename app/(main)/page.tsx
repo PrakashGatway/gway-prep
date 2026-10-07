@@ -17,6 +17,7 @@ import { Aboutresult } from "@/components/about_result";
 import { AboutSection } from "@/components/about-section";
 import { Banerhome } from "@/components/banerhome";
 import { getPageInfo, getPages, getStudent } from "../services/api";
+import Script from "next/script";
 export const dynamic = "force-dynamic";
 
 const SITE_URL = "https://www.ooshasprep.com";
@@ -82,26 +83,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-// export async function generateMetadata() {
-//   const  data  = await getPageInfo("home");
-//   const seo = data.seoMeta;
-
-//   return {
-//     title: seo?.title?.trim() || "Home",
-//     description: seo?.description,
-//     keywords: seo?.keywords,
-//     alternates: {
-//       canonical: `/${seo?.canonicalUrl || ""}`,
-//     },
-//     openGraph: {
-//       title: seo?.title,
-//       description: seo?.description,
-//       url: `${seo?.canonicalUrl || "https://ooshasprap.com/home/"}`,
-//       type: "website",
-//     },
-//   };
-//}
-
 export default async function Home() {
   const pageData = await getPageInfo("home");
   const NavData = await getPages("30");
@@ -150,20 +131,73 @@ export default async function Home() {
 
   return (
     <main className="">
-
-      <script
+      <Script
+        id="ooshasprep-home-schema"
         type="application/ld+json"
-        async={true}
         strategy="afterInteractive"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "Organization",
-            name: "Ooshas Prep",
-            url: "https://www.ooshasprep.com",
-            logo: "https://www.ooshasprep.com/image/logo.png",
-            description:
-              "Ooshas Prep is an online test preparation platform providing coaching and preparation for IELTS, GRE, GMAT, SAT, TOEFL and PTE.",
+            "@graph": [
+              {
+                "@type": "EducationalOrganization",
+                "@id": "https://www.ooshasprep.com/#organization",
+                name: "Ooshas Prep",
+                url: "https://www.ooshasprep.com/",
+                logo: {
+                  "@type": "ImageObject",
+                  "@id": "https://www.ooshasprep.com/#logo",
+                  url: "https://www.ooshasprep.com/image/logo.png",
+                  contentUrl: "https://www.ooshasprep.com/image/logo.png",
+                  width: 1200,
+                  height: 630,
+                },
+                description:
+                  "Ooshas Prep is an online test preparation platform providing coaching and preparation for IELTS, GRE, GMAT, SAT, TOEFL and PTE.",
+
+                sameAs: [
+                  "https://www.instagram.com/ooshasprep",
+                  "https://www.facebook.com/share/18aH5VifRr/?mibextid=wwXIfr",
+                  "https://x.com/ooshasprep",
+                  "https://youtube.com/@ooshasprep",
+                ],
+
+                telephone: "+91-9166146538",
+                email: "info@ooshasprep.com",
+              },
+
+              {
+                "@type": "WebSite",
+                "@id": "https://www.ooshasprep.com/#website",
+                url: "https://www.ooshasprep.com/",
+                name: "Ooshas Prep",
+                description:
+                  "Online test preparation and coaching platform for IELTS, GRE, GMAT, SAT, TOEFL and PTE.",
+                publisher: {
+                  "@id": "https://www.ooshasprep.com/#organization",
+                },
+                inLanguage: "en-US",
+              },
+
+              {
+                "@type": "WebPage",
+                "@id": "https://www.ooshasprep.com/#webpage",
+                url: "https://www.ooshasprep.com/",
+                name: "Ooshas Prep | IELTS, PTE, SAT, GRE, GMAT & TOEFL Preparation",
+                description:
+                  "Prepare for IELTS, PTE, SAT, GRE, GMAT and TOEFL with Ooshas Prep through expert coaching, practice tests, study material and personalized learning.",
+                isPartOf: {
+                  "@id": "https://www.ooshasprep.com/#website",
+                },
+                about: {
+                  "@id": "https://www.ooshasprep.com/#organization",
+                },
+                primaryImageOfPage: {
+                  "@id": "https://www.ooshasprep.com/#logo",
+                },
+                inLanguage: "en-US",
+              },
+            ],
           }),
         }}
       />

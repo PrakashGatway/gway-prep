@@ -22,6 +22,7 @@ interface PopupModalProps {
   onClose?: () => void;
 }
 
+
 export default function PopupModal({
   isPopupOpen,
   setIsPopupOpen,
