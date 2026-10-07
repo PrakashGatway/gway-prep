@@ -1,8 +1,3 @@
-/**
- * This configuration was generated using the CKEditor 5 Builder. You can modify it anytime using this link:
- * https://ckeditor.com/ckeditor-5/builder/#installation/NoNgNARAzAdADDAjBSBWATOkB2ALLgTm0QLgJAA50pUL84K4pc45VVt3U5dsQD02dCggBTAHYo4YYIjDSFYOYgC6kKHEQATfACMIKoA=
- */
-
 import { useState, useEffect, useRef, useMemo, forwardRef, useImperativeHandle } from 'react';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import {
@@ -20,6 +15,7 @@ import {
 	Bold,
 	CloudServices,
 	ImageUpload,
+	ImageInsert,
 	ImageInsertViaUrl,
 	AutoImage,
 	Table,
@@ -59,17 +55,43 @@ import {
 	HtmlComment,
 	TextPartLanguage,
 	PlainTableOutput,
-	SourceEditing
+	SourceEditing,
+	ImageResize
 } from 'ckeditor5';
 
 import 'ckeditor5/ckeditor5.css';
+// import api from '../axiosInstance';
 
-/**
- * Create a free account with a trial: https://portal.ckeditor.com/checkout?plan=free
- */
-const LICENSE_KEY = 'GPL'; // or <YOUR_LICENSE_KEY>.
+const LICENSE_KEY = 'GPL';
 
-// Create the base configuration outside the component to avoid recreation
+// ---------------------------------------------------------------------------
+// The actual upload call, now living inside CKEditorComponent itself.
+// Must match your backend: multer .single("image") on /upload/upload_blogs
+// ---------------------------------------------------------------------------
+const uploadImage = async (file) => {
+    const data = new FormData();
+    data.append("file", file);
+
+    try {
+      const response = await fetch("/api/admin/uploadimg", {
+        method: "POST",
+        body: data,
+      });
+
+		const res = await response.json();
+
+		const imageUrl = res?.url;
+
+		if (!imageUrl) {
+			throw new Error('Image URL not returned from server');
+		}
+
+		return imageUrl;
+	} catch (error) {
+		console.error('Image upload failed:', error);
+	}
+}
+
 const getBaseEditorConfig = () => ({
 	plugins: [
 		Alignment,
@@ -96,8 +118,10 @@ const getBaseEditorConfig = () => ({
 		ImageBlock,
 		ImageCaption,
 		ImageInline,
+		ImageInsert,
 		ImageInsertViaUrl,
 		ImageStyle,
+		ImageResize, 
 		ImageTextAlternative,
 		ImageToolbar,
 		ImageUpload,
@@ -198,7 +222,21 @@ const getBaseEditorConfig = () => ({
 		]
 	},
 	image: {
-		toolbar: ['toggleImageCaption', 'imageTextAlternative', '|', 'imageStyle:inline', 'imageStyle:wrapText', 'imageStyle:breakText']
+		// 'Update image' shows up automatically on this toolbar when an
+		// image is selected, as long as ImageInsert is in the plugin list.
+		toolbar: [
+			'imageInsert',
+			'toggleImageCaption',
+			'imageTextAlternative',
+			'|',
+			'imageStyle:inline',
+			'imageStyle:wrapText',
+			'imageStyle:breakText',
+			'imageResize'
+		],
+		insert: {
+			integrations: ['upload', 'url']
+		}
 	},
 	link: {
 		addTargetToExternalLinks: true,
@@ -291,7 +329,10 @@ const getBaseEditorConfig = () => ({
 			'|',
 			'horizontalLine',
 			'link',
-			'insertImageViaUrl',
+			// 'insertImage' is the ImageInsert dropdown: upload from disk or
+			// via URL when nothing is selected, and "Update image"
+			// (re-upload/replace) when an image IS selected.
+			'insertImage',
 			'mediaEmbed',
 			'insertTable',
 			'highlight',
@@ -310,12 +351,27 @@ const getBaseEditorConfig = () => ({
 	}
 });
 
-const CKEditorComponent = forwardRef(({ 
-	value = '', 
-	onChange, 
-	onReady, 
-	onFocus, 
-	onBlur, 
+// Upload adapter plugin: hooks CKEditor's FileRepository straight into the
+// uploadImage() function defined above. No prop needed from the parent.
+function UploadAdapterPlugin(editor) {
+	editor.plugins.get('FileRepository').createUploadAdapter = (loader) => ({
+		upload() {
+			return loader.file.then((file) =>
+				uploadImage(file).then((url) => ({ default: url }))
+			);
+		},
+		abort() {
+			// no-op; add an AbortController here if you need cancellable uploads
+		}
+	});
+}
+
+const CKEditorComponent = forwardRef(({
+	value = '',
+	onChange,
+	onReady,
+	onFocus,
+	onBlur,
 	onError,
 	placeholder = 'Type or paste your content here!',
 	disabled = false,
@@ -359,11 +415,16 @@ const CKEditorComponent = forwardRef(({
 		}
 
 		const baseConfig = getBaseEditorConfig();
-		
+
 		// Merge custom config with base config
 		const mergedConfig = {
 			...baseConfig,
 			...config,
+			extraPlugins: [
+				...(baseConfig.extraPlugins || []),
+				...(config.extraPlugins || []),
+				UploadAdapterPlugin
+			],
 			root: {
 				placeholder: placeholder,
 				initialData: value,
@@ -384,7 +445,23 @@ const CKEditorComponent = forwardRef(({
 	}
 
 	return (
-		<div className={`editor-container editor-container_classic-editor editor-container_include-style editor-container_include-fullscreen ${containerClassName}`}>
+	<>
+		<style>
+			{`
+				.ck-editor__editable a {
+					color: #2563eb !important;
+					cursor: pointer;
+				}
+
+				.ck-editor__editable a:hover {
+					color: #1d4ed8 !important;
+				}
+			`}
+		</style>
+
+		<div
+			className={`editor-container editor-container_classic-editor editor-container_include-style editor-container_include-fullscreen ${containerClassName}`}
+		>
 			<div className="editor-container__editor">
 				<CKEditor
 					editor={ClassicEditor}
@@ -412,7 +489,8 @@ const CKEditorComponent = forwardRef(({
 				/>
 			</div>
 		</div>
-	);
+	</>
+);
 });
 
 CKEditorComponent.displayName = 'CKEditorComponent';
