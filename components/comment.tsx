@@ -25,7 +25,7 @@ function SectionHeading({
         className={`mt-3 text-2xl font-extrabold leading-tight sm:text-3xl ${dark ? "text-white" : "text-[#0b1e3f]"}`}
       >
         <span>{title.split("&")[0]}</span>
-        <span className="text-[#f36d45]">&{title.split("&")[1]}</span>
+        {/* <span className="text-[#f36d45]">&{title.split("&")[1]}</span> */}
       </h2>
       {/* <EditorContent content_data={description} /> */}
       <p
@@ -173,7 +173,7 @@ function QuestionsSection({
 
   return (
     <section className={css || "bg-[#fcf3ed] px-4 py-12"}>
-      <div className=" max-w-7xl mx-auto bg-white p-6 rounded-2xl">
+      <div className=" max-w-7xl mx-auto bg-white rounded-2xl p-6 rounded-2xl">
         <SectionHeading
           eyebrow="COMMUNITY"
           title={heading || "Student Questions & Comments"}

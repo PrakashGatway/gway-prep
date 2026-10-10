@@ -1,4 +1,3 @@
-
 // app/blog/[id]/page.tsx
 "use client";
 
@@ -146,7 +145,7 @@ const FORM_CONFIG: any = {
         { value: "GMAT", label: "GMAT" },
         { value: "TOEFL", label: "TOEFL" },
         { value: "PET", label: "PET" },
-        { value: "SAT", label: "SAT" }
+        { value: "SAT", label: "SAT" },
       ],
     },
     {
@@ -186,7 +185,7 @@ const LeadForm = () => {
   return (
     <div className="bg-white rounded-[30px] shadow-sm border border-[#F36D45] p-6 relative">
       <button
-    className="
+        className="
       absolute
       top-0
       right-0
@@ -198,13 +197,16 @@ const LeadForm = () => {
       rounded-bl-[30px]
       rounded-tr-[30px]
     "
-  >
-    Free Counselling
-  </button>
+      >
+        Free Counselling
+      </button>
       <div className="flex flex-col mb-2">
-        <span className="text-lg text-[#F36D45] font-bold">Contact Details</span>
-      
-        <span>Please provide your contact information</span></div>
+        <span className="text-lg text-[#F36D45] font-bold">
+          Contact Details
+        </span>
+
+        <span>Please provide your contact information</span>
+      </div>
 
       <FormSection FORM_CONFIG={FORM_CONFIG} />
     </div>
@@ -266,7 +268,7 @@ const TableOfContents = ({
     const strategies = [
       () => document.getElementById(`heading-${heading}`),
       () => {
-        const allH2 = document.querySelectorAll('.blog-html h2, article h2');
+        const allH2 = document.querySelectorAll(".blog-html h2, article h2");
         for (const h2 of allH2) {
           if (h2.textContent?.trim() === heading.trim()) {
             return h2;
@@ -275,7 +277,7 @@ const TableOfContents = ({
         return null;
       },
       () => {
-        const allH2 = document.querySelectorAll('.blog-html h2, article h2');
+        const allH2 = document.querySelectorAll(".blog-html h2, article h2");
         const headingLower = heading.toLowerCase().trim();
         for (const h2 of allH2) {
           if (h2.textContent?.toLowerCase().trim() === headingLower) {
@@ -285,7 +287,7 @@ const TableOfContents = ({
         return null;
       },
       () => {
-        const allH2 = document.querySelectorAll('.blog-html h2, article h2');
+        const allH2 = document.querySelectorAll(".blog-html h2, article h2");
         const headingLower = heading.toLowerCase().trim();
         for (const h2 of allH2) {
           if (h2.textContent?.toLowerCase().trim().includes(headingLower)) {
@@ -293,7 +295,7 @@ const TableOfContents = ({
           }
         }
         return null;
-      }
+      },
     ];
 
     let foundElement = null;
@@ -304,23 +306,24 @@ const TableOfContents = ({
 
     if (foundElement) {
       foundElement.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
-        inline: 'nearest'
+        behavior: "smooth",
+        block: "start",
+        inline: "nearest",
       });
-      
+
       setTimeout(() => {
         const headerOffset = 80;
         const elementPosition = foundElement!.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-        
+        const offsetPosition =
+          elementPosition + window.pageYOffset - headerOffset;
+
         window.scrollTo({
           top: offsetPosition,
-          behavior: 'smooth'
+          behavior: "smooth",
         });
       }, 100);
     }
-    
+
     if (window.innerWidth < 768) {
       setIsOpen(false);
     }
@@ -370,7 +373,7 @@ const renderBlogContent = (blogDetails: BlogDetail[]) => {
       sections.push(
         <h2 key={`heading-${index}`} id={`heading-${detail.content_heading}`}>
           {detail.content_heading}
-        </h2>
+        </h2>,
       );
     }
 
@@ -380,14 +383,17 @@ const renderBlogContent = (blogDetails: BlogDetail[]) => {
         <div
           key={`content-${index}`}
           dangerouslySetInnerHTML={{ __html: detail.content_data }}
-        />
+        />,
       );
     }
 
     // Question block
     if (detail.question && detail.options) {
       sections.push(
-        <div key={`question-${index}`} className="my-6 p-6 bg-neutral-50 rounded-xl border border-neutral-200">
+        <div
+          key={`question-${index}`}
+          className="my-6 p-6 bg-neutral-50 rounded-xl border border-neutral-200"
+        >
           <h4 className="text-lg font-semibold text-neutral-800 mb-4">
             {detail.question}
           </h4>
@@ -413,7 +419,7 @@ const renderBlogContent = (blogDetails: BlogDetail[]) => {
             className="mt-4 px-6 py-2 bg-[#F86C43] text-white rounded-lg hover:bg-[#e05a32] transition-colors"
             onClick={(e) => {
               const selected = document.querySelector(
-                `input[name="question-${index}"]:checked`
+                `input[name="question-${index}"]:checked`,
               ) as HTMLInputElement;
               if (selected) {
                 const isCorrect = selected.value === detail.answer;
@@ -425,86 +431,85 @@ const renderBlogContent = (blogDetails: BlogDetail[]) => {
           >
             Check Answer
           </button>
-        </div>
+        </div>,
       );
     }
 
     // FAQs
-   if (detail.faq && detail.faq.length > 0) {
-    const [openFaq, setOpenFaq] = useState<number | null>(null);
-  sections.push(
-    <div
-      key={`faq-${index}`}
-      className="my-5  "
-    >
-      {/* Header */}
-      <div className="flex items-center gap-2.5   py-3">
-     
-
-        <div>
-          <h4 className="!text-xl font-bold text-primary">
-            Frequently Asked Questions
-          </h4>
-         
-        </div>
-      </div>
-
-      {/* FAQ Items */}
-   <div className="space-y-3">
-  {detail.faq.map((item, faqIndex) => {
-    const isOpen = openFaq === faqIndex;
-
-    return (
-      <div
-        key={`faq-item-${faqIndex}`}
-        className="overflow-hidden border-b border-gray-200 bg-white rounded-2xl  py-3"
-      >
-        {/* Question */}
-        <button
-          type="button"
-          onClick={() => setOpenFaq(isOpen ? null : faqIndex)}
-          className="flex w-full items-center justify-between gap-4 px-5 text-left"
-        >
-          <span className="text-sm font-semibold text-gray-800 sm:text-[15px]">
-            {item.question}
-          </span>
-
-          <span
-            className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#f96c33] text-white transition-transform duration-200 ${
-              isOpen ? "rotate-180" : ""
-            }`}
-          >
-            <ChevronDown size={16} strokeWidth={2.5} />
-          </span>
-        </button>
-
-        {/* Answer */}
-        <div
-          className={`grid transition-all duration-300 ease-in-out ${
-            isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-          }`}
-        >
-          <div className="overflow-hidden">
-            <div className="px-5 pr-16">
-              <p className="text-sm leading-6 text-gray-600">
-                {item.answer}
-              </p>
+    if (detail.faq && detail.faq.length > 0) {
+      const [openFaq, setOpenFaq] = useState<number | null>(null);
+      sections.push(
+        <div key={`faq-${index}`} className="my-5  ">
+          {/* Header */}
+          <div className="flex items-center gap-2.5   py-3">
+            <div>
+              <h4 className="!text-xl font-bold text-primary">
+                Frequently Asked Questions
+              </h4>
             </div>
           </div>
-        </div>
-      </div>
-    );
-  })}
-</div>
-    </div>
-  );
-}
+
+          {/* FAQ Items */}
+          <div className="space-y-3">
+            {detail.faq.map((item, faqIndex) => {
+              const isOpen = openFaq === faqIndex;
+
+              return (
+                <div
+                  key={`faq-item-${faqIndex}`}
+                  className="overflow-hidden border-b border-gray-200 bg-white rounded-2xl  py-3"
+                >
+                  {/* Question */}
+                  <button
+                    type="button"
+                    onClick={() => setOpenFaq(isOpen ? null : faqIndex)}
+                    className="flex w-full items-center justify-between gap-4 px-5 text-left"
+                  >
+                    <span className="text-sm font-semibold text-gray-800 sm:text-[15px]">
+                      {item.question}
+                    </span>
+
+                    <span
+                      className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#f96c33] text-white transition-transform duration-200 ${
+                        isOpen ? "rotate-180" : ""
+                      }`}
+                    >
+                      <ChevronDown size={16} strokeWidth={2.5} />
+                    </span>
+                  </button>
+
+                  {/* Answer */}
+                  <div
+                    className={`grid transition-all duration-300 ease-in-out ${
+                      isOpen
+                        ? "grid-rows-[1fr] opacity-100"
+                        : "grid-rows-[0fr] opacity-0"
+                    }`}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="px-5 pr-16">
+                        <p className="text-sm leading-6 text-gray-600">
+                          {item.answer}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>,
+      );
+    }
 
     // Banner
     if (detail.Banner && detail.Banner.length > 0) {
       const banner = detail.Banner[0];
       sections.push(
-        <div key={`banner-${index}`} className="my-6 p-8 bg-orange-50 rounded-xl  ">
+        <div
+          key={`banner-${index}`}
+          className="my-6 p-8 bg-orange-50 rounded-xl  "
+        >
           <h3 className="text-4xl  font-bold mb-3">{banner.title}</h3>
           <div
             className="!text-black mb-4"
@@ -520,29 +525,38 @@ const renderBlogContent = (blogDetails: BlogDetail[]) => {
               {banner.buttontext || "Learn More"}
             </a>
           )}
-        </div>
+        </div>,
       );
     }
 
-    return <div key={index} className="blog-section">{sections}</div>;
+    return (
+      <div key={index} className="blog-section">
+        {sections}
+      </div>
+    );
   });
 };
 
 // ─── Main Component ───
-export default function BlogDetailPage({ blog, loading, res, slug }: BlogDetailPageProps) {
+export default function BlogDetailPage({
+  blog,
+  loading,
+  res,
+  slug,
+}: BlogDetailPageProps) {
   const router = useRouter();
   const [headings, setHeadings] = useState<string[]>([]);
   const [activeHeading, setActiveHeading] = useState<string>("");
   const contentRef = useRef<HTMLDivElement>(null);
-  const {user} = useGlobal()
+  const { user } = useGlobal();
 
-  console.log(user)
+  console.log(user);
 
   // Extract headings from blog_details
   useLayoutEffect(() => {
     if (blog?.data?.blog_details && blog.data.blog_details.length > 0) {
       const headingTexts: string[] = [];
-      
+
       blog.data.blog_details.forEach((detail) => {
         if (detail.content_heading) {
           headingTexts.push(detail.content_heading);
@@ -590,29 +604,48 @@ export default function BlogDetailPage({ blog, loading, res, slug }: BlogDetailP
   }, [headings]);
 
   // Blog count increment
-  const blogcount = async (currentCount: number, slug: string) => { 
+  const blogcount = async (currentCount: number, slug: string) => {
     try {
       const nextCount = Number(currentCount) + 1;
       const response = await axiosInstance.put(`/admin/blogs/${slug}`, {
-        count: nextCount
+        count: nextCount,
       });
       return response.data;
     } catch (error) {
-      console.error('Error incrementing blog count:', error);
+      console.error("Error incrementing blog count:", error);
     }
   };
 
   useEffect(() => {
     if (!blog?.data?.slug) return;
 
-    const timer = setTimeout(() => { 
+    const timer = setTimeout(() => {
       const currentCount = blog?.data?.count || 1000;
       const blogSlug = blog?.data?.slug;
-      blogcount(currentCount, blogSlug); 
-    }, 10 * 1000); 
+      blogcount(currentCount, blogSlug);
+    }, 10 * 1000);
 
     return () => clearTimeout(timer);
   }, [blog?.data?.slug]);
+
+
+const cleanBlogHtml = (blogDetails = []) => {
+  if (!Array.isArray(blogDetails)) return [];
+
+  return blogDetails.map((detail) => ({
+    ...detail,
+    content:
+      typeof detail.content === "string"
+        ? detail.content
+            .replace(/\sstyle\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+            .replace(/<\/?font\b[^>]*>/gi, "")
+            .replace(
+              /\s(?:face|size|color|bgcolor)\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi,
+              ""
+            )
+        : detail.content,
+  }));
+};
 
   // Loading state
   if (loading) {
@@ -641,8 +674,9 @@ export default function BlogDetailPage({ blog, loading, res, slug }: BlogDetailP
   }
 
   const data = blog.data;
-  const blogDetails = data.blog_details || [];
-console.log(data,"gfds")
+ const blogDetails = data.blog_details || [];
+const afterClear = cleanBlogHtml(blogDetails);
+  console.log(afterClear, "gfds");
   return (
     <div className="bg-neutral-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-10">
@@ -667,7 +701,7 @@ console.log(data,"gfds")
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           {/* Main Blog Content */}
-          <div className="lg:col-span-8">
+          <div className="lg:col-span-8 overflow-hidden">
             {/* Hero Image */}
             <div className="relative w-full rounded-2xl overflow-hidden mb-8 shadow-sm">
               <img
@@ -684,36 +718,33 @@ console.log(data,"gfds")
             </h1>
 
             <div className="flex justify-between items-center mb-5">
-
-            <div className="flex flex-wrap items-center gap-4 text-sm text-neutral-500 ">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-bold text-neutral-600">
-                  {data.author?.charAt(0)?.toUpperCase() || "A"}
+              <div className="flex flex-wrap items-center gap-4 text-sm text-neutral-500 ">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center text-xs font-bold text-neutral-600">
+                    {data.author?.charAt(0)?.toUpperCase() || "A"}
+                  </div>
+                  <Link
+                    href={`/auther/${data.author.split(" ").join("-").toLowerCase()}`}
+                    className="font-medium text-neutral-700"
+                  >
+                    {data.author || "Anonymous"}
+                  </Link>
                 </div>
-                <Link href={`/auther/${data.author.split(" ").join("-").toLowerCase()}`} className="font-medium text-neutral-700">
-                  {data.author || "Anonymous"}
-                </Link>
+                <span>•</span>
+                <span>
+                  {data.createdAt
+                    ? new Date(data.createdAt).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })
+                    : "Date not available"}
+                </span>
               </div>
-              <span>•</span>
-              <span>
-                {data.createdAt
-                  ? new Date(data.createdAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                  : "Date not available"}
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5  px-3 text-sm text-gray-600">
-
-  <span className="font-medium">
-    {data?.count ?? 0}
-  </span>
-  <span className="text-gray-500">
-    views
-  </span>
-</div>
+              <div className="flex items-center gap-1.5  px-3 text-sm text-gray-600">
+                <span className="font-medium">{data?.count ?? 0}</span>
+                <span className="text-gray-500">views</span>
+              </div>
             </div>
 
             {/* Table of Contents - Desktop */}
@@ -728,127 +759,161 @@ console.log(data,"gfds")
             )}
 
             {/* Blog Content Styles */}
-            <style>{`
-             .blog-html * {
+          
+<style>{`
+  .blog-html * {
     font-family: inherit !important;
   }
-              .blog-html table {
-                width: 100%;
-                border-collapse: collapse;
-                margin: 20px 0;
-                font-size: 15px;
-                overflow-x: auto !important;
-              }
 
-              .blog-html table {
-                width: 100%;
-                table-layout: fixed;
-                border-collapse: collapse;
-              }
+  /* Table styling — same design */
+  .blog-html figure.table {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 20px 0;
+    -webkit-overflow-scrolling: touch;
+  }
 
-              .blog-html table td,
-              .blog-html table th {
-                width: 50%;
-                padding: 12px;
-                border: 1px solid #e5e7eb;
-                word-break: break-word;
-                vertical-align: top;
-              }
+  .blog-html table {
+    width: 100%;
+    min-width: 450px;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin: 20px 0;
+    font-size: 15px;
+  }
 
-              .blog-html th,
-              .blog-html td {
-                border: 1px solid #e5e7eb;
-              }
+  .blog-html table td,
+  .blog-html table th {
+    width: 50%;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    word-break: break-word;
+    vertical-align: top;
+  }
 
-              .blog-html th {
-                background: #F46C44;
-                text-align: center;
-                color: white;
-                font-weight: 600;
-              }
-              .blog-html tr {
-                text-align: center;
-              }
-              .blog-html table * p {
-                padding: 10px;
-              }
+  .blog-html th,
+  .blog-html td {
+    border: 1px solid #e5e7eb;
+  }
 
-              .blog-html tr:nth-child(even) {
-                background-color: #f3ebeb;
-              }
-              .blog-html h2 {
-                font-size: 26px;
-                margin: 28px 0 12px;
-                font-weight: 700;
-                color: #00306a;
-              }
+  .blog-html th {
+    background: #F46C44;
+    text-align: center;
+    color: white;
+    font-weight: 600;
+  }
 
-              .blog-html h2 * {
-                font-size: 26px;
-                margin: 28px 0 12px;
-                font-weight: 700;
-                color: #00306a;
-              }
+  .blog-html tr {
+    text-align: center;
+  }
 
-              .blog-html h3 {
-                font-size: 20px;
-                margin: 22px 0 10px;
-                font-weight: 600;
-                color: #00306a;
-              }
+  .blog-html table * p {
+    padding: 10px;
+  }
 
-              .blog-html h4 {
-                font-size: 18px;
-                margin: 18px 0 8px;
-                font-weight: 600;
-              }
+  .blog-html tr:nth-child(even) {
+    background-color: #f3ebeb;
+  }
 
-              .blog-html * a {
-                color: #240dbd;
-              }
+  /* Headings — unchanged */
+  .blog-html h2 {
+    font-size: 26px;
+    margin: 28px 0 12px;
+    font-weight: 700;
+    color: #00306a;
+  }
 
-              .blog-html p {
-                line-height: 1.8;
-              }
+  .blog-html h2 * {
+    font-size: 26px;
+    margin: 28px 0 12px;
+    font-weight: 700;
+    color: #00306a;
+  }
 
-              .blog-html ul {
-                margin-left: 22px;
-                list-style: disc;
-              }
+  .blog-html h3 {
+    font-size: 20px;
+    margin: 22px 0 10px;
+    font-weight: 600;
+    color: #00306a;
+  }
 
-              .blog-html ol {
-                margin-left: 22px;
-                list-style: decimal;
-              }
+  .blog-html h4 {
+    font-size: 18px;
+    margin: 18px 0 8px;
+    font-weight: 600;
+  }
 
-              .blog-html li {
-                margin: 6px 0;
-              }
+  /* Links — unchanged */
+  .blog-html * a {
+    color: #240dbd;
+  }
 
-              .blog-html figure.table {
-                overflow-x: auto;
-                margin: 20px 0;
-              }
+  .blog-html div p {
+    line-height: 1.6;
+    padding: 8px 0;
+  }
 
-              .blog-html strong {
-                font-weight: 600;
-              }
-              html {
-                scroll-behavior: smooth;
-              }
-            `}</style>
+  /* Lists — unchanged */
+  .blog-html ul {
+    margin-left: 22px;
+    list-style: disc;
+  }
+
+  .blog-html ul li::marker {
+    color: #f36d45;
+  }
+
+  .blog-html ol {
+    margin-left: 22px;
+    list-style: decimal;
+  }
+
+  .blog-html div ul li p {
+    padding: 2px 0;
+  }
+
+  .blog-html strong {
+    font-weight: 800;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Mobile — keep the same table design */
+  @media (max-width: 640px) {
+    .blog-html figure.table {
+      margin: 16px 0;
+    }
+
+    .blog-html table {
+      min-width: 450px;
+      font-size: 14px;
+    }
+
+    .blog-html table td,
+    .blog-html table th {
+      padding: 10px;
+    }
+  }
+`}</style>
+
 
             {/* Blog Content - Rendered from blog_details */}
             <article
-              ref={contentRef}
-              className="blog-html prose prose-lg max-w-none text-neutral-700 leading-relaxed"
-            >
-              {renderBlogContent(blogDetails)}
-            </article>
+  ref={contentRef}
+  className="blog-html prose prose-lg max-w-none text-neutral-700 leading-relaxed"
+>
+  {renderBlogContent(afterClear)}
+</article>
 
-              
-      <QuestionsSection page={'blog'} heading={'Comments'} css={'bg-white py-6 my-6'}/>
-      
+            <QuestionsSection
+              page={"blog"}
+              heading={"Comments"}
+              css={"bg-white py-6 my-6"}
+            />
+
             {/* {data.tags && data.tags.length > 0 && (
               <div className="mt-8 flex flex-wrap gap-2">
                 {data.tags.map((tag, index) => (
@@ -884,7 +949,6 @@ console.log(data,"gfds")
           {/* Sidebar */}
           <div className="lg:col-span-4">
             <div className="sticky top-24 space-y-2">
-
               <LeadForm />
             </div>
           </div>
@@ -893,11 +957,6 @@ console.log(data,"gfds")
     </div>
   );
 }
-
-
-
-
-
 
 // // app/blog/[id]/page.tsx
 // "use client";
@@ -1083,7 +1142,6 @@ console.log(data,"gfds")
 //   </article>
 // );
 
-
 // const getHeadingId = (heading: string) => {
 //   // Simply use the heading text as the ID, matching what's set in useLayoutEffect
 //   return `heading-${heading}`;
@@ -1165,13 +1223,13 @@ console.log(data,"gfds")
 //         block: 'start',
 //         inline: 'nearest'
 //       });
-      
+
 //       // Add a small delay to adjust for fixed headers
 //       setTimeout(() => {
 //         const headerOffset = 80; // Adjust this value based on your header height
 //         const elementPosition = foundElement!.getBoundingClientRect().top;
 //         const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-        
+
 //         window.scrollTo({
 //           top: offsetPosition,
 //           behavior: 'smooth'
@@ -1180,7 +1238,7 @@ console.log(data,"gfds")
 //     } else {
 //       console.log("No element found for heading:", heading);
 //     }
-    
+
 //     // Close mobile menu after clicking
 //     if (window.innerWidth < 768) {
 //       setIsOpen(false);
@@ -1258,9 +1316,7 @@ console.log(data,"gfds")
 //     }
 //   }, [blog]);
 
-  
-  
-// const blogcount = async (currentCount: number, slug: string) => { 
+// const blogcount = async (currentCount: number, slug: string) => {
 //   try {
 //     const nextCount = Number(currentCount) + 1;
 
@@ -1273,22 +1329,20 @@ console.log(data,"gfds")
 //   }
 // };
 
-
 // useEffect(() => {
-  
+
 //   if (!blog?.data?.slug) return;
 
-//   const timer = setTimeout(() => { 
+//   const timer = setTimeout(() => {
 //     const currentCount = blog?.data?.count || 1000;
 //     const blogSlug = blog?.data?.slug;
-    
-//     blogcount(currentCount, blogSlug); 
-//   }, 10 * 1000); 
+
+//     blogcount(currentCount, blogSlug);
+//   }, 10 * 1000);
 
 //   return () => clearTimeout(timer);
 
-// }, [blog?.data?.slug]); 
-
+// }, [blog?.data?.slug]);
 
 //   // Intersection Observer for active heading
 //   useEffect(() => {
@@ -1464,11 +1518,10 @@ console.log(data,"gfds")
 //                     .blog-html table * p {
 //               padding: 10px;
 //             }
-            
 
 //             .blog-html tr:nth-child(even) {
 //               background-color: #f3ebeb;
-              
+
 //             }
 //             .blog-html h2 {
 //               font-size: 26px;
@@ -1579,14 +1632,3 @@ console.log(data,"gfds")
 //     </div>
 //   );
 // }
-
-
-
-
-
-
-
-
-
-
-

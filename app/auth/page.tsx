@@ -265,15 +265,7 @@ function AuthContent ({ toggleDrawer }: any) {
     }
   };
 
-    useEffect(() => {
-      if (authChecked && user) {
-        window.location.href = "https://dashboard.ooshasprep.com/";
-      }
-    }, [authChecked, user]);
   
-    if (!authChecked || user) {
-      return null;
-    }
 
   return (
     <div className="flex flex-col items-left justify-center flex-20 w-full">

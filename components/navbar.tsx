@@ -113,29 +113,31 @@ export function Navbar({ Data }: NavbarProps) {
 
         dropdownItems: NAVDATA.filter(
           (subItem: any) => !subItem?.seoMeta?.duplicateOf,
-        )?.reverse().map((item: any) => {
-          return {
-            name: item?.seoMeta?.navTitle,
-            img: item?.seoMeta?.navIcon,
-            slug: item?.seoMeta?.canonicalUrl,
-            description: item?.seoMeta?.navSubtitle,
-            badge: item?.seoMeta?.badge || null,
+        )
+          ?.reverse()
+          .map((item: any) => {
+            return {
+              name: item?.seoMeta?.navTitle,
+              img: item?.seoMeta?.navIcon,
+              slug: item?.seoMeta?.canonicalUrl,
+              description: item?.seoMeta?.navSubtitle,
+              badge: item?.seoMeta?.badge || null,
 
-            sublink: NAVDATA.filter((subItem: any) =>
-              subItem?.seoMeta?.duplicateOf
-                ?.toLowerCase()
-                .includes(item?.name?.toLowerCase()),
-            ).map((ele: any) => {
-              return {
-                name: ele?.seoMeta?.navTitle,
-                img: ele?.seoMeta?.navIcon,
-                slug: ele?.seoMeta?.canonicalUrl,
-                description: ele?.seoMeta?.navSubtitle,
-                badge: ele?.seoMeta?.badge || null,
-              };
-            }),
-          };
-        }),
+              sublink: NAVDATA.filter((subItem: any) =>
+                subItem?.seoMeta?.duplicateOf
+                  ?.toLowerCase()
+                  .includes(item?.name?.toLowerCase()),
+              ).map((ele: any) => {
+                return {
+                  name: ele?.seoMeta?.navTitle,
+                  img: ele?.seoMeta?.navIcon,
+                  slug: ele?.seoMeta?.canonicalUrl,
+                  description: ele?.seoMeta?.navSubtitle,
+                  badge: ele?.seoMeta?.badge || null,
+                };
+              }),
+            };
+          }),
       },
 
       // =========================

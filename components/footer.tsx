@@ -152,7 +152,7 @@ export function Footer({ Data = [] }: FooterProps) {
     <>
       <div className="mx-3 sm:mx-6 lg:mx-12 xl:mx-16 my-8">
         {groupedArray.length > 0 && (
-          <section className="relative overflow-hidden rounded-3xl bg-[#1C3058] px-4 py-5 sm:px-6 sm:py-6">
+          <section className="relative overflow-hidden rounded-3xl  px-4 py-5 sm:px-6 sm:py-6">
             <div className="max-w-7xl mx-auto">
 
               <div className="space-y-3">
@@ -175,9 +175,9 @@ export function Footer({ Data = [] }: FooterProps) {
                           }}
                           className="
                       text-sm
-                      font-medium
-                      text-white
-                      hover:text-[#F36D45]
+                      font-bold
+                      text-[#F36D45]
+                      
                       transition-colors
                       duration-200
                       cursor-pointer
@@ -205,7 +205,7 @@ export function Footer({ Data = [] }: FooterProps) {
                                 }}
                                 className="
                             text-xs
-                            text-white/90
+                            text-gray-600
                             hover:text-[#F36D45]
                             transition-colors
                             duration-200
@@ -216,7 +216,7 @@ export function Footer({ Data = [] }: FooterProps) {
                               </button>
 
                               {index < variants.length - 1 && (
-                                <span className="mx-2 text-white/70">|</span>
+                                <span className="mx-2 text-gray-600">|</span>
                               )}
                             </React.Fragment>
                           ))}
