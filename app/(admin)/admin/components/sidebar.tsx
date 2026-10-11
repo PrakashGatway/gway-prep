@@ -57,7 +57,10 @@ const Sidebar = () => {
     { icon: <ScrollText size={18} />, label: "Support Articles", href: "/admin/pages/support-articles" },
     { icon: <File size={18} />, label: "Leads ", href: "/admin/pages/leads" },
     { icon : <BellRing size={18}/> ,label : "Subscribe", href :"/admin/pages/subscribe" },
-    { icon : <MessageCircle size={18}/> ,label : "Comments", href :"/admin/pages/comment" }
+    { icon : <MessageCircle size={18}/> ,label : "Comments", href :"/admin/pages/comment" },
+    { icon : <MessageCircle size={18}/> ,label : "All Courses", href :"/admin/pages/courses" },
+    { icon : <MessageCircle size={18}/> ,label : "Test Series", href :"/admin/pages/test-series" }
+
   ];
 
   
