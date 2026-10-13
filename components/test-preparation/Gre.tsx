@@ -633,6 +633,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
     const displayStudents = async () => {
       try {
         let qeury = pageInfo?.seoMeta?.duplicateOf || slug;
+     
 
         const data = await getStudent(qeury || "", 1, 8);
 

@@ -39,7 +39,7 @@ export default function TestSeries({
       params.delete("search");
     }
 
-    router.push(`/courses?${params.toString()}`);
+    router.push(`/test-series?${params.toString()}`);
   };
 
   const [allCoursesSliderRef] = useKeenSlider(

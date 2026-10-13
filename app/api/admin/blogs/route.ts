@@ -17,15 +17,20 @@ export async function GET(req: NextRequest) {
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
 
-    const isPublishedParam = searchParams.get("isPublished");
+    let isPublished;
 
-    const isPublished =
-      isPublishedParam === "published"
-        ? true
-        : isPublishedParam === "draft"
-          ? false
-          : undefined;
+    const isPublishedParam = searchParams.get("isPublished") || null;
 
+    if (isPublishedParam != null) {
+      isPublished =
+        isPublishedParam === "published"
+          ? true
+          : isPublishedParam === "draft"
+            ? false
+            : undefined;
+    } else {
+      isPublished = true;
+    }
     const skip = (page - 1) * limit;
 
     // Main query
@@ -54,9 +59,9 @@ export async function GET(req: NextRequest) {
         },
       ];
     }
-
+    console.log(isPublishedParam, "po9iuytrfdtfyuiopihjhjhuytd");
     // Published filter
-    if (typeof isPublished !== "undefined") {
+    if (typeof isPublished != "undefined") {
       query.isPublished = isPublished;
     }
 

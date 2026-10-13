@@ -17,8 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
       title: seo?.ogTitle || seo?.title || "Terms & Conditions",
       description: seo?.ogDescription || seo?.description,
       url: seo?.canonicalUrl
-        ? `https://ooshasprap.com/${seo.canonicalUrl}`
-        : "https://ooshasprap.com/terms-and-conditions",
+        ? `https://ooshasprep.com/${seo.canonicalUrl}`
+        : "https://ooshasprep.com/terms-and-conditions",
       type: "website",
       images: seo?.ogImage ? [{ url: seo.ogImage }] : undefined,
     },

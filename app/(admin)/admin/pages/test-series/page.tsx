@@ -35,11 +35,34 @@ export default function TestSeries() {
   const [testSeries, setTestSeries] = useState<TestSeriesItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [debouncing,setDebouncing] = useState(null)
 
   // UI-only filters
   const [search, setSearch] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState(null);
+  const [category,setCategory] = useState([])
   const [typeFilter, setTypeFilter] = useState("all");
+
+  
+  useEffect(() => {
+    let timer
+  if(search){
+      timer = setTimeout(() => {
+      setDebouncing(search);
+    }, 700);
+  
+    return () => clearTimeout(timer);
+  }
+  }, [search]);
+  
+
+    useEffect(()=>{
+    const fetchCategory = async()=>{
+      const res = await axiosInstance.get("/categories")
+      setCategory(res.data.data)
+    }
+    fetchCategory()
+  },[])
 
   useEffect(() => {
     const fetchTestSeries = async () => {
@@ -47,7 +70,16 @@ export default function TestSeries() {
         setLoading(true);
         setError("");
 
-        const res = await axiosInstance.get("/mcu/series");
+        const searchParams = new URLSearchParams()
+
+        if(debouncing){
+          searchParams.append("search",debouncing)
+        }
+         if(categoryFilter){
+          searchParams.append("category",categoryFilter)
+        }
+
+        const res = await axiosInstance.get(`/mcu/series?${searchParams}`);
         const data = res.data?.data;
 
         setTestSeries(Array.isArray(data) ? data : []);
@@ -60,13 +92,9 @@ export default function TestSeries() {
     };
 
     fetchTestSeries();
-  }, []);
+  }, [debouncing,categoryFilter]);
 
-  const categories = [
-    ...new Set(
-      testSeries.map((item) => item.category?.name).filter(Boolean)
-    ),
-  ].sort();
+
 
   const formatPrice = (item: TestSeriesItem) => {
     if (item.pricing?.isFree) return "Free";
@@ -131,29 +159,20 @@ export default function TestSeries() {
               className="h-11 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 outline-none focus:border-[#f36d45]"
             >
               <option value="all">All Categories</option>
-              {categories.map((category) => (
-                <option key={category} value={category}>
-                  {category}
+              {category.map((category) => (
+                <option key={category} value={category._id}>
+                  {category.name}
                 </option>
               ))}
             </select>
 
-            <select
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-              className="h-11 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-700 outline-none focus:border-[#f36d45]"
-            >
-              <option value="all">All Test Types</option>
-              <option value="mixed">Mixed</option>
-              <option value="sectional">Sectional</option>
-              <option value="full-length">Full Length</option>
-            </select>
+      
 
             <button
               type="button"
               onClick={() => {
                 setSearch("");
-                setCategoryFilter("all");
+                setCategoryFilter(null);
                 setTypeFilter("all");
               }}
               className="h-11 rounded-xl border border-gray-200 bg-gray-50 px-4 text-sm font-medium text-gray-700 transition hover:border-[#f36d45] hover:bg-orange-50 hover:text-[#f36d45]"

@@ -175,7 +175,7 @@ export default async function BlogPage({
 
   try {
     const response = await axiosInstance.get(
-      `/admin/blogs?${queryParams.toString()}&isPublished=true`
+      `/admin/blogs?${queryParams.toString()}`
     );
 
     blogsData = response?.data || blogsData;

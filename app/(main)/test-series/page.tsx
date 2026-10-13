@@ -29,16 +29,17 @@ export default async function TestseriesPage({ searchParams }) {
     AllCourses = allCourseRes.data?.data || [];
 
     // 3. Find SAT category
-    // isSat = Category.find(
-    //   (cat) => cat.name?.toLowerCase() === "sat"
-    // );
+    isSat = Category.find(
+      (cat) => cat.name?.toLowerCase() === "sat"
+    );
 
 
 
     // 4. Get SAT courses
-    // if (isSat?._id) {
+    if (isSat?._id) {
       const courseRes = await serverInstance.get("/mcu/series", {
         params: {
+          category: isSat._id,
           search,
           sort,
           limit: 20,
@@ -46,7 +47,7 @@ export default async function TestseriesPage({ searchParams }) {
       });
 
       Courses = courseRes.data?.data || [];
-    // }
+    }
   } catch (err) {
     console.error("CoursesPage err:", err);
   }

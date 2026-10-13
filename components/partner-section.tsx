@@ -67,12 +67,12 @@ const FORM_CONFIG: any = {
       step: 1,
       grid: "full",
       options: [
-        { value: "Gre", label: "Gre" },
-        { value: "Gmat", label: "Gmat" },
-        { value: "Act", label: "Act" },
-        { value: "Ielts", label: "Ielts" },
-        { value: "Toefl", label: "Toefl" },
-        { value: "Pte", label: "Pte" },
+        { value: "Gre", label: "GRE" },
+        { value: "Gmat", label: "GMAT" },
+        { value: "Sat", label: "SAT" },
+        { value: "Ielts", label: "IELTS" },
+        { value: "Toefl", label: "TOEFL" },
+        { value: "Pte", label: "PTE" },
         // { value: "Others", label: "Others" }
       ]
     }
@@ -135,7 +135,7 @@ export function PartnerSection() {
                 <div className="bg-white p-3 rounded-lg"><Mail className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">Email Us</p>
-                  <p className="text-base">info@ooshasprap.com</p>
+                  <p className="text-base">info@ooshasprep.com</p>
                 </div>
               </div>
 
