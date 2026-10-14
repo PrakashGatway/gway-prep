@@ -2,6 +2,7 @@ import mongoose, { Schema, Document, Model } from "mongoose";
 
 export interface IStudent extends Document {
     name: string;
+    slug?: string;
     course: string;
     colorCode?: string;
     score?: string;
@@ -22,6 +23,7 @@ export interface IStudent extends Document {
 const StudentSchema = new Schema<IStudent>(
     {
         name: { type: String, required: true, trim: true, maxlength: 40 },
+        slug: { type: String, trim: true, lowercase: true, maxlength: 100 },
         course: { type: String, required: true, trim: true }, 
         colorCode: String,
         score: String,
@@ -40,7 +42,14 @@ const StudentSchema = new Schema<IStudent>(
 );
 
 
-const Student:Model<IStudent> = mongoose.models.Student ||
- mongoose.model<IStudent>("Student", StudentSchema);
+const cachedStudentModel = mongoose.models.Student as Model<IStudent> | undefined;
+
+// Next.js can keep the old Mongoose model around after a schema edit in development.
+if (cachedStudentModel && !cachedStudentModel.schema.path("slug")) {
+    mongoose.deleteModel("Student");
+}
+
+const Student: Model<IStudent> = mongoose.models.Student ||
+    mongoose.model<IStudent>("Student", StudentSchema);
 
 export default Student;

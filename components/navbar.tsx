@@ -293,6 +293,12 @@ export function Navbar({ Data }: NavbarProps) {
         icon: null,
       },
 
+      {
+        name: "Events",
+        href: "/events",
+        icon: null,
+      },
+
       // =========================
       // CONTACT
       // =========================

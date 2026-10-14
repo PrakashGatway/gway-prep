@@ -3,6 +3,7 @@ import { connectDB } from "@/app/lib/db";
 import Student from "@/app/Model/Student";
 import { StudentValidationSchema } from "@/app/type/student"; // Use the schema, not just the type
 import { Tokenchecker } from "@/app/lib/auth";
+import { slugify } from "@/app/lib/slug";
 
 export async function POST(req: NextRequest): Promise<NextResponse> {
   // 1. Token Verification
@@ -46,7 +47,17 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    await Student.create(body);
+    const normalizedSlug = body.slug
+      ? slugify(body.slug).replace(/^-+|-+$/g, "").slice(0, 100)
+      : "";
+    if (normalizedSlug && (await Student.exists({ slug: normalizedSlug }))) {
+      return NextResponse.json(
+        { error: "A student case study already uses this slug." },
+        { status: 409 },
+      );
+    }
+
+    await Student.create({ ...result.data, slug: normalizedSlug });
 
     return NextResponse.json(
       { message: "Student created successfully." },
@@ -68,6 +79,14 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
 
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("query") || "";
+
+    const slug = searchParams.get("slug")?.trim().toLowerCase();
+    if (slug) {
+      const student = await Student.findOne({ slug }).lean();
+      return student
+        ? NextResponse.json({ data: student }, { status: 200 })
+        : NextResponse.json({ error: "Student case study not found" }, { status: 404 });
+    }
 
     if (query === "all") {
       const data = await Student.find();
@@ -193,8 +212,18 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
 
     const { id, ...updatedbody } = body; 
 
+    const normalizedSlug = body.slug
+      ? slugify(body.slug).replace(/^-+|-+$/g, "").slice(0, 100)
+      : "";
+    if (normalizedSlug && (await Student.exists({ slug: normalizedSlug, _id: { $ne: id } }))) {
+      return NextResponse.json(
+        { error: "A student case study already uses this slug." },
+        { status: 409 },
+      );
+    }
+
     await Student.findByIdAndUpdate(id,
-      { $set: updatedbody }, 
+      { $set: { ...result.data, ...updatedbody, slug: normalizedSlug } },
       { new: true, runValidators: true } // Crucial options setup
     );
 

@@ -108,12 +108,14 @@ export function Footer({ Data = [] }: FooterProps) {
     { label: "Career", path: "/career" },
     { label: "Contact Us", path: "/contact" },
     { label: "Blogs", path: "/blog" },
+    { label: "Case Studies", path: "/case-study" },
+    { label: "Study Events", path: "/events" },
   ];
 
   const resources = [
-    { label: "Case Studies", path: "/#" },
+    { label: "Case Studies", path: "/case-study" },
     { label: "Student Testimonials", path: "/#" },
-    { label: "Events & Webinars", path: "/#" },
+    { label: "Events & Webinars", path: "/events" },
   ];
 
   // Group courses by their base type

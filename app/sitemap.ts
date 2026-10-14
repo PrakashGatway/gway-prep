@@ -7,10 +7,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const response = await axiosInstance.get("/admin/pageInfo/all");
     const response1 = await axiosInstance.get("/admin/blogs/all");
+    const response2 = await axiosInstance
+      .get("/admin/student?query=all")
+      .catch(() => ({ data: { data: [] } }));
+    const response3 = await axiosInstance
+      .get("/admin/events?page=1&limit=50&time=all")
+      .catch(() => ({ data: { data: [] } }));
     const pages = response.data?.data || [];
     const pages1 = response1.data?.data || [];
-console.log(pages,'pages data')
-    const routes: string[] = [""];
+    const students = response2.data?.data || [];
+    const events = response3.data?.data || [];
+    const routes: string[] = ["", "case-study", "events"];
 
     pages.forEach((page: any) => {
       const slug = page.seoMeta?.canonicalUrl || page.name;
@@ -28,6 +35,14 @@ console.log(pages,'pages data')
       const slug = ele.slug;
       routes.push(`blog/${slug}`);
     })
+
+    students.forEach((student: any) => {
+      if (student?.slug) routes.push(`case-study/${student.slug}`);
+    });
+
+    events.forEach((event: any) => {
+      if (event?.slug && event?.isPublished) routes.push(`events/${event.slug}`);
+    });
 
     const uniqueRoutes = [...new Set(routes)];
 

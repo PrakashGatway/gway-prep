@@ -2,6 +2,7 @@ import * as z  from "zod";
 
 export const StudentValidationSchema = z.object({
   name: z.string().trim().min(1, "Name is required").max(40, "Name to long"),
+  slug: z.string().trim().max(100, "Slug must be 100 characters or less").optional(),
   course: z.string().trim().min(1, "Course is required"),
   score: z.string().optional(),
   image: z.string().url("Invalide image url").optional(),

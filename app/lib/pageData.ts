@@ -529,6 +529,13 @@ export const pageData: any = {
             placeholder: "Enter name hare",
           },
           {
+            name: "slug",
+            label: "Case Study URL Slug (optional)",
+            type: "text",
+            required: false,
+            placeholder: "e.g. riya-sharma-sat-success",
+          },
+          {
             name: "course",
             label: "student course",
             type: "text",

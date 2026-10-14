@@ -14,7 +14,8 @@ import {
   BookUser,
   BellRing,
   ScrollText,
-  MessageCircle
+  MessageCircle,
+  CalendarDays,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -53,6 +54,7 @@ const Sidebar = () => {
     { icon: <Users size={18} />, label: "Students", href: "/admin/pages/student" },
     { icon: <FileEditIcon size={18} />, label: "Editor", href: "/admin/pages/editor" },
     { icon: <File size={18} />, label: "Blog", href: "/admin/pages/Blogs" },
+    { icon: <CalendarDays size={18} />, label: "Study Events", href: "/admin/pages/events" },
     { icon: <BookUser size={18} />, label: "Authors", href: "/admin/pages/Authors"},
     { icon: <ScrollText size={18} />, label: "Support Articles", href: "/admin/pages/support-articles" },
     { icon: <File size={18} />, label: "Leads ", href: "/admin/pages/leads" },

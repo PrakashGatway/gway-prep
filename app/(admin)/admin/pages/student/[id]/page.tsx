@@ -256,6 +256,11 @@ const EditorForm = () => {
             </label>
 
             {renderField(field)}
+            {field.name === "slug" && (
+              <p className="-mt-1 text-xs leading-5 text-gray-500">
+                Optional. Add a unique URL slug to publish this student as a case study at /case-study/your-slug. Leave it blank for a regular student testimonial.
+              </p>
+            )}
           </div>
         ))}
 

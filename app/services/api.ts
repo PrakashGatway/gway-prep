@@ -19,6 +19,13 @@ export const getStudent = async (query = "", page = 1, limit = 10) => {
     return res.data;
 };
 
+export const getStudentBySlug = async (slug: string) => {
+    const res = await axiosInstance.get(
+        `/admin/student?slug=${encodeURIComponent(slug)}`
+    );
+    return res.data?.data || null;
+};
+
 export const deleteStudent = async (id: string) => {
     const res = await axiosInstance.delete(`/admin/student?id=${encodeURIComponent(id)}`);
     return res.data;
