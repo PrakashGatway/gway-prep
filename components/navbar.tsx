@@ -94,6 +94,107 @@ export function Navbar({ Data }: NavbarProps) {
     [Data],
   );
 
+  const spokenEnglishPages = React.useMemo(
+    () =>
+      Data?.filter((item: any) => {
+        const template = String(
+          item?.seoMeta?.template || item?.template || "",
+        ).toLowerCase();
+        return template === "spoken english" && item?.seoMeta?.isPublished === true;
+      }) || [],
+    [Data],
+  );
+
+  const spokenEnglishNavItem = React.useMemo(() => {
+    const getSlug = (item: any) =>
+      String(item?.seoMeta?.canonicalUrl || item?.slug || "")
+        .replace(/^\/+|\/+$/g, "")
+        .replace(/^https?:\/\/[^/]+\//i, "");
+
+    const spokenEnglishChildren = spokenEnglishPages
+      .map((item: any) => ({
+        name: item?.seoMeta?.navTitle || item?.name || getSlug(item),
+        img: item?.seoMeta?.navIcon || null,
+        slug: getSlug(item),
+        description: item?.seoMeta?.navSubtitle || "",
+        badge: item?.seoMeta?.badge || null,
+      }))
+      .filter(
+        (item: any) =>
+          item.slug &&
+          item.slug !== "spoken-english",
+      );
+
+    return {
+      name: "Spoken English",
+      img: null,
+      slug: "spoken-english",
+      description: "English speaking courses and programs",
+      badge: null,
+      sublink: spokenEnglishChildren,
+    };
+  }, [spokenEnglishPages]);
+
+  const examDetailsNavItems = React.useMemo(() => {
+    const getSlug = (item: any) =>
+      String(item?.seoMeta?.canonicalUrl || item?.slug || item?.name || "")
+        .replace(/^\/+|\/+$/g, "")
+        .replace(/^https?:\/\/[^/]+\//i, "");
+    const normalizeReference = (value: any) =>
+      String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/^\/+|\/+$/g, "")
+        .replace(/\s+/g, "-");
+
+    return courseData1
+      .filter((item: any) => !item?.seoMeta?.duplicateOf)
+      .map((parent: any) => {
+        const parentSlug = getSlug(parent);
+        const parentReferences = [
+          parent?.name,
+          parent?.slug,
+          parent?.seoMeta?.canonicalUrl,
+          parent?.seoMeta?.navTitle,
+        ].map(normalizeReference);
+
+        return {
+          name:
+            parent?.seoMeta?.navTitle ||
+            parent?.seoMeta?.title ||
+            parent?.name,
+          img: parent?.seoMeta?.navIcon || null,
+          slug: getSlug(parent),
+          description: parent?.seoMeta?.navSubtitle || "",
+          badge: parent?.seoMeta?.badge || null,
+          sublink: courseData1
+            .filter((child: any) => {
+              const parentRef = normalizeReference(child?.seoMeta?.duplicateOf);
+              return parentRef && parentReferences.includes(parentRef);
+            })
+            .map((child: any) => {
+              const childSlug = getSlug(child);
+              const nestedSlug = childSlug.startsWith(`${parentSlug}/`)
+                ? childSlug
+                : childSlug.startsWith(`${parentSlug}-`)
+                  ? `${parentSlug}/${childSlug.slice(parentSlug.length + 1)}`
+                  : `${parentSlug}/${childSlug}`;
+
+              return {
+                name:
+                  child?.seoMeta?.navTitle ||
+                  child?.seoMeta?.title ||
+                  child?.name,
+                img: child?.seoMeta?.navIcon || null,
+                slug: nestedSlug,
+                description: child?.seoMeta?.navSubtitle || "",
+                badge: child?.seoMeta?.badge || null,
+              };
+            }),
+        };
+      });
+  }, [courseData1]);
+
   const navItems = React.useMemo(
     () => [
       {
@@ -137,7 +238,8 @@ export function Navbar({ Data }: NavbarProps) {
                 };
               }),
             };
-          }),
+          })
+          .concat(spokenEnglishNavItem),
       },
 
       // =========================
@@ -179,16 +281,7 @@ export function Navbar({ Data }: NavbarProps) {
         hasDropdown: true,
         icon: null,
 
-        dropdownItems: courseData1.map((item: any) => ({
-          name: item?.seoMeta?.navTitle,
-          img: item?.seoMeta?.navIcon || null,
-          slug: item?.seoMeta?.canonicalUrl,
-          description: item?.seoMeta?.navSubtitle || "",
-          badge: item?.seoMeta?.badge || null,
-
-          // No nested dropdown
-          sublink: [],
-        })),
+        dropdownItems: examDetailsNavItems,
       },
 
       // =========================
@@ -209,7 +302,7 @@ export function Navbar({ Data }: NavbarProps) {
         icon: null,
       },
     ],
-    [NAVDATA, calculator, courseData1],
+    [NAVDATA, calculator, courseData1, examDetailsNavItems, spokenEnglishNavItem],
   );
 
   React.useEffect(() => {

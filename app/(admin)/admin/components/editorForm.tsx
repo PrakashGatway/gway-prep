@@ -46,6 +46,7 @@ interface GeneralInfo {
   isPublished: boolean;
   publishedAt: string;
   template: string;
+  duplicateOf: string;
 }
 
 const EditorForm = ({ rawText }: PageProps) => {
@@ -72,8 +73,10 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
     isPublished: true,
     publishedAt: "",
     template: "",
+    duplicateOf: "",
   });
   const [students, setStudents] = useState<any[]>([]);
+  const [examParentPages, setExamParentPages] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<"general" | "sections">("general");
   const [temp, setTemp] = useState("");
@@ -95,10 +98,36 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
   }, []);
 
   useEffect(() => {
+    const fetchExamPages = async () => {
+      try {
+        const response = await fetch("/api/admin/pageInfo?limit=300");
+        if (!response.ok) return;
+        const result = await response.json();
+        setExamParentPages(
+          (result?.data || []).filter((item: any) => {
+            const template = String(
+              item?.seoMeta?.template || item?.template || "",
+            ).toLowerCase();
+            return (
+              template === "examdetails" &&
+              item?.seoMeta?.isPublished === true &&
+              !item?.seoMeta?.duplicateOf
+            );
+          }),
+        );
+      } catch (err) {
+        console.error("Error fetching exam pages:", err);
+      }
+    };
+    fetchExamPages();
+  }, []);
+
+  useEffect(() => {
     if (slug === "new") {
       if (selectedKey) {
         const data = pageData[selectedKey];
         setFormData(data);
+        setValues(data?.initialValues || {});
         if (data?.sections?.length > 0) {
           setActiveSection(data.sections[0].name);
         }
@@ -118,7 +147,19 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
         // console.log("Fetched page data:", res);
 
         if (res.seoMeta) {
-          setGeneralInfo(res.seoMeta);
+          const parentSlug = slugify(res.seoMeta.duplicateOf || "");
+          const canonicalPath = String(res.seoMeta.canonicalUrl || "");
+          const nestedSlug = canonicalPath.split("/").filter(Boolean).pop();
+          setGeneralInfo((prev) => ({
+            ...prev,
+            ...res.seoMeta,
+            slug:
+              (parentSlug ? nestedSlug : res.seoMeta.slug) ||
+              res.slug ||
+              res.seoMeta.canonicalUrl ||
+              "",
+            duplicateOf: res.seoMeta.duplicateOf || "",
+          }));
           setTemp(res.seoMeta.template);
         }
 
@@ -160,7 +201,17 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
 
   // General Info Handlers
   const handleGeneralInfoChange = (field: keyof GeneralInfo, value: any) => {
-    setGeneralInfo((prev) => ({ ...prev, [field]: value }));
+    const savedValue =
+      field === "slug" && formData?.is_dynamic && formData?.slug_field
+        ? slugify(value)
+        : value;
+    setGeneralInfo((prev) => ({
+      ...prev,
+      [field]: savedValue,
+      ...(field === "slug" && formData?.is_dynamic && formData?.slug_field
+        ? { canonicalUrl: savedValue }
+        : {}),
+    }));
   };
 
   // Section Input Handler
@@ -1145,13 +1196,47 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
       return;
     }
 
+    const isDynamicTemplate = Boolean(formData?.is_dynamic && formData?.slug_field);
+    const isExamDetailsTemplate = formData?.name?.toLowerCase() === "examdetails";
+    const parentExamSlug = isExamDetailsTemplate
+      ? slugify(generalInfo.duplicateOf || "")
+      : "";
+    const enteredSlug = slugify(generalInfo.slug || generalInfo.canonicalUrl || "");
+    if (isDynamicTemplate && !enteredSlug) {
+      setError("Please enter a page slug.");
+      return;
+    }
+    const childSlug = parentExamSlug
+      ? enteredSlug.startsWith(`${parentExamSlug}-`)
+        ? enteredSlug.slice(parentExamSlug.length + 1)
+        : enteredSlug
+      : "";
+    if (parentExamSlug && !childSlug) {
+      setError("Enter a subpage slug after selecting a parent exam.");
+      return;
+    }
+    const savedSlug = parentExamSlug
+      ? `${parentExamSlug}-${childSlug}`
+      : enteredSlug;
+    const canonicalPath = parentExamSlug
+      ? `${parentExamSlug}/${childSlug}`
+      : savedSlug;
+
     setLoading(true);
     try {
       const payload: any = {
-        name: formData?.slug || generalInfo.canonicalUrl,
+        name: isDynamicTemplate
+          ? savedSlug
+          : formData?.slug || generalInfo.canonicalUrl,
         template: formData?.name || generalInfo.template,
         seoMeta: {
           ...generalInfo,
+          ...(isDynamicTemplate
+            ? { slug: savedSlug, canonicalUrl: canonicalPath }
+            : {}),
+          ...(isExamDetailsTemplate
+            ? { duplicateOf: parentExamSlug }
+            : {}),
           template: formData?.name || generalInfo.template,
           name: formData?.name || generalInfo.template,
         },
@@ -1219,7 +1304,12 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
                   setGeneralInfo((prev) => ({
                     ...prev,
                     template: data.name,
-                    canonicalUrl: key,
+                    canonicalUrl:
+                      data?.name === "ExamDetails" ? "" : key,
+                    ...(data?.is_dynamic && data?.slug_field
+                      ? { slug: data?.name === "ExamDetails" ? "" : key }
+                      : {}),
+                    ...(data?.name === "ExamDetails" ? { duplicateOf: "" } : {}),
                   }));
                 }}
                 className="p-6 border rounded-xl hover:border-blue-500 hover:shadow-lg transition-all text-left"
@@ -1359,7 +1449,7 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
                   />
                 </div>
 
-                {slug === "new" ? (
+                {slug === "new" || formData?.name?.toLowerCase() === "examdetails" ? (
                   <div>
                     <label className="block text-sm font-medium mb-2">
                       Page Slug
@@ -1371,11 +1461,57 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
                         handleGeneralInfoChange("slug", e.target.value)
                       }
                       className="w-full p-3 border rounded-xl"
-                      placeholder="Enter page slug"
+                      placeholder={
+                        generalInfo.duplicateOf
+                          ? "e.g. eligibility"
+                          : "e.g. sat-exam or pte-exam"
+                      }
                     />
+                    {formData?.name?.toLowerCase() === "examdetails" && (
+                      <p className="mt-1 text-xs text-gray-500">
+                        Main pages can use slugs like sat-exam. For a subpage, select its parent below and enter a short slug; it will be available at /{generalInfo.duplicateOf || "exam-name-exam"}/your-slug.
+                      </p>
+                    )}
                   </div>
                 ) : (
                   ""
+                )}
+
+                {formData?.name?.toLowerCase() === "examdetails" && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Parent Exam Page
+                    </label>
+                    <select
+                      value={generalInfo.duplicateOf || ""}
+                      onChange={(e) =>
+                        handleGeneralInfoChange("duplicateOf", e.target.value)
+                      }
+                      className="w-full p-3 border rounded-xl"
+                    >
+                      <option value="">No parent (main exam page)</option>
+                      {examParentPages
+                        .filter((item: any) => {
+                          const parentSlug =
+                            item?.seoMeta?.canonicalUrl || item?.slug;
+                          return parentSlug !== (generalInfo.slug || slug);
+                        })
+                        .map((item: any) => {
+                          const parentSlug =
+                            item?.seoMeta?.canonicalUrl || item?.slug || item?.name;
+                          return (
+                            <option key={item._id || parentSlug} value={parentSlug}>
+                              {item?.seoMeta?.navTitle ||
+                                item?.seoMeta?.title ||
+                                parentSlug}
+                            </option>
+                          );
+                        })}
+                    </select>
+                    <p className="mt-1 text-xs text-gray-500">
+                      Select an existing exam to place this page beneath it in the Exam Details menu.
+                    </p>
+                  </div>
                 )}
 
                 <div>

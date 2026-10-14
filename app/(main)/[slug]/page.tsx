@@ -335,6 +335,7 @@ import ExamDetails from "@/components/examDetails";
 import ScoreCalculatorPage from "@/components/calculator/page";
 import axiosInstance from "@/app/lib/axios";
 import Script from "next/script";
+import SpokenEnglishTemplate from "../spoken-english-course/spoken-english-template";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -410,14 +411,22 @@ export async function generateMetadata({
   }
 
   const seo = data.seoMeta || {};
+  const isSpokenEnglishTemplate =
+    String(data.template || seo.template || "").trim().toLowerCase() ===
+    "spoken english";
 
   const canonicalUrl = normalizeCanonicalUrl(seo?.canonicalUrl, rowtext);
 
   const title =
-    seo?.title?.trim() || `${rowtext.toUpperCase()} Preparation | Ooshas Prep`;
+    seo?.title?.trim() ||
+    (isSpokenEnglishTemplate
+      ? `${rowtext.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase())} | Ooshas Prep`
+      : `${rowtext.toUpperCase()} Preparation | Ooshas Prep`);
   const description =
     seo?.description?.trim() ||
-    `Prepare for ${rowtext.toUpperCase()} with Ooshas Prep through expert coaching, practice tests, study material and personalized preparation.`;
+    (isSpokenEnglishTemplate
+      ? "Build English fluency and confidence with practical spoken English classes from Ooshas Prep."
+      : `Prepare for ${rowtext.toUpperCase()} with Ooshas Prep through expert coaching, practice tests, study material and personalized preparation.`);
   return {
     metadataBase: new URL(SITE_URL),
     title,
@@ -574,7 +583,6 @@ export default async function PreparationPage({ params }: PageProps) {
   }
 
   const pageData = await getPageInfo(rowtext);
-  const Data = await getPages(300);
   const hasValidData =
     pageData && !Array.isArray(pageData) && Object.keys(pageData).length > 0;
 
@@ -582,6 +590,14 @@ export default async function PreparationPage({ params }: PageProps) {
     return <NoDataFoundUI />;
   }
   const template = pageData?.template;
+  const isSpokenEnglish =
+    String(template || pageData?.seoMeta?.template || "").trim().toLowerCase() ===
+    "spoken english";
+  if (isSpokenEnglish) {
+    return <SpokenEnglishTemplate pageInfo={pageData} />;
+  }
+
+  const Data = await getPages(300);
   const isPreparation = template === "preparation";
   const isCalculator = template === "calculator";
   const isExamDetails = template === "examdetails";
