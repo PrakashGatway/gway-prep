@@ -1,5 +1,6 @@
 import { MetadataRoute } from "next";
 import axiosInstance from "./lib/axios";
+import { getStudentCaseStudySlug } from "./lib/studentCaseStudy";
 
 const BASE_URL = "https://www.ooshasprep.com";
 
@@ -37,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })
 
     students.forEach((student: any) => {
-      if (student?.slug) routes.push(`case-study/${student.slug}`);
+      routes.push(`case-study/${getStudentCaseStudySlug(student)}`);
     });
 
     events.forEach((event: any) => {

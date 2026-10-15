@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Award, CalendarDays, CheckCircle2, MapPin, Quote, Sparkles, Trophy } from "lucide-react";
 import { getStudent, getStudentBySlug } from "@/app/services/api";
 import { slugify } from "@/app/lib/slug";
+import { getStudentCaseStudySlug } from "@/app/lib/studentCaseStudy";
 import CaseStudyFaqs, { type CaseStudyFaq } from "../faqs";
 import ExploreStoriesSlider from "../explore-stories-slider";
 import SuccessStoryForm from "../success-story-form";
@@ -16,8 +17,18 @@ interface CaseStudyDetailProps {
 }
 
 async function findStudent(slug: string) {
+  const normalizedSlug = slugify(slug);
   try {
-    return await getStudentBySlug(slugify(slug));
+    const student = await getStudentBySlug(normalizedSlug);
+    if (student) return student;
+  } catch {
+    // Fall back to the student list for name-based routes.
+  }
+
+  try {
+    const response = await getStudent("all");
+    const students = Array.isArray(response?.data) ? response.data : [];
+    return students.find((student: any) => getStudentCaseStudySlug(student) === normalizedSlug) || null;
   } catch {
     return null;
   }
@@ -70,14 +81,14 @@ export default async function CaseStudyDetailPage({ params }: CaseStudyDetailPro
   const { slug } = await params;
   const student = await findStudent(slug);
 
-  // A record is routable only after an admin has added its optional slug.
-  if (!student || !student.slug || slugify(student.slug) !== slugify(slug)) notFound();
+  // Students without a custom slug use a stable name-and-ID route.
+  if (!student || getStudentCaseStudySlug(student) !== slugify(slug)) notFound();
 
   let moreStories: any[] = [];
   try {
     const response = await getStudent("all");
     moreStories = (Array.isArray(response?.data) ? response.data : [])
-      .filter((item: any) => item?._id !== student._id && item?.slug)
+      .filter((item: any) => item?._id !== student._id)
       .slice(0, 8);
   } catch {
     moreStories = [];
@@ -90,24 +101,24 @@ export default async function CaseStudyDetailPage({ params }: CaseStudyDetailPro
 
   return (
     <main className="overflow-hidden bg-white text-[#292522]">
-      <section className="relative isolate overflow-hidden bg-[#FFF4EF]">
+      <section className="relative isolate overflow-hidden bg-[#FDF4EF]">
         <div className="absolute right-0 top-0 h-full w-[35%] bg-[#FFF0BE]" />
         <div className="absolute -right-32 -top-36 h-[430px] w-[430px] rounded-full bg-[#FFB09D]/65" />
         <div className="relative mx-auto max-w-7xl px-5 pb-14 pt-8 sm:px-8 sm:pb-20 sm:pt-10 lg:px-8 lg:pb-24">
-          <Link href="/case-study" className="inline-flex items-center gap-2 text-sm font-semibold text-[#72584D] transition hover:text-[#F36D45]"><ArrowLeft size={16} /> All student stories</Link>
+          <Link href="/case-study" className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#F0D8CC] bg-white/85 px-4 text-sm font-bold text-[#72584D] shadow-sm transition hover:-translate-y-0.5 hover:border-[#F36D45] hover:text-[#D95C39] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#F36D45]/20"><ArrowLeft size={16} /> All student stories</Link>
           <div className="mt-6 grid items-center gap-8 lg:grid-cols-[1fr_.9fr] lg:gap-14">
             <div className="relative z-10">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#F4C4B1] bg-white/80 px-4 py-2 text-xs font-bold uppercase tracking-[.15em] text-[#A4553A]">
                 <Sparkles size={15} className="text-[#F36D45]" /> Student success story
               </div>
-              <h1 className="mt-4 text-left text-2xl font-bold leading-tight tracking-tight md:text-3xl lg:text-5xl">{student.name}<span className="text-[#F36D45]">’s</span> journey</h1>
+              <h1 className="mt-4 text-left text-3xl font-extrabold leading-[1.08] tracking-[-.04em] sm:text-4xl lg:text-[3.5rem]">{student.name}<span className="text-[#F36D45]">’s</span> journey</h1>
               <p className="mt-4 max-w-xl text-lg leading-8 text-[#665C58]">A personal path shaped by a clear goal, committed preparation, and steady progress.</p>
               <div className="mt-7 flex flex-wrap gap-2.5">
                 {student.course && <span className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#72584D] shadow-sm">{student.course}</span>}
                 {student.university && <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#72584D] shadow-sm"><MapPin size={15} className="text-[#F36D45]" />{student.university}</span>}
                 {student.messageDate && <span className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#72584D] shadow-sm"><CalendarDays size={15} className="text-[#F36D45]" />{student.messageDate}</span>}
               </div>
-              <a href="#the-story" className="mt-8 inline-flex items-center gap-2 rounded-full bg-[#F36D45] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#F36D45]/20 transition hover:-translate-y-0.5 hover:bg-[#DD5D38]">Read the story <ArrowRight size={17} /></a>
+              <a href="#the-story" className="group mt-8 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#F36D45] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(243,109,69,.24)] transition hover:-translate-y-0.5 hover:bg-[#DD5D38] hover:shadow-[0_14px_30px_rgba(243,109,69,.3)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#F36D45]/25 sm:w-fit">Read the story <ArrowRight size={17} className="transition-transform group-hover:translate-x-0.5" /></a>
             </div>
 
             <div className="relative mx-auto w-full max-w-[530px] pb-5 lg:mr-0">
@@ -141,10 +152,10 @@ export default async function CaseStudyDetailPage({ params }: CaseStudyDetailPro
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-12 px-5 py-16 sm:px-8 sm:py-20 lg:grid-cols-[1fr_340px] lg:gap-16 lg:px-8">
+      <section className="mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1fr_340px] lg:gap-16 lg:px-8 lg:py-20">
         <div id="the-story" className="scroll-mt-24">
           <p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">Behind the milestone</p>
-          <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">A goal. A plan. <span className="text-[#F36D45]">A story of progress.</span></h2>
+          <h2 className="mt-3 text-3xl font-extrabold tracking-[-.035em] sm:text-4xl">A goal. A plan. <span className="text-[#F36D45]">A story of progress.</span></h2>
           {storyContent ? (
             <div className="prose prose-lg mt-7 max-w-none prose-headings:text-[#302A27] prose-p:leading-8 prose-p:text-[#655D59] prose-strong:text-[#302A27]" dangerouslySetInnerHTML={{ __html: storyContent }} />
           ) : (
@@ -152,14 +163,14 @@ export default async function CaseStudyDetailPage({ params }: CaseStudyDetailPro
           )}
 
           {outcomeContent && (
-            <div className="mt-10 rounded-[1.75rem] border border-[#F0D8CC] bg-[#FFF8F4] p-6 sm:p-8">
+            <div className="mt-10 rounded-[1.75rem] border border-[#F0D8CC] bg-[#FDF4EF] p-6 shadow-[0_12px_32px_rgba(41,37,34,.06)] sm:p-8">
               <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FFF0BE] text-[#A4553A]"><Trophy size={21} /></span><h3 className="text-xl font-bold">The outcome</h3></div>
               <div className="prose mt-4 max-w-none prose-p:leading-7 prose-p:text-[#655D59]" dangerouslySetInnerHTML={{ __html: outcomeContent }} />
             </div>
           )}
 
           {messageContent && (
-            <blockquote className="relative mt-10 overflow-hidden rounded-[1.75rem] bg-[#F36D45] p-6 text-white sm:p-9">
+            <blockquote className="relative mt-10 overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#F36D45] to-[#D95C39] p-6 text-white shadow-[0_18px_45px_rgba(243,109,69,.2)] sm:p-9">
               <Quote size={42} className="absolute right-6 top-6 text-white/20" />
               <div className="relative prose max-w-none prose-p:text-lg prose-p:leading-8 prose-p:text-white" dangerouslySetInnerHTML={{ __html: messageContent }} />
               <footer className="relative mt-5 flex items-center gap-3 border-t border-white/25 pt-5">
@@ -173,8 +184,8 @@ export default async function CaseStudyDetailPage({ params }: CaseStudyDetailPro
           )}
         </div>
 
-        <aside className="space-y-5 lg:pt-8">
-          <div className="rounded-[1.75rem] bg-[#FFF0BE] p-6 sm:p-7">
+        <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start lg:pt-8">
+          <div className="rounded-[1.75rem] bg-[#FFF0BE] p-6 shadow-[0_12px_32px_rgba(41,37,34,.08)] sm:p-7">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#D76843]"><Award size={23} /></div>
             <h3 className="mt-5 text-xl font-bold">The highlights</h3>
             <dl className="mt-5 divide-y divide-[#E6D49F]">
@@ -183,19 +194,19 @@ export default async function CaseStudyDetailPage({ params }: CaseStudyDetailPro
               {student.university && <div className="py-3"><dt className="text-xs font-semibold uppercase tracking-wider text-[#8C7652]">Next chapter</dt><dd className="mt-1 font-semibold text-[#463C2E]">{student.university}</dd></div>}
             </dl>
           </div>
-          <div className="rounded-[1.75rem] border border-[#F0D8CC] bg-white p-6 sm:p-7">
+          <div className="rounded-[1.75rem] border border-[#F0D8CC] bg-white p-6 shadow-[0_12px_32px_rgba(41,37,34,.06)] sm:p-7">
             <h3 className="text-lg font-bold">What made the difference?</h3>
             <ul className="mt-4 space-y-3 text-sm leading-6 text-[#655D59]">
               <li className="flex gap-2.5"><CheckCircle2 size={18} className="mt-0.5 shrink-0 text-[#F36D45]" /> A clear goal to work toward</li>
               <li className="flex gap-2.5"><CheckCircle2 size={18} className="mt-0.5 shrink-0 text-[#F36D45]" /> Consistent practice and feedback</li>
               <li className="flex gap-2.5"><CheckCircle2 size={18} className="mt-0.5 shrink-0 text-[#F36D45]" /> Confidence built one step at a time</li>
             </ul>
-            <Link href="/contact" className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-[#E56440] hover:text-[#A9472D]">Discuss your goals <ArrowRight size={16} /></Link>
+            <Link href="/contact" className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#F36D45] bg-white px-4 py-3 text-sm font-bold text-[#D95C39] transition hover:bg-[#F36D45] hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#F36D45]/20">Discuss your goals <ArrowRight size={16} /></Link>
           </div>
         </aside>
       </section>
 
-      <section className="bg-[#FFF4EF]">
+      <section className="bg-[#FDF4EF]">
         <div className="mx-auto grid max-w-7xl gap-9 px-5 py-14 sm:px-8 sm:py-16 lg:grid-cols-[.7fr_1.3fr] lg:gap-16 lg:px-8">
           <div><p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">A few more details</p><h2 className="mt-3 text-3xl font-bold leading-tight">About this <span className="text-[#F36D45]">journey.</span></h2><p className="mt-4 leading-7 text-[#726965]">Every learner’s path is personal. Here are a few helpful answers about the story you just read.</p></div>
           <CaseStudyFaqs items={detailFaqs} />
@@ -208,9 +219,9 @@ export default async function CaseStudyDetailPage({ params }: CaseStudyDetailPro
       <SuccessStoryForm />
 
       <section className="mx-auto max-w-7xl px-5 pb-14 sm:px-8 sm:pb-16 lg:px-8">
-        <div className="flex flex-col items-start justify-between gap-6 rounded-[2rem] bg-[#F36D45] px-6 py-9 text-white sm:flex-row sm:items-center sm:px-10 sm:py-11">
+        <div className="flex flex-col items-stretch justify-between gap-6 rounded-[2rem] bg-gradient-to-br from-[#F36D45] to-[#D95C39] px-6 py-9 text-white shadow-[0_20px_50px_rgba(243,109,69,.22)] sm:flex-row sm:items-center sm:px-10 sm:py-11">
           <div className="max-w-2xl"><p className="text-sm font-bold uppercase tracking-[.16em] text-white/75">Make your next move</p><h2 className="mt-2 text-2xl font-bold sm:text-3xl">Let’s find a path that works for you.</h2><p className="mt-2 leading-7 text-white/85">Talk with our team about your exam goals and a preparation plan built around your timeline.</p></div>
-          <Link href="/contact" className="inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-6 py-3.5 text-sm font-bold text-[#B94D31] transition hover:-translate-y-0.5 hover:bg-[#FFF0BE]">Talk to a counsellor <ArrowRight size={17} /></Link>
+          <Link href="/contact" className="inline-flex min-h-12 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-extrabold text-[#D95C39] shadow-lg transition hover:-translate-y-0.5 hover:bg-[#FFF0BE] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/40 sm:w-auto">Talk to a counsellor <ArrowRight size={17} /></Link>
         </div>
       </section>
     </main>

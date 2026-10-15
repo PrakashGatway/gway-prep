@@ -20,12 +20,9 @@ export default async function TestseriesPage({ searchParams }) {
     Category = categoryRes.data?.data || [];
 
     // 2. Get all courses
-    const allCourseRes = await serverInstance.get("/mcu/series", {
-      params: {
-        limit: 20,
-      },
-    });
+    const allCourseRes = await serverInstance.get("/mcu/series?category=all");
 
+    console.log(allCourseRes,"res")
     AllCourses = allCourseRes.data?.data || [];
 
     // 3. Find SAT category
@@ -53,7 +50,7 @@ export default async function TestseriesPage({ searchParams }) {
   }
 
 
-  console.log("All Test Series:", Courses);
+  console.log("All Test Series:", AllCourses);
 
   return (
     <TestSeries

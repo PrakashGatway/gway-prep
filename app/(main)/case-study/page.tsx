@@ -1,16 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowDown, ArrowRight, ArrowUpRight, Award, BookOpenCheck, Sparkles, Trophy } from "lucide-react";
+import { ArrowDown, ArrowRight, Award, BookOpenCheck, Sparkles } from "lucide-react";
 import { getStudent } from "@/app/services/api";
-import { slugify } from "@/app/lib/slug";
 import CaseStudyFaqs, { type CaseStudyFaq } from "./faqs";
+import StudentStoryCard from "./student-story-card";
 import SuccessStoryForm from "./success-story-form";
 import RecentBlogsSlider from "../events/recent-blogs-slider";
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://www.ooshasprep.com";
-const palette = ["#FFF4EF", "#FFF0BE", "#FFD7A7", "#FFB09D", "#FF907F", "#F36D45"];
-
 const faqs: CaseStudyFaq[] = [
   {
     question: "What is a student case study?",
@@ -29,11 +27,6 @@ const faqs: CaseStudyFaq[] = [
     answer: "Open any student card with a View Case Study link. Some student profiles are published as testimonials only and don’t have a separate story page.",
   },
 ];
-
-function plainText(value: unknown) {
-  if (typeof value !== "string") return "";
-  return value.replace(/<[^>]*>/g, " ").replace(/&nbsp;|&#160;/g, " ").replace(/\s+/g, " ").trim();
-}
 
 async function loadStudents() {
   try {
@@ -62,11 +55,24 @@ export default async function CaseStudyPage() {
 
   return (
     <main className="overflow-hidden bg-white text-[#292522]">
-      <section className="relative isolate overflow-hidden bg-[#FFF4EF]">
-        <div className="absolute inset-y-0 right-0 hidden w-[42%] bg-[#FFF0BE] lg:block" />
-        <div className="absolute -right-28 -top-36 h-[420px] w-[420px] rounded-full bg-[#FFB09D]/70 blur-[1px]" />
-        <div className="absolute -bottom-36 right-[22%] h-[300px] w-[300px] rounded-full bg-[#FFD7A7]/80" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-5 py-10 sm:px-8 sm:py-12 lg:grid-cols-[1.05fr_.95fr] lg:gap-12 lg:px-8 lg:py-14">
+      <section className="relative isolate overflow-hidden bg-[#FFFBF9]">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 opacity-60"
+          style={{
+            backgroundImage: "radial-gradient(circle, rgba(243,109,69,.12) 1px, transparent 1.2px)",
+            backgroundSize: "14px 14px",
+          }}
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-32 -top-36 h-[430px] w-[460px] rounded-[42%_58%_54%_46%/48%_42%_58%_52%] bg-[#F36D45]/[.045]"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -bottom-56 -right-28 h-[520px] w-[480px] rounded-[58%_42%_46%_54%/43%_57%_43%_57%] bg-[#FFD7A7]/25"
+        />
+        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-8 px-5 py-10 sm:px-8 sm:py-12 lg:grid-cols-[.95fr_1.05fr] lg:gap-12 lg:px-8 lg:py-14">
           <div className="relative z-10">
             <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#F4C4B1] bg-white/80 px-4 py-2 text-xs font-bold uppercase tracking-[.16em] text-[#9E4D35] sm:text-sm">
               <Sparkles size={15} className="text-[#F36D45]" /> Real journeys. Real progress.
@@ -91,20 +97,9 @@ export default async function CaseStudyPage() {
             </div>
           </div>
 
-          <div className="relative mx-auto w-full max-w-[560px] lg:mr-0">
-            <div className="absolute inset-x-[8%] bottom-[5%] top-[7%] rounded-[3rem] bg-[#FFF0BE] sm:inset-x-[10%]" />
-            <div className="absolute -right-2 top-8 z-10 h-24 w-24 rounded-full bg-[#FF907F]/80 sm:-right-5 sm:h-32 sm:w-32" />
-            <div className="absolute -bottom-1 left-0 z-10 h-20 w-20 rounded-full border-[12px] border-white bg-[#F36D45] sm:-left-3 sm:h-28 sm:w-28 sm:border-[16px]" />
-            <div className="relative z-20 mx-auto h-[300px] w-full sm:h-[360px] lg:h-[390px]">
-              <Image src="/spoken-english/students.webp" alt="Students working together on their learning" fill priority sizes="(max-width: 1024px) 90vw, 42vw" className="object-contain object-bottom drop-shadow-[0_24px_24px_rgba(71,40,29,.18)]" />
-            </div>
-            <div className="absolute left-2 top-4 z-30 inline-flex items-center gap-2 rounded-2xl border border-white/80 bg-white/95 px-4 py-3 shadow-[0_14px_35px_rgba(71,40,29,.14)] sm:left-0 sm:top-8 sm:px-5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FFF0BE] text-[#E2603B]"><Trophy size={18} /></span>
-              <span><span className="block text-[10px] font-bold uppercase tracking-[.15em] text-[#9C7768]">Every milestone</span><span className="block text-sm font-extrabold text-[#292522]">Starts with a goal</span></span>
-            </div>
-            <div className="absolute bottom-2 right-1 z-30 rounded-2xl bg-[#292522] px-4 py-3 text-white shadow-[0_18px_40px_rgba(41,37,34,.25)] sm:bottom-5 sm:right-0 sm:px-5">
-              <p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#FFB09D]">The next chapter</p>
-              <p className="mt-1 text-sm font-bold">Could be yours.</p>
+          <div className="relative mx-auto w-full max-w-[680px] lg:justify-self-end">
+            <div className="relative mx-auto h-[340px] w-full sm:h-[430px] lg:h-[500px] xl:h-[500px]">
+              <Image src="/case-study/students-cutout.png" alt="Two students celebrating their learning progress" fill priority sizes="(max-width: 1024px) 90vw, 42vw" className="object-contain object-bottom drop-shadow-[0_24px_24px_rgba(71,40,29,.18)]" />
             </div>
           </div>
         </div>
@@ -121,49 +116,9 @@ export default async function CaseStudyPage() {
 
         {students.length ? (
           <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            {students.map((student: any, index: number) => {
-              const slug = slugify(student?.slug || "");
-              const accent = student?.colorCode || palette[index % palette.length];
-              const excerpt = plainText(student?.message || student?.about || student?.outcome);
-              const card = (
-                <div className="relative flex min-h-[320px] flex-1 flex-col justify-between overflow-hidden bg-[#292522] p-4 text-white sm:min-h-[340px] sm:p-5">
-                  <div className="absolute inset-0 overflow-hidden bg-gradient-to-br from-[#FFB09D] via-[#FF907F] to-[#F36D45]">
-                    {student?.image ? (
-                      // Student images come from the existing upload flow and may use any host.
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={student.image} alt={student.name || "Ooshas Prep student"} className="h-full w-full scale-110 object-cover transition duration-700 group-hover:scale-125" />
-                    ) : (
-                      <div className="flex h-full items-center justify-center text-8xl font-black text-white/65">{String(student?.name || "S").charAt(0)}</div>
-                    )}
-                  </div>
-                  <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(25,19,18,.28)_0%,rgba(25,19,18,.08)_35%,rgba(25,19,18,.88)_100%)]" />
-                  <div className="absolute inset-0 bg-gradient-to-tr from-[#F36D45]/30 via-transparent to-transparent" />
-                  <div className="relative z-10 flex items-start justify-between gap-2">
-                    <span className="rounded-full border border-white/25 bg-[#292522]/55 px-2.5 py-1.5 text-[9px] font-extrabold uppercase tracking-[.12em] text-white shadow-sm backdrop-blur-md">Achievement spotlight</span>
-                    {student?.score && <span className="rounded-xl border border-white/35 bg-white/95 px-2.5 py-1.5 text-right text-[#292522] shadow-lg"><span className="block text-[8px] font-bold uppercase tracking-[.13em] text-[#8A7770]">Result</span><span className="text-sm font-black" style={{ color: accent === "#FFF4EF" || accent === "#FFF0BE" ? "#F36D45" : accent }}>{student.score}</span></span>}
-                  </div>
-                  <div className="relative z-10 mt-auto pt-20">
-                    <p className="text-[10px] font-extrabold uppercase tracking-[.14em] text-[#FFD7A7]">{student?.course || "Ooshas Prep learner"}</p>
-                    <h3 className="mt-1 text-xl font-black leading-tight tracking-tight text-white drop-shadow-md">{student?.name || "Student success story"}</h3>
-                    {student?.university && <p className="mt-1 truncate text-xs font-medium text-white/75">Next chapter · {student.university}</p>}
-                    <p className="mt-2 line-clamp-2 text-xs leading-[1.4rem] text-white/85">{excerpt || "A determined learner, a focused plan, and steady progress. Discover more about this student’s journey."}</p>
-                    <span className={`mt-3 inline-flex items-center gap-2 text-xs font-extrabold ${slug ? "text-[#FFD7A7]" : "text-white/70"}`}>
-                      {slug ? "Explore achievement" : "Student testimonial"}{slug && <ArrowUpRight size={16} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />}
-                    </span>
-                  </div>
-                </div>
-              );
-
-              return slug ? (
-                <Link key={student?._id || slug} href={`/case-study/${slug}`} className="group flex h-full min-h-[320px] flex-col overflow-hidden rounded-[1.4rem] bg-[#292522] shadow-[0_12px_35px_rgba(41,37,34,.14)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_24px_55px_rgba(41,37,34,.24)]">
-                  {card}
-                </Link>
-              ) : (
-                <article key={student?._id || `${student?.name}-${index}`} className="group flex h-full min-h-[320px] flex-col overflow-hidden rounded-[1.4rem] bg-[#292522] shadow-[0_12px_35px_rgba(41,37,34,.14)]">
-                  {card}
-                </article>
-              );
-            })}
+            {students.map((student: any, index: number) => (
+              <StudentStoryCard key={student?._id || `${student?.name}-${index}`} student={student} index={index} />
+            ))}
           </div>
         ) : (
           <div className="rounded-3xl border border-dashed border-[#E9C8B9] bg-[#FFF8F4] px-6 py-10 text-center">

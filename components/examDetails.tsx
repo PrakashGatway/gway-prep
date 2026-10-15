@@ -187,10 +187,10 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
 
   return (
     <main className="relative flex flex-col">
-      <div className="relative w-full overflow-visible px-4 sm:px-8 lg:px-3 py-6 sm:py-8">
+      <div className="relative w-full overflow-visible px-4 sm:px-8 lg:px-3 py-0 sm:py-0">
         <div ref={tocRef} className="h-0"></div>
         <div
-          className={`sticky xl:top-18 top-14 sm:top-16 lg:top-18 z-40 border-b bg-white
+          className={`sticky xl:top-18 top-19 sm:top-16 lg:top-18 z-40 border-b bg-white
     transition-all duration-300 ease-in-out
     ${
       isSticky
@@ -223,7 +223,7 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
             ))}
           </div>
         </div>
-        <div className="relative z-10 mx-auto bg-white max-w-7xl mx-auto px-1x py-8">
+        <div className="relative z-10 mx-auto bg-white max-w-7xl mx-auto px-1x py-0 xl:py-4">
           {/* Heading */}
           <h1 className="mb-4 text-left text-2xl font-bold leading-tight sm:text-3xl lg:text-[36px] lg:leading-[1.25]">
             <span className="text-primary">

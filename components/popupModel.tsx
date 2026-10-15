@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import FormSection from "./formSection";
+import axiosInstance from "@/app/lib/axios";
+import toast from "react-hot-toast";
 
 interface PopupModalProps {
   isPopupOpen: boolean;
@@ -59,14 +61,23 @@ export default function PopupModal({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
+
+    try{
+ const response = await axiosInstance.post("/admin/formDetails", formData);
     console.log("Consultation form:", formData);
+    toast.success("Form submitted Successfully")
+    handleClose();
+    }
+    catch(err){
+      toast.error("Something went wrong",err)
+    }
+
     
     // Add your API call here
 
     // Optional: window.location.href = "/thank-you";
-    handleClose();
   };
 
   const FORM_CONFIG: any = {
@@ -142,7 +153,7 @@ export default function PopupModal({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/20 p-4 backdrop-blur-[1px]"
           onClick={handleClose}
         >
           <motion.div
@@ -201,8 +212,8 @@ export default function PopupModal({
 
                 {/* Decorative Bottom Badge */}
                 <div className="absolute bottom-8 left-12 z-10 flex items-center gap-3 rounded-2xl bg-white/80 p-4 shadow-lg backdrop-blur-sm">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#F36C45] text-white">
-                    <Globe2 className="h-5 w-5" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full text-white">
+                    <img src="/image/logo.png" alt="" />
                   </div>
                   <div>
                     <p className="text-sm font-bold text-slate-800">Ooshas Prep Education</p>

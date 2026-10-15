@@ -19,7 +19,7 @@
 
 .hero {
   position: relative;
-  min-height: 570px;
+  min-height: 500px;
   overflow: hidden;
   background: #fff5f7;
 }
@@ -41,8 +41,42 @@
 .heroMeta + .heroMeta { margin-top: 2px; }
 .primaryButton { display: inline-flex; min-height: 45px; align-items: center; justify-content: center; gap: 9px; margin-top: 23px; padding: 0 18px; border: 0; border-radius: 2px; background: #f12650; color: #fff; font-size: 14px; font-weight: 800; text-decoration: none; transition: transform .2s ease, background-color .2s ease; }
 .primaryButton:hover { transform: translateY(-2px); background: #cf173d; }
-.heroArt { position: absolute; inset: 0 0 0 auto; width: 52%; min-height: 0; }
-.heroImage { object-fit: contain; object-position: right center; }
+
+.hero {
+  position: relative;
+  min-height: 537px;
+  overflow: hidden;
+  background: #fff5f8;
+}
+
+.heroArt {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 52%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+
+.heroImage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: right bottom;
+  transform: none;
+}
+
+/* Keep text above the artwork */
+.heroInner {
+  position: relative;
+  z-index: 2;
+}
+
+
 
 .reviews { padding-block: 45px 55px; }
 .reviews h2, .comparisonSection > h2, .process h2, .learn > h2 { margin: 0 0 30px; text-align: center; font-size: clamp(23px, 3vw, 32px); line-height: 1.2; font-weight: 800; letter-spacing: -.035em; }
@@ -51,7 +85,7 @@
 .reviewSlide { min-width: 0; height: auto; }
 .reviewCard { position: relative; display: flex; min-height: 178px; height: 100%; flex-direction: column; padding: 21px 23px 19px; background: #fff0f3; }
 .reviewCard::after { position: absolute; top: 0; right: 0; width: 0; height: 0; border-top: 38px solid var(--se-pink); border-left: 38px solid transparent; content: ""; }
-.stars { color: #ffbd16; font-size: 28px; letter-spacing: 1px; line-height: 1; }
+.stars { color: #ffbd16; font-size: 48px; letter-spacing: 1px; line-height: 1; }
 .reviewCard p { margin: 13px 0 9px; color: #27262a; font-size: 15px; line-height: 1.5; }
 .reviewSource { color: #87838a; font-size: 10px; }
 
@@ -80,22 +114,83 @@
 .benefitList li { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; font-size: 15px; line-height: 1.38; }
 .benefitList svg { flex: 0 0 auto; margin-top: 1px; border: 1.5px solid currentColor; border-radius: 4px; padding: 1px; color: var(--se-pink); }
 
-.comparisonSection { padding-block: 66px 65px; }
-.comparisonSection > h2 { margin-bottom: 38px; }
-.comparisonSection > h2 span { position: relative; z-index: 0; }
-.comparisonSection > h2 span::after { position: absolute; z-index: -1; right: -5px; bottom: 1px; left: -5px; height: 42%; background: #ffe0e7; content: ""; }
-.comparisonGrid { display: grid; max-width: 1280px; grid-template-columns: .9fr 1fr 1fr; gap: 26px; margin-inline: auto; }
-.comparisonCard { position: relative; overflow: visible; background: #f1f5f8; }
-.featureCard::before { position: absolute; top: -9px; left: -9px; width: 0; height: 0; border-top: 20px solid #32333a; border-right: 20px solid transparent; content: ""; }
-.comparisonCard h3 { display: flex; min-height: 43px; align-items: center; justify-content: center; margin: 0 0 3px; padding: 8px 10px; color: white; text-align: center; font-size: 15px; font-weight: 800; }
-.comparisonCard p { display: flex; min-height: 40px; align-items: center; gap: 7px; margin: 0; padding: 7px 16px; color: #33333a; font-size: 13px; line-height: 1.35; }
+
+.comparisonSection {
+  padding-block: 32px 60px;
+}
+
+.comparisonSection > h2 {
+  margin: 0 0 42px;
+  text-align: center;
+  font-size: clamp(24px, 2.7vw, 33px);
+  line-height: 1.2;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.comparisonSection > h2 span {
+  position: relative;
+  z-index: 0;
+  color: var(--se-pink);
+}
+
+.comparisonSection > h2 span::after {
+  display: none;
+}
+
+.comparisonGrid {
+  display: grid;
+  max-width: 1200px;
+  grid-template-columns: 0.92fr 1fr 1fr;
+  gap: 32px;
+  margin-inline: auto;
+}
+
+.comparisonCard {
+  position: relative;
+  overflow: visible;
+  min-height: 0;
+  padding-bottom: 16px;
+  background: #f0f4f7;
+}
+
+.comparisonCard h3 {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  width: calc(100% + 21px);
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  margin: 56px 0 8px -21px;
+  padding: 6px 10px;
+  color: white;
+  text-align: center;
+  font-size: clamp(17px, 1.7vw, 27px);
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.comparisonCard p {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 6px 20px;
+  color: #111;
+  font-size: clamp(15px, 1.35vw, 16px);
+  line-height: 1.3;
+}
+
 .featureCard { background: #fff0f3; }
+.featureCard::before { top: 36px; left: -21px; }
 .featureCard h3 { background: var(--se-pink); }
-.featureCard p { padding-left: 27px; }
-.speakingCard h3 { background: #ff7956; }
-.speakingCard svg { flex: 0 0 auto; color: #23c779; }
+.featureCard p { padding-left: 60px; }
+.speakingCard h3 { background: #ff7555; }
+.speakingCard svg { flex: 0 0 auto; width: 22px; height: 22px; padding: 3px; border-radius: 50%; background: #40cc7b; color: #fff; stroke-width: 3.5; }
 .traditionalCard h3 { background: #f76d4b; }
-.traditionalCard svg { flex: 0 0 auto; color: #f33258; }
+.traditionalCard svg { flex: 0 0 auto; color: #ff5270; width: 23px; height: 23px; stroke-width: 3; }
 
 .process { background: var(--se-pale-blue); }
 .processInner { padding-block: 45px 43px; }
@@ -119,13 +214,13 @@
 .learnArt { position: relative; width: 100%; min-height: 320px; }
 .learnArt img { object-fit: contain; }
 
-.cta { position: relative; display: grid; min-height: 200px; grid-template-columns: 1fr .95fr; align-items: center; overflow: hidden; margin-block: 10px 65px; border: 1px solid #ffc2cf; border-radius: 18px; background: #fff0f3; }
+.cta { position: relative; display: grid; min-height: 300px; grid-template-columns: 1fr .95fr; align-items: center; overflow: hidden; margin-block: 10px 65px; border: 1px solid #ffc2cf; border-radius: 18px; background: #fff0f3; }
 .ctaCopy { position: relative; z-index: 1; padding: 25px 0 25px 42px; }
 .ctaPill { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 30px; background: #ffe59b; color: #4d3b0a; font-size: 11px; font-weight: 700; }
 .cta h2 { margin: 12px 0 2px; color: var(--se-pink); font-size: clamp(21px, 2.5vw, 28px); font-weight: 800; line-height: 1.2; }
-.cta p { margin: 0; color: #222; font-size: 17px; font-weight: 800; }
-.cta .primaryButton { min-height: 39px; margin-top: 14px; font-size: 12px; }
-.ctaImage { position: absolute; inset: 0 0 0 52%; }
+.cta p { margin: 0; color: #222; font-size: 28px; font-weight: 800; }
+.cta .primaryButton { min-height: 39px; margin-top: 14px; font-size: 16px; }
+.ctaImage { position: absolute; inset: 0 0 0 52%; background: radial-gradient(circle at 18% 58%, rgba(243, 50, 88, .055) 0 82px, transparent 83px), radial-gradient(circle at 95% 34%, rgba(243, 50, 88, .045) 0 94px, transparent 95px), linear-gradient(48deg, transparent 72%, rgba(243, 50, 88, .035) 72.2%); }
 .ctaImage::before { position: absolute; inset: 0 auto 0 -1px; z-index: 1; width: 29%; background: linear-gradient(90deg, #fff0f3, rgba(255,240,243,0)); content: ""; }
 .ctaImage img { object-fit: cover; object-position: center 40%; }
 
@@ -145,8 +240,8 @@
   .whyHeading h2 { font-size: 24px; }
   .benefitList { padding: 12px 17px; }
   .benefitList li { font-size: 12px; }
-  .comparisonGrid { gap: 12px; }
-  .comparisonCard p { padding-inline: 10px; font-size: 11px; }
+  .comparisonGrid { gap: 18px; }
+  .comparisonCard p { padding-inline: 10px; font-size: 14px; }
   .learnLayout { grid-template-columns: 1fr 220px 1fr; gap: 9px; }
   .learningPoint { padding-inline: 8px; }
   .learningPoint h3 { font-size: 13px; }
@@ -188,9 +283,11 @@
   .benefitList { padding: 10px 15px; }
   .benefitList li { padding-block: 9px; font-size: 12px; }
   .comparisonSection { padding-block: 38px; }
-  .comparisonGrid { grid-template-columns: 1fr; gap: 12px; }
-  .comparisonCard h3 { min-height: 40px; }
-  .comparisonCard p { min-height: 36px; padding-inline: 17px; font-size: 12px; }
+  .comparisonGrid { grid-template-columns: 1fr; gap: 16px; }
+  .comparisonCard { min-height: 0; padding-bottom: 16px; }
+  .comparisonCard::before { top: 15px; left: -12px; border-top-width: 12px; border-left-width: 12px; }
+  .comparisonCard h3 { width: calc(100% + 12px); min-height: 42px; margin: 26px 0 10px -12px; }
+  .comparisonCard p { min-height: 42px; padding-inline: 17px; font-size: 14px; }
   .featureCard p { padding-left: 17px; }
   .processInner { padding-block: 36px; }
   .stepGrid { grid-template-columns: repeat(2, 1fr); gap: 26px 12px; }

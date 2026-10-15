@@ -21,7 +21,12 @@ export default function TestSeries({
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState(searchParams.get("search"));
+    const [visibleCount, setVisibleCount] = useState(12);
+
   const [sort, setSort] = useState("");
+  console.log(allCourses,"cou")
+  console.log(courses,"cou")
+
 
   const handleSort = (sortValue) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -326,7 +331,7 @@ export default function TestSeries({
             </div>
           </div>
 
-          {loading ? (
+                 {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
               {[...Array(3)].map((_, index) => (
                 <div
@@ -347,15 +352,34 @@ export default function TestSeries({
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 mt-10">
-              {courses.map((course) => (
-                <CourseCard
-                  key={course._id || course.id}
-                  course={course}
-                  variant="grid"
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6 mt-10">
+                {courses.slice(0, visibleCount).map((course, i) => (
+                  <CourseCard
+                    key={course._id || course.id}
+                    course={course}
+                    index={i}
+                    variant="grid"
+                  />
+                ))}
+              </div>
+          
+              {visibleCount < courses.length && (
+                <div className="mt-10 flex justify-center">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setVisibleCount((prev) =>
+                        Math.min(prev + 12, courses.length)
+                      )
+                    }
+                    className="rounded-xl bg-[#FF6736] px-8 py-3 font-semibold text-white transition-colors duration-300 hover:bg-[#e9572b]"
+                  >
+                    Show More
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
@@ -393,9 +417,11 @@ export default function TestSeries({
   );
 }
 
-export const CourseCard = ({ course, variant = "grid" }) => {
+export const CourseCard = ({ course, variant = "grid",index }) => {
   const realPrice = course?.pricing?.amount || 0;
   const earlyBird = course?.pricing?.earlyBird;
+
+  
 
   const navigate = useRouter();
 
@@ -422,24 +448,24 @@ export const CourseCard = ({ course, variant = "grid" }) => {
   const isSlider = variant === "slider";
 
   return (
-    <div className={isSlider ? "keen-slider__slide p-0 " : ""}>
+     <div className={isSlider ? "keen-slider__slide p-0 " : ""}>
       <div className="w-full h-full  p-5 overflow-hidden">
         {/* Outer Gradient Border */}
-        <div
-          className="h-full rounded-[32px] p-[1.5px] bg-gradient-to-b from-white via-gray-200 to-gray-500 overflow-hidden  
-  transition-all duration-300
- "
-        >
-          <div className="relative flex h-full flex-col rounded-[32px] bg-white overflow-hidden">
+          <div className="relative flex h-full flex-col rounded-4xl bg-white overflow-hidden shadow-lg">
             {/* ================= IMAGE ================= */}
             <div className="shrink-0">
-              <div className="rounded-[32px] p-2.5 bg-gradient-to-b from-[#CFCFCF] via-[#ECECEC] to-white">
-                <div className="rounded-[32px] overflow-hidden h-full sm:h-full lg:h-[180px]">
+              <div className="rounded-4xl p-2.5 bg-gradient-to-b from-[#CFCFCF] via-[#ECECEC] to-white">
+                <div className="rounded-3xl overflow-hidden h-full sm:h-full lg:h-[180px]">
                   <img
-                    src={course?.thumbnailPic}
+                    src={
+                      !course.thumbnailPic
+                        ? "/test-bg.jpg"
+                        : `${course?.thumbnailPic}`
+                    }
                     alt={course?.title}
                     className="w-full h-full object-contain lg:object-cover"
                   />
+               
                 </div>
               </div>
             </div>
@@ -453,11 +479,11 @@ export const CourseCard = ({ course, variant = "grid" }) => {
 
             {/* ================= BODY ================= */}
             <div
-              onClick={() => navigate(`/course/${course.slug}`)}
+              onClick={() => navigate.push(`/tests/${course.slug}`)}
               className="flex flex-1 flex-col px-6 pb-4 cursor-pointer"
             >
               {/* Title */}
-              <div className="flex items-center justify-between ">
+              <div className="flex items-center justify-between mt-4 ">
                 <h3 className="text-xl md:text-lg font-bold text-gray-900 leading-tight line-clamp-1 w-55">
                   <span className="text-[#FF6736]">
                     {course?.title?.split(" ")[0]}
@@ -488,7 +514,7 @@ export const CourseCard = ({ course, variant = "grid" }) => {
               </p>
 
               {/* ================= META ================= */}
-              <div className="mt-3 text-gray-600 flex flex-wrap items-center gap-4">
+              <div className="mt-3 text-gray-600 grid grid-cols-2 items-center gap-3">
                 {/* Instructor */}
                 <div className="flex items-center gap-1 text-base">
                   <BookOpen size={20} className="text-[#FF6736] shrink-0" />
@@ -517,46 +543,36 @@ export const CourseCard = ({ course, variant = "grid" }) => {
             </div>
 
             {/* ================= FOOTER ================= */}
-            <div className=" px-5 pb-2 hidden lg:block">
-              {/* ================= PRICE ================= */}
-              <div className="mb-3 flex justify-start items-center gap-3">
+      
+<div className="px-5 pb-2 hidden lg:block my-3">
+  {/* Explore / Book Now */}
+  <div className="mb-3 flex justify-between items-center rounded-lg bg-gray-200 p-1">
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        navigate.push(`/tests/${course?.slug}`);
+      }}
+      className={`flex-1 w-3 rounded-lg ${index%2 ? "bg-black" : "bg-[#ff7247]"} px-0 py-2 text-sm font-semibold text-white whitespace-nowrap transition-all duration-300`}
+    >
+      Explore
+    </button>
 
-                <div>
-                   <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/course/${course?.slug}`);
-                      }}
-                      className="border border-[#FF6736] rounded-xl px-5 py-2 text-[#FF6736] text-sm font-medium hover:bg-[#FF6736] hover:text-white transition-all duration-300 whitespace-nowrap"
-                    >
-                      Explore Now
-                    </button>
-                </div>
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        navigate(`/course/${course?.slug}`);
+      }}
+      className="flex-1 rounded-full px-5 py-2 text-sm font-semibold text-[#172033] whitespace-nowrap transition-all duration-300 hover:bg-white/50 ml-14"
+    >
+      Book Now
+    </button>
+  </div>
 
-                <div>
-                   <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate(`/course/${course?.slug}`);
-                      }}
-                      className="border border-[#FF6736] rounded-xl px-5 py-2 text-white text-sm font-medium bg-[#FF6736] hover:text-white transition-all duration-300 whitespace-nowrap"
-                    >
-                      Book Now
-                    </button>
-                </div>
-              </div>
-              <div className="rounded-full bg-[#FCE7D3] flex items-center p-2">
-                <span className="bg-[#FF6D42] text-white rounded-full px-4 py-1 text-xs font-semibold">
-                  Ooshas Prep
-                </span>
+ 
+</div>
 
-                <span className="ml-3 text-gray-700 text-xs">
-                  Limited Time Offer
-                </span>
-              </div>
-            </div>
           </div>
-        </div>
+    
       </div>
     </div>
   );

@@ -44,7 +44,7 @@ export default function ReviewSlider({ reviews }: { reviews: any[] }) {
             <div className={styles.stars} aria-label={`${rating} out of 5 stars`}>
               {"★".repeat(rating)}{"☆".repeat(5 - rating)}
             </div>
-            <p>{text}</p>
+            <p className="!text-base">{text}</p>
           </div>
         </article>;
       })}
