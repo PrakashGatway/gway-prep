@@ -33,11 +33,67 @@ interface CaseStudyDetailProps {
 }
 
 type AnyRecord = Record<string, any>;
-
 type PageSection = {
   name?: string;
+  sectionName?: string;
+  slug?: string;
+  data?: AnyRecord;
   fields?: AnyRecord | Array<{ name: string; value?: unknown }>;
   [key: string]: any;
+};
+
+const DEFAULT_FAQS: CaseStudyFaq[] = [
+  {
+    question: "What is a student case study?",
+    answer:
+      "A student case study shares a learner’s preparation journey and outcome so other students can learn from their experience.",
+  },
+  {
+    question: "How are these student stories selected?",
+    answer:
+      "Stories are created from student profiles and experiences shared with Ooshas Prep. Published stories are reviewed by our team.",
+  },
+  {
+    question: "Can I get a preparation plan like the students featured here?",
+    answer:
+      "Yes. Tell our counselling team about your target exam, timeline, and current level so they can help you explore a suitable plan.",
+  },
+  {
+    question: "Where can I find a student’s full story?",
+    answer:
+      "Open a student card with a View Case Study link. Some student profiles may be published as testimonials only.",
+  },
+];
+
+const DEFAULTS = {
+  stories: {
+    eyebrow: "Keep exploring",
+    title: "More student success stories",
+    subtitle:
+      "Every learner brings a different starting point. These stories celebrate the goals, effort, and achievements along the way.",
+  },
+  faq: {
+    eyebrow: "QUESTIONS, ANSWERED",
+    title: "A little more about student success.",
+    subtitle:
+      "Wondering how these journeys are built or where to begin with your own? Start here.",
+  },
+  blogs: {
+    eyebrow: "FRESH FROM THE BLOG",
+    title: "Keep your preparation moving",
+    subtitle: "",
+    buttonText: "All articles",
+    buttonUrl: "/blogs",
+  },
+  cta: {
+    eyebrow: "YOUR STORY STARTS HERE",
+    title: "Ready to write your success story?",
+    subtitle:
+      "Tell us what you’re working toward. Our team will help you find a preparation plan that fits your goal and timeline.",
+    helperText: "A counsellor will get back to you shortly",
+    formTitle: "Start your success story",
+    buttonText: "Start my success story",
+  },
 };
 
 async function findStudent(slug: string) {
@@ -47,7 +103,7 @@ async function findStudent(slug: string) {
     const student = await getStudentBySlug(normalizedSlug);
     if (student) return student;
   } catch {
-    // Fall back to the student list for name-based routes.
+    // Fall back to the complete student list.
   }
 
   try {
@@ -64,96 +120,86 @@ async function findStudent(slug: string) {
   }
 }
 
-/**
- * Reads one field from either supported section field format:
- * fields: { title: "..." }
- * or fields: [{ name: "title", value: "..." }]
- */
+/** Supports fields stored as an object or as [{ name, value }] entries. */
 function readField(fields: PageSection["fields"], fieldName: string): any {
   if (!fields) return undefined;
-
   if (Array.isArray(fields)) {
-    const field = fields.find((item) => item?.name === fieldName);
-    return field?.value;
+    return fields.find((item) => item?.name === fieldName)?.value;
   }
-
   return fields[fieldName];
 }
 
-function getSection(page: AnyRecord | null, sectionName: string): PageSection | null {
-  const sections = page?.sections;
-  if (!sections) return null;
+/** Matches the same CMS section formats used on the main /case-study page. */
+function getSectionData(page: AnyRecord | null, sectionName: string) {
+  const sections =
+    page?.sections ?? page?.pageData?.sections ?? page?.data?.sections ?? [];
 
   if (Array.isArray(sections)) {
-    return (
-      sections.find(
-        (section: PageSection) =>
-          section?.name === sectionName ||
-          section?.sectionName === sectionName ||
-          section?.slug === sectionName,
-      ) || null
+    const section = sections.find(
+      (item: PageSection) =>
+        item?.name === sectionName ||
+        item?.sectionName === sectionName ||
+        item?.slug === sectionName,
     );
-  }
+    if (!section) return {};
 
-  if (typeof sections === "object") {
-    const section = sections[sectionName];
-    if (section) {
-      return {
-        name: sectionName,
-        ...section,
-        fields: section.fields ?? section,
-      };
+    const result: AnyRecord = {
+      ...(section?.data && typeof section.data === "object"
+        ? section.data
+        : {}),
+    };
+
+    if (Array.isArray(section?.fields)) {
+      section.fields.forEach((field: AnyRecord) => {
+        if (field?.name) result[field.name] = field.value ?? result[field.name];
+      });
+    } else if (section?.fields && typeof section.fields === "object") {
+      Object.assign(result, section.fields);
     }
+
+    return { ...section, ...result };
   }
 
-  return null;
+  if (sections && typeof sections === "object") {
+    const section = sections[sectionName] ?? {};
+    const result: AnyRecord = {
+      ...(section?.data && typeof section.data === "object"
+        ? section.data
+        : {}),
+    };
+
+    if (Array.isArray(section?.fields)) {
+      section.fields.forEach((field: AnyRecord) => {
+        if (field?.name) result[field.name] = field.value ?? result[field.name];
+      });
+    } else if (section?.fields && typeof section.fields === "object") {
+      Object.assign(result, section.fields);
+    }
+
+    // Some CMS responses put fields directly on the section object.
+    return { ...section, ...result, ...section.fields };
+  }
+
+  return {};
 }
 
-function getText(
-  page: AnyRecord | null,
-  sectionName: string,
-  fieldName: string,
-  fallback = "",
-): string {
-  const section = getSection(page, sectionName);
-  const value = readField(section?.fields, fieldName);
-
-  if (typeof value === "string" && value.trim()) return value;
+function getText(value: unknown, fallback: string): string {
+  if (typeof value === "string" && value.trim()) return value.trim();
   if (typeof value === "number") return String(value);
   return fallback;
 }
 
-function getRepeater(
-  page: AnyRecord | null,
-  sectionName: string,
-  fieldName: string,
-): AnyRecord[] {
-  const section = getSection(page, sectionName);
-  const value = readField(section?.fields, fieldName);
-  return Array.isArray(value) ? value : [];
+function getLink(value: unknown, fallback: string): string {
+  return getText(value, fallback);
 }
 
-/**
- * Fetch the page content saved in the CMS for this dynamic case-study route.
- * The exact page slug may be either the student slug or "case-study-{slug}".
- * If no matching CMS page exists, the student data and defaults below are used.
- */
-async function loadCaseStudyPage(slug: string): Promise<AnyRecord | null> {
-  const normalizedSlug = slugify(slug);
-  const possibleSlugs = [
-    normalizedSlug,
-    `case-study-${normalizedSlug}`,
-    `case-study-detail-${normalizedSlug}`,
-  ];
-
-  for (const pageSlug of possibleSlugs) {
-    try {
-      const response = await getPageInfo(pageSlug);
-      const page = response?.data?.data ?? response?.data ?? response;
-      if (page && (page.sections || page.seoMeta || page.template)) return page;
-    } catch {
-      // Try the next possible slug.
-    }
+async function loadCaseStudyPage(): Promise<AnyRecord | null> {
+  try {
+    const response = await getPageInfo("casestudy");
+    const page = response?.data?.data ?? response?.data ?? response;
+    if (page && !Array.isArray(page)) return page;
+  } catch {
+    // Fall back to the pages list.
   }
 
   try {
@@ -166,59 +212,30 @@ async function loadCaseStudyPage(slug: string): Promise<AnyRecord | null> {
           ? response
           : [];
 
-    const matchingPage = pages.find((item: AnyRecord) => {
-      const pageSlug = slugify(
-        item?.seoMeta?.slug || item?.slug || item?.pageSlug || "",
-      );
-      const template = slugify(
-        item?.seoMeta?.template || item?.template || "",
-      );
-      return (
-        (pageSlug === normalizedSlug ||
-          pageSlug === `case-study-${normalizedSlug}` ||
-          pageSlug === `case-study-detail-${normalizedSlug}`) &&
-        (!template ||
-          template === "case-study-detail" ||
-          template === "casestudydetail")
-      );
-    });
+    return (
+      pages.find((page: AnyRecord) => {
+        const template = String(
+          page?.template ?? page?.seoMeta?.template ?? "",
+        )
+          .trim()
+          .toLowerCase()
+          .replace(/[\s_-]/g, "");
 
-    return matchingPage || null;
+        const storedSlug = slugify(
+          page?.seoMeta?.slug ?? page?.slug ?? page?.name ?? "",
+        );
+
+        return (
+          template === "casestudy" ||
+          storedSlug === "case-study" ||
+          storedSlug === "casestudy"
+        );
+      }) ?? null
+    );
   } catch {
     return null;
   }
 }
-
-function richContent(value: unknown) {
-  return typeof value === "string" ? value : "";
-}
-
-function splitPoints(value: string, fallback: string[]) {
-  const points = value
-    .split(/\r?\n/)
-    .map((item) => item.trim())
-    .filter(Boolean);
-
-  return points.length ? points : fallback;
-}
-
-const defaultFaqs: CaseStudyFaq[] = [
-  {
-    question: "Can my preparation journey be different from this one?",
-    answer:
-      "Absolutely. Every plan should reflect the student’s current level, available study time, and target. This story is one example of a path that worked for one learner.",
-  },
-  {
-    question: "How can I get support for the same course?",
-    answer:
-      "Contact our team with your exam, goal, and preferred timeline. A counsellor can help you understand available classes, practice resources, and the next steps.",
-  },
-  {
-    question: "Are student stories published with permission?",
-    answer:
-      "Case studies are shared by Ooshas Prep for learning and inspiration. If you have a question about a particular story or its details, please contact our team.",
-  },
-];
 
 export async function generateMetadata({
   params,
@@ -237,9 +254,7 @@ export async function generateMetadata({
     student.course || "Case Study"
   } | Ooshas Prep`;
   const description = `${student.name || "An Ooshas Prep student"}${
-    student.course
-      ? `’s ${student.course} preparation journey`
-      : "’s preparation journey"
+    student.course ? `’s ${student.course} preparation journey` : "’s preparation journey"
   }${student.score ? ` and achievement of ${student.score}` : ""}.`;
   const canonical = `${SITE_URL}/case-study/${slugify(slug)}`;
 
@@ -266,340 +281,132 @@ export default async function CaseStudyDetailPage({
   const { slug } = await params;
   const student = await findStudent(slug);
 
-  // Keep the dynamic route tied to the actual student record.
   if (!student || getStudentCaseStudySlug(student) !== slugify(slug)) {
     notFound();
   }
 
-  let moreStories: AnyRecord[] = [];
+  const [sharedPage, studentResponse] = await Promise.all([
+    loadCaseStudyPage(),
+    getStudent("all").catch(() => null),
+  ]);
 
-  try {
-    const response = await getStudent("all");
-    moreStories = (Array.isArray(response?.data) ? response.data : [])
-      .filter((item: AnyRecord) => item?._id !== student._id)
-      .slice(0, 8);
-  } catch {
-    moreStories = [];
-  }
+  const allStudents = Array.isArray(studentResponse?.data)
+    ? studentResponse.data
+    : [];
+  const moreStories = allStudents
+    .filter((item: AnyRecord) => item?._id !== student._id)
+    .slice(0, 8);
 
-  const cmsPage = await loadCaseStudyPage(slug);
 
-  const heroSection = "case-study-hero-section";
-  const storySection = "case-study-story-section";
-  const faqSection = "case-study-faq-section";
-  const relatedSection = "case-study-related-section";
-  const blogsSection = "case-study-blogs-section";
-  const formSection = "case-study-form-section";
-  const ctaSection = "case-study-cta-section";
+    console.log(student,"jk")
 
-  const accent = student.colorCode || "#F36D45";
-
-  // Hero section: CMS content takes priority; student data is the fallback.
-  const heroEyebrow = getText(
-    cmsPage,
-    heroSection,
-    "eyebrow",
-    "Student success story",
+  // Shared CMS sections — same section names as the main /case-study page.
+  const storiesData = getSectionData(
+    sharedPage,
+    "case-study-stories-section",
   );
+  const faqData = getSectionData(sharedPage, "case-study-faq-section");
+  const blogsData = getSectionData(sharedPage, "case-study-blogs-section");
+  const ctaData = getSectionData(
+    sharedPage,
+    "case-study-final-cta-section",
+  );
+
+  const stories = {
+    eyebrow: getText(storiesData.eyebrow, DEFAULTS.stories.eyebrow),
+    title: getText(storiesData.title, DEFAULTS.stories.title),
+    subtitle: getText(storiesData.subtitle, DEFAULTS.stories.subtitle),
+  };
+
+  const faq = {
+    eyebrow: getText(faqData.eyebrow, DEFAULTS.faq.eyebrow),
+    title: getText(faqData.title, DEFAULTS.faq.title),
+    subtitle: getText(faqData.subtitle, DEFAULTS.faq.subtitle),
+  };
+
+  const rawFaqs = Array.isArray(faqData.items)
+    ? faqData.items
+    : Array.isArray(faqData.faqs)
+      ? faqData.faqs
+      : [];
+
+  const cmsFaqs: CaseStudyFaq[] = rawFaqs
+    .filter(
+      (item: AnyRecord) =>
+        typeof item?.question === "string" &&
+        item.question.trim() &&
+        typeof item?.answer === "string" &&
+        item.answer.trim(),
+    )
+    .map((item: AnyRecord) => ({
+      question: item.question.trim(),
+      answer: item.answer.trim(),
+    }));
+
+  const displayedFaqs = cmsFaqs.length ? cmsFaqs : DEFAULT_FAQS;
+
+  const blogs = {
+    eyebrow: getText(blogsData.eyebrow, DEFAULTS.blogs.eyebrow),
+    title: getText(blogsData.title, DEFAULTS.blogs.title),
+    subtitle: getText(blogsData.subtitle, DEFAULTS.blogs.subtitle),
+    buttonText: getText(blogsData.buttonText, DEFAULTS.blogs.buttonText),
+    buttonUrl: getLink(blogsData.buttonUrl, DEFAULTS.blogs.buttonUrl),
+  };
+
+  const cta = {
+    eyebrow: getText(ctaData.eyebrow, DEFAULTS.cta.eyebrow),
+    title: getText(ctaData.title, DEFAULTS.cta.title),
+    subtitle: getText(ctaData.subtitle, DEFAULTS.cta.subtitle),
+    helperText: getText(ctaData.helperText, DEFAULTS.cta.helperText),
+    formTitle: getText(ctaData.formTitle, DEFAULTS.cta.formTitle),
+    buttonText: getText(ctaData.buttonText, DEFAULTS.cta.buttonText),
+  };
+
+  // The student API supplies editable hero values; keep these defaults for older records.
+  const accent = student.colorCode || "#F36D45";
+  const heroEyebrow = "Student success story";
   const heroTitle = getText(
-    cmsPage,
-    heroSection,
-    "title",
+    student.title,
     `${student.name || "Student"}’s journey`,
   );
   const heroDescription = getText(
-    cmsPage,
-    heroSection,
-    "description",
+    student.subtitle,
     "A personal path shaped by a clear goal, committed preparation, and steady progress.",
   );
-  const heroStudentName = getText(
-    cmsPage,
-    heroSection,
-    "studentName",
-    student.name || "Student",
-  );
-  const heroStudentImage = getText(
-    cmsPage,
-    heroSection,
-    "studentImage",
-    student.image || "",
-  );
-  const heroAchievement = getText(
-    cmsPage,
-    heroSection,
-    "achievement",
-    student.score || "A proud milestone",
-  );
-  const heroCourse = getText(
-    cmsPage,
-    heroSection,
-    "course",
-    student.course || "",
-  );
-  const heroUniversity = getText(
-    cmsPage,
-    heroSection,
-    "university",
-    student.university || "",
-  );
-  const heroBackgroundImage = getText(
-    cmsPage,
-    heroSection,
-    "backgroundImage",
-    "",
-  );
-  const heroButtonText = getText(
-    cmsPage,
-    heroSection,
-    "buttonText",
-    "Read the story",
-  );
-  const heroButtonUrl = getText(
-    cmsPage,
-    heroSection,
-    "buttonUrl",
-    "#the-story",
-  );
-
-  // Story section.
-  const storyEyebrow = getText(
-    cmsPage,
-    storySection,
-    "eyebrow",
-    "Behind the milestone",
-  );
-  const storyHeading = getText(
-    cmsPage,
-    storySection,
-    "heading",
-    "A goal. A plan. A story of progress.",
-  );
-  const storyContent = getText(
-    cmsPage,
-    storySection,
-    "description",
-    richContent(student.about),
-  );
-  const outcomeHeading = getText(
-    cmsPage,
-    storySection,
-    "outcomeHeading",
-    "The outcome",
-  );
-  const outcomeContent = getText(
-    cmsPage,
-    storySection,
-    "outcomeContent",
-    richContent(student.outcome),
-  );
-  const messageContent = getText(
-    cmsPage,
-    storySection,
-    "testimonial",
-    richContent(student.message),
-  );
-  const testimonialName = getText(
-    cmsPage,
-    storySection,
-    "testimonialName",
-    student.name || "Student",
-  );
-  const testimonialImage = getText(
-    cmsPage,
-    storySection,
-    "testimonialImage",
-    student.universityLogo || "",
-  );
-  const studentRating = getText(
-    cmsPage,
-    storySection,
-    "studentRating",
-    student.rating ? String(student.rating) : "",
-  );
-  const highlightsHeading = getText(
-    cmsPage,
-    storySection,
-    "highlightsHeading",
-    "The highlights",
-  );
-  const differenceHeading = getText(
-    cmsPage,
-    storySection,
-    "differenceHeading",
-    "What made the difference?",
-  );
-  const differencePoints = splitPoints(
-    getText(cmsPage, storySection, "differencePoints", ""),
-    [
-      "A clear goal to work toward",
-      "Consistent practice and feedback",
-      "Confidence built one step at a time",
-    ],
-  );
-
-  // FAQs: repeater content takes priority over the default questions.
-  const cmsFaqs = getRepeater(cmsPage, faqSection, "faqs")
-    .map((item) => ({
-      question: String(item?.question || "").trim(),
-      answer: String(item?.answer || "").trim(),
-    }))
-    .filter((item) => item.question && item.answer) as CaseStudyFaq[];
-
-  const displayedFaqs = cmsFaqs.length ? cmsFaqs : defaultFaqs;
-  const faqEyebrow = getText(
-    cmsPage,
-    faqSection,
-    "eyebrow",
-    "A few more details",
-  );
-  const faqHeading = getText(
-    cmsPage,
-    faqSection,
-    "heading",
-    "About this journey.",
-  );
-  const faqDescription = getText(
-    cmsPage,
-    faqSection,
-    "description",
-    "Every learner’s path is personal. Here are a few helpful answers about the story you just read.",
-  );
-
-  // Related stories and blogs section labels/buttons.
-  const relatedEyebrow = getText(
-    cmsPage,
-    relatedSection,
-    "eyebrow",
-    "Keep exploring",
-  );
-  const relatedHeading = getText(
-    cmsPage,
-    relatedSection,
-    "heading",
-    "More student success stories",
-  );
-  const relatedButtonText = getText(
-    cmsPage,
-    relatedSection,
-    "buttonText",
-    "View all stories",
-  );
-  const relatedButtonUrl = getText(
-    cmsPage,
-    relatedSection,
-    "buttonUrl",
-    "/case-study",
-  );
-
-  const blogsEyebrow = getText(
-    cmsPage,
-    blogsSection,
-    "eyebrow",
-    "From the blog",
-  );
-  const blogsHeading = getText(
-    cmsPage,
-    blogsSection,
-    "heading",
-    "Helpful reads for your next step",
-  );
-  const blogsButtonText = getText(
-    cmsPage,
-    blogsSection,
-    "buttonText",
-    "View all blogs",
-  );
-  const blogsButtonUrl = getText(
-    cmsPage,
-    blogsSection,
-    "buttonUrl",
-    "/blogs",
-  );
-
-  // Form and bottom CTA content.
-  const formEyebrow = getText(
-    cmsPage,
-    formSection,
-    "eyebrow",
-    "Share your success",
-  );
-  const formHeading = getText(
-    cmsPage,
-    formSection,
-    "heading",
-    "Your story could inspire someone next.",
-  );
-  const formDescription = getText(
-    cmsPage,
-    formSection,
-    "description",
-    "Tell us about your learning journey and the milestone you are proud of.",
-  );
-  const formHelperText = getText(
-    cmsPage,
-    formSection,
-    "helperText",
-    "Our team will review your submission before publishing.",
-  );
-  const formTitle = getText(
-    cmsPage,
-    formSection,
-    "formTitle",
-    "Submit your success story",
-  );
-  const formButtonText = getText(
-    cmsPage,
-    formSection,
-    "buttonText",
-    "Submit story",
-  );
-
-  const ctaEyebrow = getText(
-    cmsPage,
-    ctaSection,
-    "eyebrow",
-    "Make your next move",
-  );
-  const ctaHeading = getText(
-    cmsPage,
-    ctaSection,
-    "heading",
-    "Let’s find a path that works for you.",
-  );
-  const ctaDescription = getText(
-    cmsPage,
-    ctaSection,
-    "description",
-    "Talk with our team about your exam goals and a preparation plan built around your timeline.",
-  );
-  const ctaButtonText = getText(
-    cmsPage,
-    ctaSection,
-    "buttonText",
+  const heroStudentName = student.name || "Student";
+  const heroStudentImage = getText(student.heroImage, student.image || "");
+  const heroAchievement = student.score || "A proud milestone";
+  const heroCourse = student.course || "";
+  const heroUniversity = student.university || "";
+  const heroButtonText = getText(student.button1Text, "Read the story");
+  const heroButtonUrl = getText(student.button1Url, "#the-story");
+  const heroSecondaryButtonText = getText(
+    student.button2Text,
     "Talk to a counsellor",
   );
-  const ctaButtonUrl = getText(
-    cmsPage,
-    ctaSection,
-    "buttonUrl",
-    "/contact",
-  );
+  const heroSecondaryButtonUrl = getText(student.button2Url, "/contact");
+
+  const storyEyebrow = "Behind the milestone";
+  const storyHeading = "A goal. A plan. A story of progress.";
+  const storyContent = typeof student.about === "string" ? student.about : "";
+  const outcomeHeading = "The outcome";
+  const outcomeContent = typeof student.outcome === "string" ? student.outcome : "";
+  const messageContent = typeof student.message === "string" ? student.message : "";
+  const testimonialName = student.name || "Student";
+  const testimonialImage = student.universityLogo || "";
+  const studentRating = student.rating ? String(student.rating) : "";
+  const highlightsHeading = "The highlights";
+  const differenceHeading = "What made the difference?";
+  const differencePoints = [
+    "A clear goal to work toward",
+    "Consistent practice and feedback",
+    "Confidence built one step at a time",
+  ];
 
   return (
     <main className="overflow-hidden bg-white text-[#292522]">
-      <section
-        className="relative isolate overflow-hidden bg-[#FDF4EF]"
-        style={
-          heroBackgroundImage
-            ? {
-                backgroundImage: `linear-gradient(90deg, rgba(253,244,239,.96), rgba(253,244,239,.78)), url("${heroBackgroundImage}")`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }
-            : undefined
-        }
-      >
+      {/* Static student-specific hero */}
+      <section className="relative isolate overflow-hidden bg-[#FDF4EF]">
         <div className="absolute right-0 top-0 h-full w-[35%] bg-[#FFF0BE]" />
         <div className="absolute -right-32 -top-36 h-[430px] w-[430px] rounded-full bg-[#FFB09D]/65" />
 
@@ -617,11 +424,9 @@ export default async function CaseStudyDetailPage({
                 <Sparkles size={15} className="text-[#F36D45]" />
                 {heroEyebrow}
               </div>
-
               <h1 className="mt-4 text-left text-3xl font-extrabold leading-[1.08] tracking-[-.04em] sm:text-4xl lg:text-[3.5rem]">
                 {heroTitle}
               </h1>
-
               <p className="mt-4 max-w-xl text-lg leading-8 text-[#665C58]">
                 {heroDescription}
               </p>
@@ -646,16 +451,21 @@ export default async function CaseStudyDetailPage({
                 )}
               </div>
 
-              <a
-                href={heroButtonUrl}
-                className="group mt-8 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#F36D45] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(243,109,69,.24)] transition hover:-translate-y-0.5 hover:bg-[#DD5D38] hover:shadow-[0_14px_30px_rgba(243,109,69,.3)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#F36D45]/25 sm:w-fit"
-              >
-                {heroButtonText}
-                <ArrowRight
-                  size={17}
-                  className="transition-transform group-hover:translate-x-0.5"
-                />
-              </a>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <a
+                  href={heroButtonUrl}
+                  className="group inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#F36D45] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(243,109,69,.24)] transition hover:-translate-y-0.5 hover:bg-[#DD5D38] sm:w-fit"
+                >
+                  {heroButtonText}
+                  <ArrowRight size={17} className="transition-transform group-hover:translate-x-0.5" />
+                </a>
+                <a
+                  href={heroSecondaryButtonUrl}
+                  className="inline-flex min-h-12 w-full items-center justify-center rounded-xl border border-[#F0D8CC] bg-white px-6 py-3.5 text-sm font-bold text-[#72584D] shadow-sm transition hover:-translate-y-0.5 hover:border-[#F36D45] hover:text-[#D95C39] sm:w-fit"
+                >
+                  {heroSecondaryButtonText}
+                </a>
+              </div>
             </div>
 
             <div className="relative mx-auto w-full max-w-[530px] pb-5 lg:mr-0">
@@ -666,7 +476,7 @@ export default async function CaseStudyDetailPage({
               />
               <div className="absolute -bottom-1 left-2 z-10 h-24 w-24 rounded-full border-[13px] border-white bg-[#FF907F] sm:h-32 sm:w-32 sm:border-[17px]" />
 
-              <div className="relative z-20 mx-auto w-[88%] overflow-hidden rounded-[2.5rem_2.5rem_2.5rem_5rem] bg-gradient-to-br from-[#FFB09D] to-[#F36D45] shadow-[0_30px_75px_rgba(119,69,48,.22)]">
+              <div className="relative z-20 mx-auto w-[88%] overflow-hidden rounded-[2.5rem_2.5rem_2.5rem_5rem] bg-[#F36D45] shadow-[0_30px_75px_rgba(119,69,48,.22)]">
                 <div className="relative aspect-[.88/1] max-h-[540px]">
                   {heroStudentImage ? (
                     // eslint-disable-next-line @next/next/no-img-element
@@ -676,24 +486,19 @@ export default async function CaseStudyDetailPage({
                       className="h-full w-full object-cover transition duration-700 hover:scale-[1.03]"
                     />
                   ) : (
-                    <div className="flex h-full items-center justify-center bg-gradient-to-br from-[#FFB09D] to-[#F36D45] text-[12rem] font-bold text-white/70">
-                      {String(heroStudentName || "S").charAt(0)}
+                    <div className="flex h-full items-center justify-center text-[12rem] font-bold text-white/70">
+                      {heroStudentName.charAt(0)}
                     </div>
                   )}
-
                   <div className="absolute inset-0 bg-gradient-to-t from-[#211714]/85 via-transparent to-[#211714]/10" />
                   <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-7">
                     <p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#FFD7A7]">
                       Student spotlight
                     </p>
-                    <p className="mt-1 text-2xl font-extrabold tracking-tight drop-shadow sm:text-3xl">
+                    <p className="mt-1 text-2xl font-extrabold tracking-tight sm:text-3xl">
                       {heroStudentName}
                     </p>
-                    {heroCourse && (
-                      <p className="mt-1 text-sm font-medium text-white/85">
-                        {heroCourse}
-                      </p>
-                    )}
+                    {heroCourse && <p className="mt-1 text-sm text-white/85">{heroCourse}</p>}
                   </div>
                 </div>
               </div>
@@ -703,26 +508,15 @@ export default async function CaseStudyDetailPage({
                   <Trophy size={18} />
                 </span>
                 <span>
-                  <span className="block text-[10px] font-bold uppercase tracking-[.15em] text-[#9C7768]">
-                    Achievement
-                  </span>
-                  <span
-                    className="block text-base font-black"
-                    style={{ color: accent }}
-                  >
-                    {heroAchievement}
-                  </span>
+                  <span className="block text-[10px] font-bold uppercase tracking-[.15em] text-[#9C7768]">Achievement</span>
+                  <span className="block text-base font-black" style={{ color: accent }}>{heroAchievement}</span>
                 </span>
               </div>
 
               {heroUniversity && (
                 <div className="absolute bottom-0 right-0 z-30 max-w-[66%] rounded-2xl border border-[#F0D8CC] bg-white px-4 py-3 shadow-[0_14px_35px_rgba(71,40,29,.15)] sm:right-1 sm:px-5">
-                  <p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#9C7768]">
-                    Next chapter
-                  </p>
-                  <p className="mt-1 truncate text-sm font-extrabold text-[#292522]">
-                    {heroUniversity}
-                  </p>
+                  <p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#9C7768]">Next chapter</p>
+                  <p className="mt-1 truncate text-sm font-extrabold text-[#292522]">{heroUniversity}</p>
                 </div>
               )}
             </div>
@@ -730,14 +524,11 @@ export default async function CaseStudyDetailPage({
         </div>
       </section>
 
+      {/* Static student-specific "Behind the milestone" section */}
       <section className="mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1fr_340px] lg:gap-16 lg:px-8 lg:py-20">
         <div id="the-story" className="scroll-mt-24">
-          <p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">
-            {storyEyebrow}
-          </p>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-[-.035em] sm:text-4xl">
-            {storyHeading}
-          </h2>
+          <p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">{storyEyebrow}</p>
+          <h2 className="mt-3 text-3xl font-extrabold tracking-[-.035em] sm:text-4xl">{storyHeading}</h2>
 
           {storyContent ? (
             <div
@@ -753,41 +544,25 @@ export default async function CaseStudyDetailPage({
           {outcomeContent && (
             <div className="mt-10 rounded-[1.75rem] border border-[#F0D8CC] bg-[#FDF4EF] p-6 shadow-[0_12px_32px_rgba(41,37,34,.06)] sm:p-8">
               <div className="flex items-center gap-3">
-                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FFF0BE] text-[#A4553A]">
-                  <Trophy size={21} />
-                </span>
+                <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FFF0BE] text-[#A4553A]"><Trophy size={21} /></span>
                 <h3 className="text-xl font-bold">{outcomeHeading}</h3>
               </div>
-              <div
-                className="prose mt-4 max-w-none prose-p:leading-7 prose-p:text-[#655D59]"
-                dangerouslySetInnerHTML={{ __html: outcomeContent }}
-              />
+              <div className="prose mt-4 max-w-none prose-p:leading-7 prose-p:text-[#655D59]" dangerouslySetInnerHTML={{ __html: outcomeContent }} />
             </div>
           )}
 
           {messageContent && (
             <blockquote className="relative mt-10 overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#F36D45] to-[#D95C39] p-6 text-white shadow-[0_18px_45px_rgba(243,109,69,.2)] sm:p-9">
               <Quote size={42} className="absolute right-6 top-6 text-white/20" />
-              <div
-                className="relative prose max-w-none prose-p:text-lg prose-p:leading-8 prose-p:text-white"
-                dangerouslySetInnerHTML={{ __html: messageContent }}
-              />
+              <div className="relative prose max-w-none prose-p:text-lg prose-p:leading-8 prose-p:text-white" dangerouslySetInnerHTML={{ __html: messageContent }} />
               <footer className="relative mt-5 flex items-center gap-3 border-t border-white/25 pt-5">
                 {testimonialImage && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    src={testimonialImage}
-                    alt=""
-                    className="h-10 w-10 rounded-full bg-white object-contain p-1"
-                  />
+                  <img src={testimonialImage} alt="" className="h-10 w-10 rounded-full bg-white object-contain p-1" />
                 )}
                 <div>
                   <p className="font-bold">{testimonialName}</p>
-                  {studentRating && (
-                    <p className="text-sm text-white/80">
-                      Student rating: {studentRating}
-                    </p>
-                  )}
+                  {studentRating && <p className="text-sm text-white/80">Student rating: {studentRating}</p>}
                 </div>
               </footer>
             </blockquote>
@@ -796,44 +571,12 @@ export default async function CaseStudyDetailPage({
 
         <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start lg:pt-8">
           <div className="rounded-[1.75rem] bg-[#FFF0BE] p-6 shadow-[0_12px_32px_rgba(41,37,34,.08)] sm:p-7">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#D76843]">
-              <Award size={23} />
-            </div>
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#D76843]"><Award size={23} /></div>
             <h3 className="mt-5 text-xl font-bold">{highlightsHeading}</h3>
             <dl className="mt-5 divide-y divide-[#E6D49F]">
-              {heroCourse && (
-                <div className="py-3">
-                  <dt className="text-xs font-semibold uppercase tracking-wider text-[#8C7652]">
-                    Course
-                  </dt>
-                  <dd className="mt-1 font-semibold text-[#463C2E]">
-                    {heroCourse}
-                  </dd>
-                </div>
-              )}
-              {heroAchievement && (
-                <div className="py-3">
-                  <dt className="text-xs font-semibold uppercase tracking-wider text-[#8C7652]">
-                    Achievement
-                  </dt>
-                  <dd
-                    className="mt-1 text-2xl font-bold"
-                    style={{ color: accent }}
-                  >
-                    {heroAchievement}
-                  </dd>
-                </div>
-              )}
-              {heroUniversity && (
-                <div className="py-3">
-                  <dt className="text-xs font-semibold uppercase tracking-wider text-[#8C7652]">
-                    Next chapter
-                  </dt>
-                  <dd className="mt-1 font-semibold text-[#463C2E]">
-                    {heroUniversity}
-                  </dd>
-                </div>
-              )}
+              {heroCourse && <div className="py-3"><dt className="text-xs font-semibold uppercase tracking-wider text-[#8C7652]">Course</dt><dd className="mt-1 font-semibold text-[#463C2E]">{heroCourse}</dd></div>}
+              {heroAchievement && <div className="py-3"><dt className="text-xs font-semibold uppercase tracking-wider text-[#8C7652]">Achievement</dt><dd className="mt-1 text-2xl font-bold" style={{ color: accent }}>{heroAchievement}</dd></div>}
+              {heroUniversity && <div className="py-3"><dt className="text-xs font-semibold uppercase tracking-wider text-[#8C7652]">Next chapter</dt><dd className="mt-1 font-semibold text-[#463C2E]">{heroUniversity}</dd></div>}
             </dl>
           </div>
 
@@ -842,82 +585,49 @@ export default async function CaseStudyDetailPage({
             <ul className="mt-4 space-y-3 text-sm leading-6 text-[#655D59]">
               {differencePoints.map((point, index) => (
                 <li key={`${point}-${index}`} className="flex gap-2.5">
-                  <CheckCircle2
-                    size={18}
-                    className="mt-0.5 shrink-0 text-[#F36D45]"
-                  />
+                  <CheckCircle2 size={18} className="mt-0.5 shrink-0 text-[#F36D45]" />
                   {point}
                 </li>
               ))}
             </ul>
-            <Link
-              href="/contact"
-              className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#F36D45] bg-white px-4 py-3 text-sm font-bold text-[#D95C39] transition hover:bg-[#F36D45] hover:text-white focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#F36D45]/20"
-            >
+            <Link href="/contact" className="mt-6 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl border border-[#F36D45] bg-white px-4 py-3 text-sm font-bold text-[#D95C39] transition hover:bg-[#F36D45] hover:text-white">
               Discuss your goals <ArrowRight size={16} />
             </Link>
           </div>
         </aside>
       </section>
 
+      {/* FAQ heading and questions use the shared /case-study CMS response */}
       <section className="bg-[#FDF4EF]">
         <div className="mx-auto grid max-w-7xl gap-9 px-5 py-14 sm:px-8 sm:py-16 lg:grid-cols-[.7fr_1.3fr] lg:gap-16 lg:px-8">
           <div>
-            <p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">
-              {faqEyebrow}
-            </p>
-            <h2 className="mt-3 text-3xl font-bold leading-tight">
-              {faqHeading}
-            </h2>
-            <p className="mt-4 leading-7 text-[#726965]">{faqDescription}</p>
+            <p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">{faq.eyebrow}</p>
+            <h2 className="mt-3 text-3xl font-bold leading-tight">{faq.title}</h2>
+            <p className="mt-4 leading-7 text-[#726965]">{faq.subtitle}</p>
           </div>
           <CaseStudyFaqs items={displayedFaqs} />
         </div>
       </section>
 
+      {/* Related student stories: shared CMS headings + slug page's related students */}
       <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16 lg:px-8">
-  
-        <ExploreStoriesSlider students={moreStories} />
+    
+        <ExploreStoriesSlider students={moreStories} stories={stories} />
       </section>
 
+      {/* Blog content itself stays in RecentBlogsSlider; its heading comes from the shared CMS page. */}
       <section className="bg-[#FDF4EF] py-12 sm:py-16">
         <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-8">
-         
-          <RecentBlogsSlider />
+          <RecentBlogsSlider blog={blogs} />
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16 lg:px-8">
-     
-        {/*
-          This section's heading/helper copy is CMS-driven here.
-          SuccessStoryForm keeps its own form field and submit implementation.
-          To make formTitle and formButtonText configurable inside the form,
-          pass them as props after adding those props to success-story-form.tsx.
-        */}
-        <SuccessStoryForm />
-      
+      {/* CTA/form headings use the shared CMS response. The form component is unchanged. */}
+      <section className="px-5 py-12 sm:px-8 sm:py-16 lg:px-0">
+        <SuccessStoryForm cta={cta} />
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 pb-14 sm:px-8 sm:pb-16 lg:px-8">
-        <div className="flex flex-col items-stretch justify-between gap-6 rounded-[2rem] bg-gradient-to-br from-[#F36D45] to-[#D95C39] px-6 py-9 text-white shadow-[0_20px_50px_rgba(243,109,69,.22)] sm:flex-row sm:items-center sm:px-10 sm:py-11">
-          <div className="max-w-2xl">
-            <p className="text-sm font-bold uppercase tracking-[.16em] text-white/75">
-              {ctaEyebrow}
-            </p>
-            <h2 className="mt-2 text-2xl font-bold sm:text-3xl">
-              {ctaHeading}
-            </h2>
-            <p className="mt-2 leading-7 text-white/85">{ctaDescription}</p>
-          </div>
-          <Link
-            href={ctaButtonUrl}
-            className="inline-flex min-h-12 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-white px-6 py-3.5 text-sm font-extrabold text-[#D95C39] shadow-lg transition hover:-translate-y-0.5 hover:bg-[#FFF0BE] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/40 sm:w-auto"
-          >
-            {ctaButtonText} <ArrowRight size={17} />
-          </Link>
-        </div>
-      </section>
+   
     </main>
   );
 }

@@ -16,6 +16,7 @@ import {
   ScrollText,
   MessageCircle,
   CalendarDays,
+  Image as ImageIcon,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 
@@ -55,6 +56,7 @@ const Sidebar = () => {
     { icon: <FileEditIcon size={18} />, label: "Editor", href: "/admin/pages/editor" },
     { icon: <File size={18} />, label: "Blog", href: "/admin/pages/Blogs" },
     { icon: <CalendarDays size={18} />, label: "Study Events", href: "/admin/pages/events" },
+    { icon: <ImageIcon size={18} />, label: "Page Banners", href: "/admin/pages/banners" },
     { icon: <BookUser size={18} />, label: "Authors", href: "/admin/pages/Authors"},
     { icon: <ScrollText size={18} />, label: "Support Articles", href: "/admin/pages/support-articles" },
     { icon: <File size={18} />, label: "Leads ", href: "/admin/pages/leads" },

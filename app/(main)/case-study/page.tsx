@@ -499,9 +499,7 @@ export default async function CaseStudyPage() {
             </h2>
           </div>
 
-          <p className="max-w-md text-sm leading-6 text-[#726965] sm:text-base">
-            {stories.subtitle}
-          </p>
+       
         </div>
 
         {students.length ? (
@@ -511,6 +509,7 @@ export default async function CaseStudyPage() {
                 key={student?._id || `${student?.name}-${index}`}
                 student={student}
                 index={index}
+                stories={stories}
               />
             ))}
           </div>
@@ -609,7 +608,7 @@ export default async function CaseStudyPage() {
           </p>
         </div> */}
 
-        <SuccessStoryForm />
+        <SuccessStoryForm cta={cta} />
       </section>
     </main>
   );

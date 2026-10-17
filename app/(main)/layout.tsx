@@ -8,6 +8,7 @@ import { Footer } from "@/components/footer";
 import { getPages } from "../services/api";
 import { GlobalProvider } from "@/hooks/AppStateContext";
 import { Toaster } from "react-hot-toast";
+import SiteBanner from "@/components/site-banner";
 
 export const metadata: Metadata = {
   title:
@@ -107,6 +108,7 @@ export default async function RootLayout({
           <Navbar Data={NavData} />
           {children}
           <Footer Data={NavData} />
+          <SiteBanner />
           <Toaster position="top-right"/>
         </GlobalProvider>
           <Script id="microsoft-clarity" strategy="afterInteractive">

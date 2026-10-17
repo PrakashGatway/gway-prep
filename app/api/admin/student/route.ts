@@ -222,14 +222,20 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
       );
     }
 
-    await Student.findByIdAndUpdate(id,
+    const updatedStudent = await Student.findByIdAndUpdate(id,
       { $set: { ...result.data, ...updatedbody, slug: normalizedSlug } },
-      { new: true, runValidators: true } // Crucial options setup
+      { new: true, runValidators: true }
     );
 
+    if (!updatedStudent) {
+      return NextResponse.json({ error: "Student not found" }, { status: 404 });
+    }
 
     return NextResponse.json(
-      { message: "Student updated successfully." },
+      {
+        message: "Student updated successfully.",
+        data: updatedStudent,
+      },
       { status: 200 },
     );
 

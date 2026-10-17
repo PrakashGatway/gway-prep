@@ -1864,7 +1864,7 @@ export function Navbar({ Data }: NavbarProps) {
                     type="button"
                     onClick={() => {
                       closeMobileMenu();
-                      UserNavigate;
+                      router.push("/auth")
                     }}
                     className="
                       flex

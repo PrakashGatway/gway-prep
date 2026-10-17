@@ -455,9 +455,10 @@ function Banner({ finalCtaSection, Image }: any) {
             <h6 className="text-2xl md:text-4xl font-bold tracking-tight mb-2">
               {finalCtaSection?.title || "Ready to Achieve Your Dreams?"}
             </h6>
-            <p className="text-sm md:text-base opacity-90 font-medium">
-              {finalCtaSection?.subtitle ||
-                "Join thousands of successful students and start your journey today."}
+            <p className="text-sm md:text-base opacity-90 font-medium" dangerouslySetInnerHTML={{
+              __html : finalCtaSection?.subtitle || "Join thousands of successful students and start your journey today."
+            }}>
+         
             </p>
           </div>
           {/* Call to Action Button */}

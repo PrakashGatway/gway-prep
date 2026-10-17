@@ -12,15 +12,14 @@ function plainText(value: unknown) {
 type Props = { student: any; index?: number };
 
 export default function StudentStoryCard({ student, index = 0 }: Props) {
-  const slug = getStudentCaseStudySlug(student);
+  const hasCaseStudySlug =
+    typeof student?.slug === "string" && student.slug.trim().length > 0;
+  const slug = hasCaseStudySlug ? getStudentCaseStudySlug(student) : "";
   const accent = student?.colorCode || palette[index % palette.length];
   const excerpt = plainText(student?.message || student?.about || student?.outcome);
+  const cardClassName = "group flex h-full min-h-[300px] flex-col overflow-hidden rounded-xl border border-[#F0D8CC] shadow-[0_12px_30px_rgba(243,109,69,.14)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_42px_rgba(243,109,69,.24)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#F36D45]/25";
 
-  return (
-    <Link
-      href={`/case-study/${slug}`}
-      className="group flex h-full min-h-[300px] flex-col overflow-hidden rounded-xl border border-[#F0D8CC] shadow-[0_12px_30px_rgba(243,109,69,.14)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_20px_42px_rgba(243,109,69,.24)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#F36D45]/25"
-    >
+  const cardContent = (
       <div className="relative flex min-h-[300px] flex-1 flex-col overflow-hidden rounded-xl bg-white text-[#292522]">
         <div className="relative flex-1 px-5 pb-12 pt-5 sm:px-6 sm:pt-6">
           <p className="line-clamp-5 pr-2 text-sm leading-6 text-[#727681] sm:text-[15px]">
@@ -44,11 +43,20 @@ export default function StudentStoryCard({ student, index = 0 }: Props) {
           <p className="mt-1 truncate text-[10px] font-semibold tracking-wide text-white/80 sm:text-xs">
             {student?.course || student?.university || "Ooshas Prep learner"}{student?.score ? ` · ${student.score}` : ""}
           </p>
-          <span className="mt-3 inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-[#292522] px-4 text-[11px] font-extrabold text-white shadow-md transition group-hover:bg-[#171717] group-hover:shadow-lg sm:text-xs">
-            View Case Study <ArrowUpRight size={14} />
-          </span>
+          {hasCaseStudySlug && (
+            <span className="mt-3 inline-flex min-h-9 items-center justify-center gap-2 rounded-full bg-[#292522] px-4 text-[11px] font-extrabold text-white shadow-md transition group-hover:bg-[#171717] group-hover:shadow-lg sm:text-xs">
+              View Case Study <ArrowUpRight size={14} />
+            </span>
+          )}
         </div>
       </div>
+  );
+
+  return hasCaseStudySlug ? (
+    <Link href={`/case-study/${slug}`} className={cardClassName}>
+      {cardContent}
     </Link>
+  ) : (
+    <div className={cardClassName}>{cardContent}</div>
   );
 }

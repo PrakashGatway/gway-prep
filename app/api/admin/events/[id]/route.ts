@@ -31,7 +31,7 @@ export async function PUT(req: NextRequest, { params }: Context) {
     if (!mongoose.isValidObjectId(id)) return NextResponse.json({ error: "Invalid event id" }, { status: 400 });
     const body = await req.json();
     const updates: Record<string, any> = {};
-    const textFields = ["title", "summary", "description", "image", "category", "eventType", "mode", "startTime", "endTime", "timezone", "location", "registrationUrl", "capacity"];
+    const textFields = ["title", "summary", "description", "image", "heroEyebrow", "heroTitle", "heroSubtitle", "heroImage", "heroImageAlt", "heroImageCaption", "heroPrimaryButtonText", "heroSecondaryButtonText", "category", "eventType", "mode", "startTime", "endTime", "timezone", "location", "registrationUrl", "capacity"];
     textFields.forEach((field) => { if (body[field] !== undefined) updates[field] = typeof body[field] === "string" ? body[field].trim() : body[field]; });
     if (body.startDate !== undefined) {
       updates.startDate = new Date(body.startDate);

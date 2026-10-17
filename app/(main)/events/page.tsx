@@ -13,9 +13,13 @@ import {
 import { connectDB } from "@/app/lib/db";
 import { ensureStarterEvents } from "@/app/lib/event-seeds";
 import Event from "@/app/Model/Event";
-import { getPageInfo, getPages } from "@/app/services/api";
 import RecentBlogsSlider from "./recent-blogs-slider";
 import EventEnquiryForm from "./enquiry-form";
+import EventFaqs from "../case-study/faqs";
+import {
+  getEventsFaqItems,
+  loadEventsPageContent,
+} from "./event-page-cms";
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || "https://www.ooshasprep.com";
@@ -153,45 +157,6 @@ function getText(
   return fallback;
 }
 
-async function loadEventsPage(): Promise<AnyRecord | null> {
-  try {
-    const response = await getPageInfo("events");
-    const page = response?.data?.data ?? response?.data ?? response;
-
-    if (page && (page.sections || page.seoMeta || page.template)) {
-      return page;
-    }
-  } catch {
-    // Try the page list as a fallback.
-  }
-
-  try {
-    const response = await getPages(300);
-    const pages = Array.isArray(response?.data)
-      ? response.data
-      : Array.isArray(response?.data?.data)
-        ? response.data.data
-        : Array.isArray(response)
-          ? response
-          : [];
-
-    return (
-      pages.find((item: AnyRecord) => {
-        const slug = String(
-          item?.seoMeta?.slug || item?.slug || item?.pageSlug || "",
-        )
-          .trim()
-          .toLowerCase()
-          .replace(/^\/+|\/+$/g, "");
-
-        return slug === "events";
-      }) || null
-    );
-  } catch {
-    return null;
-  }
-}
-
 export default async function EventsPage({
   searchParams,
 }: EventsPageProps) {
@@ -269,12 +234,26 @@ export default async function EventsPage({
   const page = Math.min(requestedPage, totalPages);
 
   // CMS page content. Each field falls back to the existing page copy.
-  const pageData = await loadEventsPage();
+  const pageData = await loadEventsPageContent();
 
   const heroSection = "events-hero-section";
   const blogsSection = "events-blogs-section";
   const calendarSection = "events-learning-calendar-section";
   const ctaSection = "events-cta-section";
+  const faqSection = "events-faq-section";
+  const faqItems = getEventsFaqItems(pageData);
+  const faqHeading = getText(
+    pageData,
+    faqSection,
+    "title",
+    "Frequently Asked Questions",
+  );
+  const faqDescription = getText(
+    pageData,
+    faqSection,
+    "description",
+    "Find answers about Ooshas Prep study events and sessions.",
+  );
 
   const heroTitle = getText(
     pageData,
@@ -389,7 +368,7 @@ export default async function EventsPage({
         <div className="pointer-events-none absolute -right-20 -top-36 h-[360px] w-[360px] rounded-full bg-[#FFB09D]/45 blur-sm" />
         <div className="pointer-events-none absolute -bottom-40 left-[34%] h-[360px] w-[360px] rounded-full bg-[#FFF0BE]/80" />
 
-        <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-5 py-10 sm:px-8 sm:py-14 lg:grid-cols-[1fr_.9fr] lg:gap-12 lg:px-8 lg:py-16">
+        <div className="relative mx-auto grid max-w-7xl items-center gap-8 px-5 py-10 sm:px-8 sm:py-14 lg:grid-cols-[1fr_.9fr] lg:gap-12 lg:px-0 lg:py-16">
           <div className="relative z-10">
             <span className="inline-flex items-center gap-2 rounded-full border border-[#F3C7B7] bg-white/80 px-4 py-2 text-xs font-bold uppercase tracking-[.16em] text-[#A5533A]">
               <Sparkles size={15} className="text-[#F36D45]" />
@@ -454,7 +433,7 @@ export default async function EventsPage({
 
       <section
         id="events-list"
-        className="mx-auto max-w-7xl scroll-mt-24 px-5 py-9 sm:px-8 sm:py-12 lg:px-8"
+        className="mx-auto max-w-7xl scroll-mt-24 px-5 py-9 sm:px-8 sm:py-4 lg:px-0"
       >
         <div className="mb-6 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
@@ -787,47 +766,34 @@ export default async function EventsPage({
         )}
       </section>
 
-      {/* <section className="bg-[#FFF4EF]">
-        <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16 lg:px-8">
-          <div className="grid items-center gap-8 overflow-hidden rounded-[2rem] border border-[#F0D8CC] bg-white p-6 shadow-[0_14px_40px_rgba(80,48,32,.06)] sm:p-9 lg:grid-cols-[1fr_.75fr] lg:p-12">
-            <div>
-              <p className="text-sm font-bold uppercase tracking-[.17em] text-[#F36D45]">
-                Join the learning community
-              </p>
-              <h2 className="mt-3 text-2xl font-extrabold leading-tight sm:text-3xl">
-                {ctaLeftHeading}
-              </h2>
-              <p className="mt-4 max-w-xl leading-7 text-[#756A65]">
-                {ctaLeftSubtitle}
-              </p>
-              <Link
-                href={ctaButtonUrl}
-                className="mt-6 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#F36D45] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#DD5D38]"
-              >
-                {ctaButtonText} <CalendarDays size={17} />
-              </Link>
-            </div>
-            {ctaLeftImage ? (
-              <div className="relative h-[220px] overflow-hidden rounded-2xl bg-[#FFF0BE] sm:h-[280px]">
-                <Image
-                  src={ctaLeftImage}
-                  alt={ctaLeftImageAlt}
-                  fill
-                  sizes="(max-width: 1024px) 90vw, 38vw"
-                  className="object-cover"
-                />
-              </div>
-            ) : null}
+      <section className="bg-[#FFF4EF]">
+        <div className="mx-auto grid max-w-7xl gap-9 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[.7fr_1.3fr] lg:gap-16 lg:px-8">
+          <div>
+            <p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">
+              EVENTS, ANSWERED
+            </p>
+            <h2 className="mt-3 text-3xl font-bold leading-tight">{faqHeading}</h2>
+            <p className="mt-4 leading-7 text-[#726965]">{faqDescription}</p>
           </div>
+          <EventFaqs items={faqItems} />
         </div>
-      </section> */}
+      </section>
 
-      <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16 lg:px-8">
+      <section className=" px-5 py-12 sm:px-8 sm:py-0 lg:px-8">
     
         <RecentBlogsSlider />
       </section>
 
-      <EventEnquiryForm />
+      <EventEnquiryForm
+        cta={{
+          heading: ctaLeftHeading,
+          description: ctaLeftSubtitle,
+          image: ctaLeftImage,
+          imageAlt: ctaLeftImageAlt,
+          buttonText: ctaButtonText,
+          buttonUrl: ctaButtonUrl,
+        }}
+      />
     </main>
   );
 }

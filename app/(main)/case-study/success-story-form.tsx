@@ -29,21 +29,21 @@ const FORM_CONFIG = {
   },
 };
 
-export default function SuccessStoryForm() {
+export default function SuccessStoryForm({cta}) {
   return (
     <section id="write-your-story" className="bg-[#292522] px-5 py-10 text-white sm:px-8 sm:py-12">
       <div className="mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[.85fr_1.15fr] lg:gap-12">
         <div>
-          <p className="text-sm font-bold uppercase tracking-[.18em] text-[#FFB09D]">Your story starts here</p>
+          <p className="text-sm font-bold uppercase tracking-[.18em] text-[#FFB09D]">{cta.eyebrow||"Your story starts he"}</p>
           <h2 className="mt-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-5xl">
-            Ready to write your <span className="text-[#FF907F]">success story?</span>
+            {cta.title.split("||")[0]|| "Ready to write your"} <span className="text-[#FF907F]">{cta.title.split("||")[1]|| "success story?"}</span>
           </h2>
           <p className="mt-5 max-w-xl text-base leading-7 text-white/70 sm:text-lg sm:leading-8">
-            Tell us what you’re working toward. Our team will help you find a preparation plan that fits your goal, timeline, and next chapter.
+            {cta.subtitle||"Tell us what you’re working toward. Our team will help you find a preparation plan that fits your goal, timeline, and next chapter."}
           </p>
           <div className="mt-8 flex items-center gap-3 text-sm font-semibold text-white/85">
             <span className="flex h-11 w-11 items-center justify-center rounded-full bg-[#F36D45] text-white"><MessageSquare size={19} /></span>
-            A counsellor will get back to you shortly
+            {cta.helperText||"A counsellor will get back to you shortly"}
           </div>
         </div>
         <div className="rounded-[1.75rem] bg-white p-5 text-[#292522] shadow-[0_24px_70px_rgba(0,0,0,.24)] sm:p-8 lg:p-9">

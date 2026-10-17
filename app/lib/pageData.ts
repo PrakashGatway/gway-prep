@@ -521,6 +521,49 @@ export const pageData: any = {
         label: "Student-section",
         require: false,
         fields: [
+        {
+          name: "title",
+          label: "Hero Heading",
+          type: "text",
+          value: "Every big result starts with one brave step.",
+        },
+        {
+          name: "subtitle",
+          label: "Hero Description",
+          type: "textarea",
+          value:
+            "Meet the students behind the milestones. Explore their goals, the preparation that moved them forward, and the moments that made them proud.",
+        },
+        {
+          name: "heroImage",
+          label: "Hero Image",
+          type: "file",
+          accept: "image/*",
+        },
+        {
+          name: "button1Text",
+          label: "Primary Button Text",
+          type: "text",
+          value: "Explore student stories",
+        },
+        {
+          name: "button1Url",
+          label: "Primary Button Link",
+          type: "text",
+          value: "#student-stories",
+        },
+        {
+          name: "button2Text",
+          label: "Secondary Button Text",
+          type: "text",
+          value: "Talk to a counsellor",
+        },
+        {
+          name: "button2Url",
+          label: "Secondary Button Link",
+          type: "text",
+          value: "/contact",
+        },
           {
             name: "name",
             label: "student Name",
@@ -3690,6 +3733,46 @@ export const pageData: any = {
       },
 
       {
+        name: "events-faq-section",
+        label: "FAQ Section",
+        fields: [
+          {
+            name: "title",
+            label: "FAQ Heading",
+            type: "text",
+            required: false,
+            value: "Frequently Asked Questions",
+          },
+          {
+            name: "description",
+            label: "FAQ Description",
+            type: "textarea",
+            required: false,
+            value: "Find answers about Ooshas Prep study events and sessions.",
+          },
+          {
+            name: "items",
+            label: "Questions and Answers",
+            type: "repeater",
+            fields: [
+              {
+                name: "question",
+                label: "Question",
+                type: "text",
+                required: true,
+              },
+              {
+                name: "answer",
+                label: "Answer",
+                type: "textarea",
+                required: true,
+              },
+            ],
+          },
+        ],
+      },
+
+      {
         name: "events-cta-section",
         label: "CTA Section",
         fields: [
@@ -3971,136 +4054,6 @@ export const pageData: any = {
   ],
 },
 
-caseStudyDetail: {
-  name: "Case Study Detail",
-  description: "Manage Student Case Study page content",
-  require: true,
-  is_dynamic: true,
-  slug_field: "slug",
-  sections: [
-    {
-      name: "case-study-hero-section",
-      label: "Case Study Hero Section",
-      fields: [
-        { name: "eyebrow", label: "Eyebrow Text", type: "text" },
-        { name: "title", label: "Main Heading", type: "text" },
-        { name: "description", label: "Description", type: "textarea" },
-        { name: "studentName", label: "Student Name", type: "text" },
-        { name: "studentImage", label: "Student Image", type: "file", accept: "image/*" },
-        { name: "achievement", label: "Achievement / Score", type: "text" },
-        { name: "course", label: "Course / Exam", type: "text" },
-        { name: "university", label: "University / Next Chapter", type: "text" },
-        { name: "backgroundImage", label: "Background Image", type: "file", accept: "image/*" },
-        { name: "buttonText", label: "Button Text", type: "text" },
-        { name: "buttonUrl", label: "Button URL", type: "text" },
-      ],
-    },
-
-    {
-      name: "case-study-story-section",
-      label: "Story / Behind the Milestone",
-      fields: [
-        { name: "eyebrow", label: "Eyebrow Text", type: "text" },
-        { name: "heading", label: "Section Heading", type: "text" },
-        { name: "description", label: "Story Description", type: "textarea" },
-        { name: "outcomeHeading", label: "Outcome Heading", type: "text" },
-        { name: "outcomeContent", label: "Outcome Details", type: "textarea" },
-        { name: "testimonial", label: "Student Testimonial", type: "textarea" },
-        { name: "testimonialName", label: "Testimonial Name", type: "text" },
-        { name: "testimonialImage", label: "Testimonial Image", type: "file", accept: "image/*" },
-        { name: "studentRating", label: "Student Rating", type: "text" },
-        { name: "highlightsHeading", label: "Highlights Heading", type: "text" },
-        { name: "differenceHeading", label: "What Made the Difference Heading", type: "text" },
-        { name: "differencePoints", label: "Difference Points", type: "textarea" },
-      ],
-    },
-{
-  name: "case-study-faq-section",
-  label: "Case Study FAQ Section",
-  fields: [
-    {
-      name: "eyebrow",
-      label: "Eyebrow Text",
-      type: "text",
-    },
-    {
-      name: "heading",
-      label: "Section Heading",
-      type: "text",
-    },
-    {
-      name: "description",
-      label: "Section Description",
-      type: "textarea",
-    },
-    {
-      name: "faqs",
-      label: "FAQ Questions and Answers",
-      type: "repeater",
-      fields: [
-        {
-          name: "question",
-          label: "FAQ Question",
-          type: "text",
-        },
-        {
-          name: "answer",
-          label: "FAQ Answer",
-          type: "textarea",
-        },
-      ],
-    },
-  ],
-},
-
-    {
-      name: "case-study-related-section",
-      label: "More Case Studies Section",
-      fields: [
-        { name: "eyebrow", label: "Eyebrow Text", type: "text" },
-        { name: "heading", label: "Section Heading", type: "text" },
-        { name: "buttonText", label: "View All Button Text", type: "text" },
-        { name: "buttonUrl", label: "View All Button URL", type: "text" },
-      ],
-    },
-
-    {
-      name: "case-study-blogs-section",
-      label: "Related Blogs Section",
-      fields: [
-        { name: "eyebrow", label: "Eyebrow Text", type: "text" },
-        { name: "heading", label: "Section Heading", type: "text" },
-        { name: "buttonText", label: "View All Blogs Button Text", type: "text" },
-        { name: "buttonUrl", label: "View All Blogs Button URL", type: "text" },
-      ],
-    },
-
-    {
-      name: "case-study-form-section",
-      label: "Success Story Form Section",
-      fields: [
-        { name: "eyebrow", label: "Eyebrow Text", type: "text" },
-        { name: "heading", label: "Form Heading", type: "text" },
-        { name: "description", label: "Description", type: "textarea" },
-        { name: "helperText", label: "Helper Text", type: "text" },
-        { name: "formTitle", label: "Form Title", type: "text" },
-        { name: "buttonText", label: "Submit Button Text", type: "text" },
-      ],
-    },
-
-    {
-      name: "case-study-cta-section",
-      label: "Bottom CTA Section",
-      fields: [
-        { name: "eyebrow", label: "Eyebrow Text", type: "text" },
-        { name: "heading", label: "CTA Heading", type: "text" },
-        { name: "description", label: "CTA Description", type: "textarea" },
-        { name: "buttonText", label: "Button Text", type: "text" },
-        { name: "buttonUrl", label: "Button URL", type: "text" },
-      ],
-    },
-  ],
-},
 
 
 };

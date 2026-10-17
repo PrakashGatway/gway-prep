@@ -388,52 +388,78 @@ const renderBlogContent = (blogDetails: BlogDetail[]) => {
     }
 
     // Question block
-    if (detail.question && detail.options) {
-      sections.push(
-        <div
-          key={`question-${index}`}
-          className="my-6 p-6 bg-neutral-50 rounded-xl border border-neutral-200"
-        >
-          <h4 className="text-lg font-semibold text-neutral-800 mb-4">
-            {detail.question}
-          </h4>
-          <div className="space-y-2">
-            {detail.options.map((option, optIndex) => (
-              <label
-                key={optIndex}
-                className="flex items-center gap-3 p-3 bg-white rounded-lg border border-neutral-200 cursor-pointer hover:border-[#F86C43] transition-colors"
-              >
-                <input
-                  type="radio"
-                  name={`question-${index}`}
-                  value={option.value}
-                  className="w-4 h-4 text-[#F86C43] focus:ring-[#F86C43]"
-                />
-                <span className="text-neutral-700">
-                  {option.value}. {option.label}
-                </span>
-              </label>
-            ))}
-          </div>
-          <button
-            className="mt-4 px-6 py-2 bg-[#F86C43] text-white rounded-lg hover:bg-[#e05a32] transition-colors"
-            onClick={(e) => {
-              const selected = document.querySelector(
-                `input[name="question-${index}"]:checked`,
-              ) as HTMLInputElement;
-              if (selected) {
-                const isCorrect = selected.value === detail.answer;
-                alert(isCorrect ? "✅ Correct!" : "❌ Incorrect. Try again!");
-              } else {
-                alert("Please select an answer first.");
-              }
-            }}
+  
+if (detail.question && detail.options?.length) {
+  sections.push(
+    <div
+      key={`question-${index}`}
+      className="my-6 rounded-xl border border-neutral-200 bg-neutral-50 p-6"
+    >
+      <h4 className="mb-4 text-lg font-semibold text-neutral-800">
+        {detail.question}
+      </h4>
+
+      <div className="space-y-2">
+        {detail.options.map((option, optIndex) => (
+          <label
+            key={optIndex}
+            className="flex cursor-pointer items-center gap-3 rounded-lg border border-neutral-200 bg-white p-3 transition-colors hover:border-[#F86C43]"
           >
-            Check Answer
-          </button>
-        </div>,
-      );
-    }
+            <input
+              type="radio"
+              name={`question-${index}`}
+              value={option.label}
+              className="h-4 w-4 accent-[#F86C43] focus:ring-[#F86C43]"
+            />
+
+            <span className="text-neutral-700">
+              {option.label}
+            </span>
+          </label>
+        ))}
+      </div>
+
+      <button
+        type="button"
+        className="mt-4 rounded-lg bg-[#F86C43] px-6 py-2 text-white transition-colors hover:bg-[#e05a32]"
+        onClick={() => {
+          const selected = document.querySelector(
+            `input[name="question-${index}"]:checked`
+          ) as HTMLInputElement | null;
+
+          if (!selected) {
+            alert("Please select an answer first.");
+            return;
+          }
+
+          // Find the option whose value is not empty
+          const correctOption = detail.options.find(
+            (option) => String(option.value ?? "").trim() !== ""
+          );
+
+          if (!correctOption) {
+            alert("Correct answer is not configured.");
+            return;
+          }
+
+          // Compare the selected option with the correct option
+          const isCorrect =
+            selected.value.trim() ===
+            String(correctOption.label).trim();
+
+          alert(
+            isCorrect
+              ? "✅ Correct!"
+              : "❌ Incorrect. Try again!"
+          );
+        }}
+      >
+        Check Answer
+      </button>
+    </div>
+  );
+}
+
 
     // FAQs
     if (detail.faq && detail.faq.length > 0) {

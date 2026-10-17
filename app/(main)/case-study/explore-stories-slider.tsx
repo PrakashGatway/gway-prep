@@ -11,15 +11,15 @@ import StudentStoryCard from "./student-story-card";
 
 type Props = { students: any[] };
 
-export default function ExploreStoriesSlider({ students }: Props) {
+export default function ExploreStoriesSlider({ students,stories }: Props) {
   if (!students.length) return null;
 
   return (
     <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12 lg:px-8">
       <div className="mb-6 flex items-end justify-between gap-5 sm:mb-7">
         <div>
-          <p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">Keep exploring</p>
-          <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">More student success stories</h2>
+          <p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">{stories?.eyebrow||"Keep exploring"}</p>
+          <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">{stories?.title||"More student success stories"}</h2>
         </div>
         <Link href="/case-study" className="hidden items-center gap-2 text-sm font-bold text-[#E56440] transition hover:text-[#A9472D] sm:inline-flex">All case studies <ArrowRight size={16} /></Link>
       </div>

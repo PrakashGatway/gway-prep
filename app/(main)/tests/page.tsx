@@ -9,6 +9,8 @@ export async function getServerInstance() {
   const cookieStore = await cookies();
   const token = cookieStore.get("auth_token")?.value;
 
+  console.log(token ,"kijhgfdcfgvhjkjhgfcxghjkljhgfchjkljhgfc")
+
   const instance = axios.create({
     baseURL: serverInstance.defaults.baseURL,
     timeout: serverInstance.defaults.timeout,

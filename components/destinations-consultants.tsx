@@ -42,7 +42,7 @@ export function Consultants({ data, finalCtaSection }: any) {
         </span>
       </summary>
 
-      <div className="pb-4 text-justify leading-relaxed text-xs text-gray-600">
+      <div className="pb-4 text-justify leading-relaxed text-base text-gray-600">
         {item.answer}
       </div>
     </details>

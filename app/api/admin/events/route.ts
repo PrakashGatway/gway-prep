@@ -75,6 +75,9 @@ export async function POST(req: NextRequest) {
 
     const event = await Event.create({
       title: body.title.trim(), slug, summary: body.summary.trim(), description: body.description || "", image: body.image || "",
+      heroEyebrow: body.heroEyebrow || "", heroTitle: body.heroTitle || "", heroSubtitle: body.heroSubtitle || "",
+      heroImage: body.heroImage || "", heroImageAlt: body.heroImageAlt || "", heroImageCaption: body.heroImageCaption || "",
+      heroPrimaryButtonText: body.heroPrimaryButtonText || "", heroSecondaryButtonText: body.heroSecondaryButtonText || "",
       category: body.category.trim(), eventType: body.eventType.trim(), mode: body.mode || "Online",
       startDate, endDate,
       startTime: body.startTime || "", endTime: body.endTime || "", timezone: body.timezone || "Asia/Kolkata",
