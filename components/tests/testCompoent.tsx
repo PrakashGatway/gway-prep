@@ -178,7 +178,7 @@ export default function Test({
             "
             >
               <div className="absolute text-white font-bold top-37 text-[60px] z-10 right-65">
-                {categories.name}
+                {categories?.name}
               </div>
               <img
                 src="/image/hero-course.webp"

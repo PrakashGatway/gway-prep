@@ -1,5 +1,4 @@
 import axios from "axios";
-import { cookies } from "next/headers";
 
 let mode = "devvv"
 
@@ -13,25 +12,6 @@ export const serverInstance = axios.create({
     withCredentials: true
 });
 
-
-export async function getServerInstance() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("auth_token")?.value;
-
-  const instance = axios.create({
-    baseURL: serverInstance.defaults.baseURL,
-    timeout: serverInstance.defaults.timeout,
-    headers: {
-      "Content-Type": "application/json",
-      ...(token && {
-        Authorization: `Bearer ${token}`,
-      }),
-    },
-    withCredentials: true,
-  });
-
-  return instance;
-}
 
 
 
