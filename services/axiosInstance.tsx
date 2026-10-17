@@ -7,10 +7,27 @@ export const serverInstance = axios.create({
     timeout: 60000, // 10 seconds timeout
     headers: {
         "Content-Type": "application/json",
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YmJhMGViZDlkZmJhMTQ3NWVjZWUyNSIsImlhdCI6MTc5MTQ1MTM4NiwiZXhwIjoxNzkyMDU2MTg2fQ.7_UizWXHEAVpDtrEOOVtEaXVtSyL8QJ2wLUP2G1pMdI"
+        // "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YmJhMGViZDlkZmJhMTQ3NWVjZWUyNSIsImlhdCI6MTc5MTQ1MTM4NiwiZXhwIjoxNzkyMDU2MTg2fQ.7_UizWXHEAVpDtrEOOVtEaXVtSyL8QJ2wLUP2G1pMdI"
     },
     withCredentials: true
 });
+
+
+serverInstance.interceptors.request.use(
+  (config) => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("accessToken");
+
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
 
 export const baseUrl = mode == "dev" ? "http://localhost:5000" : "https://uat.gatewayabroadeducations.com";
 
