@@ -1,13 +1,15 @@
 import SATCourses from "@/components/sat-courses/courses";
 import TestSeries from "@/components/test-series/testSeries";
 import Test from "@/components/tests/testCompoent";
-import { serverInstance } from "@/services/axiosInstance";
+import { getServerInstance } from "@/services/axiosInstance";
 
 export default async function TestPage({ searchParams }) {
   let Courses = [];
   let Category = [];
   let AllCourses = [];
   let isSat = null;
+  const api = await getServerInstance();
+
 
   // Next.js 15/16: searchParams can be a Promise
   const params = await searchParams;
@@ -17,25 +19,21 @@ export default async function TestPage({ searchParams }) {
 
   try {
     // 1. Get categories
-    const categoryRes = await serverInstance.get("/categories");
+    const categoryRes = await api.get("/categories");
     Category = categoryRes.data?.data || [];
 
     // 2. Get all courses
-    const allCourseRes = await serverInstance.get("/mcu/test");
+    const allCourseRes = await api.get("/mcu/test");
 
-    console.log(allCourseRes,"res")
+    console.log(allCourseRes, "res");
     AllCourses = allCourseRes.data?.data || [];
 
     // 3. Find SAT category
-    isSat = Category.find(
-      (cat) => cat.name?.toLowerCase() === "sat"
-    );
-
-
+    isSat = Category.find((cat) => cat.name?.toLowerCase() === "sat");
 
     // 4. Get SAT courses
     if (isSat?._id) {
-      const courseRes = await serverInstance.get("/mcu/test", {
+      const courseRes = await api.get("/mcu/test", {
         params: {
           category: isSat._id,
           search,
@@ -46,12 +44,13 @@ export default async function TestPage({ searchParams }) {
 
       Courses = courseRes.data?.data || [];
     }
-  } catch (err) {
-    console.error("CoursesPage err:", err);
+  } catch (error) {
+    console.log("Status:", error.response?.status);
+    console.log("Error:", error.response?.data);
+    console.log("Message:", error.message);
   }
 
-
-  console.log("All Test Series:", AllCourses);
+  // console.log("All Test Series:", Category);
 
   return (
     <Test

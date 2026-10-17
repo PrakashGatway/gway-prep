@@ -1,4 +1,5 @@
 import axios from "axios";
+import { cookies } from "next/headers";
 
 let mode = "devvv"
 
@@ -13,20 +14,25 @@ export const serverInstance = axios.create({
 });
 
 
-serverInstance.interceptors.request.use(
-  (config) => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("accessToken");
+export async function getServerInstance() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("auth_token")?.value;
 
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-    }
+  const instance = axios.create({
+    baseURL: serverInstance.defaults.baseURL,
+    timeout: serverInstance.defaults.timeout,
+    headers: {
+      "Content-Type": "application/json",
+      ...(token && {
+        Authorization: `Bearer ${token}`,
+      }),
+    },
+    withCredentials: true,
+  });
 
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+  return instance;
+}
+
 
 
 export const baseUrl = mode == "dev" ? "http://localhost:5000" : "https://uat.gatewayabroadeducations.com";
