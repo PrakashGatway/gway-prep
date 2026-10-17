@@ -3578,4 +3578,529 @@ export const pageData: any = {
       },
     ],
   },
+
+    events: {
+    name: "Events",
+    description: "Events page content management",
+    require: true,
+    sections: [
+      {
+        name: "events-hero-section",
+        label: "Hero Section",
+        fields: [
+          {
+            name: "title",
+            label: "Hero Title",
+            type: "text",
+            required: true,
+            placeholder: "Enter hero heading",
+          },
+          {
+            name: "subtitle",
+            label: "Hero Subtitle",
+            type: "textarea",
+            required: false,
+            placeholder: "Enter hero description",
+          },
+          {
+            name: "heroImage",
+            label: "Hero Image",
+            type: "file",
+            accept: "image/*",
+            required: false,
+          },
+          {
+            name: "imageAlt",
+            label: "Hero Image Alt Text",
+            type: "text",
+            required: false,
+            placeholder: "Describe the hero image",
+          },
+          {
+            name: "buttonText",
+            label: "Hero Button Text",
+            type: "text",
+            required: false,
+            placeholder: "Explore Events",
+          },
+          {
+            name: "buttonUrl",
+            label: "Hero Button Link",
+            type: "text",
+            required: false,
+            placeholder: "Enter destination URL",
+          },
+        ],
+      },
+
+      {
+        name: "events-blogs-section",
+        label: "Blogs Section",
+        fields: [
+          {
+            name: "heading",
+            label: "Blogs Heading",
+            type: "text",
+            required: true,
+            placeholder: "Enter blogs section heading",
+          },
+          {
+            name: "subtitle",
+            label: "Blogs Subtitle",
+            type: "textarea",
+            required: false,
+            placeholder: "Enter blogs section description",
+          },
+        ],
+      },
+
+      {
+        name: "events-learning-calendar-section",
+        label: "Learning Calendar Section",
+        fields: [
+          {
+            name: "heading",
+            label: "Learning Calendar Heading",
+            type: "text",
+            required: true,
+            placeholder: "Enter learning calendar heading",
+          },
+          {
+            name: "subtitle",
+            label: "Learning Calendar Subtitle",
+            type: "textarea",
+            required: false,
+            placeholder: "Enter learning calendar description",
+          },
+          {
+            name: "calendarImage",
+            label: "Learning Calendar Image",
+            type: "file",
+            accept: "image/*",
+            required: false,
+          },
+          {
+            name: "imageAlt",
+            label: "Calendar Image Alt Text",
+            type: "text",
+            required: false,
+            placeholder: "Describe the calendar image",
+          },
+        ],
+      },
+
+      {
+        name: "events-cta-section",
+        label: "CTA Section",
+        fields: [
+          {
+            name: "leftHeading",
+            label: "Left Side Heading",
+            type: "text",
+            required: true,
+            placeholder: "Enter left side heading",
+          },
+          {
+            name: "leftSubtitle",
+            label: "Left Side Subtitle",
+            type: "textarea",
+            required: false,
+            placeholder: "Enter left side description",
+          },
+          {
+            name: "leftImage",
+            label: "Left Side Image",
+            type: "file",
+            accept: "image/*",
+            required: false,
+          },
+          {
+            name: "leftImageAlt",
+            label: "Left Image Alt Text",
+            type: "text",
+            required: false,
+            placeholder: "Describe the left side image",
+          },
+          {
+            name: "buttonText",
+            label: "CTA Button Text",
+            type: "text",
+            required: false,
+            placeholder: "Enter button text",
+          },
+          {
+            name: "buttonUrl",
+            label: "CTA Button Link",
+            type: "text",
+            required: false,
+            placeholder: "Enter destination URL",
+          },
+        ],
+      },
+    ],
+  },
+
+  caseStudy: {
+  name: "Case Study",
+  description: "Manage Student Case Study page content",
+  require: true,
+
+  sections: [
+    {
+      name: "case-study-hero-section",
+      label: "Hero Section",
+      fields: [
+        {
+          name: "eyebrow",
+          label: "Badge / Eyebrow Text",
+          type: "text",
+          value: "REAL JOURNEYS. REAL PROGRESS.",
+        },
+        {
+          name: "title",
+          label: "Hero Heading",
+          type: "textarea",
+          value: "Every big result starts with one brave step.",
+        },
+        {
+          name: "subtitle",
+          label: "Hero Description",
+          type: "textarea",
+          value:
+            "Meet the students behind the milestones. Explore their goals, the preparation that moved them forward, and the moments that made them proud.",
+        },
+        {
+          name: "heroImage",
+          label: "Hero Image",
+          type: "file",
+          accept: "image/*",
+        },
+        {
+          name: "heroImageAlt",
+          label: "Hero Image Description",
+          type: "text",
+        },
+        {
+          name: "button1Text",
+          label: "Primary Button Text",
+          type: "text",
+          value: "Explore student stories",
+        },
+        {
+          name: "button1Url",
+          label: "Primary Button Link",
+          type: "text",
+          value: "#student-stories",
+        },
+        {
+          name: "button2Text",
+          label: "Secondary Button Text",
+          type: "text",
+          value: "Talk to a counsellor",
+        },
+        {
+          name: "button2Url",
+          label: "Secondary Button Link",
+          type: "text",
+          value: "/contact",
+        },
+        {
+          name: "feature1",
+          label: "First Feature Text",
+          type: "text",
+          value: "Personal preparation journeys",
+        },
+        {
+          name: "feature2",
+          label: "Second Feature Text",
+          type: "text",
+          value: "Student milestones",
+        },
+      ],
+    },
+
+    {
+      name: "case-study-stories-section",
+      label: "Student Stories Section",
+      fields: [
+        {
+          name: "eyebrow",
+          label: "Section Eyebrow",
+          type: "text",
+          value: "STUDENT STORIES",
+        },
+        {
+          name: "title",
+          label: "Section Heading",
+          type: "textarea",
+          value: "Meet the people behind the progress.",
+        },
+        {
+          name: "subtitle",
+          label: "Section Description",
+          type: "textarea",
+          value:
+            "Every learner brings a different starting point. These stories celebrate the goals, effort, and achievements along the way.",
+        },
+    
+      ],
+    },
+
+    {
+      name: "case-study-faq-section",
+      label: "FAQ Section",
+      fields: [
+        {
+          name: "eyebrow",
+          label: "FAQ Eyebrow",
+          type: "text",
+          value: "QUESTIONS, ANSWERED",
+        },
+        {
+          name: "title",
+          label: "FAQ Heading",
+          type: "textarea",
+          value: "A little more about student success.",
+        },
+        {
+          name: "subtitle",
+          label: "FAQ Left-Side Description",
+          type: "textarea",
+          value:
+            "Wondering how these journeys are built or where to begin with your own? Start here.",
+        },
+        {
+          name: "items",
+          label: "FAQ Questions and Answers",
+          type: "repeater",
+          fields: [
+            {
+              name: "question",
+              label: "Question",
+              type: "text",
+            },
+            {
+              name: "answer",
+              label: "Answer",
+              type: "textarea",
+            },
+          ],
+        },
+      ],
+    },
+
+    {
+      name: "case-study-blogs-section",
+      label: "Latest Blogs Section",
+      fields: [
+        {
+          name: "eyebrow",
+          label: "Blog Eyebrow",
+          type: "text",
+          value: "FRESH FROM THE BLOG",
+        },
+        {
+          name: "title",
+          label: "Blog Section Heading",
+          type: "text",
+          value: "Keep your preparation moving",
+        },
+        {
+          name: "subtitle",
+          label: "Blog Section Description",
+          type: "textarea",
+        },
+        {
+          name: "buttonText",
+          label: "All Articles Button Text",
+          type: "text",
+          value: "All articles",
+        },
+        {
+          name: "buttonUrl",
+          label: "All Articles Button Link",
+          type: "text",
+          value: "/blog",
+        },
+      ],
+    },
+
+    {
+      name: "case-study-final-cta-section",
+      label: "Final CTA Section",
+      fields: [
+        {
+          name: "eyebrow",
+          label: "Left-Side Badge Text",
+          type: "text",
+          value: "YOUR STORY STARTS HERE",
+        },
+        {
+          name: "title",
+          label: "Left-Side Heading",
+          type: "textarea",
+          value: "Ready to write your success story?",
+        },
+        {
+          name: "subtitle",
+          label: "Left-Side Description",
+          type: "textarea",
+          value:
+            "Tell us what you’re working toward. Our team will help you find a preparation plan that fits your goal, timeline, and next chapter.",
+        },
+        {
+          name: "helperText",
+          label: "Left-Side Helper Text",
+          type: "text",
+          value: "A counsellor will get back to you shortly",
+        },
+        {
+          name: "formTitle",
+          label: "Form Heading",
+          type: "text",
+          value: "Start your success story",
+        },
+        {
+          name: "buttonText",
+          label: "Form Submit Button Text",
+          type: "text",
+          value: "Start my success story",
+        },
+      ],
+    },
+  ],
+},
+
+caseStudyDetail: {
+  name: "Case Study Detail",
+  description: "Manage Student Case Study page content",
+  require: true,
+  is_dynamic: true,
+  slug_field: "slug",
+  sections: [
+    {
+      name: "case-study-hero-section",
+      label: "Case Study Hero Section",
+      fields: [
+        { name: "eyebrow", label: "Eyebrow Text", type: "text" },
+        { name: "title", label: "Main Heading", type: "text" },
+        { name: "description", label: "Description", type: "textarea" },
+        { name: "studentName", label: "Student Name", type: "text" },
+        { name: "studentImage", label: "Student Image", type: "file", accept: "image/*" },
+        { name: "achievement", label: "Achievement / Score", type: "text" },
+        { name: "course", label: "Course / Exam", type: "text" },
+        { name: "university", label: "University / Next Chapter", type: "text" },
+        { name: "backgroundImage", label: "Background Image", type: "file", accept: "image/*" },
+        { name: "buttonText", label: "Button Text", type: "text" },
+        { name: "buttonUrl", label: "Button URL", type: "text" },
+      ],
+    },
+
+    {
+      name: "case-study-story-section",
+      label: "Story / Behind the Milestone",
+      fields: [
+        { name: "eyebrow", label: "Eyebrow Text", type: "text" },
+        { name: "heading", label: "Section Heading", type: "text" },
+        { name: "description", label: "Story Description", type: "textarea" },
+        { name: "outcomeHeading", label: "Outcome Heading", type: "text" },
+        { name: "outcomeContent", label: "Outcome Details", type: "textarea" },
+        { name: "testimonial", label: "Student Testimonial", type: "textarea" },
+        { name: "testimonialName", label: "Testimonial Name", type: "text" },
+        { name: "testimonialImage", label: "Testimonial Image", type: "file", accept: "image/*" },
+        { name: "studentRating", label: "Student Rating", type: "text" },
+        { name: "highlightsHeading", label: "Highlights Heading", type: "text" },
+        { name: "differenceHeading", label: "What Made the Difference Heading", type: "text" },
+        { name: "differencePoints", label: "Difference Points", type: "textarea" },
+      ],
+    },
+{
+  name: "case-study-faq-section",
+  label: "Case Study FAQ Section",
+  fields: [
+    {
+      name: "eyebrow",
+      label: "Eyebrow Text",
+      type: "text",
+    },
+    {
+      name: "heading",
+      label: "Section Heading",
+      type: "text",
+    },
+    {
+      name: "description",
+      label: "Section Description",
+      type: "textarea",
+    },
+    {
+      name: "faqs",
+      label: "FAQ Questions and Answers",
+      type: "repeater",
+      fields: [
+        {
+          name: "question",
+          label: "FAQ Question",
+          type: "text",
+        },
+        {
+          name: "answer",
+          label: "FAQ Answer",
+          type: "textarea",
+        },
+      ],
+    },
+  ],
+},
+
+    {
+      name: "case-study-related-section",
+      label: "More Case Studies Section",
+      fields: [
+        { name: "eyebrow", label: "Eyebrow Text", type: "text" },
+        { name: "heading", label: "Section Heading", type: "text" },
+        { name: "buttonText", label: "View All Button Text", type: "text" },
+        { name: "buttonUrl", label: "View All Button URL", type: "text" },
+      ],
+    },
+
+    {
+      name: "case-study-blogs-section",
+      label: "Related Blogs Section",
+      fields: [
+        { name: "eyebrow", label: "Eyebrow Text", type: "text" },
+        { name: "heading", label: "Section Heading", type: "text" },
+        { name: "buttonText", label: "View All Blogs Button Text", type: "text" },
+        { name: "buttonUrl", label: "View All Blogs Button URL", type: "text" },
+      ],
+    },
+
+    {
+      name: "case-study-form-section",
+      label: "Success Story Form Section",
+      fields: [
+        { name: "eyebrow", label: "Eyebrow Text", type: "text" },
+        { name: "heading", label: "Form Heading", type: "text" },
+        { name: "description", label: "Description", type: "textarea" },
+        { name: "helperText", label: "Helper Text", type: "text" },
+        { name: "formTitle", label: "Form Title", type: "text" },
+        { name: "buttonText", label: "Submit Button Text", type: "text" },
+      ],
+    },
+
+    {
+      name: "case-study-cta-section",
+      label: "Bottom CTA Section",
+      fields: [
+        { name: "eyebrow", label: "Eyebrow Text", type: "text" },
+        { name: "heading", label: "CTA Heading", type: "text" },
+        { name: "description", label: "CTA Description", type: "textarea" },
+        { name: "buttonText", label: "Button Text", type: "text" },
+        { name: "buttonUrl", label: "Button URL", type: "text" },
+      ],
+    },
+  ],
+},
+
+
 };
