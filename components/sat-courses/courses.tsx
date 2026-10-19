@@ -475,7 +475,7 @@ export const CourseCard = ({ course, variant = "grid",index }) => {
 
             {/* ================= BODY ================= */}
             <div
-              onClick={() => navigate.push(`/tests/${course.slug}`)}
+              // onClick={() => navigate.push(`/tests/${course.slug}`)}
               className="flex flex-1 flex-col px-6 pb-4 cursor-pointer"
             >
               {/* Title */}
@@ -544,20 +544,20 @@ export const CourseCard = ({ course, variant = "grid",index }) => {
   {/* Explore / Book Now */}
   <div className="mb-3 flex justify-between items-center rounded-lg bg-gray-200 p-1">
     <button
-      onClick={(e) => {
-        e.stopPropagation();
-        navigate.push(`/tests/${course?.slug}`);
-      }}
+      // onClick={(e) => {
+      //   e.stopPropagation();
+      //   navigate.push(`/tests/${course?.slug}`);
+      // }}
       className={`flex-1 w-3 rounded-lg ${index%2 ? "bg-black" : "bg-[#ff7247]"} px-0 py-2 text-sm font-semibold text-white whitespace-nowrap transition-all duration-300`}
     >
       Explore
     </button>
 
     <button
-      onClick={(e) => {
-        e.stopPropagation();
-        navigate(`/course/${course?.slug}`);
-      }}
+      // onClick={(e) => {
+      //   e.stopPropagation();
+      //   navigate(`/course/${course?.slug}`);
+      // }}
       className="flex-1 rounded-full px-5 py-2 text-sm font-semibold text-[#172033] whitespace-nowrap transition-all duration-300 hover:bg-white/50 ml-14"
     >
       Book Now
@@ -1104,7 +1104,7 @@ const AllCourseCard = ({ item }) => {
             </span>
           </h3>
 
-          <a href={`/courses/${item?.slug}`} className="flex justify-center">
+          <a className="flex justify-center">
             <button className="mt-5 py-2 w-1/2 text-sm rounded-xl border border-[#ff5b2e] text-[#ff5b2e] font-medium transition-all duration-300 hover:bg-[#ff5b2e] hover:text-white">
               Explore
             </button>
