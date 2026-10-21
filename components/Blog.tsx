@@ -32,6 +32,7 @@ interface Blog {
   category: string;
   author: string;
   publishedDate: string;
+  createdAt?: string;
   content?: string;
   readTime?: string;
 }
@@ -606,6 +607,17 @@ export default function BlogPage({
                         post.content ||
                         "Discover useful tips, strategies and expert guidance to help you prepare better and achieve your goals."}
                     </p>
+
+                    {post.createdAt && (
+                      <div className="mt-3 flex items-center gap-1.5 text-xs text-[#777]">
+                        <Calendar size={14} aria-hidden="true" />
+                        <span>Published {new Date(post.createdAt).toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}</span>
+                      </div>
+                    )}
 
                     {/* Read More */}
                     <div className="mt-auto flex justify-end py-4 ">

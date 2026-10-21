@@ -23,14 +23,16 @@ function isYoutubeUrl(url: string): boolean {
 
 function isYoutubeShortUrl(url: string): boolean {
   if (!url) return false;
-  return /youtube\.com\/shorts\//i.test(url) || /youtu\.be\/shorts\//i.test(url);
+  return (
+    /youtube\.com\/shorts\//i.test(url) || /youtu\.be\/shorts\//i.test(url)
+  );
 }
 
 function getYoutubeId(url: string): string | null {
   if (!url) return null;
 
   const match = url.match(
-    /(?:youtube\.com\/shorts\/|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/watch\?v=|youtube\.com\/v\/|youtube\.com\/u\/\w\/|[?&]v=)([^#&?/]+)/i
+    /(?:youtube\.com\/shorts\/|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/watch\?v=|youtube\.com\/v\/|youtube\.com\/u\/\w\/|[?&]v=)([^#&?/]+)/i,
   );
 
   return match && match[1].length === 11 ? match[1] : null;
@@ -73,9 +75,13 @@ function YoutubeThumbnail({
             className="absolute inset-0 rounded-full bg-white/20 animate-ping"
             style={{ animationDuration: "2s" }}
           />
-          <div className={`relative rounded-full bg-white/95 flex items-center justify-center shadow-2xl shadow-black/30 transition-transform duration-300 group-hover:scale-110 ${
-            isShort ? 'w-12 h-12 sm:w-14 sm:h-14' : 'w-16 h-16 sm:w-20 sm:h-20'
-          }`}>
+          <div
+            className={`relative rounded-full bg-white/95 flex items-center justify-center shadow-2xl shadow-black/30 transition-transform duration-300 group-hover:scale-110 ${
+              isShort
+                ? "w-12 h-12 sm:w-14 sm:h-14"
+                : "w-16 h-16 sm:w-20 sm:h-20"
+            }`}
+          >
             <Play
               size={isShort ? 20 : 28}
               className="text-[#FF6B35] ml-1"
@@ -85,7 +91,7 @@ function YoutubeThumbnail({
           </div>
         </div>
       </div>
-      
+
       {/* Shorts Badge */}
       {isShort && (
         <div className="absolute top-3 right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md shadow-lg">
@@ -98,10 +104,16 @@ function YoutubeThumbnail({
 
 /* ─────────────── YOUTUBE IFRAME ─────────────── */
 
-function YoutubeIframe({ videoId, isShort = false }: { videoId: string; isShort?: boolean }) {
+function YoutubeIframe({
+  videoId,
+  isShort = false,
+}: {
+  videoId: string;
+  isShort?: boolean;
+}) {
   return (
     <iframe
-      src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0${isShort ? '&loop=1' : ''}`}
+      src={`https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0${isShort ? "&loop=1" : ""}`}
       title="Testimonial video"
       className="w-full h-full absolute inset-0"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -187,7 +199,13 @@ function VideoThumbnail({
             canvas.height = videoRef.current.videoHeight || 560;
             const ctx = canvas.getContext("2d");
             if (ctx) {
-              ctx.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+              ctx.drawImage(
+                videoRef.current,
+                0,
+                0,
+                canvas.width,
+                canvas.height,
+              );
               const overlay = document.getElementById(`thumb-${src.slice(-8)}`);
               if (overlay) {
                 overlay.style.backgroundImage = `url(${canvas.toDataURL("image/jpeg", 0.7)})`;
@@ -209,7 +227,12 @@ function VideoThumbnail({
         {!loaded && (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900">
             <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
-              <Play size={20} className="text-white/60 ml-0.5" fill="rgba(255,255,255,0.6)" strokeWidth={0} />
+              <Play
+                size={20}
+                className="text-white/60 ml-0.5"
+                fill="rgba(255,255,255,0.6)"
+                strokeWidth={0}
+              />
             </div>
           </div>
         )}
@@ -303,7 +326,7 @@ export function VideoTestimonialCard({ heading, data }: any) {
           <span className="">Students Say</span>
         </h2>
         {heading?.fields?.["video-testimonial-title"] && (
-          <div 
+          <div
             className="text-base sm:text-lg text-gray-600 mt-3 max-w-3xl mx-auto"
             dangerouslySetInnerHTML={{
               __html: heading.fields["video-testimonial-title"],
@@ -325,16 +348,21 @@ export function VideoTestimonialCard({ heading, data }: any) {
               >
                 <div className="w-full max-w-[420px] group px-1 sm:px-2">
                   {/* Video Area */}
-                  <div className={`relative rounded-2xl overflow-hidden bg-gray-900 shadow-xl 
+                  <div
+                    className={`relative rounded-2xl overflow-hidden bg-gray-900 shadow-xl 
                     shadow-black/10 ring-1 ring-black/5 ${
-                      item.isShort 
-                        ? 'aspect-[9/16] max-h-[400px] mx-auto w-[70%] sm:w-[80%] md:w-[85%]' 
-                        : 'aspect-video'
-                    }`}>
+                      item.isShort
+                        ? "aspect-[9/16] max-h-[400px] mx-auto w-[70%] sm:w-[80%] md:w-[85%]"
+                        : "aspect-video"
+                    }`}
+                  >
                     {isPlaying ? (
                       item.isYoutube ? (
                         <div className="relative w-full h-full">
-                          <YoutubeIframe videoId={item.youtubeId} isShort={item.isShort} />
+                          <YoutubeIframe
+                            videoId={item.youtubeId}
+                            isShort={item.isShort}
+                          />
                           <button
                             onClick={() => setActiveVideo(null)}
                             className="absolute -top-1 -right-1 z-20 w-8 h-8 bg-black/70 hover:bg-black/90 text-white rounded-full flex items-center justify-center transition-colors"
@@ -361,12 +389,17 @@ export function VideoTestimonialCard({ heading, data }: any) {
                         onClick={() => setActiveVideo(item.video)}
                       />
                     )}
-                    
+
                     {/* Shorts Indicator on Thumbnail */}
                     {item.isShort && !isPlaying && (
                       <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M17.77 10.32c-.77-.32-1.2-.5-1.2-.5L18 9.06c1.84-.96 2.53-1.64 2.53-2.33 0-1.17-1.96-2.1-4.53-2.1-2.57 0-4.53.93-4.53 2.1 0 .69.69 1.37 2.53 2.33l.43.22c-.52.2-.94.38-1.32.56-.96.46-2.18 1.04-2.18 2.17 0 1.17 1.96 2.1 4.53 2.1 2.57 0 4.53-.93 4.53-2.1 0-1.13-1.22-1.71-2.18-2.17-.38-.18-.8-.36-1.32-.56zm-10.28-2.9c-.37-.15-.78-.22-1.2-.22-1.66 0-3 1.12-3 2.5s1.34 2.5 3 2.5 3-1.12 3-2.5c0-.37-.12-.74-.34-1.07-.14-.2-.3-.38-.46-.53z"/>
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="currentColor"
+                        >
+                          <path d="M17.77 10.32c-.77-.32-1.2-.5-1.2-.5L18 9.06c1.84-.96 2.53-1.64 2.53-2.33 0-1.17-1.96-2.1-4.53-2.1-2.57 0-4.53.93-4.53 2.1 0 .69.69 1.37 2.53 2.33l.43.22c-.52.2-.94.38-1.32.56-.96.46-2.18 1.04-2.18 2.17 0 1.17 1.96 2.1 4.53 2.1 2.57 0 4.53-.93 4.53-2.1 0-1.13-1.22-1.71-2.18-2.17-.38-.18-.8-.36-1.32-.56zm-10.28-2.9c-.37-.15-.78-.22-1.2-.22-1.66 0-3 1.12-3 2.5s1.34 2.5 3 2.5 3-1.12 3-2.5c0-.37-.12-.74-.34-1.07-.14-.2-.3-.38-.46-.53z" />
                         </svg>
                         Short
                       </div>
@@ -387,15 +420,19 @@ export function VideoTestimonialCard({ heading, data }: any) {
                       </p>
                     </div>
                     {!isPlaying && (
-                      <div className={`flex-shrink-0 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full ${
-                        item.isShort 
-                          ? 'bg-gradient-to-r from-red-500 to-red-600' 
-                          : 'bg-[#FF6B35]/10'
-                      }`}>
-                        <span className={`text-[10px] sm:text-xs font-semibold whitespace-nowrap ${
-                          item.isShort ? 'text-white' : 'text-[#FF6B35]'
-                        }`}>
-                          {item.isShort ? '⚡ Short' : '▶ Watch'}
+                      <div
+                        className={`flex-shrink-0 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full ${
+                          item.isShort
+                            ? "bg-gradient-to-r from-red-500 to-red-600"
+                            : "bg-[#FF6B35]/10"
+                        }`}
+                      >
+                        <span
+                          className={`text-[10px] sm:text-xs font-semibold whitespace-nowrap ${
+                            item.isShort ? "text-white" : "text-[#FF6B35]"
+                          }`}
+                        >
+                          {item.isShort ? "⚡ Short" : "▶ Watch"}
                         </span>
                       </div>
                     )}
@@ -455,12 +492,11 @@ export function TextTestimonials({ heading, data }: any) {
     data?.data?.filter((ele: any) => ele.type === "image") || [];
 
   const validTestimonials = imageTestimonials.filter(
-    (ele: any) => ele.message !== ""
+    (ele: any) => ele.message !== "",
   );
 
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [selectedTestimonial, setSelectedTestimonial] =
-    useState<any>(null);
+  const [selectedTestimonial, setSelectedTestimonial] = useState<any>(null);
 
   const [sliderRef, slider] = useKeenSlider(
     {
@@ -513,7 +549,7 @@ export function TextTestimonials({ heading, data }: any) {
         slider.on("animationEnded", nextTimeout);
         slider.on("updated", nextTimeout);
       },
-    ]
+    ],
   );
 
   return (
@@ -526,7 +562,7 @@ export function TextTestimonials({ heading, data }: any) {
             <span className="text-primary">Achievers Say</span>
           </h2>
           {heading?.fields?.["title"] && (
-            <div 
+            <div
               className="text-base sm:text-lg text-gray-600 mt-3 max-w-3xl mx-auto"
               dangerouslySetInnerHTML={{
                 __html: heading.fields["title"],
@@ -555,34 +591,35 @@ export function TextTestimonials({ heading, data }: any) {
                 <div className="h-full flex flex-col md:pt-6 mt-2">
                   {/* Testimonial Text */}
                   <div className="flex-1">
-                    <p className="text-gray-600 text-justify leading-relaxed text-sm sm:text-base lg:text-base line-clamp-4">
-                      {item.message}
-                    </p>
-
+                    <div
+                      className="text-gray-600 text-justify leading-relaxed text-sm sm:text-base lg:text-base line-clamp-4"
+                      dangerouslySetInnerHTML={{ __html: item.message }}
+                    />
                     {item.message?.length > 140 && (
-                      <button
-                        onClick={() =>
-                          setSelectedTestimonial(item)
-                        }
-                        className="cursor-pointer md:mt-3 text-[#FF6B35] font-semibold hover:underline text-sm sm:text-base"
-                      >
-                        Read More
-                      </button>
+                      <div className="flex justify-end">
+                        <button
+                          onClick={() => setSelectedTestimonial(item)}
+                          className="cursor-pointer mt-px text-[#FF6B35] font-semibold hover:underline text-sm sm:text-base"
+                        >
+                          Read More
+                        </button>
+                      </div>
                     )}
                   </div>
 
                   {/* Footer */}
-                  <div className="hidden md:block mt-4 sm:mt-1 pt-4 sm:pt-5 border-t-2">
-                    <div className="flex items-center justify-between gap-2 sm:gap-3">
+                  <div className="hidden md:block sm:mt-1 pt-4 border-t-2">
+                    <div className="flex items-end justify-between gap-2 sm:gap-3">
                       <div className="flex gap-2 sm:gap-3 items-center min-w-0">
-                        {/* <img
-                          src={item.image}
-                          alt={item.name}
-                          className="h-10 w-10 sm:h-12 sm:w-12 p-1 rounded-full object-cover bg-primary flex-shrink-0"
-                        /> */}
-                        <UserRound
-                          className="h-10 w-10 sm:h-12 text-white sm:w-12 p-2 rounded-full object-cover bg-primary flex-shrink-0"
-                        />
+                        {item.image ? (
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="h-10 w-10 sm:h-16 sm:w-16 rounded-full object-cover bg-primary flex-shrink-0"
+                          />
+                        ) : (
+                          <UserRound className="h-10 w-10 sm:h-16 text-white sm:w-16 p-2 rounded-full object-cover bg-primary flex-shrink-0" />
+                        )}
 
                         <div className="min-w-0">
                           <p className="font-bold text-gray-900 text-sm sm:text-base truncate">
@@ -594,9 +631,7 @@ export function TextTestimonials({ heading, data }: any) {
                           </p>
                         </div>
                       </div>
-
-                    </div>
-                      <div className="flex justify-end gap-0.5 flex-shrink-0">
+                      <div className="flex justify-end items-end flex-shrink-0">
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
@@ -609,6 +644,7 @@ export function TextTestimonials({ heading, data }: any) {
                           />
                         ))}
                       </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -677,15 +713,13 @@ export function TextTestimonials({ heading, data }: any) {
               />
 
               <div>
-                <p className="text-2xl font-bold">
-                  {selectedTestimonial.name}
-                </p>
+                <p className="text-2xl font-bold">{selectedTestimonial.name}</p>
 
                 <p className="text-[#FF6B35] font-medium text-sm sm:text-base">
                   {selectedTestimonial.score}
                 </p>
 
-                <div className="flex gap-1 mt-2">
+                <div className="flex gap-1 mt-1">
                   {[...Array(5)].map((_, i) => (
                     <Star
                       key={i}
@@ -702,30 +736,16 @@ export function TextTestimonials({ heading, data }: any) {
             </div>
 
             {/* Full Message */}
-            <p className="text-gray-700 leading-7 sm:leading-8 whitespace-pre-wrap text-sm sm:text-base">
-              {selectedTestimonial.message}
-            </p>
+            <div
+              className="text-gray-800 leading-7 sm:leading-8 whitespace-pre-wrap text-lg"
+              dangerouslySetInnerHTML={{ __html: selectedTestimonial.message }}
+            />
           </div>
         </div>
       )}
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // // VideoTestimonialCard.tsx
 // "use client";
@@ -813,7 +833,7 @@ export function TextTestimonials({ heading, data }: any) {
 //           </div>
 //         </div>
 //       </div>
-      
+
 //       {/* Shorts Badge */}
 //       {isShort && (
 //         <div className="absolute top-3 right-3 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-md shadow-lg">
@@ -1033,7 +1053,7 @@ export function TextTestimonials({ heading, data }: any) {
 //           }}
 //         /> */}
 //         <p className="text-4xl font-bold"><span className="text-[#FF6B35]">What Our</span> <span className="text-[#626363]">Students Say</span></p>
-        
+
 //       </div>
 
 //       {/* Slider */}
@@ -1049,10 +1069,10 @@ export function TextTestimonials({ heading, data }: any) {
 //               >
 //                 <div className="w-full max-w-[420px] group">
 //                   {/* Video Area */}
-//                   <div className={`relative rounded-2xl overflow-hidden bg-gray-900 shadow-xl 
+//                   <div className={`relative rounded-2xl overflow-hidden bg-gray-900 shadow-xl
 //                     shadow-black/10 ring-1 ring-black/5 ${
-//                       item.isShort 
-//                         ? 'aspect-[9/16] max-h-[400px] mx-auto w-[70%] sm:w-[85%]' 
+//                       item.isShort
+//                         ? 'aspect-[9/16] max-h-[400px] mx-auto w-[70%] sm:w-[85%]'
 //                         : 'aspect-video'
 //                     }`}>
 //                     {isPlaying ? (
@@ -1085,7 +1105,7 @@ export function TextTestimonials({ heading, data }: any) {
 //                         onClick={() => setActiveVideo(item.video)}
 //                       />
 //                     )}
-                    
+
 //                     {/* Shorts Indicator on Thumbnail */}
 //                     {item.isShort && !isPlaying && (
 //                       <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full flex items-center gap-1">
@@ -1112,8 +1132,8 @@ export function TextTestimonials({ heading, data }: any) {
 //                     </div>
 //                     {!isPlaying && (
 //                       <div className={`flex-shrink-0 px-3 py-1.5 rounded-full ${
-//                         item.isShort 
-//                           ? 'bg-gradient-to-r from-red-500 to-red-600' 
+//                         item.isShort
+//                           ? 'bg-gradient-to-r from-red-500 to-red-600'
 //                           : 'bg-[#FF6B35]/10'
 //                       }`}>
 //                         <span className={`text-xs font-semibold ${
@@ -1133,7 +1153,7 @@ export function TextTestimonials({ heading, data }: any) {
 //         {/* Arrows */}
 //         <button
 //           onClick={() => slider?.current?.prev()}
-//           className="hidden md:block  absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 
+//           className="hidden md:block  absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12
 //             bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100
 //             flex items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white
 //             transition-all duration-200 hover:scale-105 active:scale-95"
@@ -1144,7 +1164,7 @@ export function TextTestimonials({ heading, data }: any) {
 
 //         <button
 //           onClick={() => slider?.current?.next()}
-//           className="hidden md:block  absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12 
+//           className="hidden md:block  absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 sm:w-12 sm:h-12
 //             bg-white rounded-full shadow-lg shadow-black/10 border border-gray-100
 //             flex items-center justify-center text-[#FF6B35] hover:bg-[#FF6B35] hover:text-white
 //             transition-all duration-200 hover:scale-105 active:scale-95"
@@ -1172,9 +1192,6 @@ export function TextTestimonials({ heading, data }: any) {
 //     </div>
 //   );
 // }
-
-
-
 
 // export function TextTestimonials({ heading, data }: any) {
 //   const imageTestimonials =
@@ -1430,12 +1447,3 @@ export function TextTestimonials({ heading, data }: any) {
 //     </div>
 //   );
 // }
-
-
-
-
-
-
-
-
-

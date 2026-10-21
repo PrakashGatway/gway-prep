@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import ReviewSlider from "./review-slider";
@@ -12,6 +14,8 @@ import {
   X,
 } from "lucide-react";
 import styles from "./spoken-english-course.module.css";
+import PopupModal from "@/components/popupModel";
+import { useState } from "react";
 
 const defaultReviews = [
   "Ooshas Prep helped me improve my spoken English and boost my confidence. Great learning experience!",
@@ -81,6 +85,9 @@ export default function SpokenEnglishTemplate({ pageInfo }: { pageInfo?: any }) 
     const result = fields(section)[name];
     return Array.isArray(result) && result.length ? result : fallback;
   };
+
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const heroButtonUrl = value("hero", "buttonUrl", "#start-learning").trim();
 
   const reviews = items("reviews", "items", defaultReviews.map((text) => ({ text, rating: "5" })));
   const benefits = items("why-choose-us", "items", defaultBenefits.map((text) => ({ text })));
@@ -157,16 +164,21 @@ export default function SpokenEnglishTemplate({ pageInfo }: { pageInfo?: any }) 
     <div className="relative z-10 py-14 lg:py-0">
       <h1
         id="hero-title"
-        className="text-[38px] font-bold leading-[1.15] tracking-[-1.5px] text-[#F23858] sm:text-[48px] lg:text-[58px] xl:text-[52px]"
+        className="text-[38px] font-bold leading-[1.25] tracking-[-1.5px] text-[#F23858] sm:text-[40px]"
       >
-        {value("hero", "title", "English Speaking Course")}
+        <span className="text-black/80">
+        {value("hero", "title", "English Speaking Course").split("|")[0]}
 
-        <span className="mt-3 block text-[27px] font-semibold leading-tight tracking-[-0.8px] text-black sm:text-[34px] lg:text-[32px]">
-          {value("hero", "subtitle", "Ooshas Prep Spoken Curriculum")}
         </span>
+        {value("hero", "title", "English Speaking Course").split("|")[1]}
+
+
+        {/* <span className="mt-3 block text-[27px] font-semibold leading-tight tracking-[-0.8px] text-black sm:text-[34px] lg:text-[32px]">
+          {value("hero", "subtitle", "Ooshas Prep Spoken Curriculum")}
+        </span> */}
       </h1>
 
-      <p className="mt-7 text-[20px] leading-[1.5] text-[#555555] sm:text-[24px] lg:text-[23px]">
+      <p className="mt-4 text-base sm:text-lg leading-[1.5] text-[#555555]">
         {value(
           "hero",
           "deliveryModes",
@@ -174,7 +186,7 @@ export default function SpokenEnglishTemplate({ pageInfo }: { pageInfo?: any }) 
         )}
       </p>
 
-      <p className="mt-2 text-[20px] leading-[1.5] text-[#555555] sm:text-[24px] lg:text-[23px]">
+      <p className="mt-2 text-base sm:text-lg leading-[1.6] text-[#555555]">
         {value(
           "hero",
           "examTypes",
@@ -182,16 +194,30 @@ export default function SpokenEnglishTemplate({ pageInfo }: { pageInfo?: any }) 
         )}
       </p>
 
-      <Link
-        href={value("hero", "buttonUrl", "#start-learning")}
-        className="mt-8 inline-flex min-h-[60px] items-center justify-center gap-3 bg-[#F2183D] px-6 py-4 text-[17px] font-bold text-white transition-colors hover:bg-[#D91032] sm:px-7"
-      >
-        {value("hero", "buttonText", "Start Spoken English Test")}
-        <ArrowRight size={19} />
-      </Link>
+      {heroButtonUrl === "*" ? (
+        <button
+          type="button"
+          onClick={() => setIsPopupOpen(true)}
+          className="mt-6 inline-flex items-center justify-center gap-3 bg-[#F2183D] px-5 py-3 text-[16px] font-bold text-white transition-colors hover:bg-[#D91032]"
+        >
+          {value("hero", "buttonText", "Start Spoken English Test")}
+          <ArrowRight size={19} />
+        </button>
+      ) : (
+        <Link
+          href={heroButtonUrl}
+          className="mt-6 inline-flex items-center justify-center gap-3 bg-[#F2183D] px-5 py-3 text-[16px] font-bold text-white transition-colors hover:bg-[#D91032]"
+        >
+          {value("hero", "buttonText", "Start Spoken English Test")}
+          <ArrowRight size={19} />
+        </Link>
+      )}
     </div>
   </div>
 </section>
+
+      <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} />
+
 
 
 

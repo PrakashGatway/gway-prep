@@ -421,9 +421,9 @@ export default function Auther({
                       <div className="flex items-center gap-2 mt-4 text-xs text-gray-400">
                         <Calendar size={14} />
 
-                        {blog.publishedDate
+                        {blog.createdAt
                           ? new Date(
-                              blog.publishedDate
+                              blog.createdAt
                             ).toLocaleDateString("en-US", {
                               year: "numeric",
                               month: "short",

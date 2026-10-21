@@ -4,8 +4,11 @@
 import Image from "next/image"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
+import { ArrowRight } from "lucide-react"
+import { useGlobal } from "@/hooks/AppStateContext"
 
 export function WorkingProcess({ data }: { data: any }) {
+  const { UserNavigate } = useGlobal();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -129,6 +132,15 @@ export function WorkingProcess({ data }: { data: any }) {
               </div>
             </motion.div>
           )} */}
+        </div>
+        <div className="mt-10 flex justify-center">
+          <button
+            type="button"
+            onClick={UserNavigate}
+            className="inline-flex items-center gap-2 rounded-md bg-[#f26e46] px-7 py-3 text-base font-bold text-white shadow-lg shadow-orange-500/20 transition hover:-translate-y-0.5 hover:bg-[#df5d37]"
+          >
+            Start Your Preparation <ArrowRight className="h-5 w-5" />
+          </button>
         </div>
       </div>
     </section>

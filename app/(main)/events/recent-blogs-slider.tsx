@@ -47,7 +47,7 @@ export default function RecentBlogsSlider({blog}) {
       >
         {blogs.map((blog) => {
           const category = typeof blog.category === "string" ? blog.category : blog.category?.name;
-          const date = blog.publishedDate || blog.createdAt;
+          const date = blog.createdAt;
           return <SwiperSlide key={blog._id || blog.slug} className="!h-auto"><Link href={`/blog/${blog.slug}`} className="group flex h-full min-h-[335px] flex-col overflow-hidden rounded-[1.4rem] border border-[#F0E5DF] bg-white shadow-[0_10px_35px_rgba(80,48,32,.05)] transition hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(80,48,32,.12)]">
             <div className="relative h-48 overflow-hidden bg-gradient-to-br from-[#FFF0BE] to-[#FFB09D] "><div className="aspect-[16/9] w-full overflow-hidden rounded-xl bg-gray-100">
   {blog.image ? (

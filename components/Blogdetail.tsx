@@ -242,7 +242,13 @@ const BlogCard = ({
     <div className="flex items-center gap-4 text-[11px] text-gray-400">
       <span className="flex items-center gap-1">
         <Calendar size={11} />
-        {post.publishedDate?.split("T")[0] || "2026-07-07"}
+        {post.createdAt
+          ? new Date(post.createdAt).toLocaleDateString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+            })
+          : "Date not available"}
       </span>
     </div>
   </article>

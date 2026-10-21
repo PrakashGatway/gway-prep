@@ -1,7 +1,6 @@
 "use client";
 
 import { useGlobal } from "@/hooks/AppStateContext";
-import { IndianRupee } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function PricingSection({ plans }: { plans: any }) {
@@ -13,6 +12,7 @@ export default function PricingSection({ plans }: { plans: any }) {
     access_features = [],
   } = plans || {};
 
+  const planItems = Array.isArray(plans) ? plans : pricing_plans;
   const features = [...content_features, ...access_features]
     .map((item: any) => (typeof item === "string" ? item : item.feature || ""))
     .filter(Boolean);
@@ -45,7 +45,7 @@ export default function PricingSection({ plans }: { plans: any }) {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-end">
-            {pricing_plans.map((plan: any, index: number) => {
+            {planItems.map((plan: any, index: number) => {
               const isHighlighted =
                 plan.is_highlighted === true || plan.is_highlighted === "true";
 
@@ -126,18 +126,12 @@ export default function PricingSection({ plans }: { plans: any }) {
                       ))}
                     </ul> */}
 
-                    {/* Price */}
-                    <div className="mt-4 text-center">
-                      <div className="flex justify-center items-center text-[42px] text-center font-bold text-[#333]">
-                        <IndianRupee className=" h-7 w-8" />
-                        {plan.price}
-                      </div>
-                    </div>
+                    {/* Pricing is intentionally hidden on public test-preparation pages. */}
 
                     {/* Button */}
                     <button
                       onClick={UserNavigate}
-                      className={`mt-4 w-full  py-3 cursor-pointer font-semibold transition
+                      className={`mt-4 w-full rounded-3xl py-3 cursor-pointer font-semibold transition
               ${
                 isHighlighted
                   ? "bg-[#FF6B45] text-white hover:bg-[#F15B2F]"
