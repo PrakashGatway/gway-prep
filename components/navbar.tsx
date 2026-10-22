@@ -411,7 +411,7 @@ export function Navbar({ Data }: NavbarProps) {
 
   return (
     <>
-      <div className="bg-[#1C3058] hidden sm:block text-white">
+      <div className="bg-[#F36D45] hidden sm:block text-white">
         <div className="mx-auto flex min-h-10 max-w-7xl items-center justify-between gap-3 px-4 py-1.5 sm:px-6 xl:px-0">
           <a href="tel:+919166146538" className="group inline-flex min-w-0 items-center gap-2 text-xs font-medium sm:text-sm" aria-label="Call an Ooshas Prep expert at +91 9166146538">
             <span className="hidden sm:inline">Consult with an expert:</span>
