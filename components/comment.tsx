@@ -1,6 +1,6 @@
 import axiosInstance from "@/app/lib/axios";
 import { GlobalProvider, useGlobal } from "@/hooks/AppStateContext";
-import { Send } from "lucide-react";
+import { ChevronDown, MessageCircle, Send } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -54,6 +54,7 @@ function QuestionsSection({
   const [loading, setLoading] = useState(false);
   const [isExpand, setIsExpand] = useState(false);
   const [openForm, setOpenForm] = useState(false);
+  const isCalculator = page === "calculator";
 
   const route = useRouter();
 
@@ -172,20 +173,36 @@ function QuestionsSection({
   };
 
   return (
-    <section className={css || "bg-[#fcf3ed] px-4 py-12"}>
-      <div className=" max-w-7xl mx-auto bg-white rounded-2xl p-6 rounded-2xl">
-        <SectionHeading
-          eyebrow="COMMUNITY"
-          title={heading || "Student Questions & Comments"}
-          description="Have a question about your score? Ask our team and community."
-        />
+    <section className={isCalculator ? "bg-[#f6f8fc] px-4 py-10" : css || "bg-[#fcf3ed] px-4 py-10"}>
+      <div className={isCalculator ? "mx-auto max-w-7xl" : "mx-auto max-w-7xl rounded-2xl bg-white p-6"}>
+        {isCalculator ? (
+          <div className="max-w-2xl">
+            <h2 className="text-3xl font-extrabold leading-tight tracking-tight text-[#0b1e3f] sm:text-4xl">
+              {heading || "Student Questions & Comments"}
+            </h2>
+            <p className="text-sm leading-7 text-slate-600 sm:text-base">
+              Have a question about your score? Share it with our team and fellow students.
+            </p>
+          </div>
+        ) : (
+          <SectionHeading
+            eyebrow="COMMUNITY"
+            title={heading || "Student Questions & Comments"}
+            description="Have a question about your score? Ask our team and community."
+          />
+        )}
 
-        {/* Comment Form */}
-        {/* ================= COMMENT BOX ================= */}
+        <div className={isCalculator ? "mt-8 grid items-start gap-6" : ""}>
         <form
           onSubmit={handleCommentSubmit}
-          className="mt-6 bg-orange-50 p-6 rounded-2xl"
+          className={isCalculator ? "rounded-[24px] border border-orange-100 bg-white p-5 shadow-[0_14px_40px_rgba(11,30,63,.06)] sm:p-7" : "mt-6 rounded-2xl bg-orange-50 p-6"}
         >
+          {isCalculator && (
+            <div className="mb-3">
+              <h3 className=" text-lg font-bold text-[#0b1e3f]">Join the conversation</h3>
+              <p className="mt-1 text-sm leading-6 text-slate-500">Ask a question or share your score preparation experience.</p>
+            </div>
+          )}
           <div className="flex items-start gap-3">
             {/* Current User Avatar */}
             <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white text-xs font-semibold text-[#F36C45]">
@@ -203,8 +220,9 @@ function QuestionsSection({
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="Write your comment here..."
+                aria-label="Write your comment"
                 rows={3}
-                className="
+                className={`
           w-full
           resize-none
           bg-white
@@ -225,7 +243,8 @@ function QuestionsSection({
           focus:bg-white
           focus:ring-2
           focus:ring-[#F36C45]/10
-        "
+          ${isCalculator ? "" : ""}
+        `}
               />
 
               {/* Send Button */}
@@ -260,84 +279,123 @@ function QuestionsSection({
           </div>
         </form>
 
-        {/* ================= COMMENTS ================= */}
-        <div className="mt-7">
-          {/* Header */}
-          <div className="mb-5 flex items-center gap-2">
-            <h3 className="text-base font-semibold text-gray-900">Comments</h3>
+<div
+  className={
+    isCalculator
+      ? "min-w-0 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
+      : "mt-6"
+  }
+>
+  {/* Header */}
+  <div className="mb-4 flex items-center justify-between gap-3">
+    <div className="flex min-w-0 items-center gap-2">
+      <h3
+        className={
+          isCalculator
+            ? "text-base font-bold text-[#0b1e3f]"
+            : "text-base font-semibold text-gray-900"
+        }
+      >
+        {isCalculator ? "Recent conversations" : "Comments"}
+      </h3>
 
-            <span className="text-xs text-gray-400">
-              ({visibleComments?.length || 0})
-            </span>
+      <span
+        className={
+          isCalculator
+            ? "rounded-full bg-orange-50 px-2 py-0.5 text-xs font-semibold text-[#F36C45]"
+            : "text-xs text-gray-400"
+        }
+      >
+        {isCalculator
+          ? approvedComments.length
+          : `(${approvedComments.length})`}
+      </span>
+    </div>
+  </div>
+
+  {/* Comments List */}
+  <div className={isCalculator ? "space-y-2.5" : "space-y-2"}>
+    {isCalculator && visibleComments.length === 0 && (
+      <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/70 px-4 py-7 text-center">
+        <MessageCircle className="mx-auto h-6 w-6 text-slate-400" />
+
+        <p className="mt-2 text-sm font-semibold text-[#0b1e3f]">
+          Start the conversation
+        </p>
+
+        <p className="mt-1 text-xs text-slate-500">
+          Ask a question and help other students learn.
+        </p>
+      </div>
+    )}
+
+    {visibleComments?.map((item: any) => {
+      const formattedDate = new Date(item.createdAt).toLocaleDateString(
+        "en-US",
+        {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+        }
+      );
+
+      return (
+        <div
+          key={item._id}
+          className={
+            isCalculator
+              ? "flex min-w-0 items-start gap-2.5 rounded-xl border border-slate-100 bg-slate-50/60 p-3 transition-colors hover:border-orange-200 hover:bg-white"
+              : "flex min-w-0 items-start gap-2 rounded-xl border border-orange-100 p-3"
+          }
+        >
+          {/* Avatar */}
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-orange-50 text-[11px] font-bold text-[#F36C45]">
+            {item?.name
+              ?.split(" ")
+              .map((word: string) => word[0])
+              .join("")
+              .slice(0, 2)
+              .toUpperCase() || "U"}
           </div>
 
-          {/* Comments List */}
-          {
-            <div className="space-y-2">
-              {visibleComments?.map((item: any) => {
-                const formattedDate = new Date(
-                  item.createdAt,
-                ).toLocaleDateString("en-US", {
-                  day: "numeric",
-                  month: "short",
-                  year: "numeric",
-                });
+          {/* Content */}
+          <div className="min-w-0 flex-1">
+            <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-0.5">
+              <h4 className="max-w-full truncate text-[13px] font-semibold text-slate-800">
+                {item?.name || "Anonymous"}
+              </h4>
 
-                return (
-                  <div
-                    key={item._id}
-                    className="flex w-full min-w-0 items-start gap-1 border border-orange-200 rounded-xl p-4 shadow-md shadow-orange-500/10"
-                  >
-                    {/* User Avatar */}
-                    <div
-                      className="
-      flex h-9 w-9 shrink-0 items-center justify-center
-      rounded-full bg-[#FFF1EC]
-      text-xs font-semibold text-[#F36C45]
-    "
-                    >
-                      {name
-                        ?.split(" ")
-                        .map((word: string) => word[0])
-                        .join("")
-                        .slice(0, 2)
-                        .toUpperCase() || "U"}
-                    </div>
-
-                    {/* Comment Content */}
-                    <div className="min-w-0 flex-1">
-                      {/* User + Date */}
-                      <div className="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-                        <h4 className="min-w-0 max-w-full truncate text-sm font-semibold text-gray-900">
-                          {item?.name}
-                        </h4>
-
-                        <span className="shrink-0 text-[11px] text-gray-400">
-                          {formattedDate}
-                        </span>
-                      </div>
-
-                      {/* Comment */}
-                      <p className="mt-1 break-words text-sm leading-6 text-gray-600">
-                        {item.comment}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
+              <span className="text-[10px] text-slate-400">
+                {formattedDate}
+              </span>
             </div>
-          }
 
-          {/* Expand / Collapse */}
-          {visibleComments?.length > 5 && (
-            <button
-              type="button"
-              onClick={() => setIsExpand(!isExpand)}
-              className="mt-4 text-sm font-semibold text-[#F36C45] hover:underline"
-            >
-              {isExpand ? "Show Less" : "Show All Comments"}
-            </button>
-          )}
+            <p className="mt-1 whitespace-pre-wrap break-words text-[13px] leading-5 text-slate-600">
+              {item.comment}
+            </p>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+
+  {/* Expand / Collapse */}
+  {approvedComments.length > 5 && (
+    <button
+      type="button"
+      onClick={() => setIsExpand(!isExpand)}
+      className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-[#F36C45] transition-colors hover:text-orange-700"
+    >
+      {isExpand ? "Show less" : "Show all comments"}
+
+      <ChevronDown
+        className={`h-3.5 w-3.5 transition-transform ${
+          isExpand ? "rotate-180" : ""
+        }`}
+      />
+    </button>
+  )}
+</div>
         </div>
       </div>
       {openForm && (

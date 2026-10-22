@@ -28,19 +28,60 @@ async function getBlogData(slug: string) {
   }
 }
 
-async function getRelatedBlogs() {
+const categoryName = (category: unknown) =>
+  typeof category === "string"
+    ? category.trim()
+    : category && typeof category === "object" && "name" in category
+      ? String(category.name || "").trim()
+      : "";
+
+async function getRelatedBlogs(category: unknown, currentSlug: string) {
+  const name = categoryName(category);
+  if (!name) return [];
+
   try {
+    const params = new URLSearchParams({
+      page: "1",
+      limit: "12",
+      isPublished: "published",
+      category: name,
+    });
     const response = await axiosInstance.get(
-      `/admin/blogs?page=1&limit=4&isPublished=true`
+      `/admin/blogs?${params.toString()}`
     );
 
-    return response.data?.data || [];
+    const posts = Array.isArray(response.data?.data) ? response.data.data : [];
+    return posts
+      .filter((post: any) =>
+        post.slug !== currentSlug &&
+        post.isPublished !== false &&
+        categoryName(post.category).toLowerCase() === name.toLowerCase()
+      )
+      .slice(0, 6);
   } catch (error) {
     console.error(
       "Related blogs fetch error:",
       error
     );
 
+    return [];
+  }
+}
+
+async function getLatestBlogs(currentSlug: string) {
+  try {
+    const response = await axiosInstance.get(
+      "/admin/blogs?page=1&limit=12&isPublished=published"
+    );
+    const posts = Array.isArray(response.data?.data) ? response.data.data : [];
+    return posts
+      .filter((post: any) => post.slug !== currentSlug && post.isPublished !== false)
+      .sort((a: any, b: any) =>
+        new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
+      )
+      .slice(0, 5);
+  } catch (error) {
+    console.error("Latest blogs fetch error:", error);
     return [];
   }
 }
@@ -170,7 +211,10 @@ export default async function BlogDetailsPage({
   }
 
 
-  const res = await getRelatedBlogs();
+  const [res, latestBlogs] = await Promise.all([
+    getRelatedBlogs(blog.category, slug),
+    getLatestBlogs(slug),
+  ]);
   const blogUrl = `${SITE_URL}/blog/${slug}`;
 
   const blogTitle =
@@ -478,6 +522,7 @@ export default async function BlogDetailsPage({
         blog={response}
         loading={false}
         res={res}
+        latestBlogs={latestBlogs}
         slug={slug}
       />
     </>

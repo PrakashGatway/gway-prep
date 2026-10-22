@@ -905,10 +905,10 @@ const BlogFormContent = () => {
   if (!formData) return <div className="p-8 text-center">Loading form data...</div>;
 
   return (
-    <div className="max-w-7xl w-full mx-auto p-6 bg-gray-100 min-h-screen">
+    <div className="max-w-7xl w-full mx-auto p-4 sm:p-6 bg-gray-100 min-h-screen">
       <div className="bg-white rounded-2xl shadow-lg">
         <div className="border-b px-6 py-4">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <button
                 type="button"

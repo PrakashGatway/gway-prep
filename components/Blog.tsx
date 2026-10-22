@@ -601,14 +601,18 @@ export default function BlogPage({
                     </h3>
 
                     {/* Description */}
-                    <p className="mt-2 line-clamp-2 text-sm leading-[1.55] text-[#777]">
+                    <p className="mt-1 line-clamp-2 text-sm leading-[1.55] text-[#777]">
                       {post.metaDescription ||
                         post.excerpt ||
                         post.content ||
                         "Discover useful tips, strategies and expert guidance to help you prepare better and achieve your goals."}
                     </p>
 
-                    {post.createdAt && (
+                   
+
+                    {/* Read More */}
+                    <div className="mt-auto flex justify-between items-center py-4 ">
+                       {post.createdAt && (
                       <div className="mt-3 flex items-center gap-1.5 text-xs text-[#777]">
                         <Calendar size={14} aria-hidden="true" />
                         <span>Published {new Date(post.createdAt).toLocaleDateString("en-IN", {
@@ -618,9 +622,6 @@ export default function BlogPage({
                         })}</span>
                       </div>
                     )}
-
-                    {/* Read More */}
-                    <div className="mt-auto flex justify-end py-4 ">
                       <button
                         type="button"
                         onClick={(e) => {

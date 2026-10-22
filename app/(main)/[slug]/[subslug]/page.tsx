@@ -100,7 +100,7 @@ export default async function ExamSubpage({ params }: ExamSubpageProps) {
   const [pages, blogResponse] = await Promise.all([
     getPages(300).catch(() => []),
     axiosInstance
-      .get("/admin/blogs?limit=8&isPublished=true")
+      .get("/admin/blogs?limit=8&isPublished=published")
       .then((response) => response.data?.data || [])
       .catch(() => []),
   ]);

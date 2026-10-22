@@ -266,7 +266,6 @@ export default async function CaseStudyPage() {
     loadStudents(),
   ]);
 
-  console.log(pageData,"pp")
 
   // Read content from the API, then fall back to defaults.
   const heroData = getSectionData(

@@ -89,6 +89,20 @@
 .reviewCard p { margin: 13px 0 9px; color: #27262a; font-size: 15px; line-height: 1.5; }
 .reviewSource { color: #87838a; font-size: 10px; }
 
+.reviewsLayout { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); align-items: stretch; gap: 34px; }
+.reviewsCopy { min-width: 0; }
+.reviewsCopy h2 { margin-bottom: 12px; text-align: left; }
+.reviewsIntro { max-width: 540px; margin: 0 0 22px; color: #66636b; font-size: 15px; line-height: 1.65; }
+.reviewCarousel { position: relative; padding-right: 58px; }
+.reviewCarousel .reviewSlider { height: 426px; flex-direction: column; padding: 0; touch-action: pan-y; }
+.reviewCarousel .reviewSlide { height: auto; }
+.reviewControls { position: absolute; top: 50%; right: 0; display: flex; flex-direction: column; gap: 10px; transform: translateY(-50%); }
+.reviewControls button { display: flex; width: 42px; height: 42px; align-items: center; justify-content: center; border: 1px solid #ffd0db; border-radius: 50%; background: #fff; color: var(--se-pink); box-shadow: 0 5px 16px rgba(243, 50, 88, .09); transition: background .2s ease, color .2s ease, transform .2s ease; }
+.reviewControls button:hover { transform: translateY(-2px); background: var(--se-pink); color: #fff; }
+.reviewControls button:focus-visible { outline: 2px solid var(--se-pink); outline-offset: 3px; }
+@media (max-width: 900px) { .reviewsLayout { grid-template-columns: 1fr; } }
+@media (max-width: 640px) { .reviewCarousel .reviewSlider { height: 210px; } .reviewCarousel { padding-right: 52px; } }
+
 .growth { background: #fff; }
 .growthInner { position: relative; display: grid; min-height: 590px; grid-template-columns: minmax(0, 1fr) 135px; align-items: stretch; }
 .growthInner::before { position: absolute; inset: 0 135px 0 calc((1280px - 100vw) / 2); background: var(--se-pale-blue); content: ""; }

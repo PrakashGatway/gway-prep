@@ -857,7 +857,7 @@ export default async function PreparationPage({ params }: PageProps) {
 
   try {
     const response = await axiosInstance.get(
-      "/admin/blogs?limit=8&isPublished=true",
+      "/admin/blogs?limit=8&isPublished=published",
     );
 
     Blogdata = response?.data;

@@ -12,9 +12,9 @@ export const createStudent = async (data: any) => {
     return res.data;
 };
 
-export const getStudent = async (query = "", page = 1, limit = 10) => {
+export const getStudent = async (query = "", page = 1, limit = 10, sort: "createdAtDesc" | "" = "") => {
     const res = await axiosInstance.get(
-        `/admin/student?query=${encodeURIComponent(query)}&page=${page}&limit=${limit}`
+        `/admin/student?query=${encodeURIComponent(query)}&page=${page}&limit=${limit}${sort ? `&sort=${sort}` : ""}`
     );
     return res.data;
 };

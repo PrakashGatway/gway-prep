@@ -29,6 +29,7 @@ import axiosInstance from "@/app/lib/axios";
 
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import QuestionsSection from "./comment";
 import { getPages } from "@/app/services/api";
 
@@ -558,43 +559,43 @@ export const ExploreExams = ({ Data, slug }: any) => {
 };
 
 export const ExploreBlogs = ({ Blogdata }: any) => {
-  const router = useRouter();
+  const blogs = Array.isArray(Blogdata)
+    ? Blogdata.filter((item: any) => item?.slug && item?.title && item?.isPublished !== false).slice(0, 4)
+    : [];
 
   return (
-    <>
-      <div className="w-full rounded-2xl border border-gray-200 bg-white p-4 my-3">
-        {/* Header */}
-        <div className=" flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-orange-500" />
+    <section className="my-4 w-full overflow-hidden rounded-2xl border" aria-labelledby="explore-blogs-title">
+      <div className="flex items-center gap-2 border-b border-orange-100 px-4 py-4">
+        <h2 id="explore-blogs-title" className="text-lg font-bold text-gray-900">Explore Blogs</h2>
+      </div>
 
-          <h2 className="text-lg font-bold text-gray-900">Explore Blogs</h2>
-        </div>
-
-        <ul>
-          {Blogdata.map((item: any) => (
-            <li key={item._id}>
-              <button
-                onClick={() => router.push(`/blog/${item.slug}`)}
-                className="group flex w-full items-center justify-between gap-4 border-b-3 border-gray-300 py-2 text-left last:border-b-0"
-              >
-                <span className="text-[15px] leading-6 text-orange-500 transition-all duration-200 group-hover:translate-x-1 underline cursor-pointer">
-                  {item.title}
+      {blogs.length > 0 ? (
+        <ul className="divide-y divide-orange-100 bg-white px-4">
+          {blogs.map((item: any) => (
+            <li key={item._id || item.slug}>
+              <Link href={`/blog/${item.slug}`} className="group block py-3.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F36D45]">
+                <span className="block min-w-0">
+                  <span className="line-clamp-2 text-sm font-semibold leading-[1.35] text-[#0b1e3f] transition-colors group-hover:text-[#F36D45]">{item.title}</span>
+                  {item.createdAt && (
+                    <span className="mt-1 block text-[11px] text-slate-500">
+                      {new Date(item.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                    </span>
+                  )}
                 </span>
-
-                <span className="shrink-0 text-lg font-light text-orange-500 transition-all duration-200 group-hover:translate-x-1">
-                  →
-                </span>
-              </button>
+              </Link>
             </li>
           ))}
         </ul>
+      ) : (
+        <p className="bg-white px-5 py-6 text-sm text-slate-500">No blogs available yet.</p>
+      )}
 
-        {/* Empty State */}
-        {Blogdata.length === 0 && (
-          <p className="py-4 text-sm text-gray-500">No exams available.</p>
-        )}
+      <div className="border-t border-orange-100 bg-white px-4 py-3">
+        <Link href="/blog" className="text-xs font-bold text-[#D85E39] underline decoration-orange-200 underline-offset-4 transition hover:text-[#b94b2a]">
+          Browse all blogs
+        </Link>
       </div>
-    </>
+    </section>
   );
 };
 

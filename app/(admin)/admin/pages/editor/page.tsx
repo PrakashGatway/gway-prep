@@ -162,7 +162,7 @@ const Page = () => {
 
   
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
 
 
       <div className="flex flex-col lg:flex-row justify-between gap-5 items-center mb-8">
@@ -179,10 +179,10 @@ const Page = () => {
         </div>
 
         {/* Header Actions */}
-        <div className="flex gap-3 w-full lg:w-auto">
+        <div className="flex flex-wrap gap-3 w-full lg:w-auto">
 
           {/* Search */}
-          <div className="relative flex-1 lg:w-80">
+          <div className="relative min-w-[180px] flex-1 lg:w-80">
             <Search
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               size={18}
@@ -388,7 +388,7 @@ const Page = () => {
             <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-sm">
 
               {/* List Header */}
-              <div className="hidden md:grid grid-cols-[1fr__130px_140px_150px_150px] gap-4 px-6 py-4 bg-gray-50 border-b border-gray-200 text-xs font-semibold uppercase tracking-wide text-gray-500">
+              <div className="hidden xl:grid grid-cols-[minmax(160px,1fr)_90px_100px_100px_100px] gap-4 px-6 py-4 bg-gray-50 border-b border-gray-200 text-xs font-semibold uppercase tracking-wide text-gray-500">
                 <div>Page</div>
                 <div>Template</div>
                 <div>Slug</div>
@@ -407,7 +407,7 @@ const Page = () => {
                       `/admin/pages/editor/${pageItem.slug}`
                     )
                   }
-                  className={`group grid grid-cols-1 md:grid-cols-[1fr_130px_140px_150px_150px] gap-4 items-center px-6 py-5 hover:bg-orange-50/40 transition cursor-pointer ${
+                  className={`group grid grid-cols-1 xl:grid-cols-[minmax(160px,1fr)_90px_100px_100px_100px] gap-4 items-center px-6 py-5 hover:bg-orange-50/40 transition cursor-pointer ${
                     index !== pages.length - 1
                       ? "border-b border-gray-100"
                       : ""

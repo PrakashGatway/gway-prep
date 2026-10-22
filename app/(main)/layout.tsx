@@ -1,4 +1,4 @@
-import type React from "react";
+import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import { Inter, Montserrat } from "next/font/google";
 import Script from "next/script";
@@ -9,6 +9,7 @@ import { getPages } from "../services/api";
 import { GlobalProvider } from "@/hooks/AppStateContext";
 import { Toaster } from "react-hot-toast";
 import SiteBanner from "@/components/site-banner";
+import FloatingWhatsApp, { type ContactPage } from "@/components/floating-whatsapp";
 
 export const metadata: Metadata = {
   title:
@@ -38,6 +39,17 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const NavData = await getPages("300");
+  const contactPages: ContactPage[] = (Array.isArray(NavData) ? NavData : [])
+    .map((item: any) => {
+      const rawPath = String(item?.seoMeta?.canonicalUrl || item?.slug || "");
+      const path = `/${rawPath.replace(/^https?:\/\/[^/]+/i, "").replace(/^\/+|\/+$/g, "")}`;
+      return {
+        path,
+        title: String(item?.seoMeta?.navTitle || item?.name || ""),
+        template: String(item?.seoMeta?.template || item?.template || ""),
+      };
+    })
+    .filter((item: ContactPage) => item.path !== "/");
 
   
 
@@ -109,6 +121,9 @@ export default async function RootLayout({
           {children}
           <Footer Data={NavData} />
           <SiteBanner />
+          <Suspense fallback={null}>
+            <FloatingWhatsApp pages={contactPages} />
+          </Suspense>
           <Toaster position="top-right"/>
         </GlobalProvider>
           <Script id="microsoft-clarity" strategy="afterInteractive">

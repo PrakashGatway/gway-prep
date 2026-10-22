@@ -83,7 +83,7 @@ const StudentPage = () => {
   const fetchStudents = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await getStudent(search, page, limit);
+      const res = await getStudent(search, page, limit, "createdAtDesc");
       
       if (res?.data) {
         setStudents(res.data);
@@ -286,7 +286,7 @@ const StudentPage = () => {
   // Render list view
   const renderListView = () => (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-      <div className="hidden grid-cols-[130px_250px_1fr_180px_140px] gap-4 border-b border-gray-200 bg-gray-50 px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 md:grid">
+      <div className="hidden grid-cols-[80px_110px_minmax(150px,1fr)_140px_100px] gap-4 border-b border-gray-200 bg-gray-50 px-6 py-4 text-xs font-semibold uppercase tracking-wide text-gray-500 xl:grid">
         <div>Photo</div>
         <div>ID</div>
         <div>Student</div>
@@ -298,7 +298,7 @@ const StudentPage = () => {
         <div
           key={student._id}
           className={`group grid grid-cols-1 items-center gap-3 px-6 py-4 transition hover:bg-orange-50/50 cursor-pointer
-            md:grid-cols-[130px_250px_1fr_180px_140px] ${
+            xl:grid-cols-[80px_110px_minmax(150px,1fr)_140px_100px] ${
               index !== students.length - 1 ? "border-b border-gray-100" : ""
             }`}
           onClick={() => router.push(`/admin/pages/student/${student._id}`)}
@@ -426,7 +426,7 @@ const StudentPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
       {/* Notification */}
       {notification && (
         <div className="fixed top-4 right-4 z-50 animate-slide-in">

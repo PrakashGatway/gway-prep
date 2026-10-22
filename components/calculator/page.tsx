@@ -28,6 +28,7 @@ import QuestionsSection from "../comment";
 import PopupModal from "../popupModel";
 import { useRouter } from "next/navigation";
 import { GlobalProvider, useGlobal } from "@/hooks/AppStateContext";
+import Link from "next/link";
 
 const ORANGE = "#ff7a2a";
 const NAVY = "#0b1e3f";
@@ -356,6 +357,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
       : "SAT";
   });
   const [showReport, setShowReport] = useState(false);
+  const [isInsightsPopupOpen, setIsInsightsPopupOpen] = useState(false);
 
   // SAT State
   const [satScores, setSatScores] = useState<SATScores>({
@@ -2079,12 +2081,12 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
 
                   {/* Actions */}
                   <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <button
-                      type="button"
+                    <Link
+                    href={"/auth"}
                       className="rounded-full bg-[#FF7043] px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:text-sm"
                     >
                       Practice Free Mock Test →
-                    </button>
+                    </Link>
                   </div>
                 </div>
 
@@ -2337,22 +2339,22 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
 
       {/* Performance Report Section */}
       {showReport && report && (
-        <section id="performance-report" className="px-4 pb-8">
-          <div className="mx-auto max-w-7xl">
-            <div className="mb-6 flex items-center justify-between">
+        <section id="performance-report" className="relative overflow-hidden bg-[#fff9f5] px-4 py-12">
+          <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-orange-100/70 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-28 left-0 h-64 w-64 rounded-full bg-amber-100/60 blur-3xl" />
+          <div className="relative mx-auto max-w-7xl">
+            <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
               <div>
-                <p className="text-xs font-bold uppercase tracking-widest text-[#F36D45]">
-                  PERFORMANCE INSIGHTS
-                </p>
-                <h2 className="mt-1 text-3xl font-extrabold">
-                  Here's Where You Stand
+                
+                <h2 className=" text-3xl font-extrabold leading-tight tracking-tight text-[#0b1e3f] sm:text-4xl">
+                  Here's Where You Stand<span className="text-[#F36D45]">. What's Next.</span>
                 </h2>
-                <p className="mt-2 max-w-2xl text-sm text-slate-500">
+                <p className="mt-1 max-w-3xl text-base leading-7 text-slate-600 sm:text-base">
                   Review your overall performance, section strengths and the
                   areas that may need more focused preparation.
                 </p>
               </div>
-              <span className="hidden rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-[#F36D45] sm:block">
+              <span className="rounded-full border border-orange-200 bg-white px-4 py-2 text-xs font-bold text-[#dc6039] shadow-sm">
                 {report.exam === "PTE"
                   ? `PTE ${pteType === "core" ? "Core" : "Academic / UKVI"}`
                   : report.exam}
@@ -2360,17 +2362,13 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
             </div>
 
             {/* Priority Area */}
-            <div className="mt-6 grid gap-6 lg:grid-cols-3">
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-2">
-                <div className="mb-4">
-                  <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-[#F36D45]">
-                    YOUR PRIORITY AREA
-                  </span>
-                </div>
-                <h3 className="text-2xl font-bold">
+            <div className="grid gap-4 lg:grid-cols-3">
+              <div className="rounded-[22px] border border-orange-100 bg-white p-6 shadow-[0_10px_28px_rgba(91,47,28,.05)] lg:col-span-2">
+              
+                <h3 className="text-2xl font-semibold text-[#0b1e3f]">
                   Focus on {report.weakestArea}
                 </h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">
+                <p className="mt-1 text-base leading-6 text-slate-600">
                   {report.exam === "PTE" ? (
                     <>
                       Your {report.weakestArea} score is the lowest of the four
@@ -2388,7 +2386,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                   )}
                 </p>
                 <div className="mt-6">
-                  <h4 className="text-sm font-bold">Recommended focus</h4>
+                  <h4 className="text-base font-bold text-[#0b1e3f]">Recommended focus</h4>
                   <div className="mt-3 grid gap-3 sm:grid-cols-2">
                     {[
                       "Concept Revision",
@@ -2398,7 +2396,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                     ].map((item) => (
                       <div
                         key={item}
-                        className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3"
+                        className="flex items-center gap-3 rounded-xl border border-orange-100 bg-[#fff9f5] p-3"
                       >
                         <div className="flex h-6 w-6 items-center justify-center rounded-full bg-orange-100">
                           <TrendingUp className="h-3 w-3 text-[#F36D45]" />
@@ -2410,34 +2408,28 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-orange-200 bg-gradient-to-br from-orange-50 to-orange-100 p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-sm">
-                  <GraduationCap className="h-6 w-6 text-[#F36D45]" />
-                </div>
-                <h3 className="text-lg font-bold">
+              <div className="rounded-[22px] border border-orange-100 bg-white p-6 shadow-[0_10px_28px_rgba(91,47,28,.05)] sm:p-7">
+              
+                <h3 className="text-2xl font-semibold text-[#0b1e3f]">
                   Turn Your Weak Area Into a Strength
                 </h3>
-                <p className="mt-3 text-sm leading-5 text-slate-600">
+                <p className="mt-3 text-base leading-6 text-slate-600">
                   Strengthen your {report.weakestArea} preparation with
                   structured lessons, targeted practice, mock tests and expert
                   guidance through Ooshas Prep online coaching.
                 </p>
-                <button className="mt-5 w-full rounded-xl bg-[#F36D45] px-4 py-3 text-sm font-bold text-white transition hover:brightness-95">
+                <button type="button" onClick={() => setIsInsightsPopupOpen(true)} className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#F36D45] px-4 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#e75f39] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F36D45] focus-visible:ring-offset-2">
                   Explore {report.exam} Course →
                 </button>
               </div>
             </div>
 
             {/* Strongest Area & Next Steps */}
-            <div className="mt-6 grid gap-6 lg:grid-cols-2">
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="mb-4">
-                  <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-[#F36D45]">
-                    YOUR STRONGEST AREA
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold">{report.strongestArea}</h3>
-                <p className="mt-3 text-sm leading-6 text-slate-600">
+            <div className="mt-4 grid gap-4 lg:grid-cols-2">
+              <div className="rounded-[22px] border border-orange-100 bg-white p-6 shadow-[0_10px_28px_rgba(91,47,28,.05)] sm:p-7">
+              
+                <h3 className="text-2xl font-semibold text-[#0b1e3f]">{report.strongestArea}</h3>
+                <p className="mt-3 text-base leading-6 text-slate-600">
                   {report.strongestArea} is currently your strongest area at{" "}
                   {report.exam === "PTE" ||
                   report.exam === "GMAT" ||
@@ -2451,13 +2443,9 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                <div className="mb-4">
-                  <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-bold text-[#F36D45]">
-                    RECOMMENDED NEXT STEP
-                  </span>
-                </div>
-                <h3 className="text-xl font-bold">
+              <div className="rounded-[22px] border border-orange-100 bg-white p-6 shadow-[0_10px_28px_rgba(91,47,28,.05)] sm:p-7">
+                
+                <h3 className="text-2xl font-semibold text-[#0b1e3f]">
                   Build Your {report.weakestArea}
                 </h3>
                 <ol className="mt-4 space-y-3">
@@ -2468,10 +2456,10 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                     "Review mistakes before attempting the next test",
                   ].map((step, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 text-xs font-bold text-[#F36D45]">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-orange-100 text-sm font-bold text-[#F36D45]">
                         {i + 1}
                       </span>
-                      <span className="text-sm text-slate-600">{step}</span>
+                      <span className="text-base text-slate-600">{step}</span>
                     </li>
                   ))}
                 </ol>
@@ -2479,7 +2467,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
             </div>
 
             {/* Disclaimer */}
-            <div className="mt-6 rounded-xl bg-slate-50 p-4 text-center text-xs text-slate-500">
+            <div className="mt-4 rounded-2xl border border-orange-100 bg-white/85 p-4 text-center text-sm leading-5 text-slate-600">
               {(report.exam === "SAT" && satInputMode === "sections") ||
               (report.exam === "GRE" && greInputMode === "sections")
                 ? "The combined score is the exact sum of the section scores you entered. The performance insights are for practice planning, not an official score report."
@@ -2489,11 +2477,11 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
             </div>
 
             <div className="mt-6 flex flex-wrap justify-center gap-3">
-              <button className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-slate-50">
+              <button type="button" onClick={() => setIsInsightsPopupOpen(true)} className="inline-flex items-center justify-center gap-2 rounded-xl border border-orange-200 bg-white px-5 py-3 text-sm font-bold text-[#0b1e3f] shadow-sm transition hover:border-[#F36D45] hover:bg-orange-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F36D45] focus-visible:ring-offset-2">
                 <Download className="h-4 w-4 text-[#F36D45]" />
                 Download Report PDF
               </button>
-              <button className="flex items-center gap-2 rounded-xl bg-[#F36D45] px-5 py-3 text-sm font-bold text-white shadow-lg transition hover:brightness-95">
+              <button type="button" onClick={() => setIsInsightsPopupOpen(true)} className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#F36D45] px-5 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-[#e75f39] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F36D45] focus-visible:ring-offset-2">
                 Explore {report.exam} Course
                 <ArrowRight className="h-4 w-4" />
               </button>
@@ -2501,6 +2489,11 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
           </div>
         </section>
       )}
+
+      <PopupModal
+        isPopupOpen={isInsightsPopupOpen}
+        setIsPopupOpen={setIsInsightsPopupOpen}
+      />
 
       {/* Original Sections */}
       {/* <WhySection data={pageInfo?.sections?.whySection?.fields} /> */}
@@ -2634,32 +2627,40 @@ function BeyondNumberSection({ data }: { data: any }) {
     Info,
   };
   const features = Array.isArray(data?.features) ? data.features : [];
+  const title = String(data?.title || "").trim();
+  const titleBreak = title.indexOf(". ");
+
+  if (!title && features.length === 0) return null;
 
   return (
-    <section className="bg-white px-4 py-12">
-      <div className="mx-auto max-w-7xl">
-        <SectionHeading
-          eyebrow="BEYOND THE NUMBER"
-          title={data?.title || ""}
-          description={data?.description || ""}
-        />
+    <section className="relative overflow-hidden bg-[#fff9f5] px-4 py-12">
+      <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-orange-100/70 blur-3xl" />
+      <div className="pointer-events-none absolute -bottom-28 left-0 h-64 w-64 rounded-full bg-amber-100/60 blur-3xl" />
+      <div className="relative mx-auto max-w-7xl">
+        <div className="">
+          <div>
+            <h2 className="max-w-3xl text-3xl font-extrabold leading-tight tracking-tight text-[#0b1e3f] sm:text-4xl">
+              {titleBreak >= 0 ? <>{title.slice(0, titleBreak + 1)} <span className="text-[#F36D45]">{title.slice(titleBreak + 2)}</span></> : title}
+            </h2>
+            {data?.description && <div className="mt-4 max-w-7xl text-sm leading-7 text-slate-600 sm:text-base" dangerouslySetInnerHTML={{ __html: data.description }} />}
+          </div>
+
+        </div>
         <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {features.map((feature: any, index: number) => {
-            const Icon = iconMap[feature?.icon] || Sparkles;
             return (
               <div
                 key={`${feature?.title || "feature"}-${index}`}
-                className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+                className="group relative overflow-hidden rounded-[22px] border border-orange-100 bg-white p-6 shadow-[0_10px_28px_rgba(91,47,28,.05)] transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_18px_38px_rgba(91,47,28,.12)]"
               >
-                <div className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg bg-orange-50 text-[#F36D45]">
-                  <Icon className="h-4 w-4" />
-                </div>
-                <h3 className="text-sm font-extrabold">
+                <span className="absolute right-5 top-5 text-xl font-black tracking-widest text-orange-100">{String(index + 1).padStart(2, "0")}</span>
+                <h3 className="text-xl font-semibold text-[#0b1e3f]">
                   {feature?.title || ""}
                 </h3>
-                <p className="mt-2 text-[14px] leading-5 text-slate-500">
+                <p className="mt-2 text-sm sm:text-base leading-6 font-medium text-slate-700">
                   {feature?.text || ""}
                 </p>
+                <div className="mt-5 h-0.5 w-10 rounded-full bg-[#F36D45]/50 transition-all duration-300 group-hover:w-20 group-hover:bg-[#F36D45]" />
               </div>
             );
           })}
@@ -2669,42 +2670,62 @@ function BeyondNumberSection({ data }: { data: any }) {
   );
 }
 
+
 function BottomCTA({ data }: { data: any }) {
   const [isPopupOpen, setisPopupOpen] = useState(false);
+
   return (
     <div>
-      <section id="contact" className="bg-white px-4 pb-5">
-        <div
-          className="mx-auto max-w-7xl overflow-hidden rounded-xl px-6 py-10 text-center sm:px-10"
-          style={{ background: "#F36D45" }}
-        >
-          <h2 className="text-xl font-black text-white sm:text-2xl">
-            {data?.title || ""}
-          </h2>
-          <p className="mx-auto mt-2 max-w-xl whitespace-pre-line text-sm leading-5 text-white/80">
-            {data?.description || ""}
-          </p>
-          <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
-            {data?.primaryButtonText && (
-              <a
-                onClick={() => setisPopupOpen(true)}
-                className="cursor-pointer bg-[#0b1e3f] px-5 py-3 text-sm font-bold text-white"
-              >
-                {data.primaryButtonText}
-              </a>
+      <section id="contact" className="px-4 pb-6">
+        <div className="relative mx-auto max-w-7xl overflow-hidden rounded-3xl bg-[#F36D45] px-5 py-8 shadow-sm sm:px-8 sm:py-10">
+          {/* Decorative background */}
+          <div className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full border-[30px] border-white/10" />
+          <div className="pointer-events-none absolute -bottom-24 -left-12 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
+
+          <div className="relative mx-auto max-w-3xl text-center">
+
+            {/* Heading */}
+            <h2 className="mt-3 text-2xl font-semibold leading-tight tracking-tight text-white sm:text-3xl lg:text-4xl">
+              {data?.title || ""}
+            </h2>
+
+            {/* Description */}
+            {data?.description && (
+              <p className="mx-auto mt-3 max-w-2xl whitespace-pre-line text-sm leading-6 text-white/90 sm:text-base sm:leading-7">
+                {data.description}
+              </p>
             )}
-            {data?.secondaryButtonText && (
-              <a
-                href={data?.secondaryButtonUrl || "#"}
-                className="bg-white px-5 py-3 text-sm font-bold text-[#0b1e3f]"
-              >
-                {data.secondaryButtonText}
-              </a>
-            )}
+
+            {/* Action buttons */}
+            <div className="mt-6 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center">
+              {data?.primaryButtonText && (
+                <button
+                  type="button"
+                  onClick={() => setisPopupOpen(true)}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0b1e3f] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all duration-200 hover:bg-[#142d54] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#F36D45]"
+                >
+                  {data.primaryButtonText}
+                  <ArrowRight className="h-4 w-4" />
+                </button>
+              )}
+
+              {data?.secondaryButtonText && (
+                <a
+                  href={data?.secondaryButtonUrl || "#"}
+                  className="inline-flex items-center justify-center rounded-xl border border-white/50 bg-white px-6 py-3 text-sm font-semibold text-[#0b1e3f] transition-all duration-200 hover:bg-orange-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#F36D45]"
+                >
+                  {data.secondaryButtonText}
+                </a>
+              )}
+            </div>
           </div>
         </div>
       </section>
-      <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setisPopupOpen} />
+
+      <PopupModal
+        isPopupOpen={isPopupOpen}
+        setIsPopupOpen={setisPopupOpen}
+      />
     </div>
   );
 }

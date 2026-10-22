@@ -59,7 +59,7 @@ const InputField = ({ icon: Icon, label, error, ...props }: any) => (
 
 // Main Auth Component
 function AuthContent ({ toggleDrawer }: any) {
-  const { userInfo,authChecked,user } = useGlobal();
+  const { userInfo } = useGlobal() as { userInfo: () => Promise<unknown> };
 
   const [mode, setMode] = useState<any>("email");
   const [email, setEmail] = useState("");
@@ -70,6 +70,15 @@ function AuthContent ({ toggleDrawer }: any) {
   const [errors, setErrors] = useState<any>({});
   const [resendCooldown, setResendCooldown] = useState(0);
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [compactCaptcha, setCompactCaptcha] = useState(false);
+
+  useEffect(() => {
+    const narrowScreen = window.matchMedia("(max-width: 380px)");
+    const updateCaptchaSize = () => setCompactCaptcha(narrowScreen.matches);
+    updateCaptchaSize();
+    narrowScreen.addEventListener("change", updateCaptchaSize);
+    return () => narrowScreen.removeEventListener("change", updateCaptchaSize);
+  }, []);
 
    const searchParams = useSearchParams();
   const ReferalFromUrl = searchParams.get("ref");
@@ -268,14 +277,14 @@ function AuthContent ({ toggleDrawer }: any) {
   
 
   return (
-    <div className="flex flex-col items-left justify-center flex-20 w-full">
+    <div className="flex w-full min-w-0 flex-col justify-center">
       {/* Logo */}
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="w-full max-w-md"
+        className="w-full min-w-0 max-w-md"
       >
         <AnimatePresence mode="wait">
           {/* STEP 1: Email Verification */}
@@ -290,7 +299,7 @@ function AuthContent ({ toggleDrawer }: any) {
               transition={{ duration: 0.3 }}
             >
               <div className="text-center mb-4">
-                <h2 className="text-2xl font-bold text-[#F47852]">
+                <h2 className="text-lg sm:text-2xl font-bold text-[#F47852]">
                   Welcome to Ooshas Prep
                 </h2>
                 <p className="text-sm mt-px text-[#526276]">
@@ -313,11 +322,12 @@ function AuthContent ({ toggleDrawer }: any) {
                 required
               />
 
-              <div className="!w-full">
+              <div className="w-full max-[380px]:flex max-[380px]:justify-center">
                 <Turnstile
+                  key={compactCaptcha ? "compact" : "flexible"}
                   siteKey={"0x4AAAAAAE13UE9vSZt3X2DO"}
                   options={{
-                    size: "flexible",
+                    size: compactCaptcha ? "compact" : "flexible",
                   }}
                   onSuccess={(token) => {
                     console.log(token);
@@ -333,7 +343,7 @@ function AuthContent ({ toggleDrawer }: any) {
                   onError={() => {
                     setTurnstileToken("");
                   }}
-                  className="!w-full"
+                  className={compactCaptcha ? "" : "!w-full"}
                 />
               </div>
 
@@ -485,7 +495,7 @@ function AuthContent ({ toggleDrawer }: any) {
                 </h2>
                 <p className="text-[#526276] text-sm mt-1">
                   Enter the 6-digit code sent to{" "}
-                  <span className="font-medium text-gray-700">{email}</span>
+                  <span className="break-all font-medium text-gray-700">{email}</span>
                 </p>
               </div>
 
@@ -623,26 +633,26 @@ export default function LoginPage() {
   const handleClose = () => setIsVisible(false);
 
   return (
-    <main className="flex min-h-screen w-full items-center justify-center bg-white p-2 sm:p-8">
+    <main className="flex min-h-dvh w-full items-center justify-center bg-white px-1 py-2 sm:px-6 sm:py-8 lg:p-8">
       {/* Main Rounded Container matching the overall card feel */}
-      <div className="relative flex w-full max-w-7xl flex-col overflow-hidden rounded-[40px] bg-[#fdf2ec] lg:h-[90vh] lg:flex-row lg:rounded-[60px]">
-        <div className="block sm:hidden relative z-20 p-8 pb-0 ">
-            <h1 className="text-3xl sm:text-[40px] font-bold leading-[1.2] tracking-[-1px] text-[#F47852]">
+      <div className="relative flex w-full max-w-7xl min-w-0 flex-col overflow-hidden rounded-[28px] bg-[#fdf2ec] sm:rounded-[40px] lg:min-h-[90vh] lg:flex-row lg:rounded-[60px]">
+        <div className="relative z-20 p-5 pb-0 sm:p-8 sm:pb-0 lg:hidden">
+            <h1 className="text-2xl sm:text-[40px] font-bold leading-[1.2] tracking-[-1px] text-[#F47852]">
               Your Dream Score,
               <br />
               <span className="">Our Mission</span>
             </h1>
 
-            <p className="mt-1 max-w-[500px] font-medium text-base sm:text-lg leading-relaxed text-[#4b5563]">
+            <p className="mt-1 max-w-[500px] font-medium text-sm sm:text-lg leading-relaxed text-[#4b5563]">
               Get access to expert-led classes, structured courses, and
               personalized support — all in one place.
             </p>
           </div>
         {/* ================= LEFT SIDE (FORM) ================= */}
-        <section className="relative z-20 flex w-full items-center justify-center p-6 lg:w-[50%]">
+        <section className="relative z-20 flex w-full min-w-0 items-center justify-center p-3 pt-4 sm:p-6 lg:w-[50%] lg:p-6">
           
           {/* Orange Curved Background Shape */}
-          <div className="hidden sm:block sm:absolute inset-0 z-0 ">
+          <div className="absolute inset-0 z-0 hidden lg:block">
             <img src="/bglogin.png" alt="" className="object-fit w-[100%] !h-full " />
           </div>
 
@@ -652,7 +662,7 @@ export default function LoginPage() {
           </div>
 
           {/* White Form Card */}
-          <div className="relative z-10 w-full max-w-[420px] rounded-[32px] bg-white p-6 sm:p-8">
+          <div className="relative z-10 w-full min-w-0 max-w-[420px] rounded-[24px] bg-white p-4 sm:rounded-[32px] sm:p-8">
             {/* Header / Logo */}
             <div className=" flex flex-col items-center justify-center text-center">
               {/* Replace with your actual Logo */}
@@ -687,7 +697,7 @@ export default function LoginPage() {
         </section>
 
         {/* ================= RIGHT SIDE (PROMOTIONAL) ================= */}
-        <section className="hidden sm:block relative flex w-full flex-col bg-[#fdf2ec] lg:w-[50%]">
+        <section className="relative hidden w-full flex-col bg-[#fdf2ec] lg:flex lg:w-[50%]">
           {/* Text Content (Top) */}
           <div className="relative z-20 p-8 ">
             <h1 className="text-4xl sm:text-[40px] font-bold leading-[1.2] tracking-[-1px] text-[#F47852]">

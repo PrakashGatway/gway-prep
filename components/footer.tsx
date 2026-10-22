@@ -63,6 +63,7 @@ export function Footer({ Data = [] }: FooterProps) {
       Data?.filter(
         (item: any) =>
           item?.seoMeta?.template?.toLowerCase() === "examdetails" &&
+          !item?.seoMeta?.duplicateOf &&
           item?.seoMeta?.isPublished === true,
       ) || [],
     [Data],

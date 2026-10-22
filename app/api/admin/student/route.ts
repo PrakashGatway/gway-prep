@@ -98,6 +98,7 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     // 2. Safely parse numbers from strings
     const page = parseInt(searchParams.get("page") || "1", 10);
     const limit = parseInt(searchParams.get("limit") || "10", 10);
+    const newestFirst = searchParams.get("sort") === "createdAtDesc";
     const skip = (page - 1) * limit;
 
     const filter = query
@@ -122,12 +123,18 @@ export async function GET(req: NextRequest): Promise<NextResponse> {
     // ]);
 
     const [students, total] = await Promise.all([
-      Student.aggregate([
-        { $match: filter },
-        { $sample: { size: Math.min(limit + skip, 10000) } },
-        { $skip: skip },
-        { $limit: limit },
-      ]),
+      newestFirst
+        ? Student.find(filter)
+            .sort({ createdAt: -1, _id: -1 })
+            .skip(skip)
+            .limit(limit)
+            .lean()
+        : Student.aggregate([
+            { $match: filter },
+            { $sample: { size: Math.min(limit + skip, 10000) } },
+            { $skip: skip },
+            { $limit: limit },
+          ]),
       Student.countDocuments(filter),
     ]);
 

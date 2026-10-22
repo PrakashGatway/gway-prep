@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import ReviewSlider from "./review-slider";
+import SpokenEnglishEnquiryForm from "./spoken-english-enquiry-form";
 import {
   ArrowRight,
   CalendarDays,
@@ -222,8 +223,14 @@ export default function SpokenEnglishTemplate({ pageInfo }: { pageInfo?: any }) 
 
 
       <section className={`${styles.reviews} ${styles.container}`} aria-labelledby="reviews-title">
-        <h2 id="reviews-title"><span>{value("reviews", "title", "Student Reviews")}</span> &amp; {value("reviews", "suffix", "Google Rating")}</h2>
-        <ReviewSlider reviews={reviews} />
+        <div className={styles.reviewsLayout}>
+          <div className={styles.reviewsCopy}>
+            <h2 id="reviews-title"><span>{value("reviews", "title", "Student Reviews")}</span> &amp; {value("reviews", "suffix", "Google Rating")}</h2>
+            <p className={styles.reviewsIntro}>Real stories from learners building confidence, fluency, and stronger everyday communication.</p>
+            <ReviewSlider reviews={reviews} />
+          </div>
+          <SpokenEnglishEnquiryForm />
+        </div>
       </section>
 
      

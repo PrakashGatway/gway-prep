@@ -16,6 +16,7 @@ import {
   UserCircle,
   LogOut,
   Book,
+  Sparkles,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGlobal } from "@/hooks/AppStateContext";
@@ -202,6 +203,11 @@ export function Navbar({ Data }: NavbarProps) {
         href: "/",
         icon: null,
       },
+       {
+        name: "About Us",
+        href: "/about",
+        icon: null,
+      },
 
       // =========================
       // TEST PREP
@@ -245,11 +251,7 @@ export function Navbar({ Data }: NavbarProps) {
       // =========================
       // ABOUT
       // =========================
-      {
-        name: "About Us",
-        href: "/about",
-        icon: null,
-      },
+     
 
       // =========================
       // RESOURCES
@@ -266,10 +268,15 @@ export function Navbar({ Data }: NavbarProps) {
           slug: resource?.seoMeta?.canonicalUrl,
           description: resource?.seoMeta?.navSubtitle || "",
           badge: resource?.seoMeta?.badge || null,
-
-          // No nested dropdown
           sublink: [],
-        })),
+        })).concat({
+          name: "Study Guides",
+          img: null,
+          slug: "guide",
+          description: "Explore articles, study plans and exam tips",
+          badge: null,
+          sublink: [],
+        }),
       },
 
       // =========================
@@ -400,9 +407,23 @@ export function Navbar({ Data }: NavbarProps) {
     setMobileSubDropdown(null);
   };
 
+  const navHref = (slug: string) => `/${String(slug || "").replace(/^\/+/, "")}`;
+
   return (
     <>
+      <div className="bg-[#1C3058] hidden sm:block text-white">
+        <div className="mx-auto flex min-h-10 max-w-7xl items-center justify-between gap-3 px-4 py-1.5 sm:px-6 xl:px-0">
+          <a href="tel:+919166146538" className="group inline-flex min-w-0 items-center gap-2 text-xs font-medium sm:text-sm" aria-label="Call an Ooshas Prep expert at +91 9166146538">
+            <span className="hidden sm:inline">Consult with an expert:</span>
+            <span className="whitespace-nowrap font-semibold text-white transition group-hover:underline">+91 9166146538</span>
+          </a>
+          <p className="inline-flex shrink-0 items-center gap-1.5 text-right text-[11px] font-medium tracking-wide text-white/95 sm:text-sm">
+            <span>Prepare Smart. Achieve More.</span>
+          </p>
+        </div>
+      </div>
       <nav
+        onMouseLeave={closeDesktopDropdown}
         className={`
           sticky
           top-0
@@ -414,12 +435,12 @@ export function Navbar({ Data }: NavbarProps) {
           duration-300
           ${
             scrolled
-              ? "border-b py-3 border-gray-100 bg-white/90 shadow-lg backdrop-blur-xl"
-              : "border-b py-2 border-transparent bg-white backdrop-blur-sm"
+              ? "border-b border-gray-100 bg-white/95 shadow-lg backdrop-blur-xl"
+              : "border-b border-transparent bg-white backdrop-blur-sm"
           }
         `}
       >
-        <div className="mx-auto w-full max-w-7xl px-3 md:px-0">
+        <div className={`mx-auto w-full max-w-7xl px-3 transition-all md:px-0 ${scrolled ? "py-1.5" : "py-2"}`}>
           <div
             className="
               flex
@@ -461,38 +482,6 @@ export function Navbar({ Data }: NavbarProps) {
             </Link>
 
             <div className="ml-auto flex items-center gap-2 xl:hidden">
-              {/* Phone */}
-
-              <a
-                href="tel:+919166146538"
-                aria-label="Call Ooshas Prep"
-                className="
-                  flex
-                  h-10
-                  w-10
-                  shrink-0
-                  items-center
-                  justify-center
-                  rounded-full
-                  border
-                  border-orange-100
-                  bg-orange-50
-                  text-[#F36C45]
-                  transition-all
-                  duration-200
-                  hover:bg-orange-100
-                  active:scale-95
-                  sm:h-11
-                  sm:w-11
-                "
-              >
-                <Phone
-                  size={17}
-                  strokeWidth={2}
-                  className="sm:h-[18px] sm:w-[18px]"
-                />
-              </a>
-
               {/* Menu */}
 
               <button
@@ -531,23 +520,31 @@ export function Navbar({ Data }: NavbarProps) {
               {navItems.map((item: any) => (
                 <div
                   key={item.name}
-                  className="relative"
+                  className="contents"
                   onMouseEnter={() => {
                     if (item.hasDropdown) {
                       setActiveDropdown(item.name);
+                      setActiveSubDropdown(item.dropdownItems?.[0]?.slug || null);
+                    } else {
+                      closeDesktopDropdown();
                     }
                   }}
-                  onMouseLeave={closeDesktopDropdown}
                 >
                   {/* Main nav item */}
 
-                  <Link
-                    href={item.href}
+                  {item.hasDropdown ? <button
+                    type="button"
+                    onClick={() => {
+                      setActiveDropdown(activeDropdown === item.name ? null : item.name);
+                      setActiveSubDropdown(item.dropdownItems?.[0]?.slug || null);
+                    }}
+                    aria-expanded={activeDropdown === item.name}
+                    aria-haspopup="true"
                     className={`
   flex
   shrink-0
   items-center
-  gap-1.5
+  gap-1
   whitespace-nowrap
   rounded-2xl
   px-2.5
@@ -558,7 +555,7 @@ export function Navbar({ Data }: NavbarProps) {
   duration-200
   ${
     activeDropdown === item.name
-      ? "bg-orange-50 text-[#F36C45]"
+      ? "text-[#F36C45]"
       : "text-gray-800 hover:bg-orange-50/70 hover:text-[#F36C45]"
   }
 `}
@@ -575,10 +572,15 @@ export function Navbar({ Data }: NavbarProps) {
                         `}
                       />
                     )}
-                  </Link>
+                  </button> : <Link
+                    href={item.href}
+                    onMouseEnter={closeDesktopDropdown}
+                    className="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-2xl px-2.5 py-2.5 text-[14px] font-medium text-gray-800 transition-all duration-200 hover:bg-orange-50/70 hover:text-[#F36C45]"
+                  >{item.name}</Link>}
 
                   <AnimatePresence>
                     {item.hasDropdown && activeDropdown === item.name && (
+                      <div className={`absolute left-1/2 top-full z-[600] -translate-x-1/2 pt-1 ${item.name === "Resources" ? "w-[min(980px,calc(100vw-2rem))]" : "w-[min(1120px,calc(100vw-2rem))]"}`}>
                       <motion.div
                         initial={{
                           opacity: 0,
@@ -598,39 +600,46 @@ export function Navbar({ Data }: NavbarProps) {
                         transition={{
                           duration: 0.15,
                         }}
-                        className="
-                            absolute
-                            left-0
-                            top-full
-                            z-[600]
-                            pt-2
-                          "
+                        className="w-full"
                         onMouseEnter={() => setActiveDropdown(item.name)}
-                        onMouseLeave={closeDesktopDropdown}
                       >
-                        <div
-                          className="
-                              flex
-                              overflow-hidden
-                              rounded-2xl
-                              border
-                              border-gray-100
-                              bg-white
-                              shadow-[0_20px_60px_rgba(0,0,0,0.12)]
-                            "
-                        >
+                        <div className={`w-full overflow-hidden rounded-xl bg-white [scrollbar-width:none] [&::-webkit-scrollbar]:hidden shadow-[0_20px_60px_rgba(0,0,0,0.52)] ${item.name === "Resources" ? "h-[min(72vh,430px)] overflow-y-auto " : "flex h-[430px]"}`}>
+                          {item.name === "Resources" ? (
+                            <div className="p-6">
+                              <div className="flex items-end justify-between gap-6 pb-5">
+                                <div>
+                              
+                                  <h3 className="mt-1 text-xl font-bold tracking-tight text-slate-900">Find the right study tool</h3>
+                                  <p className="mt-px text-sm text-slate-500">Calculators, guides and practical help for your next exam.</p>
+                                </div>
+                                <span className="hidden rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-[#D95C37] sm:inline-flex">Explore at your pace</span>
+                              </div>
+                              <div className="grid grid-cols-2 gap-3 xl:grid-cols-3">
+                                {item.dropdownItems?.map((resource: any) => (
+                                  <Link key={resource.slug} href={navHref(resource.slug)} onClick={closeDesktopDropdown} className="group flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-3 transition-all duration-200 hover:bg-gray-100">
+                                    <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-[#F36C45] transition group-hover:bg-white">
+                                      {resource.img ? <Image src={resource.img} alt="" width={26} height={26} className="object-contain" /> : <Book size={21} />}
+                                    </span>
+                                    <span className="min-w-0 flex-1">
+                                      <span className="block text-sm font-semibold leading-5 text-slate-900 transition group-hover:text-[#F36C45]">{resource.name}</span>
+                                      {resource.description && <span className="mt-1 block line-clamp-2 text-xs leading-4 text-slate-500">{resource.description}</span>}
+                                    </span>
+                                    <ArrowRight size={16} className="mt-1 shrink-0 text-slate-300 transition group-hover:translate-x-0.5 group-hover:text-[#F36C45]" />
+                                  </Link>
+                                ))}
+                              </div>
+                            </div>
+                          ) : (
+                          <>
                           {/* LEFT COLUMN */}
 
                           <div
                             className="
-                                max-h-[520px]
-                                min-w-[290px]
+                                h-full
+                                w-[300px] shrink-0
                                 overflow-y-auto
-                                bg-gradient-to-b
-                                from-orange-50/80
-                                to-white
-                                py-2
-                                xl:min-w-[330px]
+                                [scrollbar-width:none] [&::-webkit-scrollbar]:hidden border-r-2
+                                p-4
                               "
                           >
                             {item.dropdownItems?.map((dd: any) => {
@@ -642,15 +651,13 @@ export function Navbar({ Data }: NavbarProps) {
                               return (
                                 <div
                                   key={dd.slug}
-                                  className="relative px-2"
+                                  className="relative"
                                   onMouseEnter={() => {
-                                    setActiveSubDropdown(
-                                      hasSub ? dd.slug : null,
-                                    );
+                                    setActiveSubDropdown(dd.slug);
                                   }}
                                 >
                                   <Link
-                                    href={`/${dd.slug}`}
+                                    href={navHref(dd.slug)}
                                     onClick={closeDesktopDropdown}
                                     className={`
                                           group
@@ -658,19 +665,22 @@ export function Navbar({ Data }: NavbarProps) {
                                           items-center
                                           gap-3
                                           rounded-xl
-                                          px-3
-                                          py-1
+                                          px-2
+                                          py-1.5
+                                          font-medium
                                           transition-all
                                           ${
                                             isActive
-                                              ? "bg-white shadow-sm"
+                                              ? "bg-gray-100 text-[#F36C45]"
                                               : "hover:bg-white/80"
                                           }
                                         `}
                                   >
                                     {/* Icon */}
 
-                                    <div
+
+                                      {dd.img ? (
+                                         <div
                                       className="
                                             flex
                                             h-10
@@ -678,12 +688,8 @@ export function Navbar({ Data }: NavbarProps) {
                                             shrink-0
                                             items-center
                                             justify-center
-                                            rounded-xl
-                                            bg-white
-                                            shadow-sm
                                           "
                                     >
-                                      {dd.img ? (
                                         <Image
                                           src={dd.img}
                                           alt={dd.name}
@@ -691,15 +697,15 @@ export function Navbar({ Data }: NavbarProps) {
                                           height={28}
                                           className="object-contain"
                                         />
-                                      ) : (
-                                        <GraduationCap
-                                          size={18}
-                                          className="text-[#F36C45]"
-                                        />
-                                      )}
                                     </div>
 
-                                    {/* Content */}
+                                      ) : (
+                                        <div className="h-10"></div>
+                                        // <GraduationCap
+                                        //   size={18}
+                                        //   className="text-[#F36C45]"
+                                        // />
+                                      )}
 
                                     <div className="min-w-0 flex-1">
                                       <div className="flex items-center gap-2">
@@ -707,7 +713,7 @@ export function Navbar({ Data }: NavbarProps) {
                                           className={`
                                                 truncate
                                                 text-sm
-                                                font-medium
+                                                font-semibold
                                                 transition-colors
                                                 ${
                                                   isActive
@@ -754,15 +760,7 @@ export function Navbar({ Data }: NavbarProps) {
                                             `}
                                       />
                                     ) : (
-                                      <ArrowRight
-                                        size={14}
-                                        className="
-                                              shrink-0
-                                              text-gray-300
-                                              transition-colors
-                                              group-hover:text-[#F36C45]
-                                            "
-                                      />
+                                      null
                                     )}
                                   </Link>
                                 </div>
@@ -790,63 +788,57 @@ export function Navbar({ Data }: NavbarProps) {
                                   duration: 0.15,
                                 }}
                                 className="
-                                    w-[300px]
-                                    max-h-[520px]
+                                    min-w-0 flex-1
+                                    h-full
                                     overflow-y-auto
-                                    border-l
-                                    border-gray-100
+                                    [scrollbar-width:none] [&::-webkit-scrollbar]:hidden
                                     bg-white
                                   "
                               >
                                 {item.dropdownItems?.map((dd: any) => {
                                   if (
-                                    dd.slug !== activeSubDropdown ||
-                                    !dd.sublink?.length
+                                    dd.slug !== activeSubDropdown
                                   ) {
                                     return null;
                                   }
 
                                   return (
-                                    <div key={dd.slug} className="p-3">
-                                      <div className="mb-2 px-2 ">
-                                        <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#F36C45]">
-                                          Test Prep
-                                        </p>
+                                    <div key={dd.slug} className="p-6">
+                                      <div className=" flex items-end justify-between pb-5">
+                                        <div>
 
-                                        <h4 className="mt-1 text-sm font-semibold text-gray-900">
+                                        <h4 className="text-xl font-semibold tracking-tight text-slate-900">
                                           {dd.name}
-                                        </h4>
+                                        </h4></div>
+                                        <Link href={navHref(dd.slug)} onClick={closeDesktopDropdown} className="text-sm font-semibold text-[#F36C45] hover:underline">View overview →</Link>
                                       </div>
 
-                                      <div className="space-y-0.5">
-                                        {dd.sublink.map((sub: any) => (
+                                      <div className="grid grid-cols-2 gap-2">
+                                        {(dd.sublink?.length ? dd.sublink : [dd]).map((sub: any) => (
                                           <Link
                                             key={sub.slug}
-                                            href={`/${sub.slug}`}
+                                            href={navHref(sub.slug)}
                                             onClick={closeDesktopDropdown}
                                             className="
                                                     group/sub
                                                     flex
                                                     items-center
-                                                    gap-3
-                                                    rounded-xl
-                                                    px-2
-                                                    
-                                                    transition-all
-                                                    hover:bg-orange-50
+                                                    gap-2
+                                                    rounded-2xl border border-slate-200 bg-white p-1
+                                                    transition-all duration-200 hover:bg-gray-100
                                                   "
                                           >
                                             <div
                                               className="
                                                       flex
-                                                      h-9
-                                                      w-9
+                                                      h-12
+                                                      w-12
                                                       shrink-0
                                                       items-center
                                                       justify-center
-                                                      rounded-lg
-                                                      bg-gray-50
-                                                      group-hover/sub:bg-white
+                                                      rounded-xl
+
+
                                                     "
                                             >
                                               {sub.img ? (
@@ -859,27 +851,19 @@ export function Navbar({ Data }: NavbarProps) {
                                                 />
                                               ) : (
                                                 <GraduationCap
-                                                  size={15}
+                                                  size={20}
                                                   className="text-[#F36C45]"
                                                 />
                                               )}
                                             </div>
 
                                             <div className="min-w-0 flex-1">
-                                              <span className="block truncate text-sm text-gray-700 transition-colors group-hover/sub:text-[#F36C45]">
+                                              <span className="block text-sm font-semibold leading-snug text-gray-800 transition-colors group-hover/sub:text-[#F36C45]">
                                                 {sub.name}
                                               </span>
+                                              {sub.description && <span className="mt-px block line-clamp-2 text-xs leading-4 text-gray-500">{sub.description}</span>}
                                             </div>
 
-                                            <ArrowRight
-                                              size={12}
-                                              className="
-                                                      shrink-0
-                                                      text-gray-300
-                                                      transition-colors
-                                                      group-hover/sub:text-[#F36C45]
-                                                    "
-                                            />
                                           </Link>
                                         ))}
                                       </div>
@@ -889,8 +873,11 @@ export function Navbar({ Data }: NavbarProps) {
                               </motion.div>
                             )}
                           </AnimatePresence>
+                          </>
+                          )}
                         </div>
                       </motion.div>
+                      </div>
                     )}
                   </AnimatePresence>
                 </div>
@@ -898,47 +885,6 @@ export function Navbar({ Data }: NavbarProps) {
             </div>
 
             <div className="hidden items-center gap-3  xl:flex">
-              {/* Phone */}
-
-              <a
-                href="tel:+919166146538"
-                className="
-                  group
-                  flex
-                  items-center
-                  gap-2.5
-                  rounded-2xl
-                  px-3
-                  py-1.5
-                  transition-all
-                  hover:bg-gray-50
-                "
-              >
-                <div
-                  className="
-                    flex
-                    h-9
-                    w-9
-                    items-center
-                    justify-center
-                    rounded-full
-                    bg-orange-50
-                  "
-                >
-                  <Phone size={14} className="text-[#F36C45]" />
-                </div>
-
-                <div>
-                  <div className="text-[10px] font-medium uppercase tracking-wide text-gray-400">
-                    Call us
-                  </div>
-
-                  <div className="text-sm font-semibold text-gray-700 transition-colors group-hover:text-[#F36C45]">
-                    +91 9166146538
-                  </div>
-                </div>
-              </a>
-
               {/* Login */}
 
               {!user?.email ? (
@@ -1242,7 +1188,7 @@ export function Navbar({ Data }: NavbarProps) {
                 flex
                 h-[100dvh]
                 w-full
-                max-w-[410px]
+              max-w-none
                 flex-col
                 overflow-hidden
                 bg-white
@@ -1254,7 +1200,7 @@ export function Navbar({ Data }: NavbarProps) {
               <div
                 className="
     flex
-    min-h-[120px]
+    min-h-[88px]
     shrink-0
     items-center
     justify-between
@@ -1396,7 +1342,12 @@ export function Navbar({ Data }: NavbarProps) {
                   sm:px-5
                 "
               >
-                <div className="">
+                {!mobileDropdown ? <div className="space-y-1 pt-4">
+                  <div className="mb-5 rounded-3xl bg-[#fff2ea] p-5">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#F36C45]">Explore Ooshas Prep</p>
+                    <h2 className="mt-1 text-2xl font-bold text-slate-900">Where would you like to go?</h2>
+                    <p className="mt-1 text-sm text-slate-600">Find programs, exam information and helpful resources.</p>
+                  </div>
                   {navItems.map((item: any) => {
                     const isExpanded = mobileDropdown === item.name;
 
@@ -1801,7 +1752,46 @@ export function Navbar({ Data }: NavbarProps) {
                       </div>
                     );
                   })}
-                </div>
+                </div> : (
+                  <motion.div
+                    key={mobileDropdown}
+                    initial={{ opacity: 0, x: 24 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="pb-8 pt-4"
+                  >
+                    <button type="button" onClick={() => { setMobileDropdown(null); setMobileSubDropdown(null); }} className="mb-5 inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-orange-50 hover:text-[#F36C45]">
+                      <ChevronRight size={16} className="rotate-180" /> All sections
+                    </button>
+                    <div className="mb-6 rounded-3xl bg-gradient-to-br from-[#fff1e8] via-white to-orange-50 p-5 ring-1 ring-orange-100">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#F36C45]">Discover</p>
+                      <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">{mobileDropdown}</h2>
+                      <p className="mt-2 text-sm leading-6 text-slate-600">{mobileDropdown === "Resources" ? "Open a calculator or explore practical study guides." : "Choose a topic below to explore courses, guides and exam information."}</p>
+                    </div>
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {navItems.find((item: any) => item.name === mobileDropdown)?.dropdownItems?.map((group: any) => (
+                        <section key={group.slug} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                          <Link href={navHref(group.slug)} onClick={handleLinkClick} className="group flex items-center gap-3">
+                            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-[#F36C45]">
+                              {group.img ? <Image src={group.img} alt="" width={25} height={25} className="object-contain" /> : mobileDropdown === "Resources" ? <Book size={21} /> : <GraduationCap size={21} />}
+                            </span>
+                            <span className="min-w-0 flex-1"><span className="block font-semibold text-slate-900 group-hover:text-[#F36C45]">{group.name}</span>{group.description && <span className="mt-0.5 block line-clamp-2 text-xs text-slate-500">{group.description}</span>}</span>
+                            <ArrowRight size={17} className="shrink-0 text-slate-400 group-hover:text-[#F36C45]" />
+                          </Link>
+                          {group.sublink?.length > 0 && (
+                            <div className="mt-4 grid gap-2 border-t border-slate-100 pt-3">
+                              {group.sublink.map((child: any) => (
+                                <Link key={child.slug} href={navHref(child.slug)} onClick={handleLinkClick} className="flex items-center justify-between gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-sm text-slate-700 transition hover:bg-orange-50 hover:text-[#F36C45]">
+                                  <span>{child.name}</span><ChevronRight size={15} className="shrink-0" />
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </section>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
               </div>
 
               <div

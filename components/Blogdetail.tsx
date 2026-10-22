@@ -20,6 +20,7 @@ import axios from "axios";
 import QuestionsSection from "./comment";
 import Link from "next/link";
 import { useGlobal } from "@/hooks/AppStateContext";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 // ─── Types ───
 interface FAQ {
@@ -84,6 +85,7 @@ interface BlogDetailPageProps {
   } | null;
   loading: boolean;
   res: BlogData[];
+  latestBlogs: BlogData[];
   slug: any;
 }
 
@@ -214,44 +216,34 @@ const LeadForm = () => {
 };
 
 // ─── Blog Card Component ───
-const BlogCard = ({
-  post,
-  onClick,
-}: {
-  post: BlogData;
-  onClick: () => void;
-}) => (
-  <article className="group cursor-pointer" onClick={onClick}>
-    <div className="relative mb-3 h-40 w-full overflow-hidden rounded-md">
-      <span className="absolute left-2 top-2 z-10 rounded bg-[#F0642C] px-2 py-0.5 text-[10px] font-semibold text-white">
-        {post.category || "Blog"}
-      </span>
+const BlogCard = ({ post }: { post: BlogData }) => (
+  <Link href={`/blog/${post.slug}`} className="group flex h-full flex-col overflow-hidden rounded-2xl border border-gray-300 bg-white p-2 transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
+    <div className="relative h-[150px] w-full overflow-hidden rounded-xl">
       <Image
         src={post.image || "/placeholder-blog.jpg"}
         alt={post.title}
         fill
-        className="object-cover transition-transform duration-300 group-hover:scale-105"
+        className="object-cover transition-transform duration-500 group-hover:scale-105"
       />
     </div>
-    <h3 className="mb-2 text-[15px] font-bold leading-snug text-[#1f2430] group-hover:text-[#F0642C]">
-      {post.title}
-    </h3>
-    <p className="mb-3 text-[13px] leading-relaxed text-gray-500">
-      {post.excerpt}
-    </p>
-    <div className="flex items-center gap-4 text-[11px] text-gray-400">
-      <span className="flex items-center gap-1">
-        <Calendar size={11} />
-        {post.createdAt
-          ? new Date(post.createdAt).toLocaleDateString("en-IN", {
-              day: "2-digit",
-              month: "short",
-              year: "numeric",
-            })
-          : "Date not available"}
-      </span>
+    <div className="flex flex-1 flex-col px-2 pt-2.5">
+      <h3 className="line-clamp-2 text-sm font-semibold leading-[1.45] transition-colors group-hover:text-[#F0642C]">
+        {post.title.includes(":") ? (
+          <><span className="text-[#555]">{post.title.split(":")[0]}: </span><span className="text-orange-500">{post.title.split(":").slice(1).join(":").trim()}</span></>
+        ) : post.title}
+      </h3>
+      <p className="mt-1 line-clamp-2 text-xs leading-5 text-[#777]">
+        {post.metaDescription || post.excerpt || "Discover useful tips, strategies and expert guidance to help you prepare better."}
+      </p>
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-2 py-3">
+        <span className="flex items-center gap-1 text-[11px] text-[#777]">
+          <Calendar size={12} aria-hidden="true" />
+          {post.createdAt ? `Published ${new Date(post.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}` : "Date not available"}
+        </span>
+        <span className="rounded-full bg-[#f36d45] px-3 py-1 text-xs font-medium text-white transition-all duration-200 group-hover:bg-[#e45724] group-hover:shadow-sm">Read more</span>
+      </div>
     </div>
-  </article>
+  </Link>
 );
 
 // ─── Table of Contents ───
@@ -367,6 +359,93 @@ const TableOfContents = ({
   );
 };
 
+type QuizFeedback = "correct" | "incorrect" | "select" | "unconfigured";
+
+function BlogQuiz({ question, options, index }: { question: string; options: Option[]; index: number }) {
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+  const [feedback, setFeedback] = useState<QuizFeedback | null>(null);
+  const [attempt, setAttempt] = useState(0);
+  const reduceMotion = useReducedMotion();
+
+  const checkAnswer = () => {
+    setAttempt((current) => current + 1);
+    if (selectedIndex === null) {
+      setFeedback("select");
+      return;
+    }
+
+    const correctIndex = options.findIndex((option) => String(option.value ?? "").trim() !== "");
+    if (correctIndex < 0) {
+      setFeedback("unconfigured");
+      return;
+    }
+
+    const isCorrect = selectedIndex === correctIndex;
+    setFeedback(isCorrect ? "correct" : "incorrect");
+  };
+
+  return (
+    <div className="my-6 rounded-xl border border-neutral-200 bg-neutral-50 p-6">
+      <h4 className="mb-4 text-lg font-semibold text-neutral-800">{question}</h4>
+      <div className="space-y-2" role="radiogroup" aria-label={question}>
+        {options.map((option, optionIndex) => {
+          const isSelected = selectedIndex === optionIndex;
+          const resultClass = isSelected && feedback === "correct"
+            ? "border-emerald-400 bg-emerald-50"
+            : isSelected && feedback === "incorrect"
+              ? "border-rose-300 bg-rose-50"
+              : "border-neutral-200 bg-white hover:border-[#F86C43]";
+          return (
+            <label key={optionIndex} className={`flex cursor-pointer items-center gap-3 rounded-lg border p-3 transition-colors ${resultClass}`}>
+              <input
+                type="radio"
+                name={`blog-question-${index}`}
+                value={option.label}
+                checked={isSelected}
+                onChange={() => { setSelectedIndex(optionIndex); setFeedback(null); }}
+                className="h-4 w-4 accent-[#F86C43] focus:ring-[#F86C43]"
+              />
+              <span className="text-neutral-700">{option.label}</span>
+            </label>
+          );
+        })}
+      </div>
+      <button type="button" onClick={checkAnswer} className="mt-4 rounded-lg bg-[#F86C43] px-6 py-2 font-semibold text-white transition-colors hover:bg-[#e05a32]">
+        Check Answer
+      </button>
+      <AnimatePresence mode="wait">
+        {feedback && (
+          <motion.div
+            key={`${feedback}-${attempt}`}
+            role="status"
+            aria-live="polite"
+            initial={{ opacity: 0, y: reduceMotion ? 0 : 10, scale: reduceMotion ? 1 : feedback === "correct" ? 0.78 : 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: reduceMotion ? 1 : feedback === "correct" ? [0.78, 1.08, 1] : 1, x: reduceMotion ? 0 : feedback === "incorrect" ? [0, -6, 6, -3, 3, 0] : 0 }}
+            exit={{ opacity: 0, y: -6, scale: 0.95 }}
+            transition={{ duration: feedback === "correct" ? 0.45 : 0.35 }}
+            className={`relative mt-4 overflow-hidden rounded-xl border px-4 py-3 text-sm font-semibold ${feedback === "correct" ? "border-emerald-200 bg-emerald-50 text-emerald-800" : feedback === "incorrect" ? "border-rose-200 bg-rose-50 text-rose-800" : "border-amber-200 bg-amber-50 text-amber-800"}`}
+          >
+            {feedback === "correct" && !reduceMotion && Array.from({ length: 8 }, (_, particle) => {
+              const angle = (particle * Math.PI) / 4;
+              return (
+                <motion.span
+                  key={particle}
+                  aria-hidden="true"
+                  className={`pointer-events-none absolute right-12 top-1/2 h-2 w-2 rounded-full ${particle % 3 === 0 ? "bg-[#F36D45]" : particle % 3 === 1 ? "bg-emerald-500" : "bg-amber-400"}`}
+                  initial={{ x: 0, y: 0, scale: 0, opacity: 1 }}
+                  animate={{ x: Math.cos(angle) * 38, y: Math.sin(angle) * 25, scale: [0, 1.2, 0.4], opacity: [1, 1, 0] }}
+                  transition={{ duration: 0.65, ease: "easeOut" }}
+                />
+              );
+            })}
+            {feedback === "correct" ? "🎉 Boom! That's correct." : feedback === "incorrect" ? "Not quite — try another option." : feedback === "select" ? "Choose an option first." : "The correct answer hasn't been configured yet."}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 // ─── Render Blog Content from blog_details ───
 const renderBlogContent = (blogDetails: BlogDetail[]) => {
   if (!blogDetails || blogDetails.length === 0) return null;
@@ -395,76 +474,11 @@ const renderBlogContent = (blogDetails: BlogDetail[]) => {
 
     // Question block
   
-if (detail.question && detail.options?.length) {
-  sections.push(
-    <div
-      key={`question-${index}`}
-      className="my-6 rounded-xl border border-neutral-200 bg-neutral-50 p-6"
-    >
-      <h4 className="mb-4 text-lg font-semibold text-neutral-800">
-        {detail.question}
-      </h4>
-
-      <div className="space-y-2">
-        {detail.options.map((option, optIndex) => (
-          <label
-            key={optIndex}
-            className="flex cursor-pointer items-center gap-3 rounded-lg border border-neutral-200 bg-white p-3 transition-colors hover:border-[#F86C43]"
-          >
-            <input
-              type="radio"
-              name={`question-${index}`}
-              value={option.label}
-              className="h-4 w-4 accent-[#F86C43] focus:ring-[#F86C43]"
-            />
-
-            <span className="text-neutral-700">
-              {option.label}
-            </span>
-          </label>
-        ))}
-      </div>
-
-      <button
-        type="button"
-        className="mt-4 rounded-lg bg-[#F86C43] px-6 py-2 text-white transition-colors hover:bg-[#e05a32]"
-        onClick={() => {
-          const selected = document.querySelector(
-            `input[name="question-${index}"]:checked`
-          ) as HTMLInputElement | null;
-
-          if (!selected) {
-            alert("Please select an answer first.");
-            return;
-          }
-
-          // Find the option whose value is not empty
-          const correctOption = detail.options.find(
-            (option) => String(option.value ?? "").trim() !== ""
-          );
-
-          if (!correctOption) {
-            alert("Correct answer is not configured.");
-            return;
-          }
-
-          // Compare the selected option with the correct option
-          const isCorrect =
-            selected.value.trim() ===
-            String(correctOption.label).trim();
-
-          alert(
-            isCorrect
-              ? "✅ Correct!"
-              : "❌ Incorrect. Try again!"
-          );
-        }}
-      >
-        Check Answer
-      </button>
-    </div>
-  );
-}
+    if (detail.question && detail.options?.length) {
+      sections.push(
+        <BlogQuiz key={`question-${index}`} question={detail.question} options={detail.options} index={index} />,
+      );
+    }
 
 
     // FAQs
@@ -550,7 +564,7 @@ if (detail.question && detail.options?.length) {
           {banner.url && (
             <a
               href={banner.url}
-              className="inline-block px-8 py-3 bg-[#F36D45] !text-white font-semibold rounded-lg hover:bg-neutral-100 transition-colors"
+              className="inline-block px-8 py-3 bg-[#F36D45] !text-white font-semibold rounded-lg"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -574,6 +588,7 @@ export default function BlogDetailPage({
   blog,
   loading,
   res,
+  latestBlogs,
   slug,
 }: BlogDetailPageProps) {
   const router = useRouter();
@@ -654,14 +669,14 @@ export default function BlogDetailPage({
     const timer = setTimeout(() => {
       const currentCount = blog?.data?.count || 1000;
       const blogSlug = blog?.data?.slug;
-      blogcount(currentCount, blogSlug);
+      if (blogSlug) blogcount(currentCount, blogSlug);
     }, 10 * 1000);
 
     return () => clearTimeout(timer);
   }, [blog?.data?.slug]);
 
 
-const cleanBlogHtml = (blogDetails = []) => {
+const cleanBlogHtml = (blogDetails: (BlogDetail & { content?: string })[] = []) => {
   if (!Array.isArray(blogDetails)) return [];
 
   return blogDetails.map((detail) => ({
@@ -960,28 +975,50 @@ const afterClear = cleanBlogHtml(blogDetails);
             )} */}
 
             {/* Related Posts Section */}
-            {res && res.length > 0 && (
-              <div className="mt-12 pt-8 border-t border-neutral-200">
-                <h2 className="text-2xl font-bold text-neutral-900 mb-6">
-                  Related Posts
-                </h2>
-                <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <section className="mt-12 border-t border-neutral-200 pt-8" aria-labelledby="related-blogs-title">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#F36D45]">Keep reading</span>
+              <h2 id="related-blogs-title" className="mb-5 mt-2 text-2xl font-bold text-neutral-900">Related Blogs</h2>
+              {res.length > 0 ? (
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {res.map((post) => (
                     <BlogCard
                       key={post._id}
                       post={post}
-                      onClick={() => router.push(`/blog/${post.slug}`)}
                     />
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <p className="rounded-2xl bg-white p-5 text-sm text-neutral-500">No other blogs in this category yet.</p>
+              )}
+            </section>
           </div>
 
           {/* Sidebar */}
           <div className="lg:col-span-4">
-            <div className="sticky top-24 space-y-2">
+            <div className="sticky top-24 space-y-6">
               <LeadForm />
+              {latestBlogs.length > 0 && (
+                <section className="rounded-2xl border border-neutral-200 bg-white p-5 shadow-sm sm:p-6" aria-labelledby="latest-blogs-title">
+                  <span className="text-xs font-bold uppercase tracking-widest text-[#F36D45]">Fresh from the blog</span>
+                  <h2 id="latest-blogs-title" className="mt-2 text-xl font-bold text-neutral-900">Latest Blogs</h2>
+                  <div className="mt-4 divide-y divide-neutral-100">
+                    {latestBlogs.map((post, index) => (
+                      <Link key={post._id || post.slug} href={`/blog/${post.slug}`} className="group flex gap-3 py-3 first:pt-0 last:pb-0">
+                        <span className="shrink-0 text-sm font-bold text-[#F36D45]">{String(index + 1).padStart(2, "0")}</span>
+                        <span className="min-w-0">
+                          <span className="line-clamp-2 text-sm font-semibold leading-5 text-neutral-800 transition-colors group-hover:text-[#F36D45]">{post.title}</span>
+                          {post.createdAt && (
+                            <span className="mt-1.5 flex items-center gap-1 text-xs text-neutral-500">
+                              <Calendar size={12} aria-hidden="true" />
+                              {new Date(post.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                            </span>
+                          )}
+                        </span>
+                      </Link>
+                    ))}
+                  </div>
+                </section>
+              )}
             </div>
           </div>
         </div>
