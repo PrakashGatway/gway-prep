@@ -557,7 +557,7 @@ function DashboardSection({ dashboardData }: { dashboardData: any }) {
                 onClick={UserNavigate}
                 className="cursor-pointer bg-white px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-semibold text-[#FF5B36] transition hover:scale-105 hover:shadow-xl text-sm sm:text-base"
               >
-                Try Free for 3 Days →
+                Book Free Demo →
               </button>
               <button className=" border border-white/30 bg-black/30 px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-semibold text-white backdrop-blur transition hover:bg-black/40 text-sm sm:text-base">
                 ▶ Preview Dashboard
