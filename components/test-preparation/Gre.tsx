@@ -29,6 +29,15 @@ import PopupModal from "../popupModel";
 import EditorContent from "../editorContent";
 import { useGlobal } from "@/hooks/AppStateContext";
 
+const getDashboardDestination = (url: string) => {
+  const dashboardBase = "https://dashboard.ooshasprep.com/";
+  const resourceUrl = new URL(url, dashboardBase);
+  return new URL(
+    `${resourceUrl.pathname}${resourceUrl.search}${resourceUrl.hash}`,
+    dashboardBase,
+  ).href;
+};
+
 function AIStudySection({ aiStudySection }: { aiStudySection: any }) {
   return (
     <section className="px-4 bg-white">
@@ -433,7 +442,7 @@ function VideoExplanationSection({ videoData }: { videoData: any }) {
 }
 
 function FreeResources({ resourcesData }: { resourcesData: any }) {
-  const { UserNavigate } = useGlobal();
+  const { user } = useGlobal();
 
   const router = useRouter();
   const resources = [
@@ -445,6 +454,7 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
       button:
         resourcesData?.resources?.[0]?.buttonText ||
         "Take GRE Practice Material",
+      url: resourcesData?.resources?.[0]?.url || "",
       filled: true,
     },
     {
@@ -455,6 +465,7 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
       button:
         resourcesData?.resources?.[1]?.buttonText ||
         "Download GRE Other Resources",
+      url: resourcesData?.resources?.[1]?.url || "",
       filled: false,
     },
     {
@@ -464,9 +475,22 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
         "Download the GRE syllabus now and get a head start on your GRE preparation.",
       button:
         resourcesData?.resources?.[2]?.buttonText || "Download GRE Syllabus",
+      url: resourcesData?.resources?.[2]?.url || "",
       filled: true,
     },
   ];
+
+  const navigateToResource = (url: string) => {
+    if (!url) return;
+
+    const destination = getDashboardDestination(url);
+    if (user) {
+      window.location.href = destination;
+      return;
+    }
+
+    router.push(`/auth?redirect=${encodeURIComponent(destination)}`);
+  };
 
   return (
     <section className="py-8 md:py-2 bg-white">
@@ -502,9 +526,9 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
               </p>
               <div
                 className="mt-3 sm:mt-4 flex items-center gap-2 sm:gap-3 md:gap-4"
-                onClick={UserNavigate}
               >
                 <button
+                  onClick={() => navigateToResource(item.url)}
                   className={`cursor-pointer flex-1  py-2.5 px-3 sm:px-4 md:px-6 text-xs sm:text-sm font-semibold transition ${
                     item.filled
                       ? "bg-gradient-to-r from-[#FF6B00] to-[#F54B00] text-white hover:shadow-lg"
@@ -513,7 +537,11 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
                 >
                   {item.button}
                 </button>
-                <button className="cursor-pointer w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-[#FFC29C] flex items-center justify-center text-[#F5632A] transition hover:bg-[#F5632A] hover:text-white flex-shrink-0">
+                <button
+                  onClick={() => navigateToResource(item.url)}
+                  aria-label={`Open ${item.title}`}
+                  className="cursor-pointer w-9 h-9 sm:w-10 sm:h-10 rounded-full border-2 border-[#FFC29C] flex items-center justify-center text-[#F5632A] transition hover:bg-[#F5632A] hover:text-white flex-shrink-0"
+                >
                   <ArrowRight size={16} className="sm:w-[20px] sm:h-[20px]" />
                 </button>
               </div>
@@ -585,7 +613,7 @@ function DashboardSection({ dashboardData }: { dashboardData: any }) {
 }
 
 export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
-  const { UserNavigate } = useGlobal();
+  const { UserNavigate, user } = useGlobal();
 
   // console.log(pageInfo.seoMeta.duplicateOf ,'page data',slug);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -709,6 +737,17 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
   }, [instanceRef, testimonials.length]);
 
   const router = useRouter();
+  const navigateToMockTest = () => {
+    if (!heroSection.mockTestUrl) return;
+
+    const destination = getDashboardDestination(heroSection.mockTestUrl);
+    if (user) {
+      window.location.href = destination;
+      return;
+    }
+
+    router.push(`/auth?redirect=${encodeURIComponent(destination)}`);
+  };
 
   return (
     <div className="font-medium">
@@ -749,13 +788,13 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
             </button>
 
             <button
-              onClick={UserNavigate}
+              onClick={navigateToMockTest}
               style={{
                 backgroundColor: studentsData?.[0]?.colorCode || "#555",
               }}
               className="cursor-pointer hover:bg-white/10 px-6 py-3 flex items-center justify-center transition-all w-full sm:w-auto font-medium text-white text-base  bg-transparent"
             >
-              Take Mock Test
+              {heroSection.mockTestButtonText || "Take Mock Test"}
             </button>
           </div>
 

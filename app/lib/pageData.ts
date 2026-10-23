@@ -2337,6 +2337,19 @@ export const pageData: any = {
             placeholder: "Full courses starts at $99",
             value: "Full Courses starts at $99",
           },
+          {
+            name: "mockTestButtonText",
+            label: "Mock Test Button Text",
+            type: "text",
+            placeholder: "Take Mock Test",
+            value: "Take Mock Test",
+          },
+          {
+            name: "mockTestUrl",
+            label: "Mock Test Button URL",
+            type: "text",
+            placeholder: "https://dashboard.ooshasprep.com/mock-test",
+          },
         ],
       },
 
@@ -2841,6 +2854,12 @@ export const pageData: any = {
               { name: "title", label: "Title", type: "text" },
               { name: "description", label: "Description", type: "text" },
               { name: "buttonText", label: "Button Text", type: "text" },
+              {
+                name: "url",
+                label: "Button URL",
+                type: "text",
+                placeholder: "https://dashboard.ooshasprep.com/resource-path",
+              },
             ],
           },
         ],

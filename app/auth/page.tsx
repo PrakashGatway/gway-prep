@@ -82,6 +82,21 @@ function AuthContent ({ toggleDrawer }: any) {
 
    const searchParams = useSearchParams();
   const ReferalFromUrl = searchParams.get("ref");
+  const redirectUrl = searchParams.get("redirect");
+  const getPostLoginDestination = () => {
+    if (!redirectUrl) return "https://dashboard.ooshasprep.com/";
+
+    try {
+      const destination = new URL(redirectUrl);
+      if (destination.origin === "https://dashboard.ooshasprep.com") {
+        return destination.href;
+      }
+    } catch {
+      // Ignore invalid redirect URLs and use the dashboard home page.
+    }
+
+    return "https://dashboard.ooshasprep.com/";
+  };
 
   const search = "";
   const referral = "";
@@ -258,7 +273,7 @@ function AuthContent ({ toggleDrawer }: any) {
 
         setTimeout(() => {
           toggleDrawer();
-          window.location.href = "https://dashboard.ooshasprep.com/";
+          window.location.href = getPostLoginDestination();
         }, 2000);
       } else {
         setErrors({ otp: "Invalid OTP. Please try again." });
