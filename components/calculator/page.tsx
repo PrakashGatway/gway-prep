@@ -1810,7 +1810,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                           </span>
                           <span className="text-base text-slate-600">
                             {" "}
-                            / {!isCorrectAnswers ? 40 : 9}
+                            / {!isCorrectAnswers ? 9 : 9}
                           </span>
                           {isCorrectAnswers && (
                             <span className="block text-[11px] text-[#F36D45]">
