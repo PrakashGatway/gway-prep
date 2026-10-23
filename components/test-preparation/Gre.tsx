@@ -940,7 +940,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
             <div className="flex justify-center lg:justify-end">
               <button
                 className="cursor-pointer bg-gray-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 flex gap-2 items-center text-sm sm:text-base"
-                onClick={UserNavigate}
+                onClick={navigateToMockTest}
               >
                 <Play size={16} />{" "}
                 {officialQuestionsSection.buttonText || "Preview Dashboard"}

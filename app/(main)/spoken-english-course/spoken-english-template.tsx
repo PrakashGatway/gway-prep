@@ -266,12 +266,12 @@ export default function SpokenEnglishTemplate({ pageInfo }: { pageInfo?: any }) 
 
       {/* CTA Button */}
       <div className="mt-6 flex justify-end">
-        <Link
-          href={value("classes", "buttonUrl", "#start-learning")}
+        <button
+          onClick={() => setIsPopupOpen(true)}
           className="inline-flex items-center justify-center bg-black px-3 py-2 text-xs font-bold text-white transition-colors duration-200 hover:bg-[#F23858] sm:text-sm"
         >
           {value("classes", "buttonText", "Start Spoken English Test")}
-        </Link>
+        </button>
       </div>
     </div>
 
@@ -497,7 +497,7 @@ export default function SpokenEnglishTemplate({ pageInfo }: { pageInfo?: any }) 
           <span className={styles.ctaPill}><Sparkles size={13} /> {value("final-cta", "eyebrow", "New Spoken English Test")}</span>
           <h2 id="cta-title">{value("final-cta", "title", "Start Your Spoken English Test")}</h2>
           <p>{value("final-cta", "subtitle", "Prep Your Journey with Ooshas Prep")}</p>
-          <Link className={styles.primaryButton} href={value("final-cta", "buttonUrl", "/contact")}>{value("final-cta", "buttonText", "Start Spoken English Test")} <ArrowRight size={16} /></Link>
+          <button className={styles.primaryButton} onClick={() => setIsPopupOpen(true)}>{value("final-cta", "buttonText", "Start Spoken English Test")} <ArrowRight size={16} /></button>
         </div>
         <div className={styles.ctaImage}>
           <Image src={value("final-cta", "image", "/spoken-english/students.webp")} alt={value("final-cta", "imageAlt", "Students learning English together")} fill sizes="(max-width: 760px) 100vw, 45vw" />
