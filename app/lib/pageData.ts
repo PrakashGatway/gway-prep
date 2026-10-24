@@ -1842,6 +1842,13 @@ export const pageData: any = {
             name: "primaryButton",
             label: "Primary Button",
             type: "text",
+            placeholder: "Take a Free Mock Test",
+          },
+          {
+            name: "primaryButtonUrl",
+            label: "Primary Button Navigation URL",
+            type: "text",
+            placeholder: "/mock-test",
           },
           {
             name: "secondaryButton",
@@ -2530,6 +2537,11 @@ export const pageData: any = {
             name: "buttonText",
             label: "Button Text",
             type: "text",
+          },
+          {
+            name: "buttonUrl",
+            label: "Button Route",
+            type: "text",
             value: "Preview Dashboard",
           },
         ],
@@ -2670,6 +2682,16 @@ export const pageData: any = {
                 label: "Plan Subtitle",
                 type: "text",
               },
+               {
+                name: "buttonText",
+                label: "Plan Button Text",
+                type: "text",
+              },
+              {
+                name: "buttonUrl",
+                label: "Plan Button Route",
+                type: "text",
+              },
               {
                 name: "badge",
                 label: "Badge",
@@ -2742,6 +2764,12 @@ export const pageData: any = {
             label: "Subtitle",
             type: "editor",
             value: "Purchased by 500,000+ GRE students",
+          },
+           {
+            name: "VideoUrl",
+            label: "Video Url",
+            type: "text",
+            value: "Youtube Video Url Only",
           },
           {
             name: "Points",

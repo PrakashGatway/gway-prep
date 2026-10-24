@@ -1,4 +1,3 @@
-
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -24,7 +23,6 @@ interface PopupModalProps {
   onClose?: () => void;
 }
 
-
 export default function PopupModal({
   isPopupOpen,
   setIsPopupOpen,
@@ -40,6 +38,8 @@ export default function PopupModal({
     consent: false,
   });
 
+  if (!isPopupOpen) return null;
+
   const handleClose = () => {
     setIsPopupOpen(false);
     if (onClose) {
@@ -48,33 +48,29 @@ export default function PopupModal({
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     const { name, value, type } = e.target;
 
     setFormData((prev) => ({
       ...prev,
       [name]:
-        type === "checkbox"
-          ? (e.target as HTMLInputElement).checked
-          : value,
+        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
     }));
   };
 
-  const handleSubmit = async(e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    try{
- const response = await axiosInstance.post("/admin/formDetails", formData);
-    console.log("Consultation form:", formData);
-    toast.success("Form submitted Successfully")
-    handleClose();
-    }
-    catch(err){
-      toast.error("Something went wrong",err)
+    try {
+      const response = await axiosInstance.post("/admin/formDetails", formData);
+      console.log("Consultation form:", formData);
+      toast.success("Form submitted Successfully");
+      handleClose();
+    } catch (err) {
+      toast.error("Something went wrong", err);
     }
 
-    
     // Add your API call here
 
     // Optional: window.location.href = "/thank-you";
@@ -87,8 +83,8 @@ export default function PopupModal({
         title: "",
         icon: User,
         fields: ["fullName", "email", "phone", "city", "source"],
-        button: "submit"
-      }
+        button: "submit",
+      },
     ],
     fields: [
       {
@@ -99,9 +95,9 @@ export default function PopupModal({
         placeholder: "Priya",
         step: 1,
         grid: "half",
-        icon: User
+        icon: User,
       },
-            {
+      {
         name: "phone",
         label: "Phone Number",
         type: "tel",
@@ -109,7 +105,7 @@ export default function PopupModal({
         placeholder: "+91 98765 43210",
         step: 1,
         grid: "half",
-        icon: Phone
+        icon: Phone,
       },
       {
         name: "email",
@@ -119,7 +115,7 @@ export default function PopupModal({
         placeholder: "priya@email.com",
         step: 1,
         grid: "full",
-        icon: Mail
+        icon: Mail,
       },
 
       {
@@ -130,18 +126,17 @@ export default function PopupModal({
         placeholder: "Jaipur",
         step: 1,
         grid: "full",
-        icon: MapPin
+        icon: MapPin,
       },
-          {
-      name: "notes",
-      label: "Additional Notes",
-      type: "textarea",
-      required: false,
-      placeholder: "Any specific requirements or questions...",
-      step: 1,
-      grid: "full",
-    },
-      
+      {
+        name: "notes",
+        label: "Additional Notes",
+        type: "textarea",
+        required: false,
+        placeholder: "Any specific requirements or questions...",
+        step: 1,
+        grid: "full",
+      },
     ],
     submit: {
       label: "Book Consultation",
@@ -151,9 +146,9 @@ export default function PopupModal({
       position: "bottom",
       onSuccess: {
         message: "Thank you! Our team will reach out to you shortly.",
-        redirect: "/thank-you"
-      }
-    }
+        redirect: "/thank-you",
+      },
+    },
   };
 
   return (
@@ -186,7 +181,6 @@ export default function PopupModal({
             </button>
 
             <div className="flex max-h-[85vh] flex-col lg:flex-row">
-              
               {/* =========================================================
                   LEFT PANEL (Hidden on Mobile, visible on Desktop)
               ========================================================== */}
@@ -194,7 +188,6 @@ export default function PopupModal({
                 {/* Decorative abstract shapes */}
                 <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-orange-200/50 blur-xl" />
                 <div className="absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-orange-100/30 blur-xl" />
-          
 
                 <div className="relative z-10">
                   <h2 className="text-3xl font-semibold leading-tight tracking-tight text-slate-800">
@@ -222,9 +215,9 @@ export default function PopupModal({
                 </div>
 
                 {/* Decorative Bottom Badge */}
-                  <div className="flex h-48 w-48 items-center justify-center">
-                    <img src="/home/00023.png" alt="" />
-                  </div>
+                <div className="flex h-48 w-48 items-center justify-center">
+                  <img src="/home/00023.png" alt="" />
+                </div>
               </div>
 
               {/* =========================================================
@@ -237,14 +230,15 @@ export default function PopupModal({
                       Book Your Free Consultation
                     </h2>
                     <p className="mt-px text-sm text-slate-500">
-                      Fill in your details and our expert counselors will reach out to you shortly.
+                      Fill in your details and our expert counselors will reach
+                      out to you shortly.
                     </p>
                   </div>
 
-             <FormSection
-                FORM_CONFIG={FORM_CONFIG} 
-                onSubmitted={handleClose}
-              />
+                  <FormSection
+                    FORM_CONFIG={FORM_CONFIG}
+                    onSubmitted={handleClose}
+                  />
                   {/* <form onSubmit={handleSubmit} className="space-y-5">
                     
                     <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">

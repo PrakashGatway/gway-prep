@@ -90,7 +90,7 @@ export function TextTestimonials({ testimonialsSection }: any) {
           {testimonials.map((item: any, idx: number) => (
             <div
               key={idx}
-              className="bg-white border rounded-3xl p-6 shadow-sm"
+              className="bg-white border rounded-3xl p-6 shadow-sm my-4"
             >
               <CardContent data={item} />
             </div>

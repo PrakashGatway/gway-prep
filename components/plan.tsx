@@ -3,8 +3,10 @@
 import { useGlobal } from "@/hooks/AppStateContext";
 import { useRouter } from "next/navigation";
 
-export default function PricingSection({ plans }: { plans: any }) {
-  const {UserNavigate} = useGlobal()
+export default function PricingSection({ plans, slug }: { plans: any; slug?: string }) {
+  const { userInfo } = useGlobal();
+  const router = useRouter();
+
   const {
     testimonial = "",
     pricing_plans = [],
@@ -12,12 +14,40 @@ export default function PricingSection({ plans }: { plans: any }) {
     access_features = [],
   } = plans || {};
 
+  const getDashboardDestination = (url: unknown) => {
+    const dashboardBase = "https://dashboard.ooshasprep.com/";
+    const configuredRoute = String(url ?? "").trim();
+    const missingRoute = !configuredRoute || ["undefined", "null"].includes(configuredRoute.toLowerCase());
+
+    if (missingRoute) {
+      const destination = new URL(dashboardBase);
+      const category = String(slug || "").split("-")[0];
+      if (category) destination.searchParams.set("cat", category);
+      destination.searchParams.set("r", "course");
+      return destination.href;
+    }
+
+    const resourceUrl = new URL(configuredRoute, dashboardBase);
+    return new URL(
+      resourceUrl.pathname + resourceUrl.search + resourceUrl.hash,
+      dashboardBase,
+    ).href;
+  };
+
+  const navigateToMockTest = async (route: unknown) => {
+    const destination = getDashboardDestination(route);
+    const authenticatedUser = await userInfo();
+    if (authenticatedUser) {
+      window.location.assign(destination);
+      return;
+    }
+
+    router.push("/auth?redirect=" + encodeURIComponent(destination));
+  };
   const planItems = Array.isArray(plans) ? plans : pricing_plans;
   const features = [...content_features, ...access_features]
     .map((item: any) => (typeof item === "string" ? item : item.feature || ""))
     .filter(Boolean);
-
-  const router = useRouter();
 
   return (
     <>
@@ -130,7 +160,7 @@ export default function PricingSection({ plans }: { plans: any }) {
 
                     {/* Button */}
                     <button
-                      onClick={UserNavigate}
+                      onClick={()=>navigateToMockTest(plan.buttonUrl)}
                       className={`mt-4 w-full rounded-3xl py-3 cursor-pointer font-semibold transition
               ${
                 isHighlighted
@@ -138,7 +168,7 @@ export default function PricingSection({ plans }: { plans: any }) {
                   : "bg-[#F4F4F4] text-[#333] hover:bg-gray-200"
               }`}
                     >
-                      Sign Up Now
+                      {plan?.buttonText || "Sign Up"}
                     </button>
                   </div>
                 </div>

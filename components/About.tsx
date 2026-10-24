@@ -5,6 +5,7 @@ import DOMPurify from "isomorphic-dompurify";
 import PopupModal from "./popupModel";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useGlobal } from "@/hooks/AppStateContext";
 
 
 
@@ -42,6 +43,8 @@ export default function About({ sections }: any) {
 
   return (
     <main className="min-h-screen bg-white text-gray-800" id="main-content">
+            <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen}/>
+
       {/* ---------------- Hero ---------------- */}
       <section
         className="bg-cover bg-center bg-no-repeat py-16 lg:py-12 bg-[#FDF4ED]"
@@ -78,7 +81,6 @@ export default function About({ sections }: any) {
                 </button> */}
               </div>
               
-            <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen}/>
             </div>
 
             {/* Right Image */}
@@ -179,7 +181,8 @@ export default function About({ sections }: any) {
                   id="what-will-we-do"
                   className="text-center text-2xl md:text-3xl lg:text-5xl font-bold mb-4"
                 >
-                  {features.title}
+                  <span className="">{features.title.split("||")[0]}</span>
+                 <span className="text-[#fa6b2a]">{features.title.split("||")[1]}</span>
                 </h2>
               )}
 
@@ -325,11 +328,12 @@ export default function About({ sections }: any) {
         />
       )}
 
-      {(cta.title || cta.subtitle) && (
+      {(cta.title || cta.subtitle || cta.primaryButton || cta.primaryButtonUrl) && (
         <CallToActionSection
           title={cta.title}
           subtitle={cta.subtitle}
-          primaryButton={cta.primaryButton}
+          primaryButton={cta.primaryButton || "Take a Free Mock Test"}
+          primaryButtonUrl={cta.primaryButtonUrl}
           secondaryButton={cta.secondaryButton}
         />
       )}
@@ -479,19 +483,59 @@ function CallToActionSection({
   title,
   subtitle,
   primaryButton,
+  primaryButtonUrl,
   secondaryButton,
 }: {
   title?: string;
   subtitle?: string;
   primaryButton?: string;
+  primaryButtonUrl?: string;
   secondaryButton?: string;
 }) {
-  
   const router = useRouter();
+  const { user } = useGlobal();
   const [popup,setpopup] = useState(false);
-  
+
+
+  //   const user = await userInfo();
+  //   if (!user) {
+  //     router.push("/auth");
+  //     return;
+
+  //   }
+
+  //   const dashboardBaseUrl = "https://dashboard.ooshasprep.com";
+  //   const configuredRoute = primaryButtonUrl?.trim() || "";
+  //   const destination = /^https?:\/\//i.test(configuredRoute)
+  //     ? configuredRoute
+  //     : dashboardBaseUrl + "/" + configuredRoute.replace(/^\/+/, "");
+
+  //   window.location.assign(destination);
+  // };
+
+      const getDashboardDestination = (url: string) => {
+  const dashboardBase = "https://dashboard.ooshasprep.com/";
+  const resourceUrl = new URL(url, dashboardBase);
+  return new URL(
+    `${resourceUrl.pathname}${resourceUrl.search}${resourceUrl.hash}`,
+    dashboardBase,
+  ).href;
+};
+      const navigateToMockTest = () => {
+    if (!primaryButtonUrl){
+      router.push("https://dashboard.ooshasprep.com/tests")
+    }
+
+    const destination = getDashboardDestination(primaryButtonUrl);
+    if (user) {
+      window.location.href = destination;
+      return;
+    }
+
+    router.push(`/auth?redirect=${encodeURIComponent(destination)}`);
+  };
   return (
-    <section className="relative overflow-hidden flex items-center py-6 mt-8 max-w-6xl mx-auto">
+    <section className="relative overflow-hidden flex items-center py-6 mt-8 max-w-7xl mx-auto">
       <div
         className="w-full mx-auto bg-[#f26e46] md:rounded-[24px] overflow-hidden 
         flex flex-col md:flex-row items-center justify-between p-6 md:p-8 gap-6 min-h-[160px]"
@@ -536,7 +580,7 @@ function CallToActionSection({
 
           <div className="flex flex-col sm:flex-row gap-3">
             {primaryButton && (
-              <button onClick={() => router.push('/auth')}
+              <button onClick={navigateToMockTest}
                className="cursor-pointer sflex-shrink-0 flex items-center gap-2 bg-white text-[#f26e46] font-semibold px-6 py-3 shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap">
                 {primaryButton}
                 <svg
@@ -562,8 +606,6 @@ function CallToActionSection({
               </button>
             )}
           </div>
-
-          
             <PopupModal isPopupOpen={popup} setIsPopupOpen={setpopup}/>
         </motion.div>
       </div>

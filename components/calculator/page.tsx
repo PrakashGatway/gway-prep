@@ -349,6 +349,8 @@ function getPerformanceLevel(percent: number): string {
 export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
   const router = useRouter();
   const { userInfo, user } = useGlobal();
+
+
   const [selectedExam, setSelectedExam] = useState<ExamType>(() => {
     const exam = String(slug || "")
       .split("-")[0]
@@ -971,13 +973,13 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
       <Hero data={pageInfo?.sections?.hero?.fields} />
 
       {/* Calculator Section */}
-      <section className="px-0 py-10">
-        <div className="mx-auto max-w-7xl grid grid-cols-[1.3fr_0.7fr] gap-7">
+      <section className="px-4 py-8 sm:px-6 sm:py-10 xl:px-0">
+        <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(280px,0.7fr)] lg:gap-7">
           {/* OUTER WHITE CALCULATOR BOX */}
-          <div className="overflow-hidden rounded-[22px] border border-slate-200 bg-white p-4">
+          <div className="min-w-0 overflow-hidden rounded-[22px] border border-slate-200 bg-white p-2 sm:p-4">
             {/* CALCULATOR CONTENT */}
-            <div className="px-7 py-4">
-              <div className="mb-4 flex items-start justify-between">
+            <div className="px-2 py-3 sm:px-4 sm:py-4 lg:px-7">
+              <div className="mb-4 flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
                   <h2 className="text-2xl font-semibold tracking-tight text-[#0b1e3f]">
                     Enter Your {selectedExam} Practice Scores
@@ -1061,7 +1063,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                           ].map((item) => (
                             <div
                               key={item.field}
-                              className="grid min-h-[72px] grid-cols-[minmax(125px,45%)_minmax(0,1fr)_55px] items-center gap-2  sm:grid-cols-[205px_minmax(0,1fr)_65px] sm:gap-4"
+                              className="grid min-h-[72px] grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_auto] items-center gap-2  sm:grid-cols-[205px_minmax(0,1fr)_65px] sm:gap-4"
                             >
                               <span className="text-[16px] font-semibold text-[#252525]">
                                 {item.label}
@@ -1126,7 +1128,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                           ].map((item) => (
                             <div
                               key={item.field}
-                              className="grid min-h-[72px] grid-cols-[minmax(125px,45%)_minmax(0,1fr)_55px] items-center gap-2 sm:grid-cols-[205px_minmax(0,1fr)_65px] sm:gap-4"
+                              className="grid min-h-[72px] grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_auto] items-center gap-2 sm:grid-cols-[205px_minmax(0,1fr)_65px] sm:gap-4"
                             >
                               <span className="text-[16px] font-semibold text-[#252525]">
                                 {item.label}
@@ -1185,7 +1187,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                         ] as const
                       ).map((section) => (
                         <div key={section.key}>
-                          <div className="grid min-h-[72px] grid-cols-[minmax(125px,45%)_minmax(0,1fr)_55px] items-center gap-2 sm:grid-cols-[205px_minmax(0,1fr)_65px] sm:gap-4">
+                          <div className="grid min-h-[72px] grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_auto] items-center gap-2 sm:grid-cols-[205px_minmax(0,1fr)_65px] sm:gap-4">
                             <span className="text-[16px] font-semibold text-[#252525]">
                               {section.label}
                             </span>
@@ -1317,7 +1319,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                           ].map((item, idx) => (
                             <div
                               key={idx}
-                              className="grid min-h-[72px] grid-cols-[minmax(125px,45%)_minmax(0,1fr)_55px] items-center gap-2 border-t border-[#EEEEEE] sm:grid-cols-[205px_minmax(0,1fr)_65px] sm:gap-4"
+                              className="grid min-h-[72px] grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_auto] items-center gap-2 border-t border-[#EEEEEE] sm:grid-cols-[205px_minmax(0,1fr)_65px] sm:gap-4"
                             >
                               <span className="text-[15px] font-medium text-[#252525]">
                                 {item.label}
@@ -1381,7 +1383,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                           ].map((item, idx) => (
                             <div
                               key={idx}
-                              className="grid min-h-[72px] grid-cols-[minmax(125px,45%)_minmax(0,1fr)_55px] items-center gap-2 border-t border-[#EEEEEE] sm:grid-cols-[205px_minmax(0,1fr)_65px] sm:gap-4"
+                              className="grid min-h-[72px] grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_auto] items-center gap-2 border-t border-[#EEEEEE] sm:grid-cols-[205px_minmax(0,1fr)_65px] sm:gap-4"
                             >
                               <span className="text-[15px] font-medium text-[#252525]">
                                 {item.label}
@@ -1440,7 +1442,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                           <h3 className="mb-2 text-[21px] font-bold text-[#252525]">
                             {section.label}
                           </h3>
-                          <div className="grid min-h-[72px] grid-cols-[minmax(125px,45%)_minmax(0,1fr)_55px] items-center gap-2 border-t border-[#EEEEEE] sm:grid-cols-[205px_minmax(0,1fr)_65px] sm:gap-4">
+                          <div className="grid min-h-[72px] grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)_auto] items-center gap-2 border-t border-[#EEEEEE] sm:grid-cols-[205px_minmax(0,1fr)_65px] sm:gap-4">
                             <span className="text-[15px] font-medium text-[#252525]">
                               Section Score
                             </span>
@@ -1578,7 +1580,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                   ].map((section, idx) => (
                     <div key={idx}>
                       <div className="mb-2"></div>
-                      <div className="grid min-h-[72px] grid-cols-[205px_minmax(0,1fr)_65px] items-center gap-4 border-t border-[#EEEEEE]">
+                      <div className="grid min-h-[72px] grid-cols-[minmax(105px,0.9fr)_minmax(0,1.6fr)_auto] sm:grid-cols-[205px_minmax(0,1fr)_65px] items-center gap-4 border-t border-[#EEEEEE]">
                         <h3 className="text-base font-bold text-[#252525]">
                           {section.label}
                         </h3>
@@ -1622,7 +1624,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                       </div>
                     </div>
                   ))}
-                  <div className="mt-5 flex items-center justify-between gap-3 rounded-xl bg-white">
+                  <div className="mt-5 flex flex-col items-stretch justify-between gap-3 rounded-xl bg-white sm:flex-row sm:items-center">
                     <p className="text-sm text-slate-600">
                       Estimated from the three section scores.
                     </p>
@@ -1877,7 +1879,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                     );
                   })}
 
-                  <div className="mt-5 flex items-center justify-between rounded-xl bg-white max-w-7xl mx-auto">
+                  <div className="mt-5 mx-auto flex max-w-7xl flex-col items-stretch justify-between gap-3 rounded-xl bg-white sm:flex-row sm:items-center">
                     <p className="text-sm text-slate-600">
                       Your results are used only to create an estimated
                       preparation analysis.
@@ -2082,7 +2084,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                     </span>
                   </div>
 
-                  <div className="mt-5 flex items-center justify-between rounded-xl bg-white max-w-7xl mx-auto">
+                  <div className="mt-5 mx-auto flex max-w-7xl flex-col items-stretch justify-between gap-3 rounded-xl bg-white sm:flex-row sm:items-center">
                     <p className="text-sm text-slate-600">
                       Your results are used only to create an estimated
                       preparation analysis.
@@ -2196,12 +2198,12 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
 
                   {/* Actions */}
                   <div className="mt-3 flex flex-wrap items-center gap-2">
-                    <Link
-                    href={"/auth"}
+                    <button
+                    onClick={Navigate}
                       className="rounded-full bg-[#FF7043] px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:text-sm"
                     >
                       Practice Free Mock Test →
-                    </Link>
+                    </button>
                   </div>
                 </div>
 
@@ -2655,6 +2657,32 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
 // Keep all your original helper components unchanged
 function Hero({ data }: { data: any }) {
   const title = data?.title || "";
+  const router = useRouter();
+  const { userInfo,user } = useGlobal();
+
+        const getDashboardDestination = (url: string) => {
+  const dashboardBase = "https://dashboard.ooshasprep.com/";
+  const resourceUrl = new URL(url, dashboardBase);
+  return new URL(
+    `${resourceUrl.pathname}${resourceUrl.search}${resourceUrl.hash}`,
+    dashboardBase,
+  ).href;
+};
+      const navigateToMockTest = () => {
+    if (!data?.primaryButtonUrl){
+      router.push("https://dashboard.ooshasprep.com/tests")
+    }
+
+    const destination = getDashboardDestination(data?.primaryButtonUrl);
+    if (user) {
+      window.location.href = destination;
+      return;
+    }
+
+    router.push(`/auth?redirect=${encodeURIComponent(destination)}`);
+  };
+
+
   const [firstPart, ...rest] = title.split("||");
 
   return (
@@ -2680,14 +2708,15 @@ function Hero({ data }: { data: any }) {
           />
           <div className="mt-7 flex flex-col justify-start gap-3 sm:flex-row">
             {data?.primaryButtonText && (
-              <a
-                href={data?.primaryButtonUrl || "#calculator"}
+              <button
+                type="button"
+                onClick={navigateToMockTest}
                 className="inline-flex w-full items-center justify-center gap-2 px-6 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5 sm:w-auto"
                 style={{ background: "#F36D45" }}
               >
                 {data.primaryButtonText}
                 <ArrowRight className="h-4 w-4" />
-              </a>
+              </button>
             )}
           </div>
         </div>

@@ -481,7 +481,9 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
   ];
 
   const navigateToResource = (url: string) => {
-    if (!url) return;
+    if (!url){
+      router.push("https://dashboard.ooshasprep.com/resources")
+    }
 
     const destination = getDashboardDestination(url);
     if (user) {
@@ -524,9 +526,7 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
               <p className="text-gray-600 text-sm sm:text-base leading-6 min-h-[50px] sm:min-h-[60px]">
                 {item.description}
               </p>
-              <div
-                className="mt-3 sm:mt-4 flex items-center gap-2 sm:gap-3 md:gap-4"
-              >
+              <div className="mt-3 sm:mt-4 flex items-center gap-2 sm:gap-3 md:gap-4">
                 <button
                   onClick={() => navigateToResource(item.url)}
                   className={`cursor-pointer flex-1  py-2.5 px-3 sm:px-4 md:px-6 text-xs sm:text-sm font-semibold transition ${
@@ -553,17 +553,58 @@ function FreeResources({ resourcesData }: { resourcesData: any }) {
   );
 }
 
-function DashboardSection({ dashboardData }: { dashboardData: any }) {
+function DashboardSection({
+  dashboardData,
+  slug,
+}: {
+  dashboardData: any;
+  slug: string;
+}) {
   const { UserNavigate } = useGlobal();
 
   const features = dashboardData?.Points?.map((p: any) => p.Points) || [];
   const router = useRouter();
 
+  const defaultVideoUrls: Record<string, string> = {
+    sat: "https://youtu.be/m01A4oFHk_k?si=0GyDebofOFe4fuSr",
+    gmat: "https://youtu.be/IZNl7Mifxzw?si=0tFOpB5TLkz1hrEU",
+    pte: "https://youtu.be/w7vUoEYsJpA?si=hBiGjIWjdWynFer5",
+  };
+
+  // Match SAT, GMAT, or PTE from the current slug
+  const matchedKey = Object.keys(defaultVideoUrls).find((key) =>
+    slug?.toLowerCase().includes(key)
+  );
+
+  // CMS video URL takes priority; otherwise use the slug-based default
+  const videoUrl =
+    dashboardData?.VideoUrl?.trim() ||
+    (matchedKey ? defaultVideoUrls[matchedKey] : "");
+
+  const getYouTubeVideoId = (url?: string) => {
+    if (!url) return "";
+
+    try {
+      const parsedUrl = new URL(url);
+
+      if (parsedUrl.hostname === "youtu.be") {
+        return parsedUrl.pathname.slice(1);
+      }
+
+      return (
+        parsedUrl.searchParams.get("v") ||
+        parsedUrl.pathname.split("/embed/")[1]?.split("/")[0] ||
+        ""
+      );
+    } catch {
+      return "";
+    }
+  };
+
+  const videoId = getYouTubeVideoId(videoUrl);
+
   return (
-    <section
-      className="relative overflow-hidden bg-gradient-to-r from-[#FF5B36] via-[#FF7656] to-[#FDB19B]
-     py-8 sm:py-10 md:py-12 px-3 sm:px-4 mb-14"
-    >
+    <section className="relative overflow-hidden bg-gradient-to-r from-[#FF5B36] via-[#FF7656] to-[#FDB19B] py-8 sm:py-10 md:py-12 px-3 sm:px-4 mb-14">
       <div className="mx-auto max-w-7xl">
         <div className="grid items-center gap-6 sm:gap-8 lg:grid-cols-2">
           {/* Left Content */}
@@ -587,25 +628,28 @@ function DashboardSection({ dashboardData }: { dashboardData: any }) {
               >
                 Book Free Demo →
               </button>
-              <button className=" border border-white/30 bg-black/30 px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 font-semibold text-white backdrop-blur transition hover:bg-black/40 text-sm sm:text-base">
-                ▶ Preview Dashboard
-              </button>
             </div>
           </div>
 
-          {/* Right Image */}
-          <div className="relative mt-6 sm:mt-8 lg:mt-0">
-            <div className="rounded-xl md:rounded-[32px] bg-white p-2 md:p-3 shadow-[0_30px_60px_rgba(0,0,0,0.25)]">
-              <Image
-                src="/Gre/dashboard.png"
-                alt="Dashboard Preview"
-                width={900}
-                height={650}
-                className="rounded-lg md:rounded-[26px] object-cover w-full"
-              />
+          {/* Right Video */}
+          {videoId && (
+            <div className="relative mt-6 sm:mt-8 lg:mt-0 w-full">
+              <div className="rounded-xl md:rounded-[32px] bg-white p-2 md:p-3 shadow-[0_30px_60px_rgba(0,0,0,0.25)]">
+                <div className="relative w-full aspect-video overflow-hidden rounded-lg md:rounded-[26px]">
+                  <iframe
+                    key={videoId}
+                    src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&playsinline=1&rel=0`}
+                    title="Dashboard Preview Video"
+                    className="absolute inset-0 w-full h-full"
+                    allow="autoplay; encrypted-media; picture-in-picture; gyroscope; accelerometer"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+
+              <div className="absolute -bottom-6 sm:-bottom-8 left-1/2 -z-10 h-32 w-32 sm:h-40 sm:w-40 -translate-x-1/2 rounded-full bg-[#FF7B5C]/40 blur-3xl" />
             </div>
-            <div className="absolute -bottom-6 sm:-bottom-8 left-1/2 -z-10 h-32 w-32 sm:h-40 sm:w-40 -translate-x-1/2 rounded-full bg-[#FF7B5C]/40 blur-3xl"></div>
-          </div>
+          )}
         </div>
       </div>
     </section>
@@ -661,7 +705,6 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
     const displayStudents = async () => {
       try {
         let qeury = pageInfo?.seoMeta?.duplicateOf || slug;
-     
 
         const data = await getStudent(qeury || "", 1, 8);
 
@@ -737,10 +780,12 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
   }, [instanceRef, testimonials.length]);
 
   const router = useRouter();
-  const navigateToMockTest = () => {
-    if (!heroSection.mockTestUrl) return;
+  const navigateToMockTest = (data) => {
+    if (!data){
+      router.push("https://dashboard.ooshasprep.com/tests")
+    }
 
-    const destination = getDashboardDestination(heroSection.mockTestUrl);
+    const destination = getDashboardDestination(data);
     if (user) {
       window.location.href = destination;
       return;
@@ -788,7 +833,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
             </button>
 
             <button
-              onClick={navigateToMockTest}
+              onClick={()=>navigateToMockTest(heroSection.mockTestUrl)}
               style={{
                 backgroundColor: studentsData?.[0]?.colorCode || "#555",
               }}
@@ -847,7 +892,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
         </div>
       </section>
 
-      <DashboardSection dashboardData={studentDashboard} />
+      <DashboardSection dashboardData={studentDashboard} slug={slug} />
 
       <AIStudySection aiStudySection={aiStudySection} />
 
@@ -902,7 +947,6 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
             {scoreGuaranteeSection.features?.map((ele: any, idx: number) => (
               <div key={idx} className="group relative h-full min-w-0">
                 <div className="relative flex flex-col h-full min-h-[155px] p-4 sm:p-5 rounded-2xl bg-white border-2 border-orange-300 shadow-[0_3px_15px_rgba(0,0,0,0.04)] transition-all duration-300 hover:-translate-y-1 hover:border-orange-200 hover:shadow-[0_12px_30px_rgba(234,88,12,0.10)] overflow-hidden">
-
                   {/* Text */}
                   <div className="relative flex-1">
                     <h3 className="text-base sm:text-lg font-bold text-gray-900 leading-snug mb-1.5 group-hover:text-orange-600 transition-colors">
@@ -918,7 +962,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
             ))}
           </div>
         </div>
-        <PricingSection plans={pricingData.pricing_plans} />
+        <PricingSection plans={pricingData.pricing_plans} slug={slug} />
       </section>
 
       {/* Official Questions Section */}
@@ -940,7 +984,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
             <div className="flex justify-center lg:justify-end">
               <button
                 className="cursor-pointer bg-gray-700 text-white px-4 sm:px-6 py-2.5 sm:py-3 flex gap-2 items-center text-sm sm:text-base"
-                onClick={navigateToMockTest}
+                onClick={()=>navigateToMockTest(officialQuestionsSection?.buttonUrl)}
               >
                 <Play size={16} />{" "}
                 {officialQuestionsSection.buttonText || "Preview Dashboard"}
@@ -950,7 +994,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
         </div>
       </section>
 
-      <VideoExplanationSection videoData={studentVideo} />
+      {/* <VideoExplanationSection videoData={studentVideo} /> */}
       <div className="py-8">
         <FreeResources resourcesData={freeResourcesSection} />
       </div>
