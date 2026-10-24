@@ -29,6 +29,7 @@ import PopupModal from "../popupModel";
 import { useRouter } from "next/navigation";
 import { GlobalProvider, useGlobal } from "@/hooks/AppStateContext";
 import Link from "next/link";
+import { calculateDuolingoScore, type DuolingoSkills } from "./duolingo-score";
 
 const ORANGE = "#ff7a2a";
 const NAVY = "#0b1e3f";
@@ -36,7 +37,7 @@ const NAVY = "#0b1e3f";
 const CALCULATOR_RANGE_INPUT_CLASS =
   "absolute inset-0 h-6 w-full cursor-pointer appearance-none bg-transparent focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F36D45] [&::-webkit-slider-runnable-track]:h-[14px] [&::-webkit-slider-runnable-track]:bg-transparent [&::-webkit-slider-thumb]:-mt-[5px] [&::-webkit-slider-thumb]:h-6 [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:bg-[#F36D45] [&::-webkit-slider-thumb]:shadow-md [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:duration-150 hover:[&::-webkit-slider-thumb]:scale-110 hover:[&::-webkit-slider-thumb]:bg-[#FF855F] hover:[&::-webkit-slider-thumb]:shadow-[0_3px_10px_rgba(243,109,69,0.4)] [&::-moz-range-track]:h-[14px] [&::-moz-range-track]:bg-transparent [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:bg-[#F36D45] [&::-moz-range-thumb]:shadow-md [&::-moz-range-thumb]:transition-all [&::-moz-range-thumb]:duration-150 hover:[&::-moz-range-thumb]:scale-110 hover:[&::-moz-range-thumb]:bg-[#FF855F] hover:[&::-moz-range-thumb]:shadow-[0_3px_10px_rgba(243,109,69,0.4)]";
 
-type ExamType = "SAT" | "GRE" | "GMAT" | "TOEFL" | "IELTS" | "PTE";
+type ExamType = "SAT" | "GRE" | "GMAT" | "TOEFL" | "IELTS" | "PTE" | "DUOLINGO";
 
 type SATScores = {
   readingWritingModule1: number;
@@ -352,7 +353,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
     const exam = String(slug || "")
       .split("-")[0]
       .toUpperCase();
-    return ["SAT", "GRE", "GMAT", "TOEFL", "IELTS", "PTE"].includes(exam)
+    return ["SAT", "GRE", "GMAT", "TOEFL", "IELTS", "PTE", "DUOLINGO"].includes(exam)
       ? (exam as ExamType)
       : "SAT";
   });
@@ -465,6 +466,14 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
     null,
   );
 
+  const [duolingoScores, setDuolingoScores] = useState<DuolingoSkills>({
+    reading: 110,
+    writing: 105,
+    listening: 100,
+    speaking: 105,
+  });
+  const getDuolingoResult = () => calculateDuolingoScore(duolingoScores);
+
   const [report, setReport] = useState<PerformanceReport | null>(null);
 
   useEffect(() => {
@@ -490,6 +499,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
     pteScores,
     pteType,
     pteOfficialOverall,
+    duolingoScores,
   ]);
 
   useEffect(() => {
@@ -652,6 +662,30 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
           a[1] < b[1] ? a : b,
         )[0],
       };
+    } else if (selectedExam === "DUOLINGO") {
+      const result = getDuolingoResult();
+      const percentages = {
+        Reading: Math.round(((duolingoScores.reading - 10) / 150) * 100),
+        Writing: Math.round(((duolingoScores.writing - 10) / 150) * 100),
+        Listening: Math.round(((duolingoScores.listening - 10) / 150) * 100),
+        Speaking: Math.round(((duolingoScores.speaking - 10) / 150) * 100),
+      };
+      newReport = {
+        exam: "DUOLINGO",
+        totalScore: result.overall,
+        sectionScores: {
+          Reading: duolingoScores.reading,
+          Writing: duolingoScores.writing,
+          Listening: duolingoScores.listening,
+          Speaking: duolingoScores.speaking,
+        },
+        percentages,
+        performanceLevel: getPerformanceLevel(
+          Math.round(Object.values(percentages).reduce((sum, value) => sum + value, 0) / 4),
+        ),
+        strongestArea: Object.entries(percentages).reduce((a, b) => a[1] >= b[1] ? a : b)[0],
+        weakestArea: Object.entries(percentages).reduce((a, b) => a[1] <= b[1] ? a : b)[0],
+      };
     } else {
       const result = calculatePTEScore(pteScores);
       const percentages = {
@@ -739,6 +773,8 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
           pteOfficialOverall <= 90
           ? pteOfficialOverall
           : calculatePTEScore(pteScores).estimatedOverall;
+      case "DUOLINGO":
+        return getDuolingoResult().overall;
       default:
         return 0;
     }
@@ -793,6 +829,13 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
           Listening: result.percentages.listening,
         };
       }
+      case "DUOLINGO":
+        return {
+          Reading: Math.round(((duolingoScores.reading - 10) / 150) * 100),
+          Writing: Math.round(((duolingoScores.writing - 10) / 150) * 100),
+          Listening: Math.round(((duolingoScores.listening - 10) / 150) * 100),
+          Speaking: Math.round(((duolingoScores.speaking - 10) / 150) * 100),
+        };
     }
     return {};
   };
@@ -835,6 +878,8 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
       setPteScores({ speaking: 70, writing: 70, reading: 68, listening: 72 });
       setPteType("academic");
       setPteOfficialOverall(null);
+    } else if (selectedExam === "DUOLINGO") {
+      setDuolingoScores({ reading: 110, writing: 105, listening: 100, speaking: 105 });
     }
     setShowReport(false);
   };
@@ -888,6 +933,13 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
           { label: "Reading", value: pteScores.reading },
           { label: "Listening", value: pteScores.listening },
         ];
+      case "DUOLINGO":
+        return [
+          { label: "Reading", value: duolingoScores.reading },
+          { label: "Writing", value: duolingoScores.writing },
+          { label: "Listening", value: duolingoScores.listening },
+          { label: "Speaking", value: duolingoScores.speaking },
+        ];
       default:
         return [];
     }
@@ -907,6 +959,8 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
         return "9";
       case "PTE":
         return "90";
+      case "DUOLINGO":
+        return "160";
       default:
         return "0";
     }
@@ -1839,6 +1893,60 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                 </div>
               )}
 
+              {/* Duolingo English Test */}
+              {selectedExam === "DUOLINGO" && (
+                <div className="space-y-1">
+                  <p className="mb-5 text-sm leading-6 text-slate-600">
+                    Enter your individual Reading, Writing, Listening and Speaking
+                    scores from a current Duolingo English Test report or practice
+                    result. DET reports each skill on a 10–160 scale in 5-point
+                    increments. The overall score is the average of these four
+                    scores, rounded to the nearest 5. {" "}
+                    <a
+                      href="https://testcenter.zendesk.com/hc/en-us/articles/26438481805837-Subscore-Update-July-2024"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-[#F36D45] underline"
+                    >
+                      Duolingo scoring guidance
+                    </a>
+                  </p>
+                  {([
+                    { key: "reading", label: "Reading" },
+                    { key: "writing", label: "Writing" },
+                    { key: "listening", label: "Listening" },
+                    { key: "speaking", label: "Speaking" },
+                  ] as { key: keyof DuolingoSkills; label: string }[]).map(({ key, label }) => {
+                    const value = duolingoScores[key];
+                    return (
+                      <div key={key} className="grid min-h-[72px] grid-cols-[95px_minmax(0,1fr)_70px] items-center gap-2 border-t border-[#EEEEEE] sm:grid-cols-[130px_minmax(0,1fr)_75px] sm:gap-4">
+                        <label htmlFor={`duolingo-${key}`} className="text-base font-bold text-[#252525] sm:text-lg">{label}</label>
+                        <div className="relative flex h-6 items-center">
+                          <div className="h-[14px] w-full overflow-hidden rounded-full bg-[#E7E7E7]">
+                            <div className="h-full rounded-full bg-gradient-to-r from-[#F36D45] to-[#FFD79F] transition-all duration-200" style={{ width: `${((value - 10) / 150) * 100}%` }} />
+                          </div>
+                          <input
+                            id={`duolingo-${key}`}
+                            type="range"
+                            min={10}
+                            max={160}
+                            step={5}
+                            value={value}
+                            onChange={(event) => setDuolingoScores((previous) => ({ ...previous, [key]: Number(event.target.value) }))}
+                            className={CALCULATOR_RANGE_INPUT_CLASS}
+                          />
+                        </div>
+                        <div className="whitespace-nowrap text-right"><span className="text-[15px] font-bold text-[#252525]">{value}</span><span className="text-[11px] text-[#555555]"> / 160</span></div>
+                      </div>
+                    );
+                  })}
+                  <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[#EEEEEE] pt-5">
+                    <p className="max-w-md text-sm text-slate-600">This calculates from the skill scores you enter; it cannot grade answers or predict an official adaptive-test result.</p>
+                    <button type="button" onClick={calculateReport} className="rounded-xl bg-[#F36D45] px-6 py-3 text-xs font-extrabold text-white shadow-[0_8px_20px_rgba(243,109,69,0.20)] transition hover:-translate-y-0.5 hover:brightness-95">Performance Insights →</button>
+                  </div>
+                </div>
+              )}
+
               {/* PTE */}
               {selectedExam === "PTE" && (
                 <div className="space-y-1">
@@ -2023,6 +2131,8 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                                   pteOfficialOverall <= 90
                                   ? "Official overall score"
                                   : "Estimated overall score"
+                                : selectedExam === "DUOLINGO"
+                                  ? "Calculated DET overall"
                                 : "Total Score"}
                       </p>
 
@@ -2039,6 +2149,11 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                           {pteOfficialOverall === null
                             ? "Practice estimate: average of four skill scores. Pearson calculates the official result from question-level performance."
                             : "Entered from your Pearson score report."}
+                        </p>
+                      )}
+                      {selectedExam === "DUOLINGO" && (
+                        <p className="mt-2 max-w-xs text-xs leading-5 text-slate-500">
+                          Average of the four entered individual scores ({getDuolingoResult().unroundedAverage}), rounded to the nearest 5. This is not a new official test result.
                         </p>
                       )}
                       {selectedExam === "GMAT" && (
@@ -2108,6 +2223,8 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                   <h3 className="text-base font-extrabold tracking-tight text-[#0b1e3f] sm:text-lg">
                     {selectedExam === "PTE"
                       ? "Communicative skills"
+                      : selectedExam === "DUOLINGO"
+                        ? "Integrated subscores"
                       : selectedExam === "GMAT" ||
                           (selectedExam === "SAT" &&
                             satInputMode === "sections") ||
@@ -2120,6 +2237,8 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                   <p className="mt-1 text-xs text-slate-400 sm:text-sm">
                     {selectedExam === "PTE"
                       ? "Four separate skill scores on Pearson’s 10–90 scale."
+                      : selectedExam === "DUOLINGO"
+                        ? "Each combines two individual skill scores on the 10–160 scale."
                       : selectedExam === "GMAT"
                         ? "Position within the 60–90 score range, not a percentile or percent correct."
                         : selectedExam === "SAT" && satInputMode === "sections"
@@ -2134,7 +2253,27 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                 </div>
               </div>
 
-              {selectedExam === "PTE" ? (
+              {selectedExam === "DUOLINGO" ? (
+                <div className="mt-5 space-y-4">
+                  {([
+                    { key: "literacy", label: "Literacy", skills: "Reading + Writing" },
+                    { key: "comprehension", label: "Comprehension", skills: "Reading + Listening" },
+                    { key: "conversation", label: "Conversation", skills: "Listening + Speaking" },
+                    { key: "production", label: "Production", skills: "Writing + Speaking" },
+                  ] as const).map(({ key, label, skills }) => {
+                    const value = getDuolingoResult().integrated[key];
+                    return (
+                      <div key={key}>
+                        <div className="flex items-center justify-between gap-2 text-sm">
+                          <span className="font-semibold text-[#0b1e3f]">{label}<span className="block text-xs font-normal text-slate-500">{skills}</span></span>
+                          <span className="whitespace-nowrap text-slate-600">{value}/160</span>
+                        </div>
+                        <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100"><div className="h-full rounded-full bg-[#F36D45]" style={{ width: `${((value - 10) / 150) * 100}%` }} /></div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : selectedExam === "PTE" ? (
                 <div className="mt-5 space-y-4">
                   {(
                     [
@@ -2369,11 +2508,11 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                   Focus on {report.weakestArea}
                 </h3>
                 <p className="mt-1 text-base leading-6 text-slate-600">
-                  {report.exam === "PTE" ? (
+                  {report.exam === "PTE" || report.exam === "DUOLINGO" ? (
                     <>
                       Your {report.weakestArea} score is the lowest of the four
-                      communicative skills entered. Focus on the question types
-                      that assess this skill and practise with timed tasks.
+                      individual skills entered. Focus on tasks that assess this
+                      skill and practise with timed exercises.
                     </>
                   ) : (
                     <>
@@ -2435,8 +2574,9 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                   report.exam === "GMAT" ||
                   report.exam === "SAT" ||
                   report.exam === "GRE" ||
-                  report.exam === "TOEFL"
-                    ? `${report.sectionScores[report.strongestArea]}/${report.exam === "SAT" ? 800 : report.exam === "GRE" ? 170 : report.exam === "TOEFL" ? toeflScale === "current" ? 6 : 30 : 90}`
+                  report.exam === "TOEFL" ||
+                  report.exam === "DUOLINGO"
+                    ? `${report.sectionScores[report.strongestArea]}/${report.exam === "SAT" ? 800 : report.exam === "GRE" ? 170 : report.exam === "DUOLINGO" ? 160 : report.exam === "TOEFL" ? toeflScale === "current" ? 6 : 30 : 90}`
                     : `${report.percentages[report.strongestArea]}% performance`}
                   . Keep practising this section regularly while giving
                   additional preparation time to {report.weakestArea}.
@@ -2473,6 +2613,8 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                 ? "The combined score is the exact sum of the section scores you entered. The performance insights are for practice planning, not an official score report."
                 : report.exam === "TOEFL"
                   ? "The total follows ETS's scoring rule for the selected TOEFL scale using the scores you entered. The performance insights are for practice planning, not an official score report."
+                : report.exam === "DUOLINGO"
+                  ? "The overall and integrated subscores use Duolingo's published calculation from the individual scores you entered. This tool does not grade test answers or generate an official DET result."
                 : `This ${report.exam} score calculator provides an estimated practice-performance analysis for preparation and planning purposes only. It should not be considered an official ${report.exam} result.`}
             </div>
 

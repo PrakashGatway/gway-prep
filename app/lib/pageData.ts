@@ -3109,7 +3109,7 @@ export const pageData: any = {
             name: "pageType",
             label: "Page Type",
             type: "select",
-            option: ["GRE", "GMAT", "SAT", "TOEFL", "IELTS", "PTE"],
+            option: ["GRE", "GMAT", "SAT", "TOEFL", "IELTS", "PTE", "DUOLINGO"],
           },
           {
             name: "description",
