@@ -2199,7 +2199,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                   {/* Actions */}
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <button
-                    onClick={Navigate}
+                    onClick={()=> user ? router.push("https://dashboard.ooshasprep.com/tests" ): router.push("/auth")}
                       className="rounded-full bg-[#FF7043] px-3.5 py-2 text-xs font-bold text-white shadow-sm transition hover:-translate-y-0.5 hover:brightness-95 sm:text-sm"
                     >
                       Practice Free Mock Test →
