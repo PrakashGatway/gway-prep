@@ -1,5 +1,6 @@
 import axiosInstance from "@/app/lib/axios";
 import SupportArticlePage from "@/components/support-articles";
+import RecentTestBlogs from "@/components/recent-test-blogs";
 
 interface PageProps {
   params: Promise<{
@@ -15,7 +16,16 @@ export default async function Page({ params }: PageProps) {
 
     const article = res.data.data;
 
-    return <SupportArticlePage article={article} />;
+    const category = typeof article?.category === "string"
+      ? article.category
+      : article?.category?.name || slug;
+
+    return (
+      <>
+        <SupportArticlePage article={article} />
+        <RecentTestBlogs source={category} />
+      </>
+    );
   } catch (error: any) {
     console.error(
       "Article API Error:",

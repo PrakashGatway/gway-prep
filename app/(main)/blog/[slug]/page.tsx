@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import BlogDetails from "@/components/Blogdetail";
 import axiosInstance from "@/app/lib/axios";
 import Script from "next/script";
+import { getBlogCategories } from "@/app/lib/blog-categories";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -28,24 +29,17 @@ async function getBlogData(slug: string) {
   }
 }
 
-const categoryName = (category: unknown) =>
-  typeof category === "string"
-    ? category.trim()
-    : category && typeof category === "object" && "name" in category
-      ? String(category.name || "").trim()
-      : "";
-
-async function getRelatedBlogs(category: unknown, currentSlug: string) {
-  const name = categoryName(category);
-  if (!name) return [];
+async function getRelatedBlogs(blog: { category?: unknown; categories?: unknown }, currentSlug: string) {
+  const names = getBlogCategories(blog);
+  if (!names.length) return [];
 
   try {
     const params = new URLSearchParams({
       page: "1",
-      limit: "12",
+      limit: "18",
       isPublished: "published",
-      category: name,
     });
+    names.forEach((name) => params.append("category", name));
     const response = await axiosInstance.get(
       `/admin/blogs?${params.toString()}`
     );
@@ -55,7 +49,9 @@ async function getRelatedBlogs(category: unknown, currentSlug: string) {
       .filter((post: any) =>
         post.slug !== currentSlug &&
         post.isPublished !== false &&
-        categoryName(post.category).toLowerCase() === name.toLowerCase()
+        getBlogCategories(post).some((name) =>
+          names.some((current) => current.toLowerCase() === name.toLowerCase())
+        )
       )
       .slice(0, 6);
   } catch (error) {
@@ -94,16 +90,8 @@ export async function generateMetadata({
   const response = await getBlogData(slug);
   const blog = response?.data;
 
-  if (!blog) {
-    return {
-      title: "Blog Not Found | Ooshas Prep",
-      description:
-        "The requested blog could not be found.",
-      robots: {
-        index: false,
-        follow: false,
-      },
-    };
+  if (blog?.isPublished !== true) {
+    notFound();
   }
 
   const title =
@@ -206,13 +194,13 @@ export default async function BlogDetailsPage({
 
   const blog = response?.data;
 
-  if (!blog) {
+  if (blog?.isPublished !== true) {
     notFound();
   }
 
 
   const [res, latestBlogs] = await Promise.all([
-    getRelatedBlogs(blog.category, slug),
+    getRelatedBlogs(blog, slug),
     getLatestBlogs(slug),
   ]);
   const blogUrl = `${SITE_URL}/blog/${slug}`;
@@ -469,11 +457,8 @@ export default async function BlogDetailsPage({
       ).toISOString(),
     }),
 
-    ...(blog?.category && {
-      articleSection:
-        typeof blog.category === "string"
-          ? blog.category
-          : blog.category?.name,
+    ...(getBlogCategories(blog).length > 0 && {
+      articleSection: getBlogCategories(blog),
     }),
 
     ...(blog?.tags &&

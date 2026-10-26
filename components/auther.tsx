@@ -3,6 +3,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { getBlogCategories } from "@/app/lib/blog-categories";
 import {
   Briefcase,
   GraduationCap,
@@ -397,10 +398,10 @@ export default function Auther({
                         </div>
                       )}
 
-                      {blog.category && (
-                        <span className="absolute top-3 left-3 bg-[#F0642C] text-white text-xs font-semibold px-3 py-1 rounded-full">
-                          {blog.category}
-                        </span>
+                      {getBlogCategories(blog).length > 0 && (
+                        <div className="absolute left-3 top-3 flex max-w-[calc(100%-1.5rem)] flex-wrap gap-1">
+                          {getBlogCategories(blog).map((name) => <span key={name} className="rounded-full bg-[#F0642C] px-2.5 py-1 text-xs font-semibold text-white">{name}</span>)}
+                        </div>
                       )}
 
                     </div>

@@ -2,7 +2,8 @@
 
 import { getBlogs, deleteBlog, getBlogCategory } from "@/app/services/api";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { getBlogCategories } from "@/app/lib/blog-categories";
 import {
   Edit,
   Trash2,
@@ -73,13 +74,11 @@ const Blog = () => {
     }
   };
 
-  const categories = useMemo(async() => {
-   const res = await getBlogCategory();
-   setallCategory(res.data)
-
+  useEffect(() => {
+    getBlogCategory()
+      .then((res) => setallCategory(res.data || []))
+      .catch((error) => console.error("Error fetching blog categories:", error));
   }, []);
-
-console.log(allCategory,"cc")
 
   const clearFilters = () => {
     setSearch("");
@@ -194,7 +193,7 @@ console.log(allCategory,"cc")
 
               <select
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={(e) => { setCategory(e.target.value); setPage(1); }}
                 className="h-[55px] w-full appearance-auto rounded-[15px] border border-[#dfe4ea] bg-[#fafbfc] px-4 text-[16px] text-[#253b58] outline-none transition focus:border-[#ff7043] focus:ring-2 focus:ring-[#ff7043]/10"
               >
                 <option value="">Choose Category</option>
@@ -333,9 +332,11 @@ console.log(allCategory,"cc")
 
                       {/* CATEGORY */}
                       <td className="border-r border-[#dfe3e7] px-5 py-5">
-                        <span className="flex justify-center rounded-[12px] bg-[#fff4ec] px-4 py-2 text-[13px] font-semibold text-[#ff5f00]">
-                          {blog.category || "Uncategorized"}
-                        </span>
+                        <div className="flex flex-wrap justify-center gap-1.5">
+                          {getBlogCategories(blog).length ? getBlogCategories(blog).map((name) => (
+                            <span key={name} className="rounded-[12px] bg-[#fff4ec] px-3 py-1.5 text-[12px] font-semibold text-[#ff5f00]">{name}</span>
+                          )) : <span className="text-sm text-gray-500">Uncategorized</span>}
+                        </div>
                       </td>
 
                       {/* STATUS */}

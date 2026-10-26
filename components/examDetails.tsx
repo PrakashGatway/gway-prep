@@ -32,16 +32,22 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import QuestionsSection from "./comment";
 import { getPages } from "@/app/services/api";
+import RecentTestBlogs from "@/components/recent-test-blogs";
+import { getTestCategory } from "@/app/lib/test-blog-category";
 
 const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
   const basicInfo = pagedata?.sections?.["basic-info"]?.fields;
   const examData =
     pagedata?.sections?.["exam-data"]?.fields?.exam_details || [];
+  const faqs = examData
+    .flatMap((section: any) => (Array.isArray(section.faq) ? section.faq : []))
+    .filter((faq: any) => faq?.question && faq?.answer);
   const [activeSection, setActiveSection] = useState<string>("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const sectionRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const Router = useRouter();
   const [halfContentScrolled, setHalfContentScrolled] = useState(false);
+  const pageRef = useRef<HTMLElement | null>(null);
 
   const toc = useMemo(() => {
     return examData.map((item: any, index: number) => ({
@@ -56,26 +62,31 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
 
   const itemRefs = useRef<Record<string, HTMLButtonElement | null>>({});
 
-
   useEffect(() => {
-  const handleScroll = () => {
-    const viewportHalf = window.innerHeight / 1;
+    const handleScroll = () => {
+      const page = pageRef.current;
+      if (!page || window.innerWidth < 1024) {
+        setHalfContentScrolled(false);
+        return;
+      }
 
-   
+      // Keep the desktop form available through more than half of this page.
+      const progress = -page.getBoundingClientRect().top / page.offsetHeight;
+      setHalfContentScrolled(progress >= 0.6);
+    };
 
-    setHalfContentScrolled(window.scrollY >= viewportHalf);
-  };
+    window.addEventListener("scroll", handleScroll, {
+      passive: true,
+    });
+    window.addEventListener("resize", handleScroll);
 
-  window.addEventListener("scroll", handleScroll, {
-    passive: true,
-  });
+    handleScroll();
 
-  handleScroll();
-
-  return () => {
-    window.removeEventListener("scroll", handleScroll);
-  };
-}, []);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
+    };
+  }, []);
 
   useEffect(() => {
     const activeItem = itemRefs.current[activeSection];
@@ -187,7 +198,7 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
   }, []);
 
   return (
-    <main className="relative flex flex-col">
+    <main ref={pageRef} className="relative flex flex-col">
       <div className="relative w-full overflow-visible px-4 sm:px-8 lg:px-3 py-0 sm:py-0">
         <div ref={tocRef} className="h-0"></div>
         <div
@@ -201,7 +212,7 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
   `}
         >
           <div
-            className="flex items-center gap-6 py-1 px-4 whitespace-nowrap overflow-x-auto bg-white"
+            className="flex items-center gap-3 px-4 whitespace-nowrap overflow-x-auto bg-white"
             style={{
               scrollbarWidth: "none",
             }}
@@ -213,9 +224,9 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
                   itemRefs.current[item.id] = el;
                 }}
                 onClick={() => scrollToSection(item.id)}
-                className={`relative whitespace-nowrap py-2 px-2 mt-2 text-sm font-medium transition-colors duration-200 ${
+                className={`relative whitespace-nowrap py-1.5 px-2.5 mt-1 text-[13px] font-medium transition-colors duration-200 ${
                   activeSection === item.id
-                    ? "text-white rounded-3xl bg-[#F36D45] border-b-2 border-orange-500"
+                    ? "border-b-2 border-orange-500"
                     : "text-black hover:text-orange-500 rounded-3xl"
                 }`}
               >
@@ -241,7 +252,7 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
           </h1>
 
           {/* Main Content */}
-          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_335px] lg:gap-14">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_365px]">
             {/* Left Content */}
             <div className="min-w-0 w-full">
               {/* Hero Image */}
@@ -326,22 +337,6 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
                           <EditorContent content_data={section.content_data} />
                         )}
 
-                        {section.faq?.length > 0 && (
-                          <div className="mt-8">
-                            <h2 className="text-2xl font-bold mb-6 text-[#183153]">
-                              Frequently Asked Questions
-                            </h2>
-
-                            {section.faq.map((faq: any, i: number) => (
-                              <FAQItem
-                                key={i}
-                                question={faq.question}
-                                answer={faq.answer}
-                              />
-                            ))}
-                          </div>
-                        )}
-
                         {section &&
                           Array.isArray(section?.Banner) &&
                           section.Banner.length > 0 && (
@@ -357,11 +352,7 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
                       </div>
                     ))}
 
-                    <QuestionsSection
-                      page={"examdetails"}
-                      css={" py-6 my-6"}
-                    
-                    />
+                    <QuestionsSection page={"examdetails"} css={" py-6 my-6"} />
                   </div>
 
                   {/* Sidebar */}
@@ -373,14 +364,37 @@ const ExamDetails = ({ pagedata, Data, slug, Blogdata }: any) => {
             </div>
 
             {/* Right Lead Form */}
-           <div className="sticky top-34 self-start w-full lg:max-w-[335px] lg:mt-0 mt-6">
-  {!halfContentScrolled && <LeadForm />}
+            <aside className="w-full lg:sticky lg:top-30 lg:max-h-[calc(100vh-7rem)] lg:self-start lg:overflow-y-auto lg:[scrollbar-width:none] lg:[&::-webkit-scrollbar]:hidden lg:max-w-[365px] lg:mt-0 mt-6">
+              {!halfContentScrolled && (
+                <LeadForm exam={getTestCategory(slug)} />
+              )}
 
-  <ExploreExams Data={Data} slug={slug} />
+              <ExploreExams Data={Data} slug={slug} />
 
-  <ExploreBlogs Blogdata={Blogdata} />
-</div>
+              <ExploreBlogs Blogdata={Blogdata} />
+            </aside>
           </div>
+          <RecentTestBlogs source={slug} />
+          {faqs.length > 0 && (
+            <section
+              className="mx-auto max-w-4xl px-4 py-12 sm:py-16"
+              aria-labelledby="exam-faq-title"
+            >
+              <h2
+                id="exam-faq-title"
+                className="mb-7 text-2xl font-bold text-[#183153] sm:text-3xl"
+              >
+                Frequently Asked Questions
+              </h2>
+              {faqs.map((faq: any, index: number) => (
+                <FAQItem
+                  key={index}
+                  question={faq.question}
+                  answer={faq.answer}
+                />
+              ))}
+            </section>
+          )}
         </div>
       </div>
     </main>
@@ -456,11 +470,14 @@ function Banner({ finalCtaSection, Image }: any) {
             <h6 className="text-2xl md:text-4xl font-bold tracking-tight mb-2">
               {finalCtaSection?.title || "Ready to Achieve Your Dreams?"}
             </h6>
-            <p className="text-sm md:text-base opacity-90 font-medium" dangerouslySetInnerHTML={{
-              __html : finalCtaSection?.subtitle || "Join thousands of successful students and start your journey today."
-            }}>
-         
-            </p>
+            <p
+              className="text-sm md:text-base opacity-90 font-medium"
+              dangerouslySetInnerHTML={{
+                __html:
+                  finalCtaSection?.subtitle ||
+                  "Join thousands of successful students and start your journey today.",
+              }}
+            ></p>
           </div>
           {/* Call to Action Button */}
           {finalCtaSection?.buttontext && (
@@ -496,89 +513,143 @@ function Banner({ finalCtaSection, Image }: any) {
 }
 
 export const ExploreExams = ({ Data, slug }: any) => {
-  const router = useRouter();
-  const courseData1 = React.useMemo(
-    () =>
-      Data?.filter(
-        (item: any) =>
-          item?.seoMeta?.template?.toLowerCase() === "examdetails" &&
-          item?.seoMeta?.slug !== slug,
-      ) || [],
-    [Data, slug],
-  );
+  const currentTest = getTestCategory(slug);
+  const courseData = React.useMemo(() => {
+    const currentSlug = String(slug || "")
+      .toLowerCase()
+      .replace(/^\/+|\/+$/g, "");
+    const pages = Array.isArray(Data) ? Data : [];
+    const exams = pages.filter((item: any) => {
+      const meta = item?.seoMeta || {};
+      const itemSlug = String(meta.slug || item?.name || "").toLowerCase();
+      return (
+        String(meta.template || item?.template || "").toLowerCase() ===
+          "examdetails" &&
+        itemSlug !== currentSlug &&
+        meta.canonicalUrl
+      );
+    });
+    const examFor = (item: any) =>
+      getTestCategory(
+        [
+          item?.seoMeta?.duplicateOf,
+          item?.seoMeta?.slug,
+          item?.seoMeta?.canonicalUrl,
+          item?.seoMeta?.navTitle,
+        ]
+          .filter(Boolean)
+          .join(" "),
+      );
+
+    return {
+      same: currentTest
+        ? exams.filter((item: any) => examFor(item) === currentTest)
+        : [],
+      other: exams.filter(
+        (item: any) => !currentTest || examFor(item) !== currentTest,
+      ),
+    };
+  }, [Data, slug, currentTest]);
+
+  const renderLinks = (items: any[]) =>
+    items.map((item: any) => {
+      const path = String(item.seoMeta.canonicalUrl)
+        .replace(/^https?:\/\/[^/]+/i, "")
+        .replace(/^\/+/, "");
+      return (
+        <li key={item._id || path}>
+          <Link
+            href={`/${path}`}
+            className="group flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#173153] transition hover:bg-[#FFF1EA] hover:text-[#DF603C]"
+          >
+            <span className="line-clamp-2">
+              {item.seoMeta.navTitle || item.name}
+            </span>
+            <ChevronRight
+              size={16}
+              className="shrink-0 text-[#E86A45] transition group-hover:translate-x-0.5"
+              aria-hidden="true"
+            />
+          </Link>
+        </li>
+      );
+    });
 
   return (
-    <>
-      <div className="w-full rounded-2xl border border-gray-200 bg-white p-4 my-3">
-        {/* Header */}
-        <div className=" flex items-center gap-2">
-          <svg
-            className="h-5 w-5 text-orange-500"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.8}
-              d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.562.562 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.2 3.602a.562.562 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0l-4.725 2.885a.562.562 0 01-.84-.61l1.285-5.385a.562.562 0 00-.182-.557l-4.2-3.602a.562.562 0 01.321-.988l5.518-.442a.562.562 0 00.475-.345L11.48 3.5z"
-            />
-          </svg>
-
-          <h2 className="text-lg font-bold text-gray-900">Explore Exams</h2>
+    <section
+      className="my-4 w-full rounded-2xl border border-[#E9E0DA] bg-white p-4 shadow-[0_8px_28px_rgba(15,39,70,.05)]"
+      aria-labelledby="explore-exams-heading"
+    >
+      <h2
+        id="explore-exams-heading"
+        className="flex items-center gap-2 text-lg font-bold text-[#14315A]"
+      >
+        <BookOpen size={19} className="text-[#F36D45]" aria-hidden="true" />{" "}
+        Explore Exams
+      </h2>
+      {courseData.same.length > 0 && (
+        <div className="mt-4">
+          <p className="px-3 text-xs font-bold uppercase tracking-wider text-[#DF603C]">
+            More about {currentTest}
+          </p>
+          <ul className="mt-1">{renderLinks(courseData.same)}</ul>
         </div>
-
-        {/* Exam List */}
-        <ul>
-          {courseData1.map((item: any) => (
-            <li key={item._id}>
-              <button
-                onClick={() => router.push(`/${item.seoMeta.canonicalUrl}`)}
-                className="group flex w-full items-center justify-between gap-4 border-b-3 border-gray-300 py-2 text-left last:border-b-0"
-              >
-                <span className="text-[15px] leading-6 text-orange-500 transition-all duration-200 group-hover:translate-x-1 underline cursor-pointer">
-                  {item.seoMeta.navTitle}
-                </span>
-
-                <span className="shrink-0 text-lg font-light text-orange-500 transition-all duration-200 group-hover:translate-x-1">
-                  →
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
-
-        {/* Empty State */}
-        {courseData1.length === 0 && (
-          <p className="py-4 text-sm text-gray-500">No exams available.</p>
-        )}
-      </div>
-    </>
+      )}
+      {courseData.other.length > 0 && (
+        <div className="mt-4 border-t border-[#F1E8E2] pt-4">
+          <p className="px-3 text-xs font-bold uppercase tracking-wider text-slate-500">
+            Other exams
+          </p>
+          <ul className="mt-1">{renderLinks(courseData.other)}</ul>
+        </div>
+      )}
+      {!courseData.same.length && !courseData.other.length && (
+        <p className="py-4 text-sm text-gray-500">No exams available.</p>
+      )}
+    </section>
   );
 };
 
 export const ExploreBlogs = ({ Blogdata }: any) => {
   const blogs = Array.isArray(Blogdata)
-    ? Blogdata.filter((item: any) => item?.slug && item?.title && item?.isPublished !== false).slice(0, 4)
+    ? Blogdata.filter(
+        (item: any) => item?.slug && item?.title && item?.isPublished !== false,
+      ).slice(0, 4)
     : [];
 
   return (
-    <section className="my-4 w-full overflow-hidden rounded-2xl border" aria-labelledby="explore-blogs-title">
+    <section
+      className="my-4 w-full overflow-hidden rounded-2xl border"
+      aria-labelledby="explore-blogs-title"
+    >
       <div className="flex items-center gap-2 border-b border-orange-100 px-4 py-4">
-        <h2 id="explore-blogs-title" className="text-lg font-bold text-gray-900">Explore Blogs</h2>
+        <h2
+          id="explore-blogs-title"
+          className="text-lg font-bold text-gray-900"
+        >
+          Explore Blogs
+        </h2>
       </div>
 
       {blogs.length > 0 ? (
         <ul className="divide-y divide-orange-100 bg-white px-4">
           {blogs.map((item: any) => (
             <li key={item._id || item.slug}>
-              <Link href={`/blog/${item.slug}`} className="group block py-3.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F36D45]">
+              <Link
+                href={`/blog/${item.slug}`}
+                className="group block py-3.5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F36D45]"
+              >
                 <span className="block min-w-0">
-                  <span className="line-clamp-2 text-sm font-semibold leading-[1.35] text-[#0b1e3f] transition-colors group-hover:text-[#F36D45]">{item.title}</span>
+                  <span className="line-clamp-2 text-sm font-semibold leading-[1.35] text-[#0b1e3f] transition-colors group-hover:text-[#F36D45]">
+                    {item.title}
+                  </span>
                   {item.createdAt && (
                     <span className="mt-1 block text-[11px] text-slate-500">
-                      {new Date(item.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                      {new Date(item.createdAt).toLocaleDateString("en-IN", {
+                        day: "2-digit",
+                        month: "short",
+                        year: "numeric",
+                      })}
                     </span>
                   )}
                 </span>
@@ -587,11 +658,16 @@ export const ExploreBlogs = ({ Blogdata }: any) => {
           ))}
         </ul>
       ) : (
-        <p className="bg-white px-5 py-6 text-sm text-slate-500">No blogs available yet.</p>
+        <p className="bg-white px-5 py-6 text-sm text-slate-500">
+          No blogs available yet.
+        </p>
       )}
 
       <div className="border-t border-orange-100 bg-white px-4 py-3">
-        <Link href="/blog" className="text-xs font-bold text-[#D85E39] underline decoration-orange-200 underline-offset-4 transition hover:text-[#b94b2a]">
+        <Link
+          href="/blog"
+          className="text-xs font-bold text-[#D85E39] underline decoration-orange-200 underline-offset-4 transition hover:text-[#b94b2a]"
+        >
           Browse all blogs
         </Link>
       </div>
@@ -1348,7 +1424,7 @@ const FORM_CONFIG: any = {
       required: true,
       placeholder: "Name",
       step: 1,
-      grid: "full",
+      grid: "half",
       icon: User,
     },
     {
@@ -1358,7 +1434,7 @@ const FORM_CONFIG: any = {
       required: true,
       placeholder: "Mobile Number",
       step: 1,
-      grid: "full",
+      grid: "half",
       icon: Phone,
       pattern: "^[0-9]{10}$",
       countryCode: "+91",
@@ -1386,8 +1462,9 @@ const FORM_CONFIG: any = {
         { value: "IELTS", label: "IELTS" },
         { value: "GMAT", label: "GMAT" },
         { value: "TOEFL", label: "TOEFL" },
-        { value: "PET", label: "PET" },
+        { value: "PTE", label: "PTE" },
         { value: "SAT", label: "SAT" },
+        { value: "DUOLINGO", label: "Duolingo" },
         { value: "other", label: "Other" },
       ],
     },
@@ -1412,7 +1489,7 @@ const FORM_CONFIG: any = {
     },
   ],
   submit: {
-    label: "Apply Target Score",
+    label: "Get My Free Prep Plan",
     icon: Send,
     variant: "primary",
     size: "large",
@@ -1425,69 +1502,21 @@ const FORM_CONFIG: any = {
   },
 };
 
-const LeadForm = () => {
-  const [formSubmitted, setFormSubmitted] = useState(false);
-  const [formData, setFormData] = useState({});
-
-  const handleFormSubmit = (data: any) => {
-    setFormData(data);
-    setFormSubmitted(true);
-    // You can add your API call here to submit the form data
-    console.log("Form submitted with data:", data);
-  };
-
-  return (
-    <div className="relative overflow-hidden bg-white rounded-[30px] border-2 border-[#F36D45] shadow-[0_8px_30px_rgba(243,109,69,0.10)] px-5 sm:px-6 py-5">
-  <button
-    className="
-      absolute
-      top-0
-      right-0
-      bg-[#F36D45]
-      text-white
-      font-semibold
-      px-5
-      py-3
-      rounded-bl-[30px]
-    text-sm
-      rounded-tr-[30px]
-    "
-  >
-    Free Counselling
-  </button>
-  {/* Highlight accent */}
-
-  <div className="relative z-10">
-    {/* Heading */}
-    <div className="flex items-center justify-center gap-2 mt-8 mb-2">
-      <span className="text-lg md:text-xl font-semibold text-[#f36d45]">
-        Just One
-      </span>
-      <span className="text-lg md:text-xl font-semibold text-gray-900">
-        Step Away!
-      </span>
-    </div>
-
-
-    {/* Description */}
-    {/* <p className="text-sm text-gray-500 text-center leading-relaxed mb-5 max-w-md mx-auto">
-      Our experts require a little more information to assist you in a better way.
-    </p> */}
-
-    {/* Form */}
-    <div className="relative">
-      <FormSection FORM_CONFIG={FORM_CONFIG} />
-    </div>
-
-    {/* Success Message */}
-    {formSubmitted && (
-      <div className="mt-4 p-3.5 bg-green-50 border border-green-200 rounded-xl">
-        <p className="text-green-700 text-sm text-center font-medium">
-          ✓ Thank you! We will contact you shortly.
-        </p>
+const LeadForm = ({ exam }: { exam: string | null }) => (
+  <div className="overflow-hidden rounded-3xl border border-[#F4D7C9]">
+    <div className="relative p-4 text-slate-700">
+      <div className="absolute top-0 right-0 text-sm bg-[#1C3058] text-white p-1.5 px-4 rounded-bl-3xl">
+        <p>Free Counselling</p>
       </div>
-    )}
+      <h2 className=" text-lg mt-2 font-bold">
+        Plan your {exam ? `${exam} ` : "exam "}success
+      </h2>
+    </div>
+    <div className="px-4 ">
+      <FormSection FORM_CONFIG={FORM_CONFIG} />
+      <p className="mt-3 text-center text-xs text-slate-500">
+        Your details are used only to follow up on your enquiry.
+      </p>
+    </div>
   </div>
-</div>
-  );
-};
+);

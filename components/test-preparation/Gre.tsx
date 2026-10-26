@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useKeenSlider } from "keen-slider/react";
 import "keen-slider/keen-slider.min.css";
+import RecentTestBlogs from "@/components/recent-test-blogs";
 import { useState, useEffect, useRef } from "react";
 import GreForm from "./greForm";
 // Import shared components
@@ -999,6 +1000,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
         <FreeResources resourcesData={freeResourcesSection} />
       </div>
       <TextTestimonials testimonialsSection={testimonialsSection} />
+      <RecentTestBlogs source={slug} />
       <Consultants data={faqSection} finalCtaSection={finalCtaSection} />
     </div>
   );

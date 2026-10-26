@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation";
 import { GlobalProvider, useGlobal } from "@/hooks/AppStateContext";
 import Link from "next/link";
 import { calculateDuolingoScore, type DuolingoSkills } from "./duolingo-score";
+import RecentTestBlogs from "@/components/recent-test-blogs";
 
 const ORANGE = "#ff7a2a";
 const NAVY = "#0b1e3f";
@@ -2648,6 +2649,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
         heading="Student Questions & Comments"
         slug={slug}
       />
+      <RecentTestBlogs source={slug} />
       <Consultants data={pageInfo?.sections?.faq} />
       <BottomCTA data={pageInfo?.sections?.bottomCTA?.fields} />
     </main>

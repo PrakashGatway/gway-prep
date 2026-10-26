@@ -19,6 +19,7 @@ import axiosInstance from "@/app/lib/axios";
 import axios from "axios";
 import QuestionsSection from "./comment";
 import Link from "next/link";
+import { getBlogCategories } from "@/app/lib/blog-categories";
 import { useGlobal } from "@/hooks/AppStateContext";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
@@ -65,6 +66,7 @@ interface BlogData {
   content?: string;
   image: string;
   category: string;
+  categories?: string[];
   author: string;
   publishedDate: string;
   excerpt?: string;
@@ -227,6 +229,11 @@ const BlogCard = ({ post }: { post: BlogData }) => (
       />
     </div>
     <div className="flex flex-1 flex-col px-2 pt-2.5">
+      <div className="mb-2 flex flex-wrap gap-1">
+        {getBlogCategories(post).map((name) => (
+          <span key={name} className="rounded-full bg-orange-50 px-2 py-0.5 text-[10px] font-semibold text-[#e2643f]">{name}</span>
+        ))}
+      </div>
       <h3 className="line-clamp-2 text-sm font-semibold leading-[1.45] transition-colors group-hover:text-[#F0642C]">
         {post.title.includes(":") ? (
           <><span className="text-[#555]">{post.title.split(":")[0]}: </span><span className="text-orange-500">{post.title.split(":").slice(1).join(":").trim()}</span></>
@@ -743,7 +750,7 @@ const afterClear = cleanBlogHtml(blogDetails);
             Blog
           </span>
           <span className="mx-2">/</span>
-          <span className="text-neutral-800 font-medium">{data.category}</span>
+          <span className="text-neutral-800 font-medium">{getBlogCategories(data).join(" · ") || "Blog"}</span>
         </nav>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -763,6 +770,18 @@ const afterClear = cleanBlogHtml(blogDetails);
             <h1 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-4 leading-tight">
               {data.title}
             </h1>
+
+            <div className="mb-4 flex flex-wrap gap-2" aria-label="Blog categories">
+              {getBlogCategories(data).map((name) => (
+                <Link
+                  key={name}
+                  href={`/blog?category=${encodeURIComponent(name)}`}
+                  className="rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-[#e2643f] transition hover:bg-orange-100"
+                >
+                  {name}
+                </Link>
+              ))}
+            </div>
 
             <div className="flex justify-between items-center mb-5">
               <div className="flex flex-wrap items-center gap-4 text-sm text-neutral-500 ">

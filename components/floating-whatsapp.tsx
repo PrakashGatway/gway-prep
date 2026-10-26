@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
+import { getBlogCategories } from "@/app/lib/blog-categories";
 import { X } from "lucide-react";
 
 export type ContactPage = {
@@ -89,8 +90,7 @@ export default function FloatingWhatsApp({ pages = [] }: { pages?: ContactPage[]
       .then((response) => response.ok ? response.json() : null)
       .then((result) => {
         if (!result?.data) return;
-        const raw = result.data.category;
-        const value = typeof raw === "string" ? raw : raw?.name;
+        const value = getBlogCategories(result.data).join(", ");
         if (value) setBlogCategory({ slug: blogSlug, value });
       })
       .catch(() => {});

@@ -18,6 +18,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { pageData } from "@/app/lib/pageData";
 import { slugify } from "@/app/lib/slug";
 import axiosInstance from "@/app/lib/axios";
+import { getBlogCategories } from "@/app/lib/blog-categories";
 
 const CKEditorComponent = dynamic(
   () => import("../../../components/ckEditor"),
@@ -70,6 +71,7 @@ interface BlogForm {
   title: string;
   slug: string;
   category: string;
+  categories: string[];
   tags: string[];
   image: string;
   metaTitle: string;
@@ -122,6 +124,7 @@ const defaultForm: BlogForm = {
   title: "",
   slug: "",
   category: "",
+  categories: [],
   image: "",
   tags: [],
   metaTitle: "",
@@ -197,7 +200,8 @@ const BlogFormContent = () => {
           setValues({
             title: blogData.title || "",
             slug: blogData.slug || "",
-            category: blogData.category || "",
+            category: getBlogCategories(blogData)[0] || "",
+            categories: getBlogCategories(blogData),
             tags: Array.isArray(blogData.tags) ? blogData.tags : [],
             image: blogData.image || "",
             metaTitle: blogData.metaTitle || "",
@@ -616,8 +620,8 @@ const BlogFormContent = () => {
       newErrors.slug = "Slug is required";
     }
 
-    if (!values.category) {
-      newErrors.category = "Category is required";
+    if (!values.categories.length) {
+      newErrors.category = "Choose at least one category";
     }
 
     setErrors(newErrors);
@@ -646,6 +650,7 @@ const BlogFormContent = () => {
         title: values.title.trim(),
         slug: values.slug.trim(),
         category: values.category,
+        categories: values.categories,
         tags: values.tags,
         image: values.image,
         metaTitle: values.metaTitle.trim(),
@@ -733,21 +738,42 @@ const BlogFormContent = () => {
       );
     }
 
-    // Handle category field - fetch from API
+    // The legacy primary category is kept in sync with the selected list.
     if (field.name === "category") {
       return (
-        <select
-          value={value}
-          className={`${inputClass} ${inputErrorClass(field.name)}`}
-          onChange={(e) => updateRootField(field.name, e.target.value)}
-        >
-          <option value="">Select Category</option>
-          {categories.map((cat: any) => (
-            <option key={cat._id} value={cat.name}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
+        <div className={`rounded-xl border bg-white p-3 ${errors.category ? "border-red-500" : "border-gray-300"}`}>
+          <p className="mb-3 text-xs text-gray-500">Select one or more categories. The first selected category is the primary category.</p>
+          <div className="grid max-h-44 grid-cols-1 gap-2 overflow-y-auto sm:grid-cols-2">
+            {[
+              ...categories,
+              ...values.categories
+                .filter((name) => !categories.some((cat: any) => cat.name === name))
+                .map((name) => ({ _id: `saved-${name}`, name })),
+            ].map((cat: any) => {
+              const checked = values.categories.includes(cat.name);
+              return (
+                <label key={cat._id} className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm transition ${checked ? "border-orange-300 bg-orange-50 text-orange-800" : "border-gray-200 hover:bg-gray-50"}`}>
+                  <input
+                    type="checkbox"
+                    checked={checked}
+                    onChange={() => {
+                      setValues((prev) => {
+                        const next = prev.categories.includes(cat.name)
+                          ? prev.categories.filter((name) => name !== cat.name)
+                          : [...prev.categories, cat.name];
+                        return { ...prev, categories: next, category: next[0] || "" };
+                      });
+                      if (errors.category) setErrors((prev) => ({ ...prev, category: "" }));
+                    }}
+                    className="accent-[#F36D45]"
+                  />
+                  <span>{cat.name}</span>
+                </label>
+              );
+            })}
+          </div>
+          {categories.length === 0 && <p className="text-sm text-gray-500">No categories yet. Add one in Blog Categories first.</p>}
+        </div>
       );
     }
 

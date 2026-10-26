@@ -295,7 +295,7 @@ export const pageData: any = {
           },
           {
             name: "category",
-            label: "Category",
+            label: "Categories",
             type: "text",
             required: true,
             placeholder: "e.g. React, Tech",

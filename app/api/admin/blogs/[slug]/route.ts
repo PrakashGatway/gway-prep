@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/app/lib/db";
 import Blog from "@/app/Model/BlogDetails";
+import { getBlogCategories } from "@/app/lib/blog-categories";
+import { getSession } from "@/app/lib/auth";
+import mongoose from "mongoose";
 
 type Context = {
   params: Promise<{ slug: string }>;
@@ -8,21 +11,29 @@ type Context = {
 
 // ✅ GET BLOG BY SLUG
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   context: Context,
 ): Promise<NextResponse> {
   try {
     await connectDB();
 
     const { slug } = await context.params;
-    // console.log(slug, 'slug param')
+    const includeDraft = req.nextUrl.searchParams.get("includeDraft") === "true";
+    if (includeDraft && !(await getSession())) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     let blog;
 
     if (slug === "all") {
-      blog = await Blog.find().select("slug title").lean();
+      blog = await Blog.find(includeDraft ? {} : { isPublished: true })
+        .select("slug title")
+        .lean();
     } else {
-      blog = await Blog.findOne({ slug }).lean();
+      blog = await Blog.findOne({
+        slug,
+        ...(includeDraft ? {} : { isPublished: true }),
+      }).lean();
     }
 
     // console.log(blog)
@@ -31,7 +42,7 @@ export async function GET(
     }
 
     return NextResponse.json(
-      { message: "Blog fetched", data: blog },
+      { message: "Blog fetched", data: Array.isArray(blog) ? blog : { ...blog, categories: getBlogCategories(blog) } },
       { status: 200 },
     );
   } catch (error) {
@@ -53,11 +64,19 @@ export async function PUT(req: NextRequest, context: Context) {
     if (!body || Object.keys(body).length === 0) {
       return NextResponse.json({ error: "No data to update" }, { status: 400 });
     }
+    if (Object.prototype.hasOwnProperty.call(body, "categories") || Object.prototype.hasOwnProperty.call(body, "category")) {
+      const categories = getBlogCategories(body);
+      if (!categories.length) {
+        return NextResponse.json({ error: "Choose at least one category" }, { status: 400 });
+      }
+      body.category = categories[0];
+      body.categories = categories;
+    }
 
     const updated = await Blog.findOneAndUpdate(
-      {
-        $or: [{ slug: slug }, { _id: slug }],
-      },
+      mongoose.isValidObjectId(slug)
+        ? { $or: [{ slug }, { _id: slug }] }
+        : { slug },
       { $set: body },
       {
         new: true,

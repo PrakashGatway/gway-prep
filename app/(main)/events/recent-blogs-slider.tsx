@@ -8,8 +8,9 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { getBlogCategories } from "@/app/lib/blog-categories";
 
-type BlogCard = { _id?: string; title: string; slug: string; image?: string; category?: string | { name?: string }; metaDescription?: string; publishedDate?: string; createdAt?: string };
+type BlogCard = { _id?: string; title: string; slug: string; image?: string; category?: string | { name?: string }; categories?: string[]; metaDescription?: string; publishedDate?: string; createdAt?: string };
 
 export default function RecentBlogsSlider({blog}) {
   const [blogs, setBlogs] = useState<BlogCard[]>([]);
@@ -46,7 +47,7 @@ export default function RecentBlogsSlider({blog}) {
         className="event-blog-swiper !pb-12"
       >
         {blogs.map((blog) => {
-          const category = typeof blog.category === "string" ? blog.category : blog.category?.name;
+          const categories = getBlogCategories(blog);
           const date = blog.createdAt;
           return <SwiperSlide key={blog._id || blog.slug} className="!h-auto"><Link href={`/blog/${blog.slug}`} className="group flex h-full min-h-[335px] flex-col overflow-hidden rounded-[1.4rem] border border-[#F0E5DF] bg-white shadow-[0_10px_35px_rgba(80,48,32,.05)] transition hover:-translate-y-1 hover:shadow-[0_20px_45px_rgba(80,48,32,.12)]">
             <div className="relative h-48 overflow-hidden bg-gradient-to-br from-[#FFF0BE] to-[#FFB09D] "><div className="aspect-[16/9] w-full overflow-hidden rounded-xl bg-gray-100">
@@ -62,7 +63,7 @@ export default function RecentBlogsSlider({blog}) {
       <BookOpenText size={48} />
     </div>
   )}
-</div><span className="absolute left-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-[#9B5137]">{category || "Study tips"}</span></div>
+</div><span className="absolute left-4 top-4 max-w-[calc(100%-2rem)] rounded-full bg-white/95 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-[#9B5137]">{categories.join(" · ") || "Study tips"}</span></div>
             <div className="flex flex-1 flex-col p-3"><h3 className="line-clamp-2 text-lg font-bold leading-snug text-[#292522] transition-colors group-hover:text-[#D95C39]">{blog.title}</h3>{blog.metaDescription && <p className="mt-2 line-clamp-2 text-sm leading-6 text-[#756A65]">{blog.metaDescription}</p>}<div className="mt-auto flex items-center justify-between pt-5 text-xs font-semibold text-[#9A8880]">{date ? <span className="inline-flex items-center gap-1.5"><CalendarDays size={14} />{new Date(date).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</span> : <span>Ooshas Prep</span>}<span className="inline-flex items-center gap-1.5 text-sm font-bold text-[#E56440]">Read article <ArrowUpRight size={15} /></span></div></div>
           </Link></SwiperSlide>;
         })}

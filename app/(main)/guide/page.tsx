@@ -1,5 +1,6 @@
 import axiosInstance from "@/app/lib/axios";
 import GuidePage from "@/components/guide";
+import RecentTestBlogs from "@/components/recent-test-blogs";
 
 
 
@@ -46,6 +47,7 @@ export default async function Page({ searchParams }) {
     return (
         <>
             <GuidePage allGuides={allGuides.data} allCategory= {allCategory.data} totalGuides={totalGuides.data?.pagination?.total || 0} />
+            <RecentTestBlogs source={category} />
         </>
     )
 }

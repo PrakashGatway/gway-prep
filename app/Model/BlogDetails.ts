@@ -5,6 +5,7 @@ export interface IBlog extends Document {
   Subtitle: string;
   slug: string;
   category: string;
+  categories: string[];
   tags: string[];
   image: string;
   metaTitle?: string;
@@ -37,6 +38,11 @@ const BlogSchema = new Schema<IBlog>(
       type: String,
       required: true,
       trim: true,
+    },
+
+    categories: {
+      type: [String],
+      default: [],
     },
 
     tags: {

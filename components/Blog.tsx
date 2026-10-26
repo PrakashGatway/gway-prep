@@ -21,6 +21,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import FormSection from "../components/formSection";
+import { getBlogCategories } from "@/app/lib/blog-categories";
 
 // Types
 interface Blog {
@@ -30,6 +31,7 @@ interface Blog {
   excerpt: string;
   image: string;
   category: string;
+  categories?: string[];
   author: string;
   publishedDate: string;
   createdAt?: string;
@@ -590,6 +592,11 @@ export default function BlogPage({
 
                   {/* Blog Content */}
                   <div className="flex flex-1 flex-col px-2 pt-3 ">
+                    <div className="mb-2 flex flex-wrap gap-1.5">
+                      {getBlogCategories(post).map((name) => (
+                        <span key={name} className="rounded-full bg-orange-50 px-2.5 py-1 text-[11px] font-semibold text-[#e2643f]">{name}</span>
+                      ))}
+                    </div>
                     {/* Title */}
                     <h3 className="line-clamp-2 text-base font-semibold leading-[1.45]  transition-colors duration-200 group-hover:text-[#F0642C]">
                       <span className="text-[#555]">
