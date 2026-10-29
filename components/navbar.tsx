@@ -16,6 +16,7 @@ import {
   UserCircle,
   LogOut,
   Book,
+  MessageCircle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGlobal } from "@/hooks/AppStateContext";
@@ -125,10 +126,13 @@ export function Navbar({ Data }: NavbarProps) {
         badge: item?.seoMeta?.badge || null,
       }))
       .filter((item: any) => item.slug && item.slug !== "spoken-english");
+    const spokenEnglishParent = spokenEnglishPages.find(
+      (item: any) => getSlug(item) === "spoken-english",
+    );
 
     return {
       name: "Spoken English",
-      img: null,
+      img: spokenEnglishParent?.seoMeta?.navIcon || null,
       slug: "spoken-english",
       description: "English speaking courses and programs",
       badge: null,
@@ -437,7 +441,7 @@ export function Navbar({ Data }: NavbarProps) {
 
   return (
     <>
-      <div className="hidden bg-gradient-to-r from-[#D95734] via-[#F36D45] to-[#DD5935] text-white sm:block">
+      <div className="relative z-[501] hidden bg-gradient-to-r from-[#D95734] via-[#F36D45] to-[#DD5935] text-white sm:block">
         <div className="mx-auto flex min-h-9 max-w-7xl items-center justify-between gap-3 px-4 py-0.5 sm:px-6 xl:px-0">
           <p className="min-w-0 text-sm font-medium">
             Prepare Smart. Achieve More.
@@ -461,7 +465,6 @@ export function Navbar({ Data }: NavbarProps) {
         </div>
       </div>
       <nav
-        onMouseLeave={closeDesktopDropdown}
         className={`
           sticky
           top-0
@@ -473,8 +476,8 @@ export function Navbar({ Data }: NavbarProps) {
           duration-300
           ${
             scrolled
-              ? "border-b border-gray-100 bg-white/95 shadow-lg backdrop-blur-xl"
-              : "border-b border-transparent bg-white backdrop-blur-sm"
+              ? "border-b border-gray-100 bg-white shadow "
+              : "border-b border-transparent bg-white"
           }
         `}
       >
@@ -491,6 +494,7 @@ export function Navbar({ Data }: NavbarProps) {
           >
             <Link
               href="/"
+              onMouseEnter={closeDesktopDropdown}
               className="
     group
     flex
@@ -637,34 +641,31 @@ export function Navbar({ Data }: NavbarProps) {
 
                   <AnimatePresence>
                     {item.hasDropdown && activeDropdown === item.name && (
-                      <div className="absolute left-1/2 top-full z-[600] w-[min(1120px,calc(100vw-2rem))] -translate-x-1/2 pt-1">
+                      <div className="absolute inset-x-0 top-full z-[600] w-full bg-white shadow-[0_18px_38px_rgba(15,23,42,0.12)]">
                         <motion.div
                           initial={{
                             opacity: 0,
-                            y: 8,
-                            scale: 0.97,
+                            y: -6,
                           }}
                           animate={{
                             opacity: 1,
                             y: 0,
-                            scale: 1,
                           }}
                           exit={{
                             opacity: 0,
-                            y: 8,
-                            scale: 0.97,
+                            y: -6,
                           }}
                           transition={{
                             duration: 0.15,
                           }}
-                          className="w-full"
+                          className="mx-auto w-full max-w-7xl"
                           onMouseEnter={() => setActiveDropdown(item.name)}
                         >
                           <div
-                            className={`w-full overflow-hidden rounded-xl bg-white [scrollbar-width:none] [&::-webkit-scrollbar]:hidden shadow-[0_20px_60px_rgba(0,0,0,0.52)] ${item.name === "Resources" ? "h-[min(72vh,430px)] overflow-y-auto " : "flex h-[430px]"}`}
+                            className={`h-[min(72vh,430px)] w-full overflow-hidden bg-white [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${item.name === "Resources" ? "overflow-y-auto" : "flex"}`}
                           >
                             {item.name === "Resources" ? (
-                              <div className="p-6">
+                              <div className="p-6 max-w-7xl mx-auto">
                                 <div className="flex items-end justify-between gap-6 pb-5">
                                   <div>
                                     <h3 className="mt-1 text-xl font-bold tracking-tight text-slate-900">
@@ -794,11 +795,9 @@ export function Navbar({ Data }: NavbarProps) {
                                               />
                                             </div>
                                           ) : (
-                                            <div className="h-10"></div>
-                                            // <GraduationCap
-                                            //   size={18}
-                                            //   className="text-[#F36C45]"
-                                            // />
+                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center text-[#F36C45]">
+                                              {dd.slug === "spoken-english" ? <MessageCircle size={21} aria-hidden="true" /> : <GraduationCap size={21} aria-hidden="true" />}
+                                            </div>
                                           )}
 
                                           <div className="min-w-0 flex-1">
@@ -949,11 +948,10 @@ export function Navbar({ Data }: NavbarProps) {
                                                         height={24}
                                                         className="object-contain"
                                                       />
+                                                    ) : dd.slug === "spoken-english" ? (
+                                                      <MessageCircle size={20} className="text-[#F36C45]" aria-hidden="true" />
                                                     ) : (
-                                                      <GraduationCap
-                                                        size={20}
-                                                        className="text-[#F36C45]"
-                                                      />
+                                                      <GraduationCap size={20} className="text-[#F36C45]" aria-hidden="true" />
                                                     )}
                                                   </div>
 
@@ -989,7 +987,7 @@ export function Navbar({ Data }: NavbarProps) {
               ))}
             </div>
 
-            <div className="hidden items-center gap-3  xl:flex">
+            <div className="hidden items-center gap-3 xl:flex" onMouseEnter={closeDesktopDropdown}>
               {/* Login */}
 
               {!user?.email ? (
@@ -1252,6 +1250,22 @@ export function Navbar({ Data }: NavbarProps) {
           </div>
         </div>
       </nav>
+
+      <AnimatePresence>
+        {activeDropdown && !isOpen && (
+          <motion.button
+            type="button"
+            aria-label="Close navigation dropdown"
+            onClick={closeDesktopDropdown}
+            onMouseEnter={closeDesktopDropdown}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18 }}
+            className="fixed inset-0 z-[490] hidden cursor-default bg-black/65 xl:block"
+          />
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {isOpen && (
@@ -1930,6 +1944,8 @@ export function Navbar({ Data }: NavbarProps) {
                                     height={25}
                                     className="object-contain"
                                   />
+                                ) : group.slug === "spoken-english" ? (
+                                  <MessageCircle size={21} />
                                 ) : mobileDropdown === "Resources" ? (
                                   <Book size={21} />
                                 ) : (

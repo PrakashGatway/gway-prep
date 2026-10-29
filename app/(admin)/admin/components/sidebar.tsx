@@ -78,14 +78,10 @@ export default function Sidebar({ open, onClose }: { open: boolean; onClose: () 
         aria-label="Admin navigation"
         className={`fixed inset-y-0 left-0 z-50 flex w-64 max-w-[85vw] flex-col border-r border-slate-200 bg-white shadow-2xl transition-transform duration-200 lg:translate-x-0 lg:shadow-none ${open ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-100 px-5 py-5">
-          <Link href="/admin/pages/dashboard" onClick={onClose} className="flex min-w-0 items-center gap-3">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-orange-50 p-1.5">
+        <div className="flex shrink-0 items-center justify-between gap-3 border-b border-slate-100 px-5 py-2">
+          <Link href="/admin/pages/dashboard" onClick={onClose} className="flex justify-center min-w-0 items-center gap-3">
+            <span className="flex h-16 items-center justify-center">
               <img src="/image/logo.png" alt="Ooshas Prep" className="max-h-full max-w-full object-contain" />
-            </span>
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-bold text-slate-900">Ooshas Prep</span>
-              <span className="block text-xs text-slate-500">Admin workspace</span>
             </span>
           </Link>
           <button type="button" onClick={onClose} aria-label="Close menu" className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 lg:hidden"><X size={20} /></button>
