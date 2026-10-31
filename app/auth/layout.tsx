@@ -3,6 +3,7 @@ import "@/app/globals.css";
 import { Noto_Sans } from "next/font/google";
 import { GlobalProvider } from "@/hooks/AppStateContext";
 import FloatingWhatsApp from "@/components/floating-whatsapp";
+import WebsiteTracker from "@/components/analytics/WebsiteTracker";
 
 const notoSans = Noto_Sans({
   subsets: ["latin"],
@@ -24,6 +25,7 @@ export default function RootLayout({
       >
 
         <GlobalProvider>
+          <WebsiteTracker />
           {children}
           <Suspense fallback={null}><FloatingWhatsApp /></Suspense>
         </GlobalProvider>

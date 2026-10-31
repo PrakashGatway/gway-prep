@@ -10,6 +10,7 @@ import { GlobalProvider } from "@/hooks/AppStateContext";
 import { Toaster } from "react-hot-toast";
 import SiteBanner from "@/components/site-banner";
 import FloatingWhatsApp, { type ContactPage } from "@/components/floating-whatsapp";
+import WebsiteTracker from "@/components/analytics/WebsiteTracker";
 
 export const metadata: Metadata = {
   title:
@@ -117,6 +118,7 @@ export default async function RootLayout({
           ></iframe>
         </noscript>
         <GlobalProvider>
+          <WebsiteTracker />
           <Navbar Data={NavData} />
           {children}
           <Footer Data={NavData} />

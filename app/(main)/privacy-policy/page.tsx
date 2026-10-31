@@ -112,6 +112,10 @@ export default async function TermsAndConditionsPage() {
 />
         </div>
       )}
+      <section className="mx-auto max-w-4xl px-4 pb-12 text-sm leading-7 text-gray-700">
+        <h2 className="mb-2 text-xl font-semibold text-gray-900">Website and portal activity</h2>
+        <p>We record page visits, time spent on pages, button and link clicks, form starts and submissions, referral and UTM information, device type, and an approximate location derived from the IP address. For signed-in portal visitors, activity may include their account name, email, role, and selected category. We do not record passwords or form field values in these activity events. Authorized administrators can view this activity. Event records expire after seven days; database removal may follow shortly afterward.</p>
+      </section>
     </div>
   );
 }

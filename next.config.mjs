@@ -1,9 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  serverExternalPackages: ["geoip-lite"],
   async headers() {
     return [
       {
-        source: "/api/:path*",
+        source: "/api/:path((?!analytics/).*)",
         headers: [
           {
             key: "Access-Control-Allow-Origin",

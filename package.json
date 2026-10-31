@@ -23,6 +23,7 @@
     "clsx": "^2.1.1",
     "date-fns": "4.1.0",
     "framer-motion": "12.23.26",
+    "geoip-lite": "^1.4.10",
     "input-otp": "1.4.1",
     "isomorphic-dompurify": "^3.18.0",
     "jsonwebtoken": "^9.0.3",
@@ -47,6 +48,7 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.9",
     "@types/bcryptjs": "^2.4.6",
+    "@types/geoip-lite": "^1.4.4",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22",
     "@types/react": "^19",
