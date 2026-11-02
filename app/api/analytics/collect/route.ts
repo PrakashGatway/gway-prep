@@ -5,7 +5,6 @@ import {
   allowedOrigin,
   corsHeaders,
   isWebsiteOrigin,
-  verifiedPortalUser,
 } from "@/app/lib/traffic-auth";
 import {
   RETENTION_MS,
@@ -115,13 +114,31 @@ export async function POST(request: NextRequest) {
     return response({ error: "Too many events" }, 429, origin);
 
   const site = isWebsiteOrigin(request, origin) ? "website" : "portal";
-  const portalUser = await verifiedPortalUser(request);
-  // if (site === "portal" && !portalUser)
-  //   return response({ error: "Portal sign-in required" }, 401, origin);
+  // The website and portal trackers send this snapshot from their loaded
+  // frontend auth context. Analytics stores that context snapshot directly.
+  const contextIdentity =
+    input.portalIdentity && typeof input.portalIdentity === "object"
+      ? (input.portalIdentity as Record<string, unknown>)
+      : {};
+  const contextText = (
+    key: "userId" | "name" | "role" | "categoryName",
+    max = 120,
+  ) =>
+    typeof contextIdentity[key] === "string"
+      ? contextIdentity[key]
+          .replace(/[\x00-\x1f\x7f]/g, " ")
+          .trim()
+          .slice(0, max)
+      : "";
+  const contextEmail =
+    typeof contextIdentity.email === "string"
+      ? contextIdentity.email.replace(/[\x00-\x1f\x7f]/g, " ").trim().slice(0, 240)
+      : "";
+  const contextUserId = contextText("userId", 160);
+  const contextRole = contextText("role").toLowerCase();
   if (
-    (site === "portal" && portalUser?.role === "admin") ||
-    (site === "website" &&
-      ((await getSession())?.role === "admin" || portalUser?.role === "admin"))
+    contextRole === "admin" ||
+    (site === "website" && (await getSession())?.role === "admin")
   ) {
     return response({ accepted: 0 }, 202, origin);
   }
@@ -136,26 +153,7 @@ export async function POST(request: NextRequest) {
     input.attribution && typeof input.attribution === "object"
       ? (input.attribution as Record<string, unknown>)
       : {};
-  const contextIdentity =
-    input.portalIdentity && typeof input.portalIdentity === "object"
-      ? (input.portalIdentity as Record<string, unknown>)
-      : {};
-  // Use portal context as the event snapshot only after its user ID has been
-  // matched to the user authenticated by the portal backend. Website activity
-  // has no client context and therefore uses the verified backend profile.
-  const matchesAuthenticatedUser =
-    String(contextIdentity.userId || "") === String(portalUser?._id || "");
-  const contextValue = (key: "name" | "role" | "categoryName") =>
-    matchesAuthenticatedUser ? clean(contextIdentity[key], 120) : "";
-  const contextEmail =
-    matchesAuthenticatedUser && typeof contextIdentity.email === "string"
-      ? contextIdentity.email.trim().slice(0, 240)
-      : "";
-  const userCategory =
-    contextValue("categoryName") ||
-    (portalUser?.category && typeof portalUser.category === "object"
-      ? portalUser.category.name
-      : "");
+  const userCategory = contextText("categoryName");
   const events: TrafficEvent[] = [];
   for (const rawEvent of input.events) {
     if (!rawEvent || typeof rawEvent !== "object") continue;
@@ -215,12 +213,12 @@ export async function POST(request: NextRequest) {
       ),
       city: clean(request.headers.get("x-vercel-ip-city") || geo?.city, 80),
       device,
-      ...(portalUser
+      ...(contextUserId
         ? {
-            userId: portalUser._id,
-            userName: contextValue("name") || portalUser.name,
-            userEmail: contextEmail || portalUser.email,
-            userRole: contextValue("role") || portalUser.role,
+            userId: contextUserId,
+            userName: contextText("name"),
+            userEmail: contextEmail,
+            userRole: contextRole,
             categoryName: userCategory,
           }
         : {}),
