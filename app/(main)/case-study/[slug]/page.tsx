@@ -262,6 +262,7 @@ export async function generateMetadata({
     title,
     description,
     alternates: { canonical },
+    robots: { index: false, follow: false },
     openGraph: {
       title,
       description,
