@@ -116,8 +116,8 @@ export async function POST(request: NextRequest) {
 
   const site = isWebsiteOrigin(request, origin) ? "website" : "portal";
   const portalUser = await verifiedPortalUser(request);
-  if (site === "portal" && !portalUser)
-    return response({ error: "Portal sign-in required" }, 401, origin);
+  // if (site === "portal" && !portalUser)
+  //   return response({ error: "Portal sign-in required" }, 401, origin);
   if (
     (site === "portal" && portalUser?.role === "admin") ||
     (site === "website" &&
