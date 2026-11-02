@@ -1,6 +1,7 @@
 export type ClientEvent = { type: "page_view" | "page_duration" | "click" | "form_start" | "form_submit" | "custom"; path: string; label: string; target?: string; clickKind?: "button" | "link" | "other"; at: number; durationMs?: number };
 type Identity = { id: string; lastSeen: number };
-type Config = { endpoint: string; getToken?: () => string | null };
+type PortalIdentity = { userId?: string; name?: string; email?: string; role?: string; categoryName?: string };
+type Config = { endpoint: string; getToken?: () => string | null; getPortalIdentity?: () => PortalIdentity | null };
 const visitorKey = "ooshas_traffic_visitor";
 const sessionKey = "ooshas_traffic_session";
 const attributionKey = "ooshas_traffic_attribution";
@@ -73,7 +74,7 @@ export function startTrafficTracker(config: Config) {
     timer = undefined;
     if (!pending.length) return;
     const batch = pending.splice(0, 20);
-    const body = JSON.stringify({ visitorId, sessionId, attribution: source, events: batch });
+    const body = JSON.stringify({ visitorId, sessionId, attribution: source, portalIdentity: config.getPortalIdentity?.() || undefined, events: batch });
     const token = config.getToken?.();
     if (beacon && !token && config.endpoint.startsWith("/") && navigator.sendBeacon?.(config.endpoint, new Blob([body], { type: "application/json" }))) return;
     void fetch(config.endpoint, { method: "POST", headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body, keepalive: true, mode: "cors", credentials: "include" })

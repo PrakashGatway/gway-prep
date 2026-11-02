@@ -115,12 +115,13 @@ export async function POST(request: NextRequest) {
     return response({ error: "Too many events" }, 429, origin);
 
   const site = isWebsiteOrigin(request, origin) ? "website" : "portal";
-  const portalUser =
-    site === "portal" ? await verifiedPortalUser(request) : null;
-  // if (site === "portal" && !portalUser) return response({ error: "Portal sign-in required" }, 401, origin);
+  const portalUser = await verifiedPortalUser(request);
+  if (site === "portal" && !portalUser)
+    return response({ error: "Portal sign-in required" }, 401, origin);
   if (
     (site === "portal" && portalUser?.role === "admin") ||
-    (site === "website" && (await getSession())?.role === "admin")
+    (site === "website" &&
+      ((await getSession())?.role === "admin" || portalUser?.role === "admin"))
   ) {
     return response({ accepted: 0 }, 202, origin);
   }
@@ -135,10 +136,26 @@ export async function POST(request: NextRequest) {
     input.attribution && typeof input.attribution === "object"
       ? (input.attribution as Record<string, unknown>)
       : {};
-  const userCategory =
-    portalUser?.category && typeof portalUser.category === "object"
-      ? portalUser.category.name
+  const contextIdentity =
+    input.portalIdentity && typeof input.portalIdentity === "object"
+      ? (input.portalIdentity as Record<string, unknown>)
+      : {};
+  // Use portal context as the event snapshot only after its user ID has been
+  // matched to the user authenticated by the portal backend. Website activity
+  // has no client context and therefore uses the verified backend profile.
+  const matchesAuthenticatedUser =
+    String(contextIdentity.userId || "") === String(portalUser?._id || "");
+  const contextValue = (key: "name" | "role" | "categoryName") =>
+    matchesAuthenticatedUser ? clean(contextIdentity[key], 120) : "";
+  const contextEmail =
+    matchesAuthenticatedUser && typeof contextIdentity.email === "string"
+      ? contextIdentity.email.trim().slice(0, 240)
       : "";
+  const userCategory =
+    contextValue("categoryName") ||
+    (portalUser?.category && typeof portalUser.category === "object"
+      ? portalUser.category.name
+      : "");
   const events: TrafficEvent[] = [];
   for (const rawEvent of input.events) {
     if (!rawEvent || typeof rawEvent !== "object") continue;
@@ -201,9 +218,9 @@ export async function POST(request: NextRequest) {
       ...(portalUser
         ? {
             userId: portalUser._id,
-            userName: portalUser.name,
-            userEmail: portalUser.email,
-            userRole: portalUser.role,
+            userName: contextValue("name") || portalUser.name,
+            userEmail: contextEmail || portalUser.email,
+            userRole: contextValue("role") || portalUser.role,
             categoryName: userCategory,
           }
         : {}),

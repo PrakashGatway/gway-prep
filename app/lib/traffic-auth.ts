@@ -22,13 +22,11 @@ export function corsHeaders(origin: string | null) {
 type PortalUser = { _id: string; name?: string; email?: string; role?: string; category?: { name?: string } | string };
 export async function verifiedPortalUser(request: NextRequest): Promise<PortalUser | null> {
   const bearerToken = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim();
-  // The portal's login cookie is HTTP-only and scoped to .ooshasprep.com, so a
-  // portal request to the website analytics API carries it even when JavaScript
-  // cannot read it. Forward it server-to-server for the same auth/me validation.
+
   const cookieToken = request.cookies.get("auth_token")?.value;
   const token = bearerToken || cookieToken;
   if (!token) return null;
-  const endpoint = process.env.PORTAL_AUTH_ME_URL || (process.env.NODE_ENV === "production" ? "https://uat.gatewayabroadeducations.com/api/v1/auth/me" : "http://localhost:5000/api/v1/auth/me");
+  const endpoint = "https://uat.gatewayabroadeducations.com/api/v1/auth/me";
   try {
     const response = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` }, cache: "no-store", signal: AbortSignal.timeout(4000) });
     if (!response.ok) return null;

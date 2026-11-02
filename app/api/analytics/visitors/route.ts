@@ -86,13 +86,7 @@ export async function GET(request: NextRequest) {
         { $sort: { occurredAt: -1, _id: -1 } },
         {
           $group: {
-            _id: {
-              $cond: [
-                { $ifNull: ["$userId", false] },
-                { $concat: ["user:", "$userId"] },
-                { $concat: ["device:", "$site", ":", "$visitorId"] },
-              ],
-            },
+            _id: "$visitorId",
             userId: { $first: "$userId" },
             userName: { $first: "$userName" },
             userEmail: { $first: "$userEmail" },
