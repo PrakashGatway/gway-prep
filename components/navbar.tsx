@@ -9,6 +9,7 @@ import {
   Menu,
   X,
   Phone,
+  Mail,
   User,
   LayoutDashboard,
   GraduationCap,
@@ -290,11 +291,6 @@ export function Navbar({ Data }: NavbarProps) {
       },
 
       {
-        name: "Events",
-        href: "/events",
-        icon: null,
-      },
-      {
         name: "Contact Us",
         href: "/contact",
         icon: null,
@@ -446,22 +442,36 @@ export function Navbar({ Data }: NavbarProps) {
           <p className="min-w-0 text-sm font-medium">
             Prepare Smart. Achieve More.
           </p>
-          <a
-            href="tel:+919166146538"
-            aria-label="Call an Ooshas Prep expert at +91 9166146538"
-            className="group inline-flex shrink-0 items-center gap-1.5 rounded-full bg-white/10 py-1 pl-1 pr-2.5 text-sm font-semibold ring-1 ring-white/20 transition hover:bg-white/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-          >
-            <span className="grid h-5 w-5 place-items-center rounded-full bg-white text-[#E45E3A] transition-transform group-hover:rotate-12">
-              <Phone size={12} aria-hidden="true" />
-            </span>
-            <span className="hidden text-white/90 lg:inline">
-              Consult an expert
-            </span>
-            <span className="hidden text-white/70 lg:inline" aria-hidden="true">
-              ·
-            </span>
-            <span className="whitespace-nowrap text-white">+91 9166146538</span>
-          </a>
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-1.5" aria-label="Social media links">
+              {[
+                { label: "Instagram", icon: "/icon/insta.webp", url: "https://www.instagram.com/ooshasprep" },
+                { label: "Facebook", icon: "/icon/facebook.webp", url: "https://www.facebook.com/share/18aH5VifRr/?mibextid=wwXIfr" },
+                { label: "X", icon: "/icon/twitter.webp", url: "https://x.com/ooshasprep" },
+                { label: "WhatsApp", icon: "/icon/whatsapp.webp", url: "https://wa.me/919166146538" },
+                { label: "YouTube", icon: "/icon/youtube.webp", url: "https://youtube.com/@ooshasprep" },
+              ].map((social) => (
+                <a
+                  key={social.label}
+                  href={social.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Ooshas Prep on ${social.label}`}
+                  className="grid h-7 w-7 place-items-center rounded-full bg-white/95 transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                >
+                  <img src={social.icon} alt="" width={22} height={22} className="h-[22px] w-[22px] object-contain" />
+                </a>
+              ))}
+            </div>
+            <a
+              href="mailto:info@ooshasprep.com"
+              aria-label="Email Ooshas Prep at info@ooshasprep.com"
+              title="info@ooshasprep.com"
+              className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white text-[#B94425] shadow-sm ring-1 ring-white/70 transition hover:-translate-y-0.5 hover:bg-orange-50 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+            >
+              <Mail size={17} aria-hidden="true" />
+            </a>
+          </div>
         </div>
       </div>
       <nav
@@ -988,6 +998,14 @@ export function Navbar({ Data }: NavbarProps) {
             </div>
 
             <div className="hidden items-center gap-3 xl:flex" onMouseEnter={closeDesktopDropdown}>
+              <a
+                href="tel:+919166146538"
+                aria-label="Consult an Ooshas Prep expert at +91 9166146538"
+                className="flex items-center gap-2 rounded-full border border-[#F36C45]/30 bg-[#ee6841] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5  hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F36C45]"
+              >
+                <Phone size={16} aria-hidden="true" />
+                9166146538
+              </a>
               {/* Login */}
 
               {!user?.email ? (

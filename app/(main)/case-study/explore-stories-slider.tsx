@@ -15,7 +15,7 @@ export default function ExploreStoriesSlider({ students,stories }: Props) {
   if (!students.length) return null;
 
   return (
-    <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12 lg:px-8">
+    <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12 lg:px-0">
       <div className="mb-6 flex items-end justify-between gap-5 sm:mb-7">
         <div>
           <p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">{stories?.eyebrow||"Keep exploring"}</p>

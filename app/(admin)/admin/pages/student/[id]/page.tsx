@@ -189,6 +189,56 @@ const EditorForm = () => {
           </div>
         );
 
+      case "faq-list": {
+        const faqs = Array.isArray(value) ? value : [];
+        const updateFaq = (index: number, key: "question" | "answer", nextValue: string) => {
+          handleInputChange(
+            field.name,
+            faqs.map((faq: any, faqIndex: number) =>
+              faqIndex === index ? { ...faq, [key]: nextValue } : faq,
+            ),
+          );
+        };
+
+        return (
+          <div className="space-y-4">
+            {faqs.map((faq: any, index: number) => (
+              <div key={index} className="grid gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4 md:grid-cols-[1fr_1fr_auto]">
+                <input
+                  type="text"
+                  value={faq?.question || ""}
+                  placeholder={`Question ${index + 1}`}
+                  aria-label={`FAQ question ${index + 1}`}
+                  className="w-full rounded-lg border border-gray-300 bg-white p-3 outline-none transition focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => updateFaq(index, "question", e.target.value)}
+                />
+                <textarea
+                  value={faq?.answer || ""}
+                  placeholder="Answer"
+                  aria-label={`FAQ answer ${index + 1}`}
+                  className="h-24 w-full rounded-lg border border-gray-300 bg-white p-3 outline-none transition focus:ring-2 focus:ring-blue-500"
+                  onChange={(e) => updateFaq(index, "answer", e.target.value)}
+                />
+                <button
+                  type="button"
+                  onClick={() => handleInputChange(field.name, faqs.filter((_: any, faqIndex: number) => faqIndex !== index))}
+                  className="h-11 rounded-lg border border-red-200 px-4 text-sm font-semibold text-red-600 transition hover:bg-red-50"
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => handleInputChange(field.name, [...faqs, { question: "", answer: "" }])}
+              className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-semibold text-blue-700 transition hover:bg-blue-100"
+            >
+              Add FAQ
+            </button>
+          </div>
+        );
+      }
+
       case "file":
         return (
           <div>

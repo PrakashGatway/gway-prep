@@ -3,11 +3,7 @@
 import {
   ArrowBigRight,
   Dot,
-  Facebook,
-  Instagram,
-  Linkedin,
   ListChecks,
-  Youtube,
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -68,39 +64,6 @@ export function Footer({ Data = [] }: FooterProps) {
       ) || [],
     [Data],
   );
-
-  const socialLinks = [
-    {
-      icon: "/icon/insta.webp",
-      label: "Instagram",
-      url: "https://www.instagram.com/ooshasprep",
-      hoverColor: "hover:text-pink-500",
-    },
-    {
-      icon: "/icon/facebook.webp",
-      label: "Facebook",
-      url: "https://www.facebook.com/share/18aH5VifRr/?mibextid=wwXIfr",
-      hoverColor: "hover:text-blue-600",
-    },
-    {
-      icon: "/icon/twitter.webp",
-      label: "Twitter",
-      url: "https://x.com/ooshasprep",
-      hoverColor: "hover:text-blue-700",
-    },
-    {
-      icon: "/icon/whatsapp.webp",
-      label: "whatsapp",
-      url: "https://wa.me/919166146538",
-      hoverColor: "hover:text-blue-700",
-    },
-    {
-      icon: "/icon/youtube.webp",
-      label: "YouTube",
-      url: "https://youtube.com/@ooshasprep",
-      hoverColor: "hover:text-red-600",
-    },
-  ];
 
   const quickLinks = [
     { label: "Home", path: "/" },
@@ -257,29 +220,6 @@ export function Footer({ Data = [] }: FooterProps) {
               <p className="text-sm leading-5 text-[#303030]">
                 Email : info@ooshasprep.com
               </p>
-              <ul className="flex items-center gap-2 mt-2">
-                {socialLinks.map((social) => {
-                  const Icon = social.icon;
-                  return (
-                    <li key={social.label}>
-                      <button
-                        className={`flex items-center gap-1 cursor-pointer transition-colors hover:text-black`}
-                        onClick={() => window.open(social.url, "_blank")}
-                        aria-label={`Follow us on ${social.label}`}
-                      >
-                        <img
-                          src={Icon}
-                          alt={`${social.label} social icon`}
-                          width={24}
-                          height={24}
-                          loading="lazy"
-                          className="w-6 h-6"
-                        />
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
             </div>
 
             {/* Quick Links */}

@@ -140,7 +140,7 @@ export function HomeStudent({data}:{data : any}) {
                   How did {"Ooshaprep"} help{" "}
                   {student.name}?
                 </p>
-                <div className="text-sm sm:text-base text-justify" dangerouslySetInnerHTML={{__html: student.about}} />
+                <div className="text-sm sm:text-base text-justify" dangerouslySetInnerHTML={{__html: typeof student.help === "string" && student.help.trim() ? student.help : "<p>Structured lessons, focused practice, and regular feedback helped me build confidence and make steady progress toward my goal.</p>"}} />
               </div>
 
               <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border">

@@ -193,6 +193,16 @@ function getLink(value: unknown, fallback: string): string {
   return getText(value, fallback);
 }
 
+/** Remove editor formatting so the page styles control every rich-text block. */
+function cleanEditorHtml(value: unknown): string {
+  if (typeof value !== "string") return "";
+  return value
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "")
+    .replace(/\sstyle\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/\s(?:align|face|size|color|bgcolor|width|height)\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+    .replace(/<\/?font\b[^>]*>/gi, "");
+}
+
 async function loadCaseStudyPage(): Promise<AnyRecord | null> {
   try {
     const response = await getPageInfo("casestudy");
@@ -325,11 +335,14 @@ export default async function CaseStudyDetailPage({
     subtitle: getText(faqData.subtitle, DEFAULTS.faq.subtitle),
   };
 
-  const rawFaqs = Array.isArray(faqData.items)
-    ? faqData.items
-    : Array.isArray(faqData.faqs)
-      ? faqData.faqs
-      : [];
+  const studentFaqs = Array.isArray(student.faqs) ? student.faqs : [];
+  const rawFaqs = studentFaqs.length
+    ? studentFaqs
+    : Array.isArray(faqData.items)
+      ? faqData.items
+      : Array.isArray(faqData.faqs)
+        ? faqData.faqs
+        : [];
 
   const cmsFaqs: CaseStudyFaq[] = rawFaqs
     .filter(
@@ -389,10 +402,10 @@ export default async function CaseStudyDetailPage({
 
   const storyEyebrow = "Behind the milestone";
   const storyHeading = "A goal. A plan. A story of progress.";
-  const storyContent = typeof student.about === "string" ? student.about : "";
+  const storyContent = cleanEditorHtml(student.about);
   const outcomeHeading = "The outcome";
-  const outcomeContent = typeof student.outcome === "string" ? student.outcome : "";
-  const messageContent = typeof student.message === "string" ? student.message : "";
+  const outcomeContent = cleanEditorHtml(student.outcome);
+  const messageContent = cleanEditorHtml(student.message);
   const testimonialName = student.name || "Student";
   const testimonialImage = student.universityLogo || "";
   const studentRating = student.rating ? String(student.rating) : "";
@@ -406,33 +419,57 @@ export default async function CaseStudyDetailPage({
 
   return (
     <main className="overflow-hidden bg-white text-[#292522]">
+      <style>{`
+        .case-study-html,
+        .case-study-html * {
+          box-sizing: border-box !important;
+          font-family: inherit !important;
+          max-width: 100% !important;
+          text-align: left !important;
+        }
+        .case-study-html { color: #655D59 !important; line-height: 1.7 !important; overflow-wrap: anywhere; }
+        .case-study-html p, .case-study-html div p { color: #655D59 !important; line-height: 1.7 !important; margin: 0 0 1rem !important; padding: 0 !important; }
+        .case-study-html h2 { color: #00306a !important; font-size: 26px !important; font-weight: 700 !important; line-height: 1.25 !important; margin: 28px 0 12px !important; }
+        .case-study-html h3 { color: #00306a !important; font-size: 20px !important; font-weight: 600 !important; line-height: 1.3 !important; margin: 22px 0 10px !important; }
+        .case-study-html h4 { color: #00306a !important; font-size: 18px !important; font-weight: 600 !important; line-height: 1.35 !important; margin: 18px 0 8px !important; }
+        .case-study-html strong, .case-study-html b { color: #302A27 !important; font-weight: 800 !important; }
+        .case-study-html a { color: #240dbd !important; text-decoration: underline !important; }
+        .case-study-html ul, .case-study-html ol { margin: 0 0 1rem 22px !important; padding: 0 !important; }
+        .case-study-html ul { list-style: disc outside !important; }
+        .case-study-html ol { list-style: decimal outside !important; }
+        .case-study-html li { color: #655D59 !important; line-height: 1.65 !important; margin: .35rem 0 !important; }
+        .case-study-html li::marker { color: #f36d45 !important; }
+        .case-study-html figure.table { display: block; width: 100% !important; max-width: 100% !important; overflow-x: auto !important; margin: 20px 0 !important; padding: 0 !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; -webkit-overflow-scrolling: touch; }
+        .case-study-html table { display: table !important; width: 100% !important; min-width: 450px !important; max-width: none !important; border-collapse: collapse !important; table-layout: auto !important; margin: 0 !important; font-size: 15px !important; }
+        .case-study-html th, .case-study-html td { width: auto !important; border: 1px solid #e5e7eb !important; padding: 12px !important; color: #3f3a37 !important; word-break: break-word !important; vertical-align: top !important; }
+        .case-study-html th { background: #F46C44 !important; color: #fff !important; font-weight: 600 !important; }
+        .case-study-html tr:nth-child(even) { background-color: #f3ebeb !important; }
+        .case-study-html img, .case-study-html video, .case-study-html iframe { display: block; height: auto !important; max-width: 100% !important; margin: 1rem auto !important; }
+        .case-study-html--inverse p, .case-study-html--inverse li, .case-study-html--inverse h2, .case-study-html--inverse h3, .case-study-html--inverse h4 { color: #fff !important; }
+        @media (max-width: 640px) { .case-study-html table { min-width: 450px !important; font-size: 14px !important; } .case-study-html th, .case-study-html td { padding: 10px !important; } }
+      `}</style>
       {/* Static student-specific hero */}
       <section className="relative isolate overflow-hidden bg-[#FDF4EF]">
         <div className="absolute right-0 top-0 h-full w-[35%] bg-[#FFF0BE]" />
         <div className="absolute -right-32 -top-36 h-[430px] w-[430px] rounded-full bg-[#FFB09D]/65" />
 
         <div className="relative mx-auto max-w-7xl px-5 pb-14 pt-8 sm:px-8 sm:pb-20 sm:pt-10 lg:px-8 lg:pb-24">
-          <Link
-            href="/case-study"
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-[#F0D8CC] bg-white/85 px-4 text-sm font-bold text-[#72584D] shadow-sm transition hover:-translate-y-0.5 hover:border-[#F36D45] hover:text-[#D95C39] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#F36D45]/20"
-          >
-            <ArrowLeft size={16} /> All student stories
-          </Link>
+        
 
-          <div className="mt-6 grid items-center gap-8 lg:grid-cols-[1fr_.9fr] lg:gap-14">
+          <div className="mt-3 grid items-center gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,3fr)] lg:gap-12">
             <div className="relative z-10">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#F4C4B1] bg-white/80 px-4 py-2 text-xs font-bold uppercase tracking-[.15em] text-[#A4553A]">
                 <Sparkles size={15} className="text-[#F36D45]" />
                 {heroEyebrow}
               </div>
-              <h1 className="mt-4 text-left text-3xl font-extrabold leading-[1.08] tracking-[-.04em] sm:text-4xl lg:text-[3.5rem]">
+              <h1 className="mt-4 text-left text-3xl font-extrabold leading-[1.08] tracking-[-.04em] sm:text-4xl lg:text-[2.5rem]">
                 {heroTitle}
               </h1>
-              <p className="mt-4 max-w-xl text-lg leading-8 text-[#665C58]">
+              <p className="mt-4 text-lg leading-8 text-[#665C58]">
                 {heroDescription}
               </p>
 
-              <div className="mt-7 flex flex-wrap gap-2.5">
+              <div className="mt-2 flex flex-wrap gap-2.5">
                 {heroCourse && (
                   <span className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#72584D] shadow-sm">
                     {heroCourse}
@@ -452,7 +489,7 @@ export default async function CaseStudyDetailPage({
                 )}
               </div>
 
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-3 flex flex-wrap gap-3">
                 <a
                   href={heroButtonUrl}
                   className="group inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#F36D45] px-6 py-3.5 text-sm font-bold text-white shadow-[0_10px_24px_rgba(243,109,69,.24)] transition hover:-translate-y-0.5 hover:bg-[#DD5D38] sm:w-fit"
@@ -469,16 +506,16 @@ export default async function CaseStudyDetailPage({
               </div>
             </div>
 
-            <div className="relative mx-auto w-full max-w-[530px] pb-5 lg:mr-0">
+            <div className="relative mx-auto w-full max-w-[620px] pb-5 lg:ml-auto lg:mr-0">
               <div className="absolute inset-x-[9%] bottom-[8%] top-[4%] rounded-[3rem] bg-[#FFF0BE]" />
               <div
                 className="absolute -right-2 top-0 z-10 h-28 w-28 rounded-full"
                 style={{ backgroundColor: `${accent}55` }}
               />
-              <div className="absolute -bottom-1 left-2 z-10 h-24 w-24 rounded-full border-[13px] border-white bg-[#FF907F] sm:h-32 sm:w-32 sm:border-[17px]" />
+          
 
-              <div className="relative z-20 mx-auto w-[88%] overflow-hidden rounded-[2.5rem_2.5rem_2.5rem_5rem] bg-[#F36D45] shadow-[0_30px_75px_rgba(119,69,48,.22)]">
-                <div className="relative aspect-[.88/1] max-h-[540px]">
+              <div className="relative z-20 mx-auto w-full overflow-hidden rounded-[2.5rem_2.5rem_2.5rem_5rem] bg-[#F36D45] shadow-[0_30px_75px_rgba(119,69,48,.22)]">
+                <div className="relative aspect-[.78/1] max-h-[600px]">
                   {heroStudentImage ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -526,14 +563,14 @@ export default async function CaseStudyDetailPage({
       </section>
 
       {/* Static student-specific "Behind the milestone" section */}
-      <section className="mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1fr_340px] lg:gap-16 lg:px-8 lg:py-20">
-        <div id="the-story" className="scroll-mt-24">
+      <section className="mx-auto grid max-w-7xl items-start gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-16 lg:px-8 lg:py-20">
+        <div id="the-story" className="min-w-0 scroll-mt-24">
           <p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">{storyEyebrow}</p>
           <h2 className="mt-3 text-3xl font-extrabold tracking-[-.035em] sm:text-4xl">{storyHeading}</h2>
 
           {storyContent ? (
             <div
-              className="prose prose-lg mt-7 max-w-none prose-headings:text-[#302A27] prose-p:leading-8 prose-p:text-[#655D59] prose-strong:text-[#302A27]"
+              className="case-study-html mt-7 w-full min-w-0"
               dangerouslySetInnerHTML={{ __html: storyContent }}
             />
           ) : (
@@ -548,14 +585,14 @@ export default async function CaseStudyDetailPage({
                 <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FFF0BE] text-[#A4553A]"><Trophy size={21} /></span>
                 <h3 className="text-xl font-bold">{outcomeHeading}</h3>
               </div>
-              <div className="prose mt-4 max-w-none prose-p:leading-7 prose-p:text-[#655D59]" dangerouslySetInnerHTML={{ __html: outcomeContent }} />
+              <div className="case-study-html mt-4 w-full min-w-0" dangerouslySetInnerHTML={{ __html: outcomeContent }} />
             </div>
           )}
 
           {messageContent && (
             <blockquote className="relative mt-10 overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#F36D45] to-[#D95C39] p-6 text-white shadow-[0_18px_45px_rgba(243,109,69,.2)] sm:p-9">
               <Quote size={42} className="absolute right-6 top-6 text-white/20" />
-              <div className="relative prose max-w-none prose-p:text-lg prose-p:leading-8 prose-p:text-white" dangerouslySetInnerHTML={{ __html: messageContent }} />
+              <div className="case-study-html case-study-html--inverse relative w-full min-w-0" dangerouslySetInnerHTML={{ __html: messageContent }} />
               <footer className="relative mt-5 flex items-center gap-3 border-t border-white/25 pt-5">
                 {testimonialImage && (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -570,7 +607,7 @@ export default async function CaseStudyDetailPage({
           )}
         </div>
 
-        <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start lg:pt-8">
+        <aside className="min-w-0 space-y-5 lg:sticky lg:top-24 lg:self-start lg:pt-8">
           <div className="rounded-[1.75rem] bg-[#FFF0BE] p-6 shadow-[0_12px_32px_rgba(41,37,34,.08)] sm:p-7">
             <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white text-[#D76843]"><Award size={23} /></div>
             <h3 className="mt-5 text-xl font-bold">{highlightsHeading}</h3>

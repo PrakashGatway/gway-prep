@@ -626,11 +626,24 @@ export const pageData: any = {
             placeholder: "",
           },
           {
+            name: "help",
+            label: "How did Ooshas Prep help? (Homepage)",
+            type: "editor",
+            required: false,
+            placeholder: "Describe how Ooshas Prep helped this student.",
+          },
+          {
             name: "outcome",
             label: "student Outcome",
             type: "editor",
             required: false,
             placeholder: "",
+          },
+          {
+            name: "faqs",
+            label: "Case Study FAQs",
+            type: "faq-list",
+            required: false,
           },
           {
             name: "type",

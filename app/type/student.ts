@@ -17,7 +17,9 @@ export const StudentValidationSchema = z.object({
   university: z.string().optional(),
   universityLogo: z.string().url("Invalid image url").optional(),
   about: z.any().default({}),
+  help: z.string().optional(),
   outcome: z.any().default({}),
+  faqs: z.array(z.object({ question: z.string(), answer: z.string() })).optional().default([]),
   type: z.enum(["image", "video"]).default("image"),
   message: z.string().optional(),
   messageDate: z.string().optional(),// Use z.coerce.date() if sending ISO strings

@@ -17,7 +17,9 @@ export interface IStudent extends Document {
     university?: string;
     universityLogo?: string;
     about?: Record<string, any>;
+    help?: string;
     outcome?: Record<string, any>;
+    faqs?: Array<{ question: string; answer: string }>;
     type?: 'image' | 'video';
     message?: string;
     messageDate?: string;
@@ -45,7 +47,12 @@ const StudentSchema = new Schema<IStudent>(
         university: { type: String},
         universityLogo: String,
         about: { type: Schema.Types.Mixed, default: {} },
+        help: { type: String, default: "" },
         outcome: { type: Schema.Types.Mixed, default: {} },
+        faqs: {
+            type: [{ question: { type: String, trim: true }, answer: { type: String, trim: true } }],
+            default: [],
+        },
         type: { type: String, enum: ['image', 'video'], default: "image" },
         message: String,
         messageDate: String,
@@ -69,6 +76,8 @@ const requiredStudentPaths = [
     "button2Text",
     "button2Url",
     "colorCode",
+    "faqs",
+    "help",
 ];
 
 if (
