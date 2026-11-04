@@ -67,6 +67,8 @@ export async function GET(request: NextRequest) {
           path: row.path,
           label: row.label,
           target: row.target,
+          href: row.href,
+          formFields: row.formFields,
           occurredAt: row.occurredAt,
           sessionId: row.sessionId,
           site: row.site,

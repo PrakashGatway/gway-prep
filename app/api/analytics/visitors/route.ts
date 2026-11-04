@@ -46,9 +46,18 @@ export async function GET(request: NextRequest) {
     "country",
     "device",
     "categoryName",
+    "label",
+    "target",
+    "href",
   ] as const) {
     const value = clean(params.get(key));
     if (value) match[key] = value;
+  }
+  if (params.get("activity") === "login") {
+    match.type = "form_submit";
+    match.label = "Login submitted";
+  } else if (params.get("activity") === "form_submit") {
+    match.type = "form_submit";
   }
   if (params.get("loggedIn") === "yes") match.userId = { $exists: true };
   if (params.get("loggedIn") === "no") match.userId = { $exists: false };

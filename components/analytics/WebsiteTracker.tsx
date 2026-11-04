@@ -40,7 +40,7 @@ export default function WebsiteTracker() {
       if (cancelled || tracker.current) return;
       tracker.current = startTrafficTracker({
         endpoint: "/api/analytics/collect",
-        getToken: () => tokenRef.current || localStorage.getItem("accessToken"),
+        getToken: () => localStorage.getItem("accessToken") || tokenRef.current,
         getPortalIdentity: () => websiteIdentity(userRef.current),
       });
       tracker.current.pageView(latestPath.current);

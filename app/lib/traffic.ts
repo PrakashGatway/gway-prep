@@ -12,6 +12,8 @@ export type TrafficEvent = {
   path: string;
   label: string;
   target?: string;
+  href?: string;
+  formFields?: Record<string, string>;
   clickKind?: "button" | "link" | "other";
   durationMs?: number;
   occurredAt: Date;

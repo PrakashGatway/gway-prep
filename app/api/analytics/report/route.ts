@@ -173,6 +173,7 @@ const search = clean(params.get("search"), 80).replace(
                 path: "$path",
                 label: "$label",
                 target: "$target",
+                href: "$href",
               },
               clicks: { $sum: 1 },
               visitors: { $addToSet: subjectId },

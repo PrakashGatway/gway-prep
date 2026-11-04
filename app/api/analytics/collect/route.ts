@@ -188,6 +188,12 @@ export async function POST(request: NextRequest) {
       path,
       label: clean(event.label),
       target: clean(event.target),
+      href: clean(event.href, 500),
+      formFields: event.type === "form_submit" && event.formFields && typeof event.formFields === "object"
+        ? Object.fromEntries(Object.entries(event.formFields).slice(0, 8).filter(([key, value]) =>
+            typeof value === "string" && /email|name|country|city|category|course|exam|source|interest|level|type|subject/i.test(key) && !/password|passcode|otp|token|secret|card|cvv|cvc|payment|address|phone|mobile|message|comment/i.test(key)
+          ).map(([key, value]) => [clean(key, 60), clean(value, 120)]))
+        : undefined,
       clickKind: ["button", "link", "other"].includes(String(event.clickKind))
         ? (event.clickKind as TrafficEvent["clickKind"])
         : undefined,

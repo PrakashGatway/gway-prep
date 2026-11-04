@@ -306,6 +306,7 @@ function AuthContent ({ toggleDrawer }: any) {
           {mode === "email" && (
             <motion.form
               key="email"
+              data-track-form="Login"
               onSubmit={handleEmailSubmit}
               className="space-y-5"
               initial={{ opacity: 0, x: 20 }}
@@ -408,7 +409,7 @@ function AuthContent ({ toggleDrawer }: any) {
                 </p>
               </div>
 
-              <form onSubmit={handleRegisterSubmit} className="space-y-4">
+              <form onSubmit={handleRegisterSubmit} data-track-form="Registration" className="space-y-4">
                 <InputField
                   id="name"
                   type="text"
@@ -486,6 +487,7 @@ function AuthContent ({ toggleDrawer }: any) {
           {mode === "otp" && (
             <motion.form
               key="otp"
+              data-track-form="Email verification"
               onSubmit={handleVerifyOtp}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}

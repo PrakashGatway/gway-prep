@@ -1,4 +1,4 @@
-export type ClientEvent = { type: "page_view" | "page_duration" | "click" | "form_start" | "form_submit" | "custom"; path: string; label: string; target?: string; clickKind?: "button" | "link" | "other"; at: number; durationMs?: number };
+export type ClientEvent = { type: "page_view" | "page_duration" | "click" | "form_start" | "form_submit" | "custom"; path: string; label: string; target?: string; href?: string; formFields?: Record<string, string>; clickKind?: "button" | "link" | "other"; at: number; durationMs?: number };
 type Identity = { id: string; lastSeen: number };
 type PortalIdentity = { userId?: string; name?: string; email?: string; role?: string; categoryName?: string };
 type Config = { endpoint: string; getToken?: () => string | null; getPortalIdentity?: () => PortalIdentity | null };
@@ -82,8 +82,8 @@ export function startTrafficTracker(config: Config) {
       .catch(() => { if (!stopped && failures++ < 2) { pending = [...batch, ...pending].slice(0, 80); if (!timer) timer = setTimeout(flush, 3000 * failures); } });
     if (pending.length) timer = setTimeout(flush, 600);
   }
-  function queue(type: ClientEvent["type"], label = "", target = "", durationMs?: number, clickKind?: ClientEvent["clickKind"]) {
-    pending.push({ type, path, label: clean(label), target: clean(target), at: Date.now(), ...(durationMs !== undefined ? { durationMs } : {}), ...(clickKind ? { clickKind } : {}) });
+  function queue(type: ClientEvent["type"], label = "", target = "", durationMs?: number, clickKind?: ClientEvent["clickKind"], href?: string, formFields?: Record<string, string>) {
+    pending.push({ type, path, label: clean(label), target: clean(target), at: Date.now(), ...(durationMs !== undefined ? { durationMs } : {}), ...(clickKind ? { clickKind } : {}), ...(href ? { href: href.slice(0, 500) } : {}), ...(formFields ? { formFields } : {}) });
     if (pending.length >= 20) flush(); else if (!timer) timer = setTimeout(flush, 900);
   }
   function finishPage() {
@@ -104,12 +104,12 @@ export function startTrafficTracker(config: Config) {
     if (!(event.target instanceof Element)) return;
     const control = (event.target.closest("button, a, input, select, summary, [role='button'], [role='link']") || event.target) as HTMLElement;
     if (control.closest("[data-no-track]")) return;
-    const href = control.getAttribute("href") || "";
+    const href = control.closest("a[href]")?.getAttribute("href") || control.getAttribute("href") || "";
     let target = control.dataset.trackTarget || control.id || "";
     if (href) { try { const url = new URL(href, location.origin); target = url.origin === location.origin ? url.pathname : url.hostname; } catch { target = "link"; } }
     const isControl = control.matches("button, a, input, select, summary, [role='button'], [role='link']");
     const clickKind = control.matches("a, [role='link']") ? "link" : isControl ? "button" : "other";
-    queue("click", control.dataset.trackLabel || control.getAttribute("aria-label") || control.getAttribute("title") || (isControl && !control.matches("input, select") ? control.textContent : "") || control.tagName, target || control.tagName.toLowerCase(), undefined, clickKind);
+    queue("click", control.dataset.trackLabel || control.getAttribute("aria-label") || control.getAttribute("title") || (isControl && !control.matches("input, select") ? control.textContent : "") || control.tagName, target || control.tagName.toLowerCase(), undefined, clickKind, href);
   }
   function onFocus(event: FocusEvent) {
     if (!(event.target instanceof Element)) return;
@@ -118,7 +118,20 @@ export function startTrafficTracker(config: Config) {
   }
   function onSubmit(event: SubmitEvent) {
     const form = event.target;
-    if (form instanceof HTMLFormElement && !form.closest("[data-no-track]")) queue("form_submit", form.dataset.trackForm || form.getAttribute("aria-label") || form.id || "Form");
+    if (!(form instanceof HTMLFormElement) || form.closest("[data-no-track]")) return;
+    const name = form.dataset.trackForm || form.getAttribute("aria-label") || form.id || "Form";
+    const login = /login|log-in|sign.?in/i.test(`${name} ${form.dataset.trackForm || ""}`);
+    const fields: Record<string, string> = {};
+    for (const element of Array.from(form.elements)) {
+      if (!(element instanceof HTMLInputElement || element instanceof HTMLSelectElement || element instanceof HTMLTextAreaElement)) continue;
+      const key = (element.name || element.id || "").trim();
+      if (!key || !/email|name|country|city|category|course|exam|source|interest|level|type|subject/i.test(key) || element.closest("[data-no-track]") || /password|passcode|otp|token|secret|card|cvv|cvc|payment|address|phone|mobile|message|comment/i.test(key)) continue;
+      if (element instanceof HTMLInputElement && /password|hidden|file|tel|number/i.test(element.type)) continue;
+      if (element instanceof HTMLInputElement && ["checkbox", "radio"].includes(element.type) && !element.checked) continue;
+      const value = element.value.trim();
+      if (value && Object.keys(fields).length < 8) fields[clean(key)] = clean(value);
+    }
+    queue("form_submit", login ? "Login submitted" : name, form.action || form.id || "", undefined, undefined, undefined, fields);
   }
   function onChange(event: Event) {
     const element = event.target;
