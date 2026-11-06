@@ -12,6 +12,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import axiosInstance from "@/app/lib/axios";
 import toast from "react-hot-toast";
+import { ContactLink } from "./contact-link";
 
 interface FooterProps {
   Data?: any[];
@@ -215,10 +216,10 @@ export function Footer({ Data = [] }: FooterProps) {
                 and world-class coaching.
               </p>
               <p className="text-sm leading-5 text-[#303030]">
-                Toll Free : +91 9166146538
+                Toll Free : <ContactLink value="+91 9166146538" />
               </p>
               <p className="text-sm leading-5 text-[#303030]">
-                Email : info@ooshasprep.com
+                Email : <ContactLink value="info@ooshasprep.com" />
               </p>
             </div>
 

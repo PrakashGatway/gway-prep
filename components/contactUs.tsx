@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 
 import FormSection from "./formSection";
+import { ContactLink } from "./contact-link";
 
 // ─── Form Configuration ───
 const FORM_CONFIG: any = {
@@ -194,7 +195,7 @@ function ConnectSection({ data }: { data?: any }) {
                     <div className="text-sm text-gray-600">{item.description}</div>
                     {item.contact && (
                       <div className="text-sm font-medium text-gray-700 mt-0.5">
-                        {item.contact}
+                        <ContactLink value={item.contact} />
                       </div>
                     )}
                   </div>
@@ -334,7 +335,7 @@ export default function ContactPage({ Data }: any) {
                     </div>
                     <div>
                       <p className="text-xs text-gray-400">{card.title}</p>
-                      <p className="text-sm font-medium">{card.value}</p>
+                      <p className="text-sm font-medium"><ContactLink value={card.value} /></p>
                     </div>
                   </div>
                 );

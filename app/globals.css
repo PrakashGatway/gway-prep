@@ -310,3 +310,13 @@ table tbody tr {
 
 
 
+
+
+/* Keep automatically linked email addresses and phone numbers recognizable. */
+.blog-html a.contact-link,
+.blog-html a[href^="mailto:"],
+.blog-html a[href^="tel:"] {
+  color: #f36d45 !important;
+  font-weight: 600;
+  text-decoration: underline;
+}

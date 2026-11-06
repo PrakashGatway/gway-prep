@@ -1,4 +1,5 @@
 import React from "react";
+import { linkifyContactHtml } from "@/app/lib/contact-links";
 
 interface EditorContentProps {
   content_data?: string | null;
@@ -9,7 +10,7 @@ const EditorContent = ({ content_data }: EditorContentProps) => {
     if (!html) return "";
 
     if (typeof window === "undefined" || typeof DOMParser === "undefined") {
-      return html;
+      return linkifyContactHtml(html);
     }
 
     const parser = new DOMParser();
@@ -65,7 +66,7 @@ const EditorContent = ({ content_data }: EditorContentProps) => {
       }
     });
 
-    return doc.body.innerHTML;
+    return linkifyContactHtml(doc.body.innerHTML);
   };
 
   return (

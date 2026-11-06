@@ -20,8 +20,10 @@ import axios from "axios";
 import QuestionsSection from "./comment";
 import Link from "next/link";
 import { getBlogCategories } from "@/app/lib/blog-categories";
+import { linkifyContactHtml } from "@/app/lib/contact-links";
 import { useGlobal } from "@/hooks/AppStateContext";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import DOMPurify from "isomorphic-dompurify";
 
 // ─── Types ───
 interface FAQ {
@@ -548,7 +550,7 @@ const renderBlogContent = (blogDetails: BlogDetail[]) => {
       sections.push(
         <div
           key={`content-${index}`}
-          dangerouslySetInnerHTML={{ __html: detail.content_data }}
+          dangerouslySetInnerHTML={{ __html: linkifyContactHtml(detail.content_data) }}
         />,
       );
     }
@@ -644,7 +646,11 @@ const renderBlogContent = (blogDetails: BlogDetail[]) => {
           <h3 className="text-4xl  font-bold mb-3">{banner.title}</h3>
           <div
             className="!text-black mb-4"
-            dangerouslySetInnerHTML={{ __html: banner.subtitle }}
+            dangerouslySetInnerHTML={{
+              __html: DOMPurify.sanitize(banner.subtitle, {
+                FORBID_TAGS: ["style"],
+              }),
+            }}
           />
           {banner.url && (
             <a
@@ -760,25 +766,36 @@ export default function BlogDetailPage({
     return () => clearTimeout(timer);
   }, [blog?.data?.slug]);
 
-  const cleanBlogHtml = (
-    blogDetails: (BlogDetail & { content?: string })[] = [],
-  ) => {
-    if (!Array.isArray(blogDetails)) return [];
+ const cleanBlogHtml = (
+  blogDetails: (BlogDetail & { content_data?: string })[] = [],
+) => {
+  if (!Array.isArray(blogDetails)) return [];
 
-    return blogDetails.map((detail) => ({
-      ...detail,
-      content:
-        typeof detail.content === "string"
-          ? detail.content
-              .replace(/\sstyle\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
-              .replace(/<\/?font\b[^>]*>/gi, "")
-              .replace(
-                /\s(?:face|size|color|bgcolor)\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi,
-                "",
-              )
-          : detail.content,
-    }));
-  };
+  return blogDetails.map((detail) => ({
+    ...detail,
+    content_data:
+      typeof detail.content_data === "string"
+        ? DOMPurify.sanitize(detail.content_data, {
+            FORBID_TAGS: ["style"],
+          })
+            // Remove style attributes
+            .replace(/\sstyle\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+            // Remove class attributes
+            .replace(/\sclass\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")
+            // Remove font tags but preserve their content
+            .replace(/<\/?font\b[^>]*>/gi, "")
+            // Remove Word-specific tags
+            .replace(/<\/?o:p\b[^>]*>/gi, "")
+            // Remove empty spans
+            .replace(/<span\b[^>]*>\s*<\/span>/gi, "")
+            // Remove remaining span tags but preserve text
+            .replace(/<\/?span\b[^>]*>/gi, "")
+            // Remove Microsoft Word comments
+            .replace(/<!--[\s\S]*?-->/g, "")
+            .trim()
+        : detail.content_data,
+  }));
+};
 
   // Loading state
   if (loading) {
@@ -809,7 +826,6 @@ export default function BlogDetailPage({
   const data = blog.data;
   const blogDetails = data.blog_details || [];
   const afterClear = cleanBlogHtml(blogDetails);
-  console.log(afterClear, "gfds");
   return (
     <div className="bg-neutral-50 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-10">

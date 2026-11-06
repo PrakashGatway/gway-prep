@@ -6,6 +6,7 @@ import { Phone, MessageCircle, Mail, MapPin, Facebook, Twitter, Instagram, Youtu
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import FormSection from "./formSection"
+import { ContactLink } from "./contact-link"
 
 // ─── Form Configuration ───
 const FORM_CONFIG: any = {
@@ -117,7 +118,7 @@ export function PartnerSection() {
                 <div className="bg-white p-3 rounded-lg"><MessageCircle className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">WhatsApp Us</p>
-                  <p className="text-base">+91 9166146538</p>
+                  <p className="text-base"><ContactLink value="+91 9166146538" /></p>
                 </div>
               </div>
 
@@ -126,7 +127,7 @@ export function PartnerSection() {
                 <div className="bg-white p-3 rounded-lg"><Phone className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">Call Us</p>
-                  <p className="text-base">+91 9166146538</p>
+                  <p className="text-base"><ContactLink value="+91 9166146538" /></p>
                 </div>
               </div>
 
@@ -135,7 +136,7 @@ export function PartnerSection() {
                 <div className="bg-white p-3 rounded-lg"><Mail className="text-black w-8 h-8" /></div>
                 <div>
                   <p className="text-2xl font-bold">Email Us</p>
-                  <p className="text-base">info@ooshasprep.com</p>
+                  <p className="text-base"><ContactLink value="info@ooshasprep.com" /></p>
                 </div>
               </div>
 

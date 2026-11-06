@@ -19,7 +19,7 @@ import {
   Book,
   MessageCircle,
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useGlobal } from "@/hooks/AppStateContext";
 import AuthDrawer from "./auth/drawer";
 import { usePathname, useRouter } from "next/navigation";
@@ -31,6 +31,7 @@ interface NavbarProps {
 export function Navbar({ Data }: NavbarProps) {
   const router = useRouter();
   const pathname = usePathname();
+  const shouldReduceMotion = useReducedMotion();
   const { user, logout, drawer, setDrawer, UserNavigate } = useGlobal();
   const accountUser = user as { name?: string; email?: string } | null;
 
@@ -998,14 +999,41 @@ export function Navbar({ Data }: NavbarProps) {
             </div>
 
             <div className="hidden items-center gap-3 xl:flex" onMouseEnter={closeDesktopDropdown}>
-              <a
+              <motion.a
                 href="tel:+919166146538"
                 aria-label="Consult an Ooshas Prep expert at +91 9166146538"
-                className="flex items-center gap-2 rounded-full border border-[#F36C45]/30 bg-[#ee6841] px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5  hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F36C45]"
+                className="flex items-center gap-2 rounded-full border border-[#ee6841] bg-white px-3.5 py-2.5 text-sm font-bold text-[#1c3058] shadow-[0_4px_16px_rgba(243,108,69,0.2)] ring-2 ring-[#F36C45]/25 ring-offset-2 ring-offset-white transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F36C45]"
+                initial={
+                  shouldReduceMotion
+                    ? false
+                    : {
+                        scale: 0.94,
+                        boxShadow: "0 0 0 0 rgba(243, 108, 69, 0)",
+                      }
+                }
+                animate={
+                  shouldReduceMotion
+                    ? undefined
+                    : {
+                        scale: [1, 1.12, 1, 1.12, 1],
+                        boxShadow: [
+                          "0 4px 16px rgba(243, 108, 69, 0.2)",
+                          "0 0 0 9px rgba(243, 108, 69, 0.24), 0 6px 20px rgba(243, 108, 69, 0.35)",
+                          "0 4px 16px rgba(243, 108, 69, 0.2)",
+                          "0 0 0 9px rgba(243, 108, 69, 0.24), 0 6px 20px rgba(243, 108, 69, 0.35)",
+                          "0 4px 16px rgba(243, 108, 69, 0.2)",
+                        ],
+                      }
+                }
+                transition={{
+                  duration: 2.4,
+                  repeat: shouldReduceMotion ? 0 : 2,
+                  ease: "easeInOut",
+                }}
               >
                 <Phone size={16} aria-hidden="true" />
                 9166146538
-              </a>
+              </motion.a>
               {/* Login */}
 
               {!user?.email ? (
