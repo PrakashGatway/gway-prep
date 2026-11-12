@@ -800,7 +800,31 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
           />
         );
 
-      case "file":
+      case "file": {
+        const currentItem =
+          index !== undefined && parent
+            ? (sectionValues[parent] || [])[index] || {}
+            : sectionValues;
+        const sectionLabel =
+          formData?.sections?.find((section: any) => section.name === sectionName)?.label ||
+          "";
+        const altValue =
+          currentItem[field._altFieldName] ||
+          currentItem.title ||
+          currentItem.heading ||
+          sectionValues.title ||
+          sectionValues.heading ||
+          sectionValues["mission title"] ||
+          sectionLabel;
+        const updateAlt = (nextValue: string) => {
+          if (index !== undefined && parent) {
+            const items = [...(sectionValues[parent] || [])];
+            items[index] = { ...(items[index] || {}), [field._altFieldName]: nextValue };
+            handleInputChange(sectionName, parent, items);
+          } else {
+            handleInputChange(sectionName, field._altFieldName, nextValue);
+          }
+        };
         return (
           <div className="space-y-3">
             <input
@@ -818,8 +842,23 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
                 alt="Preview"
               />
             )}
+            {field._altFieldName && (
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Image alt text
+                </label>
+                <input
+                  type="text"
+                  value={altValue}
+                  onChange={(e) => updateAlt(e.target.value)}
+                  placeholder={sectionLabel || "Describe this image"}
+                  className={baseInputClasses}
+                />
+              </div>
+            )}
           </div>
         );
+      }
 
       case "select":
         const options = field.option?.length ? field.option : students;
@@ -1024,6 +1063,13 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
     const nestedItems = parentItem[nestedFieldName] || [];
     const nestedItem = nestedItems[nestedIndex] || {};
     const value = nestedItem[field.name] || "";
+    const defaultNestedAlt =
+      nestedItem.title ||
+      parentItem.title ||
+      sectionValues.title ||
+      sectionValues.heading ||
+      formData?.sections?.find((section: any) => section.name === sectionName)?.label ||
+      "";
 
     const baseInputClasses =
       "w-full p-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all";
@@ -1127,6 +1173,30 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
                 className="h-20 rounded-lg border"
                 alt="Preview"
               />
+            )}
+            {field._altFieldName && (
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Image alt text
+                </label>
+                <input
+                  type="text"
+                  value={nestedItem[field._altFieldName] || defaultNestedAlt}
+                  onChange={(e) =>
+                    handleNestedRepeaterChange(
+                      sectionName,
+                      parentFieldName,
+                      parentIndex,
+                      nestedFieldName,
+                      nestedIndex,
+                      field._altFieldName,
+                      e.target.value,
+                    )
+                  }
+                  placeholder={defaultNestedAlt || "Describe this image"}
+                  className={baseInputClasses}
+                />
+              </div>
             )}
           </div>
         );
@@ -1245,12 +1315,50 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
 
       if (formData?.sections) {
         formData.sections.forEach((section: any) => {
+          const sectionFields = processSectionFields(section);
+          const sectionValues = { ...(values[section.name] || {}) };
+          const fillImageAltDefaults = (
+            fields: any[],
+            target: Record<string, any>,
+            heading: string,
+          ) => {
+            fields.forEach((field) => {
+              if (field.type === "file" && field._altFieldName) {
+                const current = target[field._altFieldName];
+                if (!current) {
+                  target[field._altFieldName] =
+                    target.title ||
+                    target.heading ||
+                    target["mission title"] ||
+                    heading ||
+                    section.label;
+                }
+              }
+              if (field.type === "repeater" && Array.isArray(field.fields)) {
+                const items = Array.isArray(target[field.name]) ? target[field.name] : [];
+                target[field.name] = items.map((item: any) => {
+                  const nextItem = { ...item };
+                  fillImageAltDefaults(
+                    field.fields,
+                    nextItem,
+                    nextItem.title || nextItem.heading || heading || section.label,
+                  );
+                  return nextItem;
+                });
+              }
+            });
+          };
+          fillImageAltDefaults(
+            sectionFields,
+            sectionValues,
+            sectionValues.title || sectionValues.heading || section.label,
+          );
           payload.sections[section.name] = {
             name: section.name,
             template: formData?.name || generalInfo.template,
             // name: formData?.name || generalInfo.template,
             label: section.label,
-            fields: values[section.name] || {},
+            fields: sectionValues,
           };
         });
       }
@@ -1334,7 +1442,57 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
   }
 
   const processSectionFields = (section: any) => {
-    const fieldNames = section.fields.map((f: any) => f.name);
+    const prepareFields = (fields: any[]): any[] => {
+      const sourceFields = fields.map((field) =>
+        (field.type === "repeater" || field.type === "group") &&
+        Array.isArray(field.fields)
+          ? { ...field, fields: prepareFields(field.fields) }
+          : { ...field },
+      );
+      const output: any[] = [];
+      const claimedAltNames = new Set<string>();
+
+      sourceFields.forEach((field) => {
+        if (
+          field.type !== "file" ||
+          field.name.toLowerCase().includes("icon") ||
+          String(field.label || "").toLowerCase().includes("icon") ||
+          (field.accept && !field.accept.includes("image"))
+        ) {
+          output.push(field);
+          return;
+        }
+
+        const preferredAltNames = [
+          field.name + "Alt",
+          "imageAlt",
+        ].filter(Boolean);
+        const existingAlt = sourceFields.find(
+          (candidate) =>
+            preferredAltNames.includes(candidate.name) &&
+            candidate.type !== "file" &&
+            !claimedAltNames.has(candidate.name),
+        );
+        const altName =
+          existingAlt?.name ||
+          preferredAltNames.find((name) => !claimedAltNames.has(name)) ||
+          (field.name + "Alt");
+        claimedAltNames.add(altName);
+
+        output.push({ ...field, _altFieldName: altName });
+        if (existingAlt) {
+          output.push({
+            ...existingAlt,
+            _isImageAlt: true,
+          });
+        }
+      });
+
+      return output.filter((field) => !field._isImageAlt);
+    };
+
+    const processedFields = prepareFields(section.fields);
+    const fieldNames = processedFields.map((f: any) => f.name);
     const duplicates = fieldNames.filter(
       (name: string, index: number) => fieldNames.indexOf(name) !== index,
     );
@@ -1346,7 +1504,7 @@ const slug = cleanText.toLowerCase().replace(/\s+/g, '-');
       );
     }
 
-    return section.fields;
+    return processedFields;
   };
 
   return (

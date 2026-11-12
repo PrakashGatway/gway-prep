@@ -38,7 +38,7 @@ export default async function PrivacyPolicyPage() {
       subtitle={heroSection?.subtitle}
       content={settingDetails?.allContent}
     >
-      <section className="mt-12 border-t border-slate-200 pt-8 dark:border-zinc-800">
+      {/* <section className="mt-12 border-t border-slate-200 pt-8 dark:border-zinc-800">
         <h2 className="text-xl font-semibold tracking-tight text-slate-900 dark:text-zinc-100">
           Website and portal activity
         </h2>
@@ -52,7 +52,7 @@ export default async function PrivacyPolicyPage() {
           administrators can view this activity. Event records expire after
           seven days; database removal may follow shortly afterward.
         </p>
-      </section>
+      </section> */}
     </LegalPageLayout>
   );
 }

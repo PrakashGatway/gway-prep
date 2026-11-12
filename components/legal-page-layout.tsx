@@ -22,8 +22,8 @@ export function LegalPageLayout({
           aria-hidden="true"
           className="pointer-events-none absolute -right-24 -top-32 -z-10 h-80 w-80 rounded-full bg-orange-200/30 blur-3xl dark:bg-orange-500/10"
         />
-        <div className="mx-auto max-w-6xl px-5 pb-12 pt-8 sm:px-8 sm:pb-16 sm:pt-10 lg:px-10">
-          <nav aria-label="Breadcrumb" className="mb-10 text-sm">
+        <div className="mx-auto max-w-7xl px-5 pb-0 pt-8 sm:px-8 sm:pb-0 sm:pt-5 lg:px-0">
+          <nav aria-label="Breadcrumb" className="mb-5 text-sm">
             <Link
               href="/"
               className="font-medium text-slate-500 transition hover:text-[#e9653e] dark:text-zinc-400 dark:hover:text-orange-300"
@@ -38,25 +38,12 @@ export function LegalPageLayout({
             </span>
           </nav>
 
-          <div className="max-w-3xl">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white/80 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.16em] text-[#cf5633] shadow-sm dark:border-orange-400/20 dark:bg-zinc-900/80 dark:text-orange-300">
-              <FileText aria-hidden="true" size={14} />
-              Legal information
-            </div>
-            <h1 className="text-3xl font-bold leading-tight tracking-tight text-slate-950 sm:text-4xl lg:text-5xl dark:text-white">
-              {title}
-            </h1>
-            {subtitle && (
-              <p className="mt-5 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg sm:leading-8 dark:text-zinc-300">
-                {subtitle}
-              </p>
-            )}
-          </div>
+       
         </div>
       </header>
 
-      <section className="mx-auto max-w-6xl px-4 py-8 sm:px-8 sm:py-12 lg:px-10 lg:py-14">
-        <article className="mx-auto max-w-4xl rounded-2xl border border-slate-200/90 bg-white px-5 py-7 shadow-[0_12px_40px_rgba(15,23,42,0.05)] sm:rounded-3xl sm:px-9 sm:py-10 lg:px-12 lg:py-12 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none">
+      <section className="mx-auto max-w-7xl px-4 py-4 sm:px-4 sm:py-4 lg:px-0 lg:py-0">
+        <article className="mx-auto  px-4 py-4  sm:rounded-3xl sm:px-4 sm:py-0 lg:px-0 lg:py-0 dark:border-zinc-800 dark:bg-zinc-900 dark:shadow-none">
           {content && (
             <div
               className="prose prose-slate max-w-none break-words dark:prose-invert

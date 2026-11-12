@@ -29,6 +29,12 @@ export const pageData: any = {
             required: false,
             placeholder: "",
           },
+          {
+            name: "heroImage",
+            label: "Hero Image",
+            type: "file",
+            accept: "image/*",
+          },
            {
             name: "button1",
             label: "Button1",
@@ -182,6 +188,12 @@ export const pageData: any = {
             type: "text",
             required: false,
             placeholder: "Your journey to success starts here",
+          },
+          {
+            name: "image",
+            label: "Working Process Illustration",
+            type: "file",
+            accept: "image/*",
           },
           {
             name: "items",
@@ -1129,7 +1141,14 @@ export const pageData: any = {
       {
         name: "Setting-Details",
         label: "Setting Details",
-        fields: [{ name: "allContent", label: "allContent", type: "textarea" }],
+        fields: [
+          {
+            name: "allContent",
+            label: "Page Content",
+            type: "editor",
+            required: false,
+          },
+        ],
       },
     ],
   },
@@ -1153,6 +1172,12 @@ export const pageData: any = {
             name: "subtitle",
             label: "Hero Subtitle",
             type: "textarea",
+          },
+          {
+            name: "image",
+            label: "Hero Image",
+            type: "file",
+            accept: "image/*",
           },
         ],
       },

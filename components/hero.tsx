@@ -187,8 +187,8 @@ export function Hero({ data, student }: HeroProps) {
                     className="relative w-[120%] h-[100%] m-auto overflow-hidden"
                   >
                     <img
-                      src={"/home page hero image.webp"}
-                      alt="Graduate celebrating success"
+                      src={data?.fields?.heroImage || "/home page hero image.webp"}
+                      alt={data?.fields?.heroImageAlt || data?.fields?.title || "Graduate celebrating success"}
                       className="w-full h-[85%] object-contain object-end mt-16"
                     />
                   </motion.div>

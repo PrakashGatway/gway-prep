@@ -107,7 +107,7 @@ export function AboutSection({data}:{data : any}) {
             
               <img
                 src={student.image}
-                alt="logo"
+                alt={student.imageAlt || student.title || data.fields?.title || "Meet our stars"}
                 className="sm:h-full w-auto mt-6 "
               />
             </div>

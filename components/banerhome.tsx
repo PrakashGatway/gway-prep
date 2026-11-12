@@ -23,7 +23,7 @@ export function Banerhome({ data, img }: any) {
                   <div className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center mx-auto sm:mx-0">
                     <img 
                       src={item.icon || "/home/06.png"} 
-                      alt="icon" 
+                      alt=""
                       className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 object-contain"
                     />
                   </div>
@@ -42,7 +42,7 @@ export function Banerhome({ data, img }: any) {
 
           <img
             src={data.fields.image || "/image/leptop-img.webp"}
-            alt="About Us"
+            alt={data?.fields?.imageAlt || data?.fields?.title || "Tech Platform"}
             className="w-full h-auto lg:sticky top-32 rounded-lg sm:rounded-xl lg:rounded-2xl order-1 lg:order-none"
           />
         </div>

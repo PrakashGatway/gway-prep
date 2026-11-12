@@ -277,7 +277,7 @@ export function RegistrationSection({ data }: any) {
           <div className="relative">
             <img
               src={data?.fields?.Formsection ?? "/home/1.png"}
-              alt="Registration"
+              alt={data?.fields?.FormsectionAlt || "Registation"}
               className="relative w-full h-[60%]"
             />
           </div>

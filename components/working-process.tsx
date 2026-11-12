@@ -64,7 +64,7 @@ export function WorkingProcess({ data }: { data: any }) {
                       <div className="w-12 h-12 sm:w-16 sm:h-16 flex items-center justify-center  rounded-full transition-all duration-300">
                         <img 
                           src={IconComponent} 
-                          alt={step.title}
+                          alt=""
                           className=" w-fullh-full object-contain"
                         />
                       </div>
@@ -103,8 +103,8 @@ export function WorkingProcess({ data }: { data: any }) {
             >
               <div className=" relative h-[600px] w-full">
                 <Image
-                  src="/image/steps.png"
-                  alt="Working Process"
+                  src={data?.fields?.image || "/image/steps.png"}
+                  alt={data?.fields?.imageAlt || data?.fields?.title || "Working Process"}
                   fill
                   className="object-contain rounded-2xl"
                   priority
@@ -124,8 +124,8 @@ export function WorkingProcess({ data }: { data: any }) {
             >
               <div className="relative max-w-sm mx-auto h-[500px] w-full">
                 <Image
-                  src="/image/steps.png"
-                  alt="Working Process"
+                  src={data?.fields?.image || "/image/steps.png"}
+                  alt={data?.fields?.imageAlt || data?.fields?.title || "Working Process"}
                   fill
                   className="object-contain rounded-2xl"
                 />

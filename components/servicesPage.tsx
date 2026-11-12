@@ -47,8 +47,8 @@ function HeroSection({ data }: { data: any }) {
   return (
     <section className="relative overflow-hidden bg-[#FDF4EF] min-h-auto py-6 md:py-16 lg:py-20 flex items-center">
       <img
-        src="/services/h.webp"
-        alt="services"
+        src={data?.fields?.image || "/services/h.webp"}
+        alt={data?.fields?.imageAlt || data?.fields?.title || "Services"}
         className="hidden lg:block absolute -right-20 bottom-20 h-[80%] w-full md:w-[56%] object-cover
          md:object-contain pointer-events-none select-none opacity-30 md:opacity-100"
       />
@@ -116,7 +116,7 @@ function ExamPillsSection({ data }: { data: any }) {
             className="bg-white border border-gray-200 hover:border-orange-300 hover:shadow-md transition-transform duration-300 ease-in-out hover:scale-105
             text-gray-700 text-sm font-medium px-3 md:px-5 py-1.5 md:py-2 rounded transition cursor-pointer"
           >
-            <img src={exam.image} alt={exam.title} className="h-10 md:h-14" />
+            <img src={exam.image} alt="" className="h-10 md:h-14" />
           </span>
         ))}
       </div>
@@ -226,7 +226,7 @@ function PortalSection({ data }: { data: any }) {
             <div className="flex justify-center lg:justify-end">
               <Image
                 src={image}
-                alt="Exam Portal"
+                alt={data?.fields?.imageAlt || data?.fields?.title || "Exam Portal"}
                 width={420}
                 height={220}
                 className="w-full max-w-[300px] sm:max-w-[360px] md:max-w-[460px] object-contain"
@@ -252,7 +252,7 @@ function DashboardSection({ data }: { data: any }) {
         <div className="md:absolute left-4 md:left-8 lg:left-30 top-0 md:w-[52%] z-10">
           <img
             src={leftImage}
-            alt="Dashboard Results"
+            alt={data?.fields?.leftImageAlt || "Dashboard Images"}
             className="w-full rounded-[16px] md:rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.08)] 
             transition-transform duration-300 ease-in-out hover:scale-105 mb-2"
           />
@@ -262,7 +262,7 @@ function DashboardSection({ data }: { data: any }) {
         <div className="md:absolute right-4 md:right-8 lg:right-50 top-[8%] md:top-[12%] md:w-[42%] z-20">
           <img
             src={rightImage}
-            alt="Mock Test"
+            alt={data?.fields?.rightImageAlt || "Dashboard Images"}
             className="w-full rounded-[16px] md:rounded-[24px] shadow-[0_20px_60px_rgba(0,0,0,0.12)] transition-transform duration-300 ease-in-out hover:scale-105"
           />
         </div>
@@ -395,7 +395,7 @@ function FeatureCard({ feature, className = "" }: FeatureCardProps) {
         <div className="h-8 w-8 md:h-10 md:w-10 absolute -top-6 -left-6 md:-top-10 md:-left-10 rounded-full bg-white shadow-md flex items-center justify-center flex-shrink-0 z-10">
           <Image
             src={feature.icon}
-            alt={"img"}
+            alt=""
             width={18}
             height={18}
             className="md:w-[22px] md:h-[22px]"
@@ -689,7 +689,7 @@ function ResourcesSection({ data }: { data: any }) {
               <div className="h-10 w-10 md:h-12 md:w-12 rounded-lg md:rounded-xl bg-[#FFF6ED] hover:bg-[#FA8227] p-2 transition-colors">
                 <img
                   src={card.icon}
-                  alt={card.title}
+                  alt=""
                   className="w-full h-full"
                 />
               </div>
@@ -746,7 +746,7 @@ function SupportSection({ data }: { data: any }) {
             <div className="relative flex justify-center mb-4 md:mb-6">
               <div className="absolute w-10 md:w-14 h-10 md:h-14 rounded-full bg-orange-100 blur-2xl opacity-40"></div>
               <div className="relative w-10 md:w-14 h-10 md:h-14 rounded-full bg-[#FFF8F3] flex items-center justify-center shadow-sm">
-                <img src={card.icon} alt="icon" />
+                <img src={card.icon} alt="" />
               </div>
             </div>
 
@@ -832,7 +832,7 @@ function TestimonialsSection({ data }: { data: any }) {
               <div className="flex items-center gap-3 md:gap-4">
                 <img
                   src={item.image}
-                  alt={item.name}
+                  alt={item.imageAlt || item.name || title}
                   className="w-12 h-12 md:w-14 md:h-14 rounded-full object-cover bg-gray-800"
                 />
                 <div>
@@ -923,7 +923,7 @@ function CountriesSection({ data }: { data: any }) {
             <img
               src={country.image}
               className="h-10 w-10 md:h-14 md:w-14 rounded-lg"
-              alt={country.name}
+              alt={country.imageAlt || country.name || title}
             />
             <h3 className="text-lg md:text-2xl font-semibold text-[#1F2937] mt-2">
               {country.name}

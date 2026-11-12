@@ -347,7 +347,7 @@ export default function ContactPage({ Data }: any) {
             <div className="h-full bg-transparent relative">
               <img
                 src={heroImage}
-                alt={heroTitle}
+                alt={heroData?.heroImageAlt || heroTitle}
                 className="object-contain w-full h-full"
                 style={{ mixBlendMode: "multiply" }}
               />
@@ -374,7 +374,7 @@ export default function ContactPage({ Data }: any) {
                 <img
                   src={office.image}
                   className="w-full h-full object-cover"
-                  alt={office.city}
+                  alt={office.imageAlt || office.city}
                 />
               </div>
               <div className="p-4">
@@ -433,7 +433,7 @@ export default function ContactPage({ Data }: any) {
             <img
               src={ctaImage}
               className="object-contain h-full w-auto"
-              alt="Students"
+              alt={ctaData?.ctaImageAlt || ctaData?.title || "Contact our counsellors"}
             />
           </div>
           <div className="lg:w-1/2 text-center lg:text-left mt-6 lg:mt-0">
