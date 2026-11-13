@@ -898,7 +898,7 @@ export default function BlogDetailPage({
                 </div>
                 <span>•</span>
                 <span>
-                  {data.createdAt
+                 Publish at {data.createdAt
                     ? new Date(data.createdAt).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
@@ -906,6 +906,17 @@ export default function BlogDetailPage({
                       })
                     : "Date not available"}
                 </span>
+                      <div>
+                 {data.updatedAt && (
+                      <div className=" flex items-center gap-1.5 text-xs text-[#777] font-medium">
+                        <Calendar size={14} aria-hidden="true" />
+                        <span className="font-medium">Last Update {new Date(data.updatedAt).toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}</span>
+                      </div>
+                    )}</div>
               </div>
               <div className="flex items-center gap-1.5  px-3 text-sm text-gray-600">
                 <span className="font-medium">{data?.count ?? 0}</span>

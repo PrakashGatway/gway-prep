@@ -619,10 +619,20 @@ export default function BlogPage({
 
                     {/* Read More */}
                     <div className="mt-auto flex justify-between items-center py-4 ">
-                       {post.createdAt && (
+                       {/* {post.createdAt && (
                       <div className="mt-3 flex items-center gap-1.5 text-xs text-[#777]">
                         <Calendar size={14} aria-hidden="true" />
                         <span>Published {new Date(post.createdAt).toLocaleDateString("en-IN", {
+                          day: "2-digit",
+                          month: "short",
+                          year: "numeric",
+                        })}</span>
+                      </div>
+                    )} */}
+                     {post.updatedAt && (
+                      <div className="mt-3 flex items-center gap-1.5 text-xs text-[#777]">
+                        <Calendar size={14} aria-hidden="true" />
+                        <span>Last Update {new Date(post.updatedAt).toLocaleDateString("en-IN", {
                           day: "2-digit",
                           month: "short",
                           year: "numeric",
