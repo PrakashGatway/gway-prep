@@ -58,7 +58,7 @@ const InputField = ({ icon: Icon, label, error, ...props }: any) => (
 );
 
 // Main Auth Component
-function AuthContent({ toggleDrawer }: any) {
+function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
   const { userInfo } = useGlobal() as { userInfo: () => Promise<unknown> };
 
   const [mode, setMode] = useState<any>("email");
@@ -123,9 +123,12 @@ function AuthContent({ toggleDrawer }: any) {
       .then(async ({ data }) => {
         if (!active || !data?.token) return;
         localStorage.setItem("accessToken", data.token);
+        if (data.needsPhone) {
+          onOAuthProfileRequired(true);
+          setMode("oauth-profile");
+        }
         await userInfo();
         if (data.needsPhone) {
-          setMode("oauth-profile");
           return;
         }
         const cleanUrl = new URL(window.location.href);
@@ -792,10 +795,11 @@ const TESTIMONIALS = [
 export default function LoginPage() {
   const [isVisible, setIsVisible] = useState(true);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
+  const [oauthProfileRequired, setOauthProfileRequired] = useState(false);
   const { user, authChecked } = useGlobal() as { user: unknown; authChecked: boolean };
 
   useEffect(() => {
-    if (!authChecked || !user) return;
+    if (!authChecked || !user || oauthProfileRequired) return;
 
     let destination = "https://dashboard.ooshasprep.com/";
     const requestedRedirect = new URLSearchParams(window.location.search).get("redirect");
@@ -810,7 +814,7 @@ export default function LoginPage() {
       }
     }
     window.location.replace(destination);
-  }, [authChecked, user]);
+  }, [authChecked, user, oauthProfileRequired]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -819,7 +823,7 @@ export default function LoginPage() {
     return () => clearInterval(interval);
   }, []);
 
-  if (!authChecked || user) {
+  if (!authChecked || (user && !oauthProfileRequired)) {
     return (
       <main className="flex min-h-dvh w-full items-center justify-center bg-white">
         <Loader2 className="h-7 w-7 animate-spin text-[#F47852]" aria-label="Checking your session" />
@@ -883,7 +887,10 @@ export default function LoginPage() {
 
             {/* Auth Component */}
             <div className="w-full">
-              <Auth toggleDrawer={handleClose} />
+              <Auth
+                toggleDrawer={handleClose}
+                onOAuthProfileRequired={setOauthProfileRequired}
+              />
             </div>
 
             {/* Footer Links (Optional, as the image shows it inside the form usually) */}
@@ -963,7 +970,7 @@ export default function LoginPage() {
   );
 }
 
-function Auth({ toggleDrawer }: any) {
+function Auth({ toggleDrawer, onOAuthProfileRequired }: any) {
   return (
     <Suspense
       fallback={
@@ -972,7 +979,10 @@ function Auth({ toggleDrawer }: any) {
         </div>
       }
     >
-      <AuthContent toggleDrawer={toggleDrawer} />
+      <AuthContent
+        toggleDrawer={toggleDrawer}
+        onOAuthProfileRequired={onOAuthProfileRequired}
+      />
     </Suspense>
   );
 }
