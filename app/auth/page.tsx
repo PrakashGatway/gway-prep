@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X,
@@ -60,6 +60,10 @@ const InputField = ({ icon: Icon, label, error, ...props }: any) => (
 // Main Auth Component
 function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
   const { userInfo } = useGlobal() as { userInfo: () => Promise<unknown> };
+  const oauthRedemptionRef = useRef<{
+    ticket: string;
+    request: Promise<any>;
+  } | null>(null);
 
   const [mode, setMode] = useState<any>("email");
   const [email, setEmail] = useState("");
@@ -116,11 +120,28 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
   useEffect(() => {
     const ticket = searchParams.get("oauth_ticket");
     if (!ticket) return;
+
     let active = true;
+    let redemption = oauthRedemptionRef.current;
+    if (!redemption || redemption.ticket !== ticket) {
+      // Remove the one-time ticket immediately so reloads/remounts can't submit it again.
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete("oauth_ticket");
+      window.history.replaceState({}, "", cleanUrl.toString());
+
+      redemption = {
+        ticket,
+        // Share the in-flight request across Strict Mode's effect replay.
+        request: axiosInstance
+          .post("/auth/google/redeem", { ticket })
+          .then(({ data }) => data),
+      };
+      oauthRedemptionRef.current = redemption;
+    }
+
     setLoading(true);
-    axiosInstance
-      .post("/auth/google/redeem", { ticket })
-      .then(async ({ data }) => {
+    redemption.request
+      .then(async (data) => {
         if (!active || !data?.token) return;
         localStorage.setItem("accessToken", data.token);
         if (data.needsPhone) {
@@ -131,9 +152,6 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
         if (data.needsPhone) {
           return;
         }
-        const cleanUrl = new URL(window.location.href);
-        cleanUrl.searchParams.delete("oauth_ticket");
-        window.history.replaceState({}, "", cleanUrl.toString());
         window.location.href = getPostLoginDestination();
       })
       .catch(() => {
@@ -142,9 +160,6 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
           ...previous,
           general: "Google sign-in could not be completed. Please try again.",
         }));
-        const cleanUrl = new URL(window.location.href);
-        cleanUrl.searchParams.delete("oauth_ticket");
-        window.history.replaceState({}, "", cleanUrl.toString());
       })
       .finally(() => {
         if (active) setLoading(false);
