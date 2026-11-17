@@ -12,6 +12,8 @@ import SiteBanner from "@/components/site-banner";
 import FloatingWhatsApp, { type ContactPage } from "@/components/floating-whatsapp";
 import WebsiteTracker from "@/components/analytics/WebsiteTracker";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title:
     "Ooshas Prep | IELTS, GRE, GMAT, SAT, TOEFL & PTE Online Test Preparation",

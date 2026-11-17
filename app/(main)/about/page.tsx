@@ -2,6 +2,9 @@ import About from "@/components/About";
 import { getPageInfo } from "@/app/services/api";
 import { Metadata } from "next";
 
+
+export const dynamic = "force-dynamic";
+
 const SITE_URL = "https://www.ooshasprep.com";
 
 export async function generateMetadata(): Promise<Metadata> {
