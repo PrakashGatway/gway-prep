@@ -105,8 +105,7 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
 
   const startGoogleSignIn = () => {
     const apiBase = (
-      axiosInstance.defaults.baseURL ||
-      "https://uat.gatewayabroadeducations.com/api/v1/"
+      axiosInstance.defaults.baseURL || "https://api.ooshasprep.com/api/v1/"
     ).replace(/\/$/, "");
     const callback = new URL(`${window.location.origin}/auth`);
     if (redirectUrl)
@@ -142,17 +141,25 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
     setLoading(true);
     redemption.request
       .then(async (data) => {
-        if (!active || !data?.token) return;
-        localStorage.setItem("accessToken", data.token);
-        if (data.needsPhone) {
+        // Once the backend has redeemed the ticket, complete the client flow
+        // even if a React render/effect cleanup happened while the request was
+        // in flight. Otherwise the valid login can remain stuck on loading.
+        if (!data?.token) {
+          throw new Error("Google login did not return an access token");
+        }
+        // localStorage.setItem("accessToken", data.token);
+        const needsPhone = data.needsPhone === true || data.needsPhone === "true";
+        if (needsPhone) {
           onOAuthProfileRequired(true);
           setMode("oauth-profile");
-        }
-        await userInfo();
-        if (data.needsPhone) {
+          setLoading(false);
           return;
         }
-        window.location.href = getPostLoginDestination();
+
+        // Do not wait for /me here. A slow or unavailable context refresh must
+        // not leave the auth page stuck on "Checking Email...".
+        setLoading(false);
+        window.location.replace(getPostLoginDestination());
       })
       .catch(() => {
         if (!active) return;
@@ -167,7 +174,7 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
     return () => {
       active = false;
     };
-  }, [searchParams, userInfo]);
+  }, [searchParams]);
 
   const search = "";
   const referral = "";
@@ -372,9 +379,14 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
     setLoading(true);
     try {
       await axiosInstance.post("/auth/profile", { phoneNumber });
-      await userInfo();
+      // The profile update is complete; do not block navigation on a separate
+      // /me refresh request in production.
+      void userInfo().catch((error) => {
+        console.warn("Unable to refresh user context after profile update:", error);
+      });
       setErrors((previous: any) => ({ ...previous, oauthPhone: "" }));
-      window.location.href = getPostLoginDestination();
+      setLoading(false);
+      window.location.replace(getPostLoginDestination());
     } catch (error: any) {
       setErrors((previous: any) => ({
         ...previous,
@@ -415,7 +427,6 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
                 <h2 className="text-lg sm:text-xl font-bold text-[#F47852]">
                   Welcome to Ooshas Prep
                 </h2>
-
               </div>
 
               <button
@@ -458,7 +469,7 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
                   key={compactCaptcha ? "compact" : "flexible"}
                   siteKey={"0x4AAAAAAE13UE9vSZt3X2DO"}
                   options={{
-                    size:  "flexible",
+                    size: "flexible",
                   }}
                   onSuccess={(token) => {
                     setTurnstileToken(token);
@@ -477,7 +488,10 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
                 />
               </div>
               {errors.turnstile && (
-                <p className="-mt-2 flex items-center gap-1.5 text-sm text-red-500" role="alert">
+                <p
+                  className="-mt-2 flex items-center gap-1.5 text-sm text-red-500"
+                  role="alert"
+                >
                   <AlertCircle className="h-3.5 w-3.5" />
                   {errors.turnstile}
                 </p>
@@ -726,7 +740,9 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
               className="space-y-4"
             >
               <div className="text-center mt-6">
-                <h2 className="text-xl font-bold text-[#F47852]">One last detail</h2>
+                <h2 className="text-xl font-bold text-[#F47852]">
+                  One last detail
+                </h2>
                 <p className="mt-1 text-sm text-[#526276]">
                   Add your mobile number to finish setting up your account.
                 </p>
@@ -740,8 +756,14 @@ function AuthContent({ toggleDrawer, onOAuthProfileRequired }: any) {
                 placeholder="Enter your 10-digit mobile number"
                 value={oauthPhone}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setOauthPhone(event.target.value.replace(/\D/g, "").slice(0, 10));
-                  if (errors.oauthPhone) setErrors((previous: any) => ({ ...previous, oauthPhone: "" }));
+                  setOauthPhone(
+                    event.target.value.replace(/\D/g, "").slice(0, 10),
+                  );
+                  if (errors.oauthPhone)
+                    setErrors((previous: any) => ({
+                      ...previous,
+                      oauthPhone: "",
+                    }));
                 }}
                 error={errors.oauthPhone}
                 maxLength={10}
@@ -811,13 +833,18 @@ export default function LoginPage() {
   const [isVisible, setIsVisible] = useState(true);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
   const [oauthProfileRequired, setOauthProfileRequired] = useState(false);
-  const { user, authChecked } = useGlobal() as { user: unknown; authChecked: boolean };
+  const { user, authChecked } = useGlobal() as {
+    user: unknown;
+    authChecked: boolean;
+  };
 
   useEffect(() => {
     if (!authChecked || !user || oauthProfileRequired) return;
 
     let destination = "https://dashboard.ooshasprep.com/";
-    const requestedRedirect = new URLSearchParams(window.location.search).get("redirect");
+    const requestedRedirect = new URLSearchParams(window.location.search).get(
+      "redirect",
+    );
     if (requestedRedirect) {
       try {
         const parsed = new URL(requestedRedirect);
@@ -841,7 +868,10 @@ export default function LoginPage() {
   if (!authChecked || (user && !oauthProfileRequired)) {
     return (
       <main className="flex min-h-dvh w-full items-center justify-center bg-white">
-        <Loader2 className="h-7 w-7 animate-spin text-[#F47852]" aria-label="Checking your session" />
+        <Loader2
+          className="h-7 w-7 animate-spin text-[#F47852]"
+          aria-label="Checking your session"
+        />
       </main>
     );
   }
@@ -874,7 +904,8 @@ export default function LoginPage() {
             </span>
           </h1>
           <p className="relative z-10 w-full pl-1.5 text-left text-sm leading-relaxed text-[#526276] lg:hidden">
-            Get access to expert-led classes, structured courses, and personalized support
+            Get access to expert-led classes, structured courses, and
+            personalized support
           </p>
 
           {/* White Form Card */}
@@ -912,11 +943,17 @@ export default function LoginPage() {
             <div className="mt-5 rounded-xl bg-[#fff5f0] px-3 py-2.5 text-center">
               <p className="text-xs leading-relaxed text-[#697586]">
                 By continuing, you agree to our{" "}
-                <a href="/terms-and-conditions" className="font-semibold text-[#d95e3c] underline decoration-[#f2b9a3] underline-offset-2 hover:text-[#b84628]">
+                <a
+                  href="/terms-and-conditions"
+                  className="font-semibold text-[#d95e3c] underline decoration-[#f2b9a3] underline-offset-2 hover:text-[#b84628]"
+                >
                   Terms
                 </a>{" "}
                 and{" "}
-                <a href="/privacy-policy" className="font-semibold text-[#d95e3c] underline decoration-[#f2b9a3] underline-offset-2 hover:text-[#b84628]">
+                <a
+                  href="/privacy-policy"
+                  className="font-semibold text-[#d95e3c] underline decoration-[#f2b9a3] underline-offset-2 hover:text-[#b84628]"
+                >
                   Privacy Policy
                 </a>
               </p>
@@ -925,12 +962,17 @@ export default function LoginPage() {
 
           <div className="w-full max-w-[420px] rounded-2xl p-3.5 lg:hidden">
             <div className="mb-3">
-              <h2 className="text-lg font-bold tracking-[-0.02em] text-[#243247]">Find your exam prep</h2>
+              <h2 className="text-lg font-bold tracking-[-0.02em] text-[#243247]">
+                Find your exam prep
+              </h2>
               <p className="mt-1 text-sm leading-relaxed text-[#5f6d7e]">
                 Courses, practice and mock tests for your next step.
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-2.5" aria-label="Exam preparation categories">
+            <div
+              className="grid grid-cols-2 gap-2.5"
+              aria-label="Exam preparation categories"
+            >
               {[
                 { name: "GMAT", detail: "Business school prep" },
                 { name: "GRE", detail: "Graduate admissions" },
@@ -947,7 +989,9 @@ export default function LoginPage() {
                     <span className="inline-block px-0 py-1 text-base font-extrabold leading-tight tracking-[0.01em] text-[#bd482b]">
                       {name}
                     </span>
-                    <span className="mt-1.5 block text-xs font-medium leading-snug text-[#5f6d7e]">{detail}</span>
+                    <span className="mt-1.5 block text-xs font-medium leading-snug text-[#5f6d7e]">
+                      {detail}
+                    </span>
                   </span>
                 </div>
               ))}

@@ -26,7 +26,7 @@ export async function verifiedPortalUser(request: NextRequest): Promise<PortalUs
   const cookieToken = request.cookies.get("auth_token")?.value;
   const token = bearerToken || cookieToken;
   if (!token) return null;
-  const endpoint = "https://uat.gatewayabroadeducations.com/api/v1/auth/me";
+  const endpoint = "https://api.ooshasprep.com/api/v1/auth/me";
   try {
     const response = await fetch(endpoint, { headers: { Authorization: `Bearer ${token}` }, cache: "no-store", signal: AbortSignal.timeout(4000) });
     if (!response.ok) return null;

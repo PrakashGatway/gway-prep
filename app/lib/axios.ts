@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let mode = "dev2";
+let mode = "devv";
 
 const getBaseURL = () => {
   if (mode === "dev") {
