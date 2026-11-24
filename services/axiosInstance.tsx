@@ -1,6 +1,6 @@
 import axios from "axios";
 
-let mode = "dev"
+let mode = "devkkk"
 
 export const serverInstance = axios.create({
     baseURL: mode == "dev" ? "http://localhost:5000/api/v1/" : "https://api.ooshasprep.com/api/v1/",
