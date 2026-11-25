@@ -13,7 +13,7 @@ const FORM_CONFIG: any = {
   steps: [
     {
       step: 1,
-      title: "Started with Ooshas Global ",
+      title: "Started with Ooshas Prep",
       icon: User,
       fields: ["fullName", "email", "phone", "city", "programs"],
       button: "submit"

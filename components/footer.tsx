@@ -216,7 +216,7 @@ export function Footer({ Data = [] }: FooterProps) {
                 and world-class coaching.
               </p>
               <p className="text-sm leading-5 text-[#303030]">
-                Toll Free : <ContactLink value="+91 9166146538" />
+                Phone : <ContactLink value="+91 9166146538" />
               </p>
               <p className="text-sm leading-5 text-[#303030]">
                 Email : <ContactLink value="info@ooshasprep.com" />
