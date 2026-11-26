@@ -6,6 +6,7 @@ export interface IStudent extends Document {
     title?: string;
     subtitle?: string;
     heroImage?: string;
+    heroImageAlt?: string;
     button1Text?: string;
     button1Url?: string;
     button2Text?: string;
@@ -14,8 +15,10 @@ export interface IStudent extends Document {
     colorCode?: string;
     score?: string;
     image?: string;
+    imageAlt?: string;
     university?: string;
     universityLogo?: string;
+    universityLogoAlt?: string;
     about?: Record<string, any>;
     help?: string;
     outcome?: Record<string, any>;
@@ -25,6 +28,9 @@ export interface IStudent extends Document {
     messageDate?: string;
     video?: string;
     rating?: string;
+    seoTitle?: string;
+    metaDescription?: string;
+    seoKeywords?: string[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -36,6 +42,7 @@ const StudentSchema = new Schema<IStudent>(
         title: { type: String, trim: true },
         subtitle: { type: String, trim: true },
         heroImage: String,
+        heroImageAlt: { type: String, trim: true, maxlength: 160 },
         button1Text: { type: String, trim: true },
         button1Url: { type: String, trim: true },
         button2Text: { type: String, trim: true },
@@ -44,8 +51,10 @@ const StudentSchema = new Schema<IStudent>(
         colorCode: String,
         score: String,
         image: String,
+        imageAlt: { type: String, trim: true, maxlength: 160 },
         university: { type: String},
         universityLogo: String,
+        universityLogoAlt: { type: String, trim: true, maxlength: 160 },
         about: { type: Schema.Types.Mixed, default: {} },
         help: { type: String, default: "" },
         outcome: { type: Schema.Types.Mixed, default: {} },
@@ -58,6 +67,9 @@ const StudentSchema = new Schema<IStudent>(
         messageDate: String,
         video : String,
         rating: { type: String } // Added validation
+        ,seoTitle: { type: String, trim: true, maxlength: 70 }
+        ,metaDescription: { type: String, trim: true, maxlength: 160 }
+        ,seoKeywords: { type: [String], default: [] }
     },
     { timestamps: true }
 );
@@ -71,6 +83,9 @@ const requiredStudentPaths = [
     "title",
     "subtitle",
     "heroImage",
+    "heroImageAlt",
+    "imageAlt",
+    "universityLogoAlt",
     "button1Text",
     "button1Url",
     "button2Text",
@@ -78,6 +93,9 @@ const requiredStudentPaths = [
     "colorCode",
     "faqs",
     "help",
+    "seoTitle",
+    "metaDescription",
+    "seoKeywords",
 ];
 
 if (

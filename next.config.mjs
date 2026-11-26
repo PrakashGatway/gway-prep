@@ -35,10 +35,13 @@ const nextConfig = {
     unoptimized: true,
   },
 
+  compress: true,
+  poweredByHeader: false,
+
   reactStrictMode: true,
 
   experimental: {
-    optimizePackageImports: ["lucide-react"],
+    optimizePackageImports: ["lucide-react", "framer-motion", "date-fns", "swiper"],
   },
 };
 

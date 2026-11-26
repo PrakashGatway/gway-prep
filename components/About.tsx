@@ -42,12 +42,12 @@ export default function About({ sections }: any) {
   const [isPopupOpen,setIsPopupOpen] = useState<boolean>(false);
 
   return (
-    <main className="min-h-screen bg-white text-gray-800" id="main-content">
+    <main className="about-typography min-h-screen bg-white text-gray-800" id="main-content">
             <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen}/>
 
       {/* ---------------- Hero ---------------- */}
       <section
-        className="bg-cover bg-center bg-no-repeat py-16 lg:py-12 bg-[#FDF4ED]"
+        className="about-hero bg-cover bg-center bg-no-repeat py-16 lg:py-12 bg-[#FDF4ED]"
         style={{
           backgroundImage: "url('/aboutbg.webp')",
           backgroundPosition: "center",
@@ -55,10 +55,10 @@ export default function About({ sections }: any) {
           backgroundSize: "contain",
         }} // Update with your image path
       >
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-6 xl:px-1">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-14 items-center">
             {/* Left Content */}
-            <div className="order-2 lg:order-1 text-center lg:text-left">
+            <div className="order-2 lg:order-1 text-center lg:text-left lg:pl-4">
               <h1 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold">
                 <span className="text-primary">
                   {hero?.title?.split("||")[0]}
@@ -70,9 +70,9 @@ export default function About({ sections }: any) {
                 {hero?.subtitle}
               </p>
 
-              <div className="mt-6 flex flex-wrap justify-center lg:justify-start gap-4">
+              <div className="mt-7 flex flex-wrap justify-center lg:justify-start gap-3">
                 <button onClick={() => setIsPopupOpen(true)}
-                 className="cursor-pointer bg-primary px-8 py-4 text-white font-semibold transition hover:opacity-90">
+                 className="about-hero-button cursor-pointer bg-primary px-7 py-3.5 text-white font-semibold transition hover:opacity-90">
                   {hero?.buttons?.primary || "Get Started"}
                 </button>
                 {/* 
@@ -84,7 +84,7 @@ export default function About({ sections }: any) {
             </div>
 
             {/* Right Image */}
-            <div className="order-1 lg:order-2 flex justify-center">
+            <div className="about-hero-image order-1 lg:order-2 flex justify-center">
               <img
                 src={hero?.image || "/about.webp"}
                 alt="About"
@@ -100,7 +100,7 @@ export default function About({ sections }: any) {
           className="bg-white py-12 md:py-16 lg:py-20"
           aria-labelledby="who-are-we"
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-8 md:gap-14 items-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-1 grid lg:grid-cols-2 gap-8 md:gap-14 items-center">
             <div>
               <h2
                 id="who-are-we"
@@ -163,7 +163,7 @@ export default function About({ sections }: any) {
             backgroundRepeat: "no-repeat",
           }}
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-8 md:gap-14 items-start">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-1 grid lg:grid-cols-2 gap-8 md:gap-14 items-start">
             <div className="relative flex justify-center lg:justify-start">
               <div className="relative h-[400px] sm:h-[500px] md:h-[600px] lg:h-[700px] w-full max-w-md lg:max-w-none">
                 <img
@@ -226,7 +226,7 @@ export default function About({ sections }: any) {
           className="bg-white py-12 md:py-16 lg:py-20"
           aria-labelledby="people-behind"
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-1">
             <h2
               id="people-behind"
               className="text-center text-2xl md:text-3xl lg:text-5xl font-bold"
@@ -305,7 +305,7 @@ export default function About({ sections }: any) {
 
       {statsItems.length > 0 && (
         <section className="bg-white" aria-label="Key statistics">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 sm:grid-cols-4 gap-6 md:gap-10 py-8 md:py-10 border-y-2 border-black text-center">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-1 grid grid-cols-2 sm:grid-cols-4 gap-6 md:gap-10 py-8 md:py-10 border-y-2 border-black text-center">
             {statsItems.map((stat: any) => (
               <dl key={stat.label}>
                 <dt className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#f26e46]">
@@ -356,7 +356,7 @@ function LearningSection({ title, description, items }: any) {
       className="bg-white py-12 md:py-16 lg:py-20"
       aria-labelledby="world-class-learning"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-1">
         {/* ================= Desktop ================= */}
         <div
           className="hidden lg:grid grid-cols-4 grid-rows-2 gap-0"
@@ -535,7 +535,7 @@ function CallToActionSection({
     router.push(`/auth?redirect=${encodeURIComponent(destination)}`);
   };
   return (
-    <section className="relative overflow-hidden flex items-center py-6 mt-8 max-w-7xl mx-auto">
+    <section className="about-cta relative overflow-hidden flex items-center py-6 mt-8 max-w-7xl mx-auto">
       <div
         className="w-full mx-auto bg-[#f26e46] md:rounded-[24px] overflow-hidden 
         flex flex-col md:flex-row items-center justify-between p-6 md:p-8 gap-6 min-h-[160px]"

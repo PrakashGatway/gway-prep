@@ -410,10 +410,9 @@ export default async function CaseStudyPage() {
           className="pointer-events-none absolute -bottom-56 -right-28 h-[520px] w-[480px] rounded-[58%_42%_46%_54%/43%_57%_43%_57%] bg-[#FFD7A7]/25"
         />
 
-        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-8 px-5 py-10 sm:px-8 sm:py-12 lg:grid-cols-[.95fr_1.05fr] lg:gap-12 lg:px-8 lg:py-14">
+        <div className="relative z-10 mx-auto grid max-w-7xl items-center gap-8 px-5 py-10 xl:px-0 lg:grid-cols-[.95fr_1.05fr] lg:gap-12">
           <div className="relative z-10">
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#F4C4B1] bg-white/80 px-4 py-2 text-xs font-bold uppercase tracking-[.16em] text-[#9E4D35] sm:text-sm">
-              <Sparkles size={15} className="text-[#F36D45]" />
+            <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#F4C4B1] bg-white/80 px-4 py-2 text-xs font-bold uppercase tracking-[.16em] text-[#9E4D35]">
               {hero.eyebrow}
             </div>
 
@@ -485,7 +484,7 @@ export default async function CaseStudyPage() {
       {/* Student Stories Section */}
       <section
         id="student-stories"
-        className="mx-auto max-w-7xl scroll-mt-24 px-5 py-10 sm:px-8 sm:py-12 lg:px-8"
+        className="mx-auto max-w-7xl scroll-mt-24 px-5 py-10 sm:px-8 sm:py-12 xl:px-1"
       >
         <div className="mb-6 flex flex-col justify-between gap-3 sm:mb-8 sm:flex-row sm:items-end">
           <div className="max-w-2xl">
@@ -537,7 +536,7 @@ export default async function CaseStudyPage() {
 
       {/* FAQ Section */}
       <section className="bg-[#FFF4EF]">
-        <div className="mx-auto grid max-w-7xl gap-8 px-5 py-10 sm:px-8 sm:py-12 lg:grid-cols-[.7fr_1.3fr] lg:gap-12 lg:px-8">
+        <div className="mx-auto grid max-w-7xl font-semibold gap-8 px-5 py-10 sm:px-8 sm:py-12 lg:grid-cols-[.7fr_1.3fr] lg:gap-12 xl:px-1">
           <div>
             <p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">
               {faq.eyebrow}

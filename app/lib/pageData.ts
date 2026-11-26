@@ -552,6 +552,7 @@ export const pageData: any = {
           type: "file",
           accept: "image/*",
         },
+        { name: "heroImageAlt", label: "Hero Image Alt Text", type: "text", placeholder: "Describe the hero image" },
         {
           name: "button1Text",
           label: "Primary Button Text",
@@ -591,11 +592,32 @@ export const pageData: any = {
             placeholder: "e.g. riya-sharma-sat-success",
           },
           {
-            name: "course",
-            label: "student course",
+            name: "seoTitle",
+            label: "SEO Title",
             type: "text",
             required: false,
-            placeholder: "",
+            placeholder: "Search result title (max 70 characters)",
+          },
+          {
+            name: "metaDescription",
+            label: "Meta Description",
+            type: "textarea",
+            required: false,
+            placeholder: "Short search result description (max 160 characters)",
+          },
+          {
+            name: "seoKeywords",
+            label: "SEO Keywords",
+            type: "text",
+            required: false,
+            placeholder: "Comma separated keywords",
+          },
+          {
+            name: "course",
+            label: "student course",
+            type: "select",
+            required: false,
+            option: ["IELTS", "PTE", "TOEFL", "GRE", "GMAT", "SAT", "Study Abroad", "Other"],
           },
           {
             name: "colorCode",
@@ -617,6 +639,7 @@ export const pageData: any = {
             type: "file",
             accept: "image/*",
           },
+          { name: "imageAlt", label: "Student Image Alt Text", type: "text", placeholder: "Describe the student image" },
           {
             name: "university",
             label: "University name",
@@ -630,6 +653,7 @@ export const pageData: any = {
             type: "file",
             accept: "image/*",
           },
+          { name: "universityLogoAlt", label: "University Logo Alt Text", type: "text", placeholder: "Describe the university logo" },
           {
             name: "about",
             label: "student about",

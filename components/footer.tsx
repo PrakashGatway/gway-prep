@@ -197,12 +197,12 @@ export function Footer({ Data = [] }: FooterProps) {
           </section>
         )}
       </div>
-      <footer className="bg-[#FDF4EF] mt-2 mx-4 sm:mx-8 lg:mx-16 overflow-hidden border-2 border-primary rounded-t-[2rem] sm:rounded-t-[3rem] lg:rounded-t-[3.5rem] mt-10">
+      <footer className="site-footer w-full bg-[#FDF4EF] mt-10 overflow-hidden border-x-0 border-t border-[#F3B49F] rounded-t-[2rem] sm:rounded-t-[3rem] lg:rounded-t-[3.5rem]">
         {/* ================= TOP ================= */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 md:py-12">
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-8 sm:py-10 md:py-14">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 md:gap-12 lg:gap-16 items-start">
             {/* Logo */}
-            <div className="sm:col-span-2 lg:col-span-2 pr-10 space-y-3">
+            <div className="sm:col-span-2 lg:col-span-2 pr-0 lg:pr-10 space-y-3">
               <Image
                 src="/image/logo.png"
                 alt="logo"
@@ -210,22 +210,22 @@ export function Footer({ Data = [] }: FooterProps) {
                 height={70}
                 className=""
               />
-              <p className="text-sm leading-5 text-[#303030]">
+              <p className="text-sm leading-6 text-[#514945]">
                 Ooshas Prep is a leading online test prep platform for IELTS,
                 GRE, GMAT, SAT, TOEFL & PTE, offering flexible learning formats
                 and world-class coaching.
               </p>
-              <p className="text-sm leading-5 text-[#303030]">
+              <p className="text-sm leading-6 text-[#514945]">
                 Phone : <ContactLink value="+91 9166146538" />
               </p>
-              <p className="text-sm leading-5 text-[#303030]">
+              <p className="text-sm leading-6 text-[#514945]">
                 Email : <ContactLink value="info@ooshasprep.com" />
               </p>
             </div>
 
             {/* Quick Links */}
             <div>
-              <h3 className="text-xl font-semibold my-4">Quick Links</h3>
+              <h3 className="text-base font-bold tracking-wide text-[#17243A] my-4">Quick Links</h3>
               <ul className="space-y-2 text-[13px] text-[#444]">
                 {quickLinks.map((link) => (
                   <li key={link.label}>
@@ -242,7 +242,7 @@ export function Footer({ Data = [] }: FooterProps) {
 
             {/* Services */}
             <div>
-              <h3 className="text-xl font-semibold my-4">Our Services</h3>
+              <h3 className="text-base font-bold tracking-wide text-[#17243A] my-4">Our Services</h3>
               <ul className="space-y-2 text-[13px] text-[#444]">
                 {courseData.map((item: any) => (
                   <li
@@ -258,7 +258,7 @@ export function Footer({ Data = [] }: FooterProps) {
 
             {/* Resources */}
             <div>
-              <h3 className="text-xl font-semibold my-4">Resources</h3>
+              <h3 className="text-base font-bold tracking-wide text-[#17243A] my-4">Resources</h3>
               <ul className="space-y-2 text-[13px] text-[#444]">
                 {calculator.map((resource) => (
                   <li key={resource.slug}>
@@ -275,7 +275,7 @@ export function Footer({ Data = [] }: FooterProps) {
 
             {/* Exam Details */}
             <div className="lg:block">
-              <h3 className="text-xl font-semibold my-4">Exam Details</h3>
+              <h3 className="text-base font-bold tracking-wide text-[#17243A] my-4">Exam Details</h3>
               <ul className="space-y-2 text-[13px] text-[#444]">
                 {courseData1.map((item: any) => (
                   <li
@@ -305,16 +305,17 @@ export function Footer({ Data = [] }: FooterProps) {
                 </p>
                 <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
                   <input
-                    type="text"
+                    type="email"
                     onChange={(e) => setemail(e.target.value)}
-                    placeholder="Enter your email"
-                    className="w-full sm:w-64 md:w-72 lg:w-96 border-2 border-primary flex items-center gap-2 bg-white text-black font-semibold px-4 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all"
+                    placeholder="Your email address"
+                    aria-label="Email address for exam updates"
+                    className="w-full sm:w-64 md:w-72 lg:w-96 border border-[#E8C9BC] flex items-center gap-2 bg-white px-4 py-3 rounded-xl shadow-[0_4px_16px_rgba(90,55,40,0.06)] text-[#3E3733] placeholder:text-[#9A8177] font-medium transition-all hover:border-[#F3B49F] focus:border-[#F36D45] focus:outline-none focus:ring-2 focus:ring-[#F36D45]/15"
                   />
                   <button
                     onClick={() => {
                       submit();
                     }}
-                    className="w-full sm:w-auto flex-shrink-0 border-2 border-primary flex items-center justify-center gap-2 bg-white text-[#FF6A13] font-semibold px-6 py-3 rounded-xl shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap"
+                    className="w-full sm:w-auto flex-shrink-0 flex items-center justify-center gap-2 bg-[#F36D45] text-white font-bold px-6 py-3 rounded-xl shadow-[0_6px_16px_rgba(243,109,69,0.22)] hover:bg-[#D95C39] hover:shadow-[0_8px_20px_rgba(243,109,69,0.28)] focus:outline-none focus:ring-2 focus:ring-[#F36D45]/30 focus:ring-offset-2 transition-all whitespace-nowrap"
                   >
                     Subscribe Now
                     <svg
@@ -341,13 +342,13 @@ export function Footer({ Data = [] }: FooterProps) {
         <div className="bg-primary relative">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex flex-wrap justify-center md:justify-start gap-4 sm:gap-6 lg:gap-8 mt-4 md:mt-0">
-              <p className="text-white text-sm text-center sm:text-left">
+              <p className="text-white text-xs text-center sm:text-left">
                 © {new Date().getFullYear()} Ooshas Prep. All rights reserved.
               </p>
-              <Link href="/privacy-policy" className="text-white text-sm">
+              <Link href="/privacy-policy" className="text-white text-xs">
                 Privacy Policy
               </Link>
-              <Link href="/terms-and-conditions" className="text-white text-sm">
+              <Link href="/terms-and-conditions" className="text-white text-xs">
                 Terms of Service
               </Link>
             </div>

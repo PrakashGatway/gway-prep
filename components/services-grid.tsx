@@ -18,12 +18,12 @@ export default function ServicesGrid({ data, heading }: any) {
   return (
     <section className="py-2 bg-[#fff] overflow-hidden">
       <div className="container mx-auto px-4">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-center text-2xl md:text-3xl lg:text-[2.5rem] font-bold md:leading:7 lg:leading-14">
+        <div className="max-w-7xl mx-auto text-center">
+          <h2 className="text-center text-2xl md:text-3xl lg:text-4xl font-semibold md:leading:7 lg:leading-10">
             <span className="text-primary">{titleParts[0]?.trim() || "Four Ways to Learn."}</span>{" "}
             <span className="">{titleParts[1]?.trim() || "One Standard of Excellence."}</span>
           </h2>
-          <p className="my-6 md:text-base leading-relaxed text-justify">
+          <p className="my-6 md:text-lg leading-relaxed text-justify">
             {subtitle}
           </p>
         </div>

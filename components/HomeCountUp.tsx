@@ -108,9 +108,7 @@ export const HomeCountUp: React.FC<HomeCountUpProps> = ({
       return {
         label: item.label || item.key,
         value: item.value || 0,
-        suffix:
-          item.suffix ||
-          (item.key === "Rating" ? "/5" : "+"),
+        suffix: item.suffix || (item.key === "Rating" ? "/5" : "+"),
       };
     }
 
@@ -140,9 +138,7 @@ export const HomeCountUp: React.FC<HomeCountUpProps> = ({
      * "16+"     -> "16"
      * "5"       -> "5"
      */
-    const numericValue = Number(
-      parts[1]?.replace(/[^\d.]/g, "") || 0
-    );
+    const numericValue = Number(parts[1]?.replace(/[^\d.]/g, "") || 0);
 
     return {
       label,
@@ -188,11 +184,7 @@ export const HomeCountUp: React.FC<HomeCountUpProps> = ({
         "
       >
         {countItems.map((item, idx) => {
-          const {
-            label,
-            value,
-            suffix,
-          } = getItemData(item);
+          const { label, value, suffix } = getItemData(item);
 
           return (
             <div
@@ -210,7 +202,7 @@ export const HomeCountUp: React.FC<HomeCountUpProps> = ({
                   className="
                     mb-1
                     text-2xl
-                    font-bold
+                    font-semibold
                     text-[#F36C45]
                     sm:text-3xl
                     md:mb-2
@@ -238,10 +230,11 @@ export const HomeCountUp: React.FC<HomeCountUpProps> = ({
                 <p
                   className="
                     text-sm
+                    font-medium
                     capitalize
-                    text-gray-600
+                    text-gray-800
                     sm:text-base
-                    md:text-xl
+                    md:text-lg
                   "
                 >
                   {label}

@@ -249,7 +249,7 @@ const FORM_CONFIG: FormConfigType = {
     },
   ],
   submit: {
-    label: "Submit Application",
+    label: "Submit",
     icon: Send,
     variant: "primary",
     size: "large",
@@ -265,8 +265,8 @@ export function RegistrationSection({ data }: any) {
   const primaryColor = "#f26e46";
 
   return (
-    <section className="py-12 px-4">
-      <div className="max-w-7xl bg-gray-200 p-4 rounded-3xl mx-auto flex flex-col lg:flex-row items-center gap-6">
+    <section className="py-12">
+      <div className="max-w-7xl bg-gray-200 p-2 sm:p-4 rounded-3xl mx-auto flex flex-col lg:flex-row items-center gap-6">
         {/* Left Side - Image/Illustration */}
         <motion.div
           initial={{ opacity: 0, x: -50 }}
@@ -290,11 +290,11 @@ export function RegistrationSection({ data }: any) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <div className="bg-white relative rounded-3xl p-6">
+            <div className="bg-white relative rounded-3xl p-4 sm:p-6">
               {/* Optional: Add a header above the form */}
-              <div className="mb-3 text-center lg:text-left  ">
+              <div className="mb-3 text-left  ">
                 <div className="xl:w-90">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-px">
+                  <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-px">
                     Start Your Preparation
                   </h2>
                   <p className="text-gray-600 text-sm">

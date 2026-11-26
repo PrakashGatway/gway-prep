@@ -573,7 +573,7 @@ export default function BlogPage({
           </div>
 
           {blogs.length > 0 ? (
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:gap-10 lg:grid-cols-3">
               {blogs.map((post) => (
                 <article
                   key={post._id}
@@ -598,7 +598,7 @@ export default function BlogPage({
                       ))}
                     </div>
                     {/* Title */}
-                    <h3 className="line-clamp-2 text-base font-semibold leading-[1.45]  transition-colors duration-200 group-hover:text-[#F0642C]">
+                    <h3 className="line-clamp-2 text-[19px] font-bold leading-[1.35] tracking-[-0.01em] text-[#17243A] transition-colors duration-200 group-hover:text-[#F0642C]">
                       <span className="text-[#555]">
                         {post.title.split(":")[0]} :
                       </span>

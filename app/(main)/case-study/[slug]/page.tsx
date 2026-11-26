@@ -260,19 +260,22 @@ export async function generateMetadata({
     };
   }
 
-  const title = `${student.name || "Student Success"} | ${
+  const fallbackTitle = `${student.name || "Student Success"} | ${
     student.course || "Case Study"
   } | Ooshas Prep`;
-  const description = `${student.name || "An Ooshas Prep student"}${
+  const fallbackDescription = `${student.name || "An Ooshas Prep student"}${
     student.course ? `’s ${student.course} preparation journey` : "’s preparation journey"
   }${student.score ? ` and achievement of ${student.score}` : ""}.`;
+  const title = student.seoTitle?.trim() || fallbackTitle;
+  const description = student.metaDescription?.trim() || fallbackDescription;
   const canonical = `${SITE_URL}/case-study/${slugify(slug)}`;
 
   return {
     title,
     description,
+    keywords: Array.isArray(student.seoKeywords) ? student.seoKeywords : undefined,
     alternates: { canonical },
-    robots: { index: false, follow: false },
+    robots: { index: student?.slug ? true : false, follow: student?.slug ? true : false },
     openGraph: {
       title,
       description,
@@ -280,7 +283,7 @@ export async function generateMetadata({
       siteName: "Ooshas Prep",
       type: "article",
       images: student.image
-        ? [{ url: student.image, alt: student.name || "Student case study" }]
+        ? [{ url: student.image, alt: student.imageAlt || student.name || "Student case study" }]
         : undefined,
     },
   };
@@ -389,6 +392,7 @@ export default async function CaseStudyDetailPage({
   );
   const heroStudentName = student.name || "Student";
   const heroStudentImage = getText(student.heroImage, student.image || "");
+  const heroStudentImageAlt = getText(student.heroImageAlt, student.imageAlt || `${heroStudentName} student success story`);
   const heroAchievement = student.score || "A proud milestone";
   const heroCourse = student.course || "";
   const heroUniversity = student.university || "";
@@ -408,6 +412,7 @@ export default async function CaseStudyDetailPage({
   const messageContent = cleanEditorHtml(student.message);
   const testimonialName = student.name || "Student";
   const testimonialImage = student.universityLogo || "";
+  const testimonialImageAlt = getText(student.universityLogoAlt, `${heroStudentName} university logo`);
   const studentRating = student.rating ? String(student.rating) : "";
   const highlightsHeading = "The highlights";
   const differenceHeading = "What made the difference?";
@@ -427,17 +432,18 @@ export default async function CaseStudyDetailPage({
           max-width: 100% !important;
           text-align: left !important;
         }
-        .case-study-html { color: #655D59 !important; line-height: 1.7 !important; overflow-wrap: anywhere; }
-        .case-study-html p, .case-study-html div p { color: #655D59 !important; line-height: 1.7 !important; margin: 0 0 1rem !important; padding: 0 !important; }
+        .case-study-html { color: #3E3733 !important; line-height: 1.75 !important; overflow-wrap: anywhere; font-weight: 500 !important; }
+        .case-study-html p, .case-study-html div p { color: #3E3733 !important; line-height: 1.75 !important; margin: 0 0 1rem !important; padding: 0 !important; font-weight: 500 !important; }
         .case-study-html h2 { color: #00306a !important; font-size: 26px !important; font-weight: 700 !important; line-height: 1.25 !important; margin: 28px 0 12px !important; }
         .case-study-html h3 { color: #00306a !important; font-size: 20px !important; font-weight: 600 !important; line-height: 1.3 !important; margin: 22px 0 10px !important; }
         .case-study-html h4 { color: #00306a !important; font-size: 18px !important; font-weight: 600 !important; line-height: 1.35 !important; margin: 18px 0 8px !important; }
-        .case-study-html strong, .case-study-html b { color: #302A27 !important; font-weight: 800 !important; }
+        .case-study-html strong, .case-study-html b { color: #C84F31 !important; font-weight: 800 !important; }
+        .case-study-html blockquote { border-left: 4px solid #F36D45 !important; color: #3E3430 !important; font-weight: 600 !important; padding-left: 1rem !important; }
         .case-study-html a { color: #240dbd !important; text-decoration: underline !important; }
         .case-study-html ul, .case-study-html ol { margin: 0 0 1rem 22px !important; padding: 0 !important; }
         .case-study-html ul { list-style: disc outside !important; }
         .case-study-html ol { list-style: decimal outside !important; }
-        .case-study-html li { color: #655D59 !important; line-height: 1.65 !important; margin: .35rem 0 !important; }
+        .case-study-html li { color: #3E3733 !important; line-height: 1.65 !important; margin: .35rem 0 !important; }
         .case-study-html li::marker { color: #f36d45 !important; }
         .case-study-html figure.table { display: block; width: 100% !important; max-width: 100% !important; overflow-x: auto !important; margin: 20px 0 !important; padding: 0 !important; border: 0 !important; border-radius: 0 !important; box-shadow: none !important; background: transparent !important; -webkit-overflow-scrolling: touch; }
         .case-study-html table { display: table !important; width: 100% !important; min-width: 450px !important; max-width: none !important; border-collapse: collapse !important; table-layout: auto !important; margin: 0 !important; font-size: 15px !important; }
@@ -449,23 +455,22 @@ export default async function CaseStudyDetailPage({
         @media (max-width: 640px) { .case-study-html table { min-width: 450px !important; font-size: 14px !important; } .case-study-html th, .case-study-html td { padding: 10px !important; } }
       `}</style>
       {/* Static student-specific hero */}
-      <section className="relative isolate overflow-hidden bg-[#FDF4EF]">
+      <section className="relative isolate font-medium overflow-hidden bg-[#FDF4EF]">
         <div className="absolute right-0 top-0 h-full w-[35%] bg-[#FFF0BE]" />
         <div className="absolute -right-32 -top-36 h-[430px] w-[430px] rounded-full bg-[#FFB09D]/65" />
 
-        <div className="relative mx-auto max-w-7xl px-5 pb-14 pt-8 sm:px-8 sm:pb-20 sm:pt-10 lg:px-8 lg:pb-24">
+        <div className="relative mx-auto max-w-7xl px-5 pb-14 pt-8 sm:px-8 sm:pb-20 sm:pt-10 xl:px-1 lg:pb-24">
         
 
           <div className="mt-3 grid items-center gap-8 lg:grid-cols-[minmax(0,7fr)_minmax(0,3fr)] lg:gap-12">
             <div className="relative z-10">
               <div className="inline-flex items-center gap-2 rounded-full border border-[#F4C4B1] bg-white/80 px-4 py-2 text-xs font-bold uppercase tracking-[.15em] text-[#A4553A]">
-                <Sparkles size={15} className="text-[#F36D45]" />
                 {heroEyebrow}
               </div>
-              <h1 className="mt-4 text-left text-3xl font-extrabold leading-[1.08] tracking-[-.04em] sm:text-4xl lg:text-[2.5rem]">
+              <h1 className="mt-4 text-left text-2xl font-extrabold leading-[1.12] tracking-[-.035em] text-[#17243A] sm:text-4xl lg:text-[2.5rem]">
                 {heroTitle}
               </h1>
-              <p className="mt-4 text-lg leading-8 text-[#665C58]">
+              <p className="mt-3 max-w-2xl text-base font-medium leading-7 text-[#514945] sm:mt-4 sm:text-lg sm:leading-8">
                 {heroDescription}
               </p>
 
@@ -514,13 +519,13 @@ export default async function CaseStudyDetailPage({
               />
           
 
-              <div className="relative z-20 mx-auto w-full overflow-hidden rounded-[2.5rem_2.5rem_2.5rem_5rem] bg-[#F36D45] shadow-[0_30px_75px_rgba(119,69,48,.22)]">
+              <div className="relative z-20 mx-auto w-full rounded-3xl overflow-hidden">
                 <div className="relative aspect-[.78/1] max-h-[600px]">
                   {heroStudentImage ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={heroStudentImage}
-                      alt={heroStudentName}
+                      alt={heroStudentImageAlt}
                       className="h-full w-full object-cover transition duration-700 hover:scale-[1.03]"
                     />
                   ) : (
@@ -528,45 +533,19 @@ export default async function CaseStudyDetailPage({
                       {heroStudentName.charAt(0)}
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#211714]/85 via-transparent to-[#211714]/10" />
-                  <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-7">
-                    <p className="text-[10px] font-extrabold uppercase tracking-[.2em] text-[#FFD7A7]">
-                      Student spotlight
-                    </p>
-                    <p className="mt-1 text-2xl font-extrabold tracking-tight sm:text-3xl">
-                      {heroStudentName}
-                    </p>
-                    {heroCourse && <p className="mt-1 text-sm text-white/85">{heroCourse}</p>}
-                  </div>
+                 
                 </div>
               </div>
-
-              <div className="absolute left-0 top-8 z-30 inline-flex items-center gap-2 rounded-2xl border border-white/80 bg-white/95 px-4 py-3 shadow-[0_14px_35px_rgba(71,40,29,.15)] sm:-left-1 sm:px-5">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#292522] text-[#FFD7A7]">
-                  <Trophy size={18} />
-                </span>
-                <span>
-                  <span className="block text-[10px] font-bold uppercase tracking-[.15em] text-[#9C7768]">Achievement</span>
-                  <span className="block text-base font-black" style={{ color: accent }}>{heroAchievement}</span>
-                </span>
-              </div>
-
-              {heroUniversity && (
-                <div className="absolute bottom-0 right-0 z-30 max-w-[66%] rounded-2xl border border-[#F0D8CC] bg-white px-4 py-3 shadow-[0_14px_35px_rgba(71,40,29,.15)] sm:right-1 sm:px-5">
-                  <p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#9C7768]">Next chapter</p>
-                  <p className="mt-1 truncate text-sm font-extrabold text-[#292522]">{heroUniversity}</p>
-                </div>
-              )}
             </div>
           </div>
         </div>
       </section>
 
       {/* Static student-specific "Behind the milestone" section */}
-      <section className="mx-auto grid max-w-7xl items-start gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-16 lg:px-8 lg:py-20">
+      <section className="mx-auto grid max-w-7xl items-start gap-10 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-16 xl:px-1 lg:py-20">
         <div id="the-story" className="min-w-0 scroll-mt-24">
           <p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">{storyEyebrow}</p>
-          <h2 className="mt-3 text-3xl font-extrabold tracking-[-.035em] sm:text-4xl">{storyHeading}</h2>
+          <h2 className="mt-3 text-2xl font-extrabold leading-tight tracking-[-.03em] text-[#17243A] sm:text-4xl">{storyHeading}</h2>
 
           {storyContent ? (
             <div
@@ -574,7 +553,7 @@ export default async function CaseStudyDetailPage({
               dangerouslySetInnerHTML={{ __html: storyContent }}
             />
           ) : (
-            <p className="mt-7 max-w-3xl text-base leading-8 text-[#655D59]">
+            <p className="mt-6 max-w-3xl text-sm font-semibold leading-7 text-[#3E3733] sm:mt-7 sm:text-base sm:leading-8">
               {student.name} worked toward {student.course || "a personal learning goal"} with focus and consistency. Every student journey is different, and this milestone reflects the commitment it takes to keep learning, practising, and moving forward.
             </p>
           )}
@@ -591,12 +570,12 @@ export default async function CaseStudyDetailPage({
 
           {messageContent && (
             <blockquote className="relative mt-10 overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#F36D45] to-[#D95C39] p-6 text-white shadow-[0_18px_45px_rgba(243,109,69,.2)] sm:p-9">
-              <Quote size={42} className="absolute right-6 top-6 text-white/20" />
-              <div className="case-study-html case-study-html--inverse relative w-full min-w-0" dangerouslySetInnerHTML={{ __html: messageContent }} />
+              <Quote size={42} className="absolute right-6 top-6 !text-white/20" />
+              <div className="case-study-html case-study-html--inverse !text-white relative w-full min-w-0" dangerouslySetInnerHTML={{ __html: messageContent }} />
               <footer className="relative mt-5 flex items-center gap-3 border-t border-white/25 pt-5">
                 {testimonialImage && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={testimonialImage} alt="" className="h-10 w-10 rounded-full bg-white object-contain p-1" />
+                  <img src={testimonialImage} alt={testimonialImageAlt} className="h-10 w-10 rounded-full bg-white object-contain p-1" />
                 )}
                 <div>
                   <p className="font-bold">{testimonialName}</p>
@@ -637,10 +616,10 @@ export default async function CaseStudyDetailPage({
 
       {/* FAQ heading and questions use the shared /case-study CMS response */}
       <section className="bg-[#FDF4EF]">
-        <div className="mx-auto grid max-w-7xl gap-9 px-5 py-14 sm:px-8 sm:py-16 lg:grid-cols-[.7fr_1.3fr] lg:gap-16 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-9 px-5 py-14 sm:px-8 sm:py-16 lg:grid-cols-[.7fr_1.3fr] lg:gap-16 xl:px-1">
           <div>
             <p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">{faq.eyebrow}</p>
-            <h2 className="mt-3 text-3xl font-bold leading-tight">{faq.title}</h2>
+            <h2 className="mt-3 text-2xl font-bold leading-tight sm:text-3xl">{faq.title}</h2>
             <p className="mt-4 leading-7 text-[#726965]">{faq.subtitle}</p>
           </div>
           <CaseStudyFaqs items={displayedFaqs} />
@@ -648,23 +627,16 @@ export default async function CaseStudyDetailPage({
       </section>
 
       {/* Related student stories: shared CMS headings + slug page's related students */}
-      <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16 lg:px-8">
     
         <ExploreStoriesSlider students={moreStories} stories={stories} />
-      </section>
 
       {/* Blog content itself stays in RecentBlogsSlider; its heading comes from the shared CMS page. */}
-      <section className="bg-[#FDF4EF] py-12 sm:py-16">
-        <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-8">
+   
           <RecentBlogsSlider blog={blogs} />
-        </div>
-      </section>
+
 
       {/* CTA/form headings use the shared CMS response. The form component is unchanged. */}
-      <section className="px-5 py-12 sm:px-8 sm:py-16 lg:px-0">
         <SuccessStoryForm cta={cta} />
-      </section>
-
    
     </main>
   );

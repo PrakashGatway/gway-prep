@@ -84,12 +84,11 @@ export function AboutSection({data}:{data : any}) {
   return (
     <div className="relative py-8 sm:py-10 lg:py-12  ">
          {/* Heading */}
-      <div className="text-center px-4 max-w-7xl mx-auto">
-        <h2 className=" text-2xl md:text-3xl lg:text-[2.5rem] font-bold flex items-center justify-center gap-3">
+      <div className="text-center px-2 sm:px-4 max-w-7xl mx-auto">
+        <h2 className=" text-2xl md:text-3xl lg:text-4xl text-gray-800 font-semibold flex items-center justify-center gap-3">
           {data.fields?.title || "Meet our stars"}{" "}
-          <Stars className="w-8 h-8 md:w-10 md:h-10 text-primary fill-primary" />
         </h2>
-        <p className=" mt-3 text-base md:text-base">
+        <p className=" mt-3 text-base md:text-lg text-gray-800 font-medium text-left sm:text-justify mx-auto px-1.5 sm:px-4">
           {data.fields?.subtitle || "Our students who made us proud"}
         </p>
       </div>
@@ -119,13 +118,13 @@ export function AboutSection({data}:{data : any}) {
       {/* Buttons */}
       <button
         onClick={() => slider?.current?.prev()}
-        className="absolute left-1 sm:left-2 md:left-24 bottom-[40%]  z-10">
+        className="absolute hidden left-1 sm:left-2 md:left-24 bottom-[40%]  z-10">
         <ChevronLeft size={28} className="sm:size-[32px] md:size-[36px] text-[#FF6B35]" />
       </button>
 
       <button
         onClick={() => slider?.current?.next()}
-        className="absolute right-1 sm:right-2 md:right-24 bottom-[40%]  z-10">
+        className="absolute hidden right-1 sm:right-2 md:right-24 bottom-[40%]  z-10">
         <ChevronRight size={28} className="sm:size-[32px] md:size-[36px] text-[#FF6B35]" />
       </button>
     </div>

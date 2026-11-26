@@ -15,8 +15,8 @@ export function Consultants({ data, finalCtaSection }: any) {
 
   return (
     <section className="bg-gray-100">
-    <div className=" max-w-7xl mx-auto rounded-xl py-6 mb-8">
-      <h2 className="text-center text-2xl md:text-3xl lg:text-[2.5rem] font-bold mb-8">
+    <div className=" max-w-7xl mx-auto rounded-xl py-8 mb-8">
+      <h2 className="text-center text-2xl md:text-3xl lg:text-4xl font-semibold mb-8">
         {data.fields.title?.split("||")[0]}
         <span className="text-primary">
           {data.fields.title?.split("||")[1]}
@@ -32,7 +32,7 @@ export function Consultants({ data, finalCtaSection }: any) {
       <summary
         className="flex items-center justify-between w-full py-4 text-left cursor-pointer list-none"
       >
-        <span className="font-b text-gray-700 text-sm md:text-lg">
+        <span className="font-medium text-gray-800 text-sm md:text-lg">
           {item.question}
         </span>
 

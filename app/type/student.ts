@@ -6,6 +6,7 @@ export const StudentValidationSchema = z.object({
   title: z.string().optional(),
   subtitle: z.string().optional(),
   heroImage: z.string().optional(),
+  heroImageAlt: z.string().trim().max(160).optional(),
   button1Text: z.string().optional(),
   button1Url: z.string().optional(),
   button2Text: z.string().optional(),
@@ -14,8 +15,10 @@ export const StudentValidationSchema = z.object({
   colorCode: z.string().optional(),
   score: z.string().optional(),
   image: z.string().url("Invalide image url").optional(),
+  imageAlt: z.string().trim().max(160).optional(),
   university: z.string().optional(),
   universityLogo: z.string().url("Invalid image url").optional(),
+  universityLogoAlt: z.string().trim().max(160).optional(),
   about: z.any().default({}),
   help: z.string().optional(),
   outcome: z.any().default({}),
@@ -25,6 +28,9 @@ export const StudentValidationSchema = z.object({
   messageDate: z.string().optional(),// Use z.coerce.date() if sending ISO strings
   video: z.string().optional(),
   rating: z.string().optional(),
+  seoTitle: z.string().trim().max(70, "SEO title must be 70 characters or less").optional(),
+  metaDescription: z.string().trim().max(160, "Meta description must be 160 characters or less").optional(),
+  seoKeywords: z.array(z.string().trim()).optional().default([]),
 });
 
 export type StudentInput = z.infer<typeof StudentValidationSchema>;

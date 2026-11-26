@@ -168,7 +168,7 @@ export function Navbar({ Data }: NavbarProps) {
         return {
           name:
             parent?.seoMeta?.navTitle || parent?.seoMeta?.title || parent?.name,
-          img: parent?.seoMeta?.navIcon || null,
+          img: parent?.seoMeta?.navIcon || parent?.seoMeta?.image || parent?.image || null,
           slug: getSlug(parent),
           description: parent?.seoMeta?.navSubtitle || "",
           badge: parent?.seoMeta?.badge || null,
@@ -190,7 +190,7 @@ export function Navbar({ Data }: NavbarProps) {
                   child?.seoMeta?.navTitle ||
                   child?.seoMeta?.title ||
                   child?.name,
-                img: child?.seoMeta?.navIcon || null,
+                img: child?.seoMeta?.navIcon || child?.seoMeta?.image || child?.image || null,
                 slug: nestedSlug,
                 description: child?.seoMeta?.navSubtitle || "",
                 badge: child?.seoMeta?.badge || null,
@@ -476,7 +476,7 @@ export function Navbar({ Data }: NavbarProps) {
         </div>
       </div>
       <nav
-        className={`
+        className={`site-navbar
           sticky
           top-0
           left-0
@@ -578,7 +578,7 @@ export function Navbar({ Data }: NavbarProps) {
                 DESKTOP NAVIGATION
             ================================================= */}
 
-            <div className="hidden min-w-0 flex-1 items-center justify-center gap-1 xl:flex">
+            <div className="hidden min-w-0 flex-1 items-center justify-center gap-0 xl:flex">
               {navItems.map((item: any) => (
                 <div
                   key={item.name}
@@ -615,14 +615,15 @@ export function Navbar({ Data }: NavbarProps) {
   px-2.5
   py-2.5
   text-[14px]
-  font-medium
+  font-semibold
+  tracking-[0.01em]
   transition-all
   duration-200
    ${navTabUnderline}
   ${
     activeDropdown === item.name || isNavItemActive(item)
       ? "text-[#D9542D] after:scale-x-0"
-      : "text-gray-800 hover:text-[#F36C45] after:scale-x-0"
+      : "text-[#4B4542] hover:text-[#F36C45] after:scale-x-0"
   }
 `}
                     >
@@ -644,7 +645,7 @@ export function Navbar({ Data }: NavbarProps) {
                       href={item.href}
                       onMouseEnter={closeDesktopDropdown}
                       aria-current={isNavItemActive(item) ? "page" : undefined}
-                      className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-2xl px-2.5 py-2.5 text-[14px] font-medium transition-all duration-200 ${navTabUnderline} ${isNavItemActive(item) ? "text-[#D9542D] after:scale-x-0" : "text-gray-800 hover:text-[#F36C45] after:scale-x-0"}`}
+                      className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-2xl px-2.5 py-2.5 text-[14px] font-semibold tracking-[0.01em] transition-all duration-200 ${navTabUnderline} ${isNavItemActive(item) ? "text-[#D9542D] after:scale-x-0" : "text-[#4B4542] hover:text-[#F36C45] after:scale-x-0"}`}
                     >
                       {item.name}
                     </Link>
@@ -652,7 +653,7 @@ export function Navbar({ Data }: NavbarProps) {
 
                   <AnimatePresence>
                     {item.hasDropdown && activeDropdown === item.name && (
-                      <div className="absolute inset-x-0 top-full z-[600] w-full bg-white shadow-[0_18px_38px_rgba(15,23,42,0.12)]">
+                      <div className="absolute left-1/2 top-[calc(100%+0.25rem)] z-[600] w-[calc(100%-2rem)] max-w-7xl -translate-x-1/2 overflow-hidden rounded-3xl border border-white bg-white shadow-[0_18px_38px_rgba(15,23,42,0.16)]">
                         <motion.div
                           initial={{
                             opacity: 0,
@@ -718,11 +719,10 @@ export function Navbar({ Data }: NavbarProps) {
                                         >
                                           {resource.name}
                                         </span>
-                                        {resource.description && (
-                                          <span className="mt-1 block line-clamp-2 text-xs leading-4 text-slate-500">
-                                            {resource.description}
-                                          </span>
-                                        )}
+                                        <span className="mt-1 block line-clamp-1 text-xs leading-4 text-slate-500">
+                                          {resource.description ||
+                                            `Explore ${String(resource.name || "this resource").toLowerCase()}.`}
+                                        </span>
                                       </span>
                                       <ArrowRight
                                         size={16}
@@ -769,6 +769,7 @@ export function Navbar({ Data }: NavbarProps) {
                                           items-center
                                           gap-3
                                           rounded-xl
+                                          border-l-4
                                           px-2
                                           py-1.5
                                           font-medium
@@ -779,34 +780,17 @@ export function Navbar({ Data }: NavbarProps) {
                                             dd.sublink?.some((sub: any) =>
                                               matchesPath(sub.slug),
                                             )
-                                              ? "font-semibold text-[#D9542D]"
-                                              : "hover:text-[#F36C45]"
+                                              ? "border-[#F36C45] bg-[#FFF1EC] font-semibold text-[#D9542D]"
+                                              : "border-transparent hover:bg-[#FFF8F5] hover:text-[#F36C45]"
                                           }
                                         `}
                                         >
-                                          {/* Icon */}
-
                                           {dd.img ? (
-                                            <div
-                                              className="
-                                            flex
-                                            h-10
-                                            w-10
-                                            shrink-0
-                                            items-center
-                                            justify-center
-                                          "
-                                            >
-                                              <Image
-                                                src={dd.img}
-                                                alt={dd.name}
-                                                width={28}
-                                                height={28}
-                                                className="object-contain"
-                                              />
+                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center">
+                                              <Image src={dd.img} alt={dd.name} width={28} height={28} className="object-contain" />
                                             </div>
                                           ) : (
-                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center text-[#F36C45]">
+                                            <div className="flex h-10 w-10 shrink-0 items-center justify-center text-[#F36D45]">
                                               {dd.slug === "spoken-english" ? <MessageCircle size={21} aria-hidden="true" /> : <GraduationCap size={21} aria-hidden="true" />}
                                             </div>
                                           )}
@@ -876,7 +860,7 @@ export function Navbar({ Data }: NavbarProps) {
                                       key={activeSubDropdown}
                                       initial={{
                                         opacity: 0,
-                                        x: -8,
+                                        x: -24,
                                       }}
                                       animate={{
                                         opacity: 1,
@@ -884,7 +868,7 @@ export function Navbar({ Data }: NavbarProps) {
                                       }}
                                       exit={{
                                         opacity: 0,
-                                        x: -8,
+                                        x: 24,
                                       }}
                                       transition={{
                                         duration: 0.15,
@@ -951,13 +935,13 @@ export function Navbar({ Data }: NavbarProps) {
 
                                                     "
                                                   >
-                                                    {sub.img ? (
+                                                    {sub.img || dd.img ? (
                                                       <Image
-                                                        src={sub.img}
+                                                        src={sub.img || dd.img}
                                                         alt={sub.name}
-                                                        width={24}
-                                                        height={24}
-                                                        className="object-contain"
+                                                        width={34}
+                                                        height={34}
+                                                        className="h-8 w-8 object-contain"
                                                       />
                                                     ) : dd.slug === "spoken-english" ? (
                                                       <MessageCircle size={20} className="text-[#F36C45]" aria-hidden="true" />
@@ -972,11 +956,6 @@ export function Navbar({ Data }: NavbarProps) {
                                                     >
                                                       {sub.name}
                                                     </span>
-                                                    {sub.description && (
-                                                      <span className="mt-px block line-clamp-2 text-xs leading-4 text-gray-500">
-                                                        {sub.description}
-                                                      </span>
-                                                    )}
                                                   </div>
                                                 </Link>
                                               ))}
@@ -1308,7 +1287,7 @@ export function Navbar({ Data }: NavbarProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.18 }}
-            className="fixed inset-0 z-[490] hidden cursor-default bg-black/65 xl:block"
+            className="fixed inset-0 z-[490] hidden cursor-default bg-black/30 xl:block"
           />
         )}
       </AnimatePresence>

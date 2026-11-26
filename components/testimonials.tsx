@@ -321,7 +321,7 @@ export function VideoTestimonialCard({ heading, data }: any) {
     <div className="max-w-7xl mx-auto  px-4 sm:px-6 lg:px-0">
       {/* Heading - Updated to 5xl with responsive sizes */}
       <div className="text-center mb-8 sm:mb-10 md:mb-12 px-0">
-        <h2 className="text-center text-2xl md:text-3xl lg:text-[2.5rem] font-bold">
+        <h2 className="text-center text-2xl md:text-3xl lg:text-4xl font-semibold">
           <span className="text-primary">What Our</span>{" "}
           <span className="">Students Say</span>
         </h2>
@@ -554,10 +554,10 @@ export function TextTestimonials({ heading, data }: any) {
 
   return (
     <div className="py-8 sm:py-10 lg:py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-0">
         {/* Heading - Updated to 5xl with responsive sizes */}
-        <div className="text-center mb-8 sm:mb-10 md:mb-12">
-          <h2 className="text-center text-2xl md:text-3xl lg:text-[2.5rem] font-bold">
+        <div className="text-center mb-6 sm:mb-8">
+          <h2 className="text-center text-2xl md:text-3xl lg:text-4xl font-semibold">
             What Our Test Preparation{" "}
             <span className="text-primary">Achievers Say</span>
           </h2>
@@ -592,7 +592,7 @@ export function TextTestimonials({ heading, data }: any) {
                   {/* Testimonial Text */}
                   <div className="flex-1">
                     <div
-                      className="text-gray-600 text-justify leading-relaxed text-sm sm:text-base lg:text-base line-clamp-4"
+                      className="text-gray-800 text-justify leading-relaxed text-sm sm:text-base lg:text-base line-clamp-4"
                       dangerouslySetInnerHTML={{ __html: item.message }}
                     />
                     {item.message?.length > 140 && (

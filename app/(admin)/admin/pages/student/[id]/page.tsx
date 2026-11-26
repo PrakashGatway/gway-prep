@@ -93,9 +93,18 @@ const EditorForm = () => {
     try {
       // console.log("Submitting values:", values);
       
+      const payload = {
+        ...values,
+        seoKeywords: Array.isArray(values.seoKeywords)
+          ? values.seoKeywords
+          : String(values.seoKeywords || "")
+              .split(",")
+              .map((keyword) => keyword.trim())
+              .filter(Boolean),
+      };
       if (id === 'add' || !id) {
         // Create new student
-        const res = await axiosInstance.post("/admin/student", values);
+        const res = await axiosInstance.post("/admin/student", payload);
         // console.log("Created student:", res.data);
         
         if (res.data.message === "Student created successfully.") {
@@ -105,7 +114,7 @@ const EditorForm = () => {
         // Update existing student
         const res = await axiosInstance.put("/admin/student", { 
           id, 
-          ...values 
+          ...payload 
         });
         // console.log("Updated student:", res.data);
         
@@ -151,7 +160,9 @@ const EditorForm = () => {
 
   // Helper function to render the appropriate input field
   const renderField = (field: any) => {
-    const value = values[field.name] || '';
+    const value = field.name === "seoKeywords"
+      ? (Array.isArray(values[field.name]) ? values[field.name].join(", ") : values[field.name] || "")
+      : values[field.name] || '';
 
     switch (field.type) {
       case "text":
@@ -162,7 +173,7 @@ const EditorForm = () => {
             name={field.name}
             value={value}
             placeholder={field.placeholder}
-            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 border-gray-300 outline-none transition"
+            className="w-full rounded-lg border border-gray-300 p-2.5 text-sm outline-none transition focus:ring-2 focus:ring-blue-500"
             onChange={(e) => handleInputChange(field.name, e)}
           />
         );
@@ -173,7 +184,7 @@ const EditorForm = () => {
             name={field.name}
             value={value}
             placeholder={field.placeholder}
-            className="w-full p-3 border rounded-lg h-32 focus:ring-2 focus:ring-blue-500 border-gray-300 outline-none transition"
+            className="h-28 w-full rounded-lg border border-gray-300 p-2.5 text-sm outline-none transition focus:ring-2 focus:ring-blue-500"
             onChange={(e) => handleInputChange(field.name, e)}
           />
         );
@@ -203,26 +214,26 @@ const EditorForm = () => {
         return (
           <div className="space-y-4">
             {faqs.map((faq: any, index: number) => (
-              <div key={index} className="grid gap-3 rounded-lg border border-gray-200 bg-gray-50 p-4 md:grid-cols-[1fr_1fr_auto]">
+              <div key={index} className="grid gap-2 rounded-lg border border-gray-200 bg-gray-50 p-3 md:grid-cols-[1fr_1fr_auto]">
                 <input
                   type="text"
                   value={faq?.question || ""}
                   placeholder={`Question ${index + 1}`}
                   aria-label={`FAQ question ${index + 1}`}
-                  className="w-full rounded-lg border border-gray-300 bg-white p-3 outline-none transition focus:ring-2 focus:ring-blue-500"
+                  className="w-full rounded-lg border border-gray-300 bg-white p-2 text-sm outline-none transition focus:ring-2 focus:ring-blue-500"
                   onChange={(e) => updateFaq(index, "question", e.target.value)}
                 />
                 <textarea
                   value={faq?.answer || ""}
                   placeholder="Answer"
                   aria-label={`FAQ answer ${index + 1}`}
-                  className="h-24 w-full rounded-lg border border-gray-300 bg-white p-3 outline-none transition focus:ring-2 focus:ring-blue-500"
+                  className="h-20 w-full rounded-lg border border-gray-300 bg-white p-2 text-sm outline-none transition focus:ring-2 focus:ring-blue-500"
                   onChange={(e) => updateFaq(index, "answer", e.target.value)}
                 />
                 <button
                   type="button"
                   onClick={() => handleInputChange(field.name, faqs.filter((_: any, faqIndex: number) => faqIndex !== index))}
-                  className="h-11 rounded-lg border border-red-200 px-4 text-sm font-semibold text-red-600 transition hover:bg-red-50"
+                  className="h-9 rounded-lg border border-red-200 px-3 text-xs font-semibold text-red-600 transition hover:bg-red-50"
                 >
                   Remove
                 </button>
@@ -231,7 +242,7 @@ const EditorForm = () => {
             <button
               type="button"
               onClick={() => handleInputChange(field.name, [...faqs, { question: "", answer: "" }])}
-              className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-2.5 text-sm font-semibold text-blue-700 transition hover:bg-blue-100"
+              className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700 transition hover:bg-blue-100"
             >
               Add FAQ
             </button>
@@ -269,7 +280,7 @@ const EditorForm = () => {
           <select 
             name={field.name}
             value={value}
-            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 border-gray-300 outline-none transition"
+            className="w-full rounded-lg border border-gray-300 p-2.5 text-sm outline-none transition focus:ring-2 focus:ring-blue-500"
             onChange={(e) => handleInputChange(field.name, e)}
           >
             <option value="">Select an option</option>
@@ -287,45 +298,67 @@ const EditorForm = () => {
   };
 
   return (
-    <div className="m-1 p-8 bg-white shadow-lg rounded-xl border border-gray-100 h-[90vh] overflow-y-auto">
-      <header className="mb-8 border-b pb-4">
-        <h1 className="text-xl font-extrabold text-gray-900">
+    <div className="m-1 h-[90vh] overflow-y-auto rounded-xl border border-gray-100 bg-white p-4 shadow-lg sm:p-5">
+      <header className="mb-5 border-b pb-3">
+        <h1 className="text-lg font-extrabold text-gray-900 sm:text-xl">
           {id && id !== 'add' ? 'Edit Student' : 'Add Student'}
         </h1>
-        <p className="text-gray-500">
+        <p className="text-xs text-gray-500 sm:text-sm">
           {id && id !== 'add' ? 'Edit the student information.' : 'Add new student information.'}
         </p>
       </header>
 
-      <form className="space-y-8" onSubmit={handleSubmit}>
-        {formData[0]?.fields?.map((field: any, index: number) => (
-          <div key={index} className="flex flex-col gap-3">
-            <label className="text-sm font-bold text-gray-700 flex items-center gap-1">
-              {field.label}
-              {field.required && <span className="text-red-500">*</span>}
-            </label>
+      <form className="space-y-4" onSubmit={handleSubmit}>
+        {(() => {
+          const fields = formData[0]?.fields || [];
+          const groups = [
+            { title: "General information", description: "Basic student and exam details.", names: ["name", "course", "score", "university", "rating"] },
+            { title: "SEO details", description: "Manage how this student story appears in search results.", names: ["seoTitle", "metaDescription", "seoKeywords", "slug"] },
+            { title: "Media and links", description: "Add images, alt text, video, and call-to-action links.", names: ["image", "imageAlt", "heroImage", "heroImageAlt", "universityLogo", "universityLogoAlt", "video", "button1Text", "button1Url", "button2Text", "button2Url", "type"] },
+            { title: "Student story", description: "Add the story content and frequently asked questions.", names: ["title", "subtitle", "about", "help", "outcome", "message", "messageDate", "faqs"] },
+          ];
+          const used = new Set(groups.flatMap((group) => group.names));
+          const renderFieldBlock = (field: any) => (
+            <div key={field.name} className="flex min-w-0 flex-col gap-1.5">
+              <label className="flex items-center gap-1 text-xs font-bold text-gray-700">
+                {field.label}{field.required && <span className="text-red-500">*</span>}
+              </label>
+              {renderField(field)}
+              {field.name === "slug" && <p className="text-[11px] leading-4 text-gray-500">Used for a published case study URL.</p>}
+            </div>
+          );
+          return (
+            <>
+              {groups.map((group) => {
+                const groupFields = fields.filter((field: any) => group.names.includes(field.name));
+                if (!groupFields.length) return null;
+                return (
+                  <section key={group.title} className="rounded-lg border border-gray-100 bg-gray-50/50 p-3 sm:p-4">
+                    <div className="mb-3">
+                      <h2 className="text-sm font-bold text-gray-900">{group.title}</h2>
+                      <p className="mt-0.5 text-[11px] text-gray-500">{group.description}</p>
+                    </div>
+                    <div className={group.title === "Student story" ? "space-y-3" : "grid gap-3 md:grid-cols-2"}>{groupFields.map(renderFieldBlock)}</div>
+                  </section>
+                );
+              })}
+              {fields.filter((field: any) => !used.has(field.name)).map(renderFieldBlock)}
+            </>
+          );
+        })()}
 
-            {renderField(field)}
-            {field.name === "slug" && (
-              <p className="-mt-1 text-xs leading-5 text-gray-500">
-                Optional. Add a unique URL slug to publish this student as a case study at /case-study/your-slug. Leave it blank for a regular student testimonial.
-              </p>
-            )}
-          </div>
-        ))}
-
-        <div className="pt-6 border-t space-x-2">
+        <div className="flex flex-col gap-2 border-t pt-4 sm:flex-row sm:space-x-2">
           <button
             type="submit"
             disabled={loading}
-            className="w-full md:w-auto px-8 py-3 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-700 shadow-md transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-lg bg-blue-500 px-6 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:bg-blue-700 active:scale-95 disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
           >
             {loading ? "Saving..." : (id && id !== 'add' ? 'Update Student' : 'Create Student')}
           </button>
 
           <button
             onClick={() => router.back()}
-            className="w-full md:w-auto px-8 py-3 bg-red-500 text-white rounded-lg font-bold hover:bg-red-700 shadow-md transition-all active:scale-95"
+            className="w-full rounded-lg bg-red-500 px-6 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:bg-red-700 active:scale-95 md:w-auto"
             type="button"
           >
             Cancel

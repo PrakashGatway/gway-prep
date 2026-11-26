@@ -448,7 +448,7 @@ export default function FormSection({
       <motion.button
         type="submit"
         disabled={isLoading}
-        whileHover={{ scale: 1.03 }}
+        whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.97 }}
         className={`${sizeClasses[submitConfig.size || "large"]} font-bold text-white rounded-xl transition-all shadow-lg
          hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 w-full`}
@@ -1099,10 +1099,10 @@ export default function FormSection({
 
           <motion.button
             type="button"
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.95 }}
             onClick={buttonConfig.action}
-            className="px-8 py-3 text-sm font-bold text-white transition-all shadow-lg hover:shadow-xl
+            className="px-8 py-3 text-sm font-bold rounded-xl text-white transition-all shadow-lg hover:shadow-xl
              flex items-center gap-2 cursor-pointer"
             style={{
               background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor})`,

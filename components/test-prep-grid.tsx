@@ -40,7 +40,7 @@ export function TestPrepGrid({
       FALLBACK_ITEMS;
 
   return (
-    <section className="overflow-hidden">
+    <section className="test-prep-font-style overflow-hidden">
       <div
         className="container max-w-7xl mx-auto px-4 sm:px-6 py-1 relative"
         style={{

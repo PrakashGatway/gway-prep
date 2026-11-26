@@ -12,8 +12,8 @@ export function Banerhome({ data, img }: any) {
           <div className="pl-0 lg:pl-6 xl:pl-10 bg-white order-2 lg:order-none">
             
             {/* <div className="text-left text-2xl md:text-3xl lg:text-5xl font-bold" dangerouslySetInnerHTML={{ __html: data.fields?.title }} /> */}
-            <h2 className="text-2xl sm:text-3xl md:text-4xl  font-bold text-center">
-            {data.fields.title.split("||")[0]} <br />
+            <h2 className="text-2xl sm:text-3xl md:text-4xl  font-semibold text-center">
+            {data.fields.title.split("||")[0]} 
             <span className="text-primary">{data.fields.title.split("||")[1]}</span>
           </h2>
 

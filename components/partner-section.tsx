@@ -104,7 +104,7 @@ export function PartnerSection() {
           
           {/* Left Column: Contact Info */}
           <div className="lg:w-1/2 w-full space-y-2 mt-14">
-            <p className="text-3xl md:text-5xl font-bold">Get Started</p>
+            <p className="text-3xl md:text-4xl font-bold">Get Started</p>
             <p className="text-2xl md:text-3xl font-bold leading-tight">
               Ready to Build Your Score Strategy?
             </p>
@@ -115,27 +115,27 @@ export function PartnerSection() {
             <div className="space-y-6 pt-4">
               {/* WhatsApp */}
               <div className="flex items-center gap-4">
-                <div className="bg-white p-3 rounded-lg"><MessageCircle className="text-black w-8 h-8" /></div>
+                <div className="bg-white p-3 rounded-full"><MessageCircle className="text-black w-8 h-8" /></div>
                 <div>
-                  <p className="text-2xl font-bold">WhatsApp Us</p>
+                  <p className="text-xl font-semibold">WhatsApp Us</p>
                   <p className="text-base"><ContactLink value="+91 9166146538" /></p>
                 </div>
               </div>
 
               {/* Call Us */}
               <div className="flex items-center gap-4">
-                <div className="bg-white p-3 rounded-lg"><Phone className="text-black w-8 h-8" /></div>
+                <div className="bg-white p-3 rounded-full"><Phone className="text-black w-8 h-8" /></div>
                 <div>
-                  <p className="text-2xl font-bold">Call Us</p>
+                  <p className="text-xl font-semibold">Call Us</p>
                   <p className="text-base"><ContactLink value="+91 9166146538" /></p>
                 </div>
               </div>
 
               {/* Email */}
               <div className="flex items-center gap-4">
-                <div className="bg-white p-3 rounded-lg"><Mail className="text-black w-8 h-8" /></div>
+                <div className="bg-white p-3 rounded-full"><Mail className="text-black w-8 h-8" /></div>
                 <div>
-                  <p className="text-2xl font-bold">Email Us</p>
+                  <p className="text-xl font-semibold">Email Us</p>
                   <p className="text-base"><ContactLink value="info@ooshasprep.com" /></p>
                 </div>
               </div>

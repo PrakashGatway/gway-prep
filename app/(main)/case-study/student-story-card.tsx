@@ -36,7 +36,7 @@ export default function StudentStoryCard({ student, index = 0 }: Props) {
   const cardContent = (
     <div className="relative flex min-h-[300px] flex-1 flex-col overflow-hidden rounded-xl bg-white text-[#292522]">
       <div className="relative flex-1 px-5 pb-12 pt-5 sm:px-6 sm:pt-6">
-        <p className="line-clamp-5 pr-2 text-sm leading-6 text-[#727681] sm:text-[15px]">
+        <p className="line-clamp-5 pr-2 text-sm leading-6 font-semibold text-slate-700 sm:text-[15px]">
           {excerpt ||
             "A determined learner, a focused plan, and steady progress. Discover more about this student’s journey."}
         </p>

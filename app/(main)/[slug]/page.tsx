@@ -455,7 +455,7 @@ export async function generateMetadata({
       locale: "en_US",
       images: [
         {
-          url: seo?.ogImage || `${SITE_URL}/image/logo.png`,
+          url: seo?.navIcon || `${SITE_URL}/image/logo.png`,
           width: 1200,
           height: 630,
           alt: seo?.ogTitle?.trim() || title,

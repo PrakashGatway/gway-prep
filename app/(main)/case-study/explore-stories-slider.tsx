@@ -15,7 +15,7 @@ export default function ExploreStoriesSlider({ students,stories }: Props) {
   if (!students.length) return null;
 
   return (
-    <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12 lg:px-0">
+    <section className="mx-auto max-w-7xl px-5 py-10 sm:px-8 sm:py-12 lg:px-1">
       <div className="mb-6 flex items-end justify-between gap-5 sm:mb-7">
         <div>
           <p className="text-sm font-bold uppercase tracking-[.18em] text-[#F36D45]">{stories?.eyebrow||"Keep exploring"}</p>
@@ -27,17 +27,17 @@ export default function ExploreStoriesSlider({ students,stories }: Props) {
         modules={[Autoplay, Navigation, Pagination]}
         spaceBetween={16}
         slidesPerView={1.08}
-        navigation
+        // navigation
         pagination={{ clickable: true }}
         loop={students.length > 3}
         autoplay={students.length > 1 ? { delay: 3400, disableOnInteraction: false, pauseOnMouseEnter: true } : false}
-        breakpoints={{ 640: { slidesPerView: 2, spaceBetween: 18 }, 1024: { slidesPerView: 3, spaceBetween: 22 } }}
+        breakpoints={{ 640: { slidesPerView: 2, spaceBetween: 18 }, 1024: { slidesPerView: 3, spaceBetween: 24 } }}
         className="case-study-story-swiper !pb-12"
       >
         {students.map((student, index) => {
           const key = student._id || `${student.name || "student"}-${index}`;
           return (
-            <SwiperSlide key={key} className="!h-auto">
+            <SwiperSlide key={key} className="!h-auto p-2">
               <StudentStoryCard student={student} index={index} />
             </SwiperSlide>
           );

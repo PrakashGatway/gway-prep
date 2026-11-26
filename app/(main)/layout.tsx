@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import type { Metadata } from "next";
-import { Inter, Montserrat } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import Script from "next/script";
 import "../globals.css";
 import { Navbar } from "@/components/navbar";
@@ -26,16 +26,17 @@ export const metadata: Metadata = {
 
 // export const revalidate = 600;
 
+const plusJakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-plus-jakarta",
+});
 const inter = Inter({
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   display: "swap",
   variable: "--font-inter",
-});
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-montserrat",
-  display: "swap",
 });
 
 export default async function RootLayout({
@@ -57,7 +58,7 @@ export default async function RootLayout({
   
 
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en" className={`${plusJakarta.variable} ${inter.variable}`}>
       <head>
         <Script
           async
@@ -100,7 +101,7 @@ export default async function RootLayout({
         />
       </head>
       <body
-        className={`${montserrat.className} font-medium bg-white text-gray-900 max-w-[1640px] mx-auto`}
+        className={`${inter.className} font-normal bg-white text-gray-900 max-w-[1640px] mx-auto`}
         suppressHydrationWarning
       >
 

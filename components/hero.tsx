@@ -84,23 +84,23 @@ export function Hero({ data, student }: HeroProps) {
 
 
   return (
-    <section className=" overflow-hidden flex flex-col bg-[#FDF4EF]" style={{ backgroundImage: `url('/home/gridgb.png')` }}>
+    <section className=" overflow-hidden flex flex-col bg-[#FDF4EF]">
     
       {/* ─── Main Content ─── */}
-      <div className="relative z-10 flex-1 flex flex-col justify-center px-4 sm:px-6 md:px-10 lg:px-16 xl:px-24 py-16 lg:py-0">
+      <div className="relative z-10 flex-1 flex flex-col justify-center px-4 sm:px-6 md:px-10 py-16 lg:py-0">
         <div className="max-w-7xl mx-auto w-full">
-          <div className="grid grid-cols-1 lg:grid-cols-2 items-center mt-2">
+          <div className="grid grid-cols-1 lg:grid-cols-10 items-center mt-2">
 
             {/* ─── Left Content ─── */}
             <motion.div
               initial={{ opacity: 0, x: -60 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-              className="order-2 lg:order-1"
+              className="order-2 lg:order-1 col-span-1 lg:col-span-6"
             >
               {/* Title */}
               <div className="">
-                <h1 className="text-left text-2xl md:text-3xl lg:text-[2.5rem] font-bold md:leading:7 lg:leading-13">
+                <h1 className="text-left text-2xl md:text-3xl lg:text-4xl font-bold md:leading:7 lg:leading-11">
                   {data.fields.title?.split("||")[0]}
                   <span className="text-primary">{data.fields.title?.split("||")[1]}</span>
                   {data.fields.title?.split("||")[2]}
@@ -125,7 +125,7 @@ export function Hero({ data, student }: HeroProps) {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.5, duration: 0.8 }}
-                className="mt-4 lg:mt-6 text-base sm:text-base leading-relaxed max-w-xl font-[300] text-justify"
+                className="mt-4 lg:mt-6 text-base sm:text-lg leading-relaxed font-medium text-justify"
               >
                 {data.fields.paragraph || ""}
               </motion.p>
@@ -143,11 +143,11 @@ export function Hero({ data, student }: HeroProps) {
                   whileTap={{ scale: 0.98 }}
                   // onClick={() => setIsPopupOpen(true)}
                   onClick={UserNavigate}
-                  className="group cursor-pointer relative flex items-center justify-center gap-2.5 bg-[#F36C45] text-white py-3.5 px-4 text-base sm:text-base font-semibold transition-all duration-300 overflow-hidden"
+                  className="group cursor-pointer rounded-xl relative flex items-center justify-center gap-2.5 bg-[#F36C45] text-white py-3.5 px-4 text-base sm:text-base font-semibold transition-all duration-300 overflow-hidden"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-[#e05a34] to-[#ff8a65] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <span className="relative flex items-center gap-2.5">
-                    <Phone size={20} /> {data.fields.button1}
+                  <span className="relative flex items-center gap-1.5">
+                    {data.fields.button1}
                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
                   <span className="absolute inset-0 -z-10 rounded-2xl bg-[#F36C45]/30 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -159,11 +159,11 @@ export function Hero({ data, student }: HeroProps) {
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setIsPopupOpen(true)}
                   // onClick={UserNavigate}
-                  className="group cursor-pointer relative flex items-center justify-center gap-2.5 bg-[#525252] text-white py-3.5 px-4 text-base sm:text-base font-semibold transition-all duration-300 overflow-hidden"
+                  className="group cursor-pointer rounded-xl relative flex items-center justify-center gap-2.5 bg-[#525252] text-white py-3.5 px-4 text-base sm:text-base font-semibold transition-all duration-300 overflow-hidden"
                 >
                   <span className="absolute inset-0 bg-gradient-to-r from-[#e05a34] to-[#ff8a65] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <span className="relative flex items-center gap-2.5">
-                    <Book size={20} /> {data.fields.button2 || "Book Free Demo Class"}
+                  <span className="relative flex items-center gap-1.5">
+                     {data.fields.button2 || "Book Free Demo Class"}
                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform duration-300" />
                   </span>
                   <span className="absolute inset-0 -z-10 rounded-2xl bg-[#F36C45]/30 blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -176,7 +176,7 @@ export function Hero({ data, student }: HeroProps) {
               initial={{ opacity: 0, x: 60, scale: 0.95 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="order-1 lg:order-2 flex justify-center relative"
+              className="order-1 lg:order-2 flex justify-center relative col-span-1 lg:col-span-4"
             >
               <div className="relative w-full max-w-[440px] lg:max-w-[500px]">
                 <div className="relative aspect-[3/4] sm:aspect-square hidden lg:block">
@@ -209,7 +209,7 @@ export function Hero({ data, student }: HeroProps) {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.2, duration: 0.8 }}
-        className="relative z-10 pb-6 lg:pb-10"
+        className="relative z-10 pb-6"
       >
         <HomeCountUp data={data} className="max-w-7xl mx-auto" />
       </motion.div>

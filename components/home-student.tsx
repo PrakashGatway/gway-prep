@@ -83,7 +83,6 @@ export function HomeStudent({data}:{data : any}) {
 
   return (
     <div className="relative my-4 sm:my-6 lg:my-8 bg-[#FDF4EF]"  style={{
-              backgroundImage: 'url("/home/grid.png")',
               backgroundPosition: "center",
               backgroundRepeat: "no-repeat",
               backgroundSize: "cover",
@@ -101,13 +100,11 @@ export function HomeStudent({data}:{data : any}) {
           >
             <div className="lg:w-1/3 flex flex-col items-center">
               <div className="relative mb-4 sm:mb-6">
-                <div className="h-14 w-14 rounded-lg bg-[#f26e46] absolute bottom-18 -left-16" />
-                <div className="h-16 w-16 rounded-lg border-2 border-[#f26e46] absolute bottom-6 -right-18" />
-                <div className="h-10 w-10 rounded-lg bg-[#f26e46] absolute top-2 -right-14" />
+               
                 <div className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64 rounded-2xl ">
                   <img
                     src={student.image ?? "/students/01.jpg"}
-                    alt={student?.name}
+                    alt={student?.imageAlt || student?.name || "Student success story"}
                     className="w-full h-full object-cover  rounded-2xl "
                   />
                 </div>
@@ -129,13 +126,13 @@ export function HomeStudent({data}:{data : any}) {
               {student?.universityLogo && 
               <img
                 src={student?.universityLogo}
-                alt="logo"
-                className="h-16 sm:h-20 w-auto mt-6 sm:mt-8"
+                alt={student?.universityLogoAlt || `${student?.university || "University"} logo`}
+                className="h-16 hidden sm:block sm:h-20 w-auto mt-6 sm:mt-8"
               />}
             </div>
 
             <div className="lg:w-2/3 flex flex-col gap-4 sm:gap-6 p-4 xl:p-0">
-              <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border">
+              <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 -sm border">
                 <p className="text-[#FF6B35] font-bold mb-3 sm:mb-4 text-base sm:text-lg">
                   How did {"Ooshaprep"} help{" "}
                   {student.name}?
@@ -143,7 +140,7 @@ export function HomeStudent({data}:{data : any}) {
                 <div className="text-sm sm:text-base text-justify" dangerouslySetInnerHTML={{__html: typeof student.help === "string" && student.help.trim() ? student.help : "<p>Structured lessons, focused practice, and regular feedback helped me build confidence and make steady progress toward my goal.</p>"}} />
               </div>
 
-              <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-sm border">
+              <div className="bg-white rounded-2xl sm:rounded-3xl p-4 sm:p-6 -sm border">
                 <p className="text-[#FF6B35] font-bold mb-3 sm:mb-4 text-base sm:text-lg">Outcome</p>
                 <div className="text-sm sm:text-base " dangerouslySetInnerHTML={{__html : student.outcome}} />
               </div>

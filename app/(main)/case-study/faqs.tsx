@@ -12,7 +12,7 @@ export default function CaseStudyFaqs({ items }: { items: CaseStudyFaq[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-2">
       {items.map((item, index) => {
         const isOpen = openIndex === index;
         return (
@@ -24,7 +24,7 @@ export default function CaseStudyFaqs({ items }: { items: CaseStudyFaq[] }) {
           >
             <button
               type="button"
-              className="flex w-full items-center justify-between gap-5 px-5 py-5 text-left sm:px-6"
+              className="flex w-full items-center justify-between gap-5 px-3 py-2.5 text-left sm:px-4"
               aria-expanded={isOpen}
               onClick={() => setOpenIndex(isOpen ? null : index)}
             >
