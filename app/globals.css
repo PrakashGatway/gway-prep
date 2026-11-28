@@ -310,7 +310,7 @@ table tbody tr {
 
 /* Public-site typography system: display headings plus readable UI text. */
 body {
-  font-family: var(--font-inter), Arial, sans-serif;
+    font-family: var(--font-plus-jakarta), Arial, sans-serif;
 }
 
 h1,
@@ -323,7 +323,7 @@ h6 {
   font-weight: 700;
 }
 
-p,
+/* p,
 li,
 dt,
 dd,
@@ -333,20 +333,33 @@ input,
 select {
   font-family: var(--font-inter), Arial, sans-serif;
   font-weight: 400;
-}
+} */
 
-nav,
+/* nav,
 nav button,
 nav a,
 button,
 button span {
   font-family: var(--font-inter), Arial, sans-serif;
-}
+} */
 
 button,
 nav button,
 nav a {
-  font-weight: 600;
+  font-weight: 500;
+}
+
+/* Keep public-site actions consistent with the home hero's rounded-lg buttons. */
+html:not([data-user-authenticated="true"]) button:not([class*="rounded-full"][class*="h-"][class*="w-"]),
+html:not([data-user-authenticated="true"]) a[class*="rounded-"][class*="px-"]:not([class*="rounded-full"][class*="h-"][class*="w-"]),
+html:not([data-user-authenticated="true"]) input[type="button"],
+html:not([data-user-authenticated="true"]) input[type="submit"] {
+  border-radius: 0.5rem !important;
+}
+
+.test-preparation-hero button:not([class*="rounded-full"][class*="h-"][class*="w-"]),
+.test-preparation-hero a[class*="rounded-"][class*="px-"]:not([class*="rounded-full"][class*="h-"][class*="w-"]) {
+  border-radius: 0.5rem !important;
 }
 
 
@@ -389,6 +402,28 @@ nav a {
 .site-footer ul button,
 .site-footer ul li {
   line-height: 1.5;
+}
+
+.site-footer .footer-nav-link {
+  display: inline-block;
+  transform: translateX(0);
+  font-weight: 400;
+  transition: transform 180ms ease, color 180ms ease;
+}
+
+.site-footer .footer-nav-link:hover {
+  transform: translateX(5px);
+}
+
+.site-footer .footer-nav-link:focus-visible {
+  outline: 2px solid #f36d45;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-footer .footer-nav-link {
+    transition: none;
+  }
 }
 
 .site-navbar {
@@ -434,152 +469,4 @@ nav a {
     border-top-right-radius: 1.5rem;
   }
 
-}
-
-/* About page typography follows the case-study detail reading hierarchy. */
-.about-typography h1,
-.about-typography h2 {
-  color: #17243a;
-  font-weight: 700;
-  letter-spacing: -0.025em;
-}
-
-.about-hero {
-  position: relative;
-  isolation: isolate;
-  border-bottom: 1px solid #f0d8cc;
-}
-
-.about-hero::before {
-  content: "";
-  position: absolute;
-  width: 18rem;
-  height: 18rem;
-  left: -8rem;
-  bottom: -9rem;
-  border: 2rem solid rgba(243, 109, 69, 0.08);
-  border-radius: 999px;
-  pointer-events: none;
-  z-index: -1;
-}
-
-.about-hero-button {
-  min-height: 3rem;
-  border-radius: 0.75rem;
-  box-shadow: 0 10px 24px rgba(243, 109, 69, 0.2);
-}
-
-.about-hero-image img {
-  filter: drop-shadow(0 18px 26px rgba(91, 58, 43, 0.12));
-  transition: transform 300ms ease;
-}
-
-.about-hero-image img:hover {
-  transform: translateY(-4px);
-}
-
-/* Match the case-study page's spacing, hierarchy, and control treatment. */
-.about-typography > section:not(.about-cta) {
-  padding-top: 3.5rem;
-  padding-bottom: 3.5rem;
-}
-
-.about-typography > section:first-of-type {
-  background-color: #fdf4ef;
-  padding-top: 2.5rem;
-  padding-bottom: 4rem;
-}
-
-.about-typography > section:not(.about-cta) > div {
-  max-width: 80rem;
-}
-
-.about-typography h1 {
-  font-size: clamp(1.875rem, 3.5vw, 2.25rem);
-  line-height: 1.12;
-}
-
-.about-typography h2 {
-  font-size: clamp(1.4rem, 2.5vw, 2rem);
-  line-height: 1.2;
-}
-
-.about-typography h3 {
-  color: #17243a;
-  font-weight: 600;
-  line-height: 1.3;
-}
-
-.about-typography > section:first-of-type p {
-  max-width: 42rem;
-  color: #514945;
-  font-size: 1.125rem;
-  font-weight: 500;
-  line-height: 2rem;
-}
-
-.about-typography button,
-.about-typography a[class*="bg-primary"] {
-  min-height: 3rem;
-  border-radius: 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.about-typography .about-cta button {
-  border-radius: 0.75rem;
-}
-
-.about-typography .prose {
-  color: #3e3733;
-  font-weight: 500;
-  line-height: 1.75;
-}
-
-.about-typography .prose :where(p, li) {
-  color: #3e3733;
-  line-height: 1.75;
-}
-
-.about-typography .prose :where(strong, b, em) {
-  color: #c84f31;
-  font-weight: 700;
-}
-
-.about-typography .prose :where(h1, h2, h3, h4) {
-  color: #17243a;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-@media (max-width: 640px) {
-  .about-typography > section:not(.about-cta) {
-    padding-top: 2.75rem;
-    padding-bottom: 2.75rem;
-  }
-
-  .about-typography > section:first-of-type {
-    padding-top: 2rem;
-    padding-bottom: 3rem;
-  }
-
-  .about-typography > section:first-of-type p {
-    font-size: 1rem;
-    line-height: 1.75rem;
-  }
-
-  .about-typography h1 {
-    font-size: 1.75rem;
-    line-height: 1.2;
-  }
-
-  .about-typography h2 {
-    font-size: 1.5rem;
-    line-height: 1.25;
-  }
-
-  .about-typography .prose {
-    font-size: 0.9375rem;
-    line-height: 1.65;
-  }
 }

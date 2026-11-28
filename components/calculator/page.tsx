@@ -30,6 +30,12 @@ import { useRouter } from "next/navigation";
 import { GlobalProvider, useGlobal } from "@/hooks/AppStateContext";
 import Link from "next/link";
 import { calculateDuolingoScore, type DuolingoSkills } from "./duolingo-score";
+import { getGREPercentiles } from "./gre-score";
+import {
+  calculateGMATScore,
+  getGMATPercentiles,
+} from "./gmat-score";
+import { calculateSATScore } from "./sat-score";
 import RecentTestBlogs from "@/components/recent-test-blogs";
 
 const ORANGE = "#ff7a2a";
@@ -76,55 +82,82 @@ type IELTSScores = {
 type IELTSRawSection = "listening" | "reading";
 type IELTSReadingType = "academic" | "general";
 
-// IELTS publishes these average raw-score anchors; exact boundaries vary by test.
-// Interpolate between anchors to give a clearly labelled practice estimate.
-const IELTS_RAW_ANCHORS: Record<
-  "listening" | IELTSReadingType,
-  [number, number][]
-> = {
-  listening: [
-    [0, 0],
-    [16, 5],
-    [23, 6],
-    [30, 7],
-    [35, 8],
-    [40, 9],
-  ],
-  academic: [
-    [0, 0],
-    [15, 5],
-    [23, 6],
-    [30, 7],
-    [35, 8],
-    [40, 9],
-  ],
-  general: [
-    [0, 0],
-    [15, 4],
-    [23, 5],
-    [30, 6],
-    [35, 7],
-    [40, 9],
-  ],
-};
+const IELTS_ACADEMIC_READING_BANDS: [number, number, number][] = [
+  [39, 40, 9],
+  [37, 38, 8.5],
+  [35, 36, 8],
+  [33, 34, 7.5],
+  [30, 32, 7],
+  [27, 29, 6.5],
+  [23, 26, 6],
+  [19, 22, 5.5],
+  [15, 18, 5],
+  [13, 14, 4.5],
+  [10, 12, 4],
+  [8, 9, 3.5],
+  [6, 7, 3],
+  [4, 5, 2.5],
+  [3, 3, 2],
+];
+
+const IELTS_LISTENING_BANDS: [number, number, number][] = [
+  [40, 40, 9],
+  [38, 39, 8.5],
+  [35, 37, 8],
+  [33, 34, 7.5],
+  [30, 32, 7],
+  [27, 29, 6.5],
+  [23, 26, 6],
+  [20, 22, 5.5],
+  [16, 19, 5],
+  [14, 15, 4.5],
+  [12, 13, 4],
+  [10, 11, 3.5],
+  [8, 9, 3],
+  [6, 7, 2.5],
+  [4, 5, 2],
+];
+
+const IELTS_GENERAL_READING_BANDS: [number, number, number][] = [
+  [40, 40, 9],
+  [39, 39, 8.5],
+  [37, 38, 8],
+  [36, 36, 7.5],
+  [34, 35, 7],
+  [32, 33, 6.5],
+  [30, 31, 6],
+  [27, 29, 5.5],
+  [23, 26, 5],
+  [19, 22, 4.5],
+  [15, 18, 4],
+  [12, 14, 3.5],
+  [9, 11, 3],
+  [6, 8, 2.5],
+  [4, 5, 2],
+];
 
 function estimateIELTSBand(
   correct: number,
   section: IELTSRawSection,
   readingType: IELTSReadingType,
 ): number {
-  const anchors =
-    IELTS_RAW_ANCHORS[section === "listening" ? "listening" : readingType];
   const safeCorrect = Math.min(40, Math.max(0, correct));
-  const upperIndex = anchors.findIndex(([marks]) => marks >= safeCorrect);
-  if (upperIndex <= 0) return safeCorrect === 0 ? 0 : 9;
-  const [lowerMarks, lowerBand] = anchors[upperIndex - 1];
-  const [upperMarks, upperBand] = anchors[upperIndex];
-  const interpolated =
-    lowerBand +
-    ((safeCorrect - lowerMarks) / (upperMarks - lowerMarks)) *
-      (upperBand - lowerBand);
-  return Math.max(1, Math.min(9, Math.round(interpolated * 2) / 2));
+  if (section === "reading") {
+    const readingBands =
+      readingType === "academic"
+        ? IELTS_ACADEMIC_READING_BANDS
+        : IELTS_GENERAL_READING_BANDS;
+    const match = readingBands.find(
+      ([minimum, maximum]) => safeCorrect >= minimum && safeCorrect <= maximum,
+    );
+    // Scores below the supplied table are estimated below its lowest band.
+    return match?.[2] ?? (safeCorrect === 0 ? 0 : 1);
+  }
+
+  const listeningMatch = IELTS_LISTENING_BANDS.find(
+    ([minimum, maximum]) => safeCorrect >= minimum && safeCorrect <= maximum,
+  );
+  return listeningMatch?.[2] ?? (safeCorrect === 0 ? 0 : 1);
 }
 
 type PTEScores = {
@@ -192,43 +225,11 @@ type PerformanceReport = {
   totalScore: number | null;
   sectionScores: Record<string, number>;
   percentages: Record<string, number>;
+  overallPercentile?: number;
   performanceLevel: string;
   strongestArea: string;
   weakestArea: string;
 };
-
-// Raw correct counts alone cannot reproduce College Board's adaptive/IRT score.
-// This linear conversion is a rounded practice estimate, not an official lookup.
-function calculateSATScore(
-  scores: SATScores,
-  official?: SATSectionScores,
-): {
-  total: number;
-  rw: number;
-  math: number;
-  rwPercent: number;
-  mathPercent: number;
-} {
-  const rwRaw = scores.readingWritingModule1 + scores.readingWritingModule2;
-  const mathRaw = scores.mathModule1 + scores.mathModule2;
-
-  const rwScaled =
-    official?.rw ?? Math.round((200 + (rwRaw / 54) * 600) / 10) * 10;
-  const mathScaled =
-    official?.math ?? Math.round((200 + (mathRaw / 44) * 600) / 10) * 10;
-
-  return {
-    total: Math.round(rwScaled + mathScaled),
-    rw: Math.round(rwScaled),
-    math: Math.round(mathScaled),
-    rwPercent: official
-      ? Math.round(((rwScaled - 200) / 600) * 100)
-      : Math.round((rwRaw / 54) * 100),
-    mathPercent: official
-      ? Math.round(((mathScaled - 200) / 600) * 100)
-      : Math.round((mathRaw / 44) * 100),
-  };
-}
 
 // ETS equates the section-adaptive test. Raw counts can only give a rough
 // practice estimate; reported section scores give an exact Verbal + Quant sum.
@@ -240,6 +241,7 @@ function calculateGREScore(
   verbal: number;
   quant: number;
   aw: number;
+  awPercent: number | null;
   verbalPercent: number;
   quantPercent: number;
 } {
@@ -249,28 +251,21 @@ function calculateGREScore(
   const verbalScaled =
     official?.verbal ?? Math.round(130 + (verbalRaw / 27) * 40);
   const quantScaled = official?.quant ?? Math.round(130 + (quantRaw / 27) * 40);
+  const percentiles = getGREPercentiles(
+    verbalScaled,
+    quantScaled,
+    scores.analyticalWriting,
+  );
 
   return {
     total: verbalScaled + quantScaled,
     verbal: verbalScaled,
     quant: quantScaled,
     aw: scores.analyticalWriting,
-    verbalPercent: official
-      ? Math.round(((verbalScaled - 130) / 40) * 100)
-      : Math.round((verbalRaw / 27) * 100),
-    quantPercent: official
-      ? Math.round(((quantScaled - 130) / 40) * 100)
-      : Math.round((quantRaw / 27) * 100),
+    awPercent: percentiles.analyticalWriting,
+    verbalPercent: percentiles.verbal,
+    quantPercent: percentiles.quantitative,
   };
-}
-
-// GMAT Scoring
-function calculateGMATScore(quant: number, verbal: number, di: number): number {
-  // Practice estimate: the three sections contribute equally, but GMAC's
-  // official adaptive scoring also depends on question-level performance.
-  const average = (quant + verbal + di) / 3;
-  const position = Math.min(1, Math.max(0, (average - 60) / 30));
-  return 205 + Math.round(position * 60) * 10;
 }
 
 type TOEFLScale = "current" | "legacy";
@@ -403,10 +398,17 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
       greScores,
       greInputMode === "sections" ? greSectionScores : undefined,
     );
+  const currentGREResult = getGREResult();
+  const grePercentiles = getGREPercentiles(
+    currentGREResult.verbal,
+    currentGREResult.quant,
+    currentGREResult.aw,
+  );
   // GMAT State
   const [gmatQuant, setGmatQuant] = useState(75);
   const [gmatVerbal, setGmatVerbal] = useState(75);
   const [gmatDI, setGmatDI] = useState(75);
+  const gmatPercentiles = getGMATPercentiles(gmatQuant, gmatVerbal, gmatDI);
 
   // TOEFL State
   const [toeflScale, setToeflScale] = useState<TOEFLScale>("current");
@@ -531,6 +533,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
           "Reading & Writing": rwPercent,
           Math: mathPercent,
         },
+        overallPercentile: result.totalPercent,
         performanceLevel: getPerformanceLevel(
           Math.round((rwPercent + mathPercent) / 2),
         ),
@@ -541,12 +544,12 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
       const result = getGREResult();
       const verbalPercent = result.verbalPercent;
       const quantPercent = result.quantPercent;
-      const awPercent = Math.round((result.aw / 6) * 100);
-
       const percentages = {
         "Verbal Reasoning": verbalPercent,
         "Quantitative Reasoning": quantPercent,
-        "Analytical Writing": awPercent,
+        ...(result.awPercent !== null
+          ? { "Analytical Writing": result.awPercent }
+          : {}),
       };
 
       const avgPercent = (verbalPercent + quantPercent) / 2;
@@ -571,37 +574,34 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
             : "Quantitative Reasoning",
       };
     } else if (selectedExam === "GMAT") {
-      const total = calculateGMATScore(gmatQuant, gmatVerbal, gmatDI);
-      const quantPercent = Math.round(((gmatQuant - 60) / 30) * 100);
-      const verbalPercent = Math.round(((gmatVerbal - 60) / 30) * 100);
-      const diPercent = Math.round(((gmatDI - 60) / 30) * 100);
+      const result = getGMATPercentiles(gmatQuant, gmatVerbal, gmatDI);
+      const sectionPercentiles = {
+        Quantitative: result.quantitative,
+        Verbal: result.verbal,
+        "Data Insights": result.dataInsights,
+      };
 
       newReport = {
         exam: "GMAT",
-        totalScore: total,
+        totalScore: result.total,
+        overallPercentile: result.overall,
         sectionScores: {
           Quantitative: gmatQuant,
           Verbal: gmatVerbal,
           "Data Insights": gmatDI,
         },
-        percentages: {
-          Quantitative: quantPercent,
-          Verbal: verbalPercent,
-          "Data Insights": diPercent,
-        },
-        performanceLevel: getPerformanceLevel(
-          Math.round((quantPercent + verbalPercent + diPercent) / 3),
-        ),
+        percentages: sectionPercentiles,
+        performanceLevel: getPerformanceLevel(result.overall),
         strongestArea:
-          quantPercent >= verbalPercent && quantPercent >= diPercent
+          result.quantitative >= result.verbal && result.quantitative >= result.dataInsights
             ? "Quantitative"
-            : verbalPercent >= diPercent
+            : result.verbal >= result.dataInsights
               ? "Verbal"
               : "Data Insights",
         weakestArea:
-          quantPercent <= verbalPercent && quantPercent <= diPercent
+          result.quantitative <= result.verbal && result.quantitative <= result.dataInsights
             ? "Quantitative"
-            : verbalPercent <= diPercent
+            : result.verbal <= result.dataInsights
               ? "Verbal"
               : "Data Insights",
       };
@@ -667,27 +667,38 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
       };
     } else if (selectedExam === "DUOLINGO") {
       const result = getDuolingoResult();
-      const percentages = {
-        Reading: Math.round(((duolingoScores.reading - 10) / 150) * 100),
-        Writing: Math.round(((duolingoScores.writing - 10) / 150) * 100),
-        Listening: Math.round(((duolingoScores.listening - 10) / 150) * 100),
-        Speaking: Math.round(((duolingoScores.speaking - 10) / 150) * 100),
+      const sectionScores = {
+        Reading: result.individual.reading,
+        Writing: result.individual.writing,
+        Listening: result.individual.listening,
+        Speaking: result.individual.speaking,
+        Literacy: result.integrated.literacy,
+        Comprehension: result.integrated.comprehension,
+        Conversation: result.integrated.conversation,
+        Production: result.integrated.production,
+      };
+      const percentages = Object.fromEntries(
+        Object.entries(sectionScores).map(([section, score]) => [
+          section,
+          Math.round(((score - 10) / 150) * 100),
+        ]),
+      );
+      const individualPercentages = {
+        Reading: percentages.Reading,
+        Writing: percentages.Writing,
+        Listening: percentages.Listening,
+        Speaking: percentages.Speaking,
       };
       newReport = {
         exam: "DUOLINGO",
         totalScore: result.overall,
-        sectionScores: {
-          Reading: duolingoScores.reading,
-          Writing: duolingoScores.writing,
-          Listening: duolingoScores.listening,
-          Speaking: duolingoScores.speaking,
-        },
+        sectionScores,
         percentages,
         performanceLevel: getPerformanceLevel(
-          Math.round(Object.values(percentages).reduce((sum, value) => sum + value, 0) / 4),
+          Math.round(Object.values(individualPercentages).reduce((sum, value) => sum + value, 0) / 4),
         ),
-        strongestArea: Object.entries(percentages).reduce((a, b) => a[1] >= b[1] ? a : b)[0],
-        weakestArea: Object.entries(percentages).reduce((a, b) => a[1] <= b[1] ? a : b)[0],
+        strongestArea: Object.entries(individualPercentages).reduce((a, b) => a[1] >= b[1] ? a : b)[0],
+        weakestArea: Object.entries(individualPercentages).reduce((a, b) => a[1] <= b[1] ? a : b)[0],
       };
     } else {
       const result = calculatePTEScore(pteScores);
@@ -800,11 +811,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
         };
       }
       case "GMAT":
-        return {
-          Quantitative: Math.round(((gmatQuant - 60) / 30) * 100),
-          Verbal: Math.round(((gmatVerbal - 60) / 30) * 100),
-          "Data Insights": Math.round(((gmatDI - 60) / 30) * 100),
-        };
+        return { "Overall percentile": getGMATPercentiles(gmatQuant, gmatVerbal, gmatDI).overall };
       case "TOEFL": {
         const result = getTOEFLResult();
         return {
@@ -1458,6 +1465,13 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                                   }}
                                 />
                               </div>
+                              <span
+                                aria-hidden="true"
+                                className="pointer-events-none absolute z-10 h-5 w-0.5 -translate-x-1/2 rounded-full bg-[#5f6470]"
+                                style={{
+                                  left: `${(((section.key === "quant" ? 158 : 151) - 130) / 40) * 100}%`,
+                                }}
+                              />
                               <input
                                 type="range"
                                 aria-label={`${section.label} official section score`}
@@ -1483,6 +1497,12 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                                 / 170
                               </span>
                             </div>
+                          </div>
+                          <div className="-mt-2 flex justify-between text-xs text-slate-500">
+                            <span>Mean score: {section.key === "quant" ? 158 : 151}</span>
+                            <span className="font-semibold text-[#dc6039]">
+                              Percentile: {section.key === "quant" ? grePercentiles.quantitative : grePercentiles.verbal}%
+                            </span>
                           </div>
                         </div>
                       ))}
@@ -1564,18 +1584,24 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                       label: "Quantitative Reasoning",
                       value: gmatQuant,
                       setter: setGmatQuant,
+                      mean: 78,
+                      percentile: gmatPercentiles.quantitative,
                       max: 90,
                     },
                     {
                       label: "Verbal Reasoning",
                       value: gmatVerbal,
                       setter: setGmatVerbal,
+                      mean: 79,
+                      percentile: gmatPercentiles.verbal,
                       max: 90,
                     },
                     {
                       label: "Data Insights",
                       value: gmatDI,
                       setter: setGmatDI,
+                      mean: 75,
+                      percentile: gmatPercentiles.dataInsights,
                       max: 90,
                     },
                   ].map((section, idx) => (
@@ -1596,6 +1622,11 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                               }}
                             />
                           </div>
+                          <span
+                            aria-hidden="true"
+                            className="pointer-events-none absolute z-10 h-5 w-0.5 -translate-x-1/2 rounded-full bg-[#5f6470]"
+                            style={{ left: `${((section.mean - 60) / 30) * 100}%` }}
+                          />
                           <input
                             type="range"
                             aria-label={`${section.label} section score`}
@@ -1623,11 +1654,17 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                           </span>
                         </div>
                       </div>
+                      <div className="-mt-2 mb-2 flex justify-between text-xs text-slate-500">
+                        <span>Mean score: {section.mean}</span>
+                        <span className="font-semibold text-[#dc6039]">
+                          Percentile: {section.percentile}%
+                        </span>
+                      </div>
                     </div>
                   ))}
                   <div className="mt-5 flex flex-col items-stretch justify-between gap-3 rounded-xl bg-white sm:flex-row sm:items-center">
                     <p className="text-sm text-slate-600">
-                      Estimated from the three section scores.
+                      Section-to-total estimate with Magoosh’s June 2026 percentile tables.
                     </p>
                     <button
                       type="button"
@@ -1904,7 +1941,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                     scores from a current Duolingo English Test report or practice
                     result. DET reports each skill on a 10–160 scale in 5-point
                     increments. The overall score is the average of these four
-                    scores, rounded to the nearest 5. {" "}
+                    scores. Each integrated skill pair is averaged and rounded up to a 5-point score; the overall score is then calculated from those four integrated scores. {" "}
                     <a
                       href="https://testcenter.zendesk.com/hc/en-us/articles/26438481805837-Subscore-Update-July-2024"
                       target="_blank"
@@ -2156,13 +2193,21 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                       )}
                       {selectedExam === "DUOLINGO" && (
                         <p className="mt-2 max-w-xs text-xs leading-5 text-slate-500">
-                          Average of the four entered individual scores ({getDuolingoResult().unroundedAverage}), rounded to the nearest 5. This is not a new official test result.
+                          Average of the four integrated subscores ({getDuolingoResult().unroundedAverage}), rounded up to the next 5-point score. This is an estimate, not an official DET result.
                         </p>
                       )}
                       {selectedExam === "GMAT" && (
                         <p className="mt-2 max-w-xs text-xs leading-5 text-slate-500">
-                          Practice estimate from the three equally weighted
-                          section scores. Your official GMAT total may differ.
+                          Estimated total · Percentile: {gmatPercentiles.overall}%
+                          <br />
+                          Calculated from equally weighted sections; official scoring may differ.
+                        </p>
+                      )}
+                      {selectedExam === "GRE" && (
+                        <p className="mt-2 max-w-xs text-xs leading-5 text-slate-500">
+                          {greInputMode === "sections"
+                            ? "Combined score is the sum of Verbal and Quant. ETS does not publish a percentile for the combined score."
+                            : "Practice estimate from correct answers; section adaptation affects official scores. ETS does not publish a combined-score percentile."}
                         </p>
                       )}
                       {selectedExam === "TOEFL" && (
@@ -2174,9 +2219,9 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                       )}
                       {selectedExam === "SAT" && (
                         <p className="mt-2 max-w-xs text-xs leading-5 text-slate-500">
-                          {satInputMode === "sections"
-                            ? "Exact sum of the two section scores you entered from your score report."
-                            : "Rough practice estimate. College Board's adaptive scoring cannot be reproduced from correct-answer counts alone."}
+                          Percentile: {getSATResult().totalPercent}% · {satInputMode === "sections"
+                            ? "Based on Magoosh’s percentile table for your entered section scores."
+                            : "Estimated with Magoosh’s digital SAT module conversion and percentile tables."}
                         </p>
                       )}
                       {selectedExam === "GRE" && (
@@ -2228,12 +2273,13 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                       ? "Communicative skills"
                       : selectedExam === "DUOLINGO"
                         ? "Integrated subscores"
-                      : selectedExam === "GMAT" ||
-                          (selectedExam === "SAT" &&
-                            satInputMode === "sections") ||
-                          (selectedExam === "GRE" &&
-                            greInputMode === "sections") ||
-                          (selectedExam === "TOEFL" && toeflScale === "current")
+                      : selectedExam === "GMAT"
+                        ? "Overall percentile"
+                        : selectedExam === "GRE"
+                          ? "Section percentiles"
+                        : selectedExam === "SAT"
+                          ? "Section + total percentiles"
+                        : selectedExam === "TOEFL" && toeflScale === "current"
                         ? "Section score range"
                         : "Overall Performance"}
                   </h3>
@@ -2243,20 +2289,110 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                       : selectedExam === "DUOLINGO"
                         ? "Each combines two individual skill scores on the 10–160 scale."
                       : selectedExam === "GMAT"
-                        ? "Position within the 60–90 score range, not a percentile or percent correct."
-                        : selectedExam === "SAT" && satInputMode === "sections"
-                          ? "Position within the 200–800 section score range, not a percentile."
-                          : selectedExam === "GRE" &&
-                              greInputMode === "sections"
-                            ? "Position within the 130–170 Verbal and Quantitative score range, not a percentile."
-                            : selectedExam === "TOEFL" && toeflScale === "current"
+                        ? "Estimated percentile against recent GMAT test takers."
+                        : selectedExam === "GRE"
+                          ? "Verbal and Quant percentiles are separate; ETS does not publish a combined-score percentile."
+                        : selectedExam === "SAT"
+                          ? "Magoosh percentile estimates for Reading & Writing, Math, and total score."
+                          : selectedExam === "TOEFL" && toeflScale === "current"
                               ? "Position within the 1–6 section band range, not a percentile."
                             : "Based on your practice scores."}
                   </p>
                 </div>
               </div>
 
-              {selectedExam === "DUOLINGO" ? (
+              {selectedExam === "SAT" ? (
+                <div className="mt-5 space-y-4">
+                  {[
+                    {
+                      label: "Reading & Writing",
+                      score: getSATResult().rw,
+                      percentile: getSATResult().rwPercent,
+                    },
+                    {
+                      label: "Math",
+                      score: getSATResult().math,
+                      percentile: getSATResult().mathPercent,
+                    },
+                    {
+                      label: "Total",
+                      score: getSATResult().total,
+                      percentile: getSATResult().totalPercent,
+                    },
+                  ].map((section) => (
+                    <div key={section.label}>
+                      <div className="flex items-center justify-between gap-2 text-sm">
+                        <span className="font-semibold text-[#0b1e3f]">
+                          {section.label}
+                        </span>
+                        <span className="whitespace-nowrap text-slate-600">
+                          {section.score}{section.label === "Total" ? "/1600" : "/800"}
+                          <span className="ml-2 font-semibold text-[#dc6039]">
+                            Percentile: {section.percentile}%
+                          </span>
+                        </span>
+                      </div>
+                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
+                        <div
+                          className="h-full rounded-full bg-[#F36D45]"
+                          style={{ width: `${section.percentile}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  <p className="text-xs leading-5 text-slate-500">
+                    The digital SAT estimate uses separate Module 1 and Module 2 conversion paths. Module 1 performance selects the path; Magoosh’s tables estimate the scale and percentile.
+                  </p>
+                </div>
+              ) : selectedExam === "GRE" ? (
+                <div className="mt-5 space-y-5">
+                  {[
+                    {
+                      label: "Verbal Reasoning",
+                      score: currentGREResult.verbal,
+                      scale: 170,
+                      percentile: grePercentiles.verbal,
+                    },
+                    {
+                      label: "Quantitative Reasoning",
+                      score: currentGREResult.quant,
+                      scale: 170,
+                      percentile: grePercentiles.quantitative,
+                    },
+                    {
+                      label: "Analytical Writing",
+                      score: currentGREResult.aw,
+                      scale: 6,
+                      percentile: grePercentiles.analyticalWriting,
+                    },
+                  ].map((section) => (
+                    <div key={section.label}>
+                      <div className="flex items-center justify-between gap-2 text-sm">
+                        <span className="font-semibold text-[#0b1e3f]">
+                          {section.label}
+                        </span>
+                        <span className="whitespace-nowrap text-slate-600">
+                          {section.score}/{section.scale}
+                          <span className="ml-2 font-semibold text-[#dc6039]">
+                            {section.percentile === null
+                              ? "Percentile: —"
+                              : `Percentile: ${section.percentile}%`}
+                          </span>
+                        </span>
+                      </div>
+                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-slate-100">
+                        <div
+                          className="h-full rounded-full bg-[#F36D45]"
+                          style={{ width: `${section.percentile ?? 0}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  <p className="text-xs leading-5 text-slate-500">
+                    Percentiles use Magoosh’s published ETS tables for July 2021–June 2024. The combined score is a sum only; it has no official percentile.
+                  </p>
+                </div>
+              ) : selectedExam === "DUOLINGO" ? (
                 <div className="mt-5 space-y-4">
                   {([
                     { key: "literacy", label: "Literacy", skills: "Reading + Writing" },
@@ -2345,7 +2481,9 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                           className="block h-auto w-full"
                           role="img"
                           aria-label={
-                            selectedExam === "GMAT" ||
+                            selectedExam === "GMAT"
+                              ? `Estimated GMAT overall percentile: ${score}%`
+                              :
                             (selectedExam === "SAT" &&
                               satInputMode === "sections") ||
                             (selectedExam === "GRE" &&
@@ -2432,7 +2570,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                       <div className="mt-3 flex items-center justify-between gap-2 text-[10px] font-semibold text-slate-400 sm:text-xs">
                         <span>
                           {selectedExam === "GMAT"
-                            ? "60"
+                            ? "0%"
                             : selectedExam === "TOEFL" && toeflScale === "current"
                               ? "1"
                             : selectedExam === "SAT" &&
@@ -2445,7 +2583,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                         </span>
                         <span>
                           {selectedExam === "GMAT"
-                            ? "75"
+                            ? "50%"
                             : selectedExam === "TOEFL" && toeflScale === "current"
                               ? "3.5"
                             : selectedExam === "SAT" &&
@@ -2458,7 +2596,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                         </span>
                         <span>
                           {selectedExam === "GMAT"
-                            ? "90"
+                            ? "100%"
                             : selectedExam === "TOEFL" && toeflScale === "current"
                               ? "6"
                             : selectedExam === "SAT" &&
@@ -2499,7 +2637,11 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
               <span className="rounded-full border border-orange-200 bg-white px-4 py-2 text-xs font-bold text-[#dc6039] shadow-sm">
                 {report.exam === "PTE"
                   ? `PTE ${pteType === "core" ? "Core" : "Academic / UKVI"}`
-                  : report.exam}
+                  : report.exam === "GMAT"
+                    ? `GMAT · Percentile: ${report.overallPercentile ?? 0}%`
+                    : report.exam === "SAT"
+                      ? `SAT · Percentile: ${report.overallPercentile ?? 0}%`
+                    : report.exam}
               </span>
             </div>
 
@@ -2579,7 +2721,7 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
                   report.exam === "GRE" ||
                   report.exam === "TOEFL" ||
                   report.exam === "DUOLINGO"
-                    ? `${report.sectionScores[report.strongestArea]}/${report.exam === "SAT" ? 800 : report.exam === "GRE" ? 170 : report.exam === "DUOLINGO" ? 160 : report.exam === "TOEFL" ? toeflScale === "current" ? 6 : 30 : 90}`
+                    ? `${report.sectionScores[report.strongestArea]}/${report.exam === "SAT" ? 800 : report.exam === "GRE" ? 170 : report.exam === "DUOLINGO" ? 160 : report.exam === "TOEFL" ? toeflScale === "current" ? 6 : 30 : 90}${report.exam === "GMAT" ? ` · Percentile: ${report.percentages[report.strongestArea]}%` : report.exam === "GRE" ? ` · ${report.percentages[report.strongestArea]}% percentile` : ""}`
                     : `${report.percentages[report.strongestArea]}% performance`}
                   . Keep practising this section regularly while giving
                   additional preparation time to {report.weakestArea}.
@@ -2611,9 +2753,10 @@ export default function ScoreCalculatorPage({ pageInfo, slug }: any) {
 
             {/* Disclaimer */}
             <div className="mt-4 rounded-2xl border border-orange-100 bg-white/85 p-4 text-center text-sm leading-5 text-slate-600">
-              {(report.exam === "SAT" && satInputMode === "sections") ||
-              (report.exam === "GRE" && greInputMode === "sections")
-                ? "The combined score is the exact sum of the section scores you entered. The performance insights are for practice planning, not an official score report."
+              {report.exam === "GRE"
+                ? `${greInputMode === "sections" ? "The combined score is the sum of your entered Verbal and Quant scores." : "The combined score is estimated from your correct-answer counts."} Section percentiles use Magoosh’s published ETS tables for July 2021–June 2024. ETS does not publish a composite-score percentile.`
+                    : report.exam === "SAT"
+                    ? "SAT scaled scores and percentiles use Magoosh’s digital SAT calculator tables. Raw-correct estimates depend on Module 1 routing; official adaptive scores may vary by test form."
                 : report.exam === "TOEFL"
                   ? "The total follows ETS's scoring rule for the selected TOEFL scale using the scores you entered. The performance insights are for practice planning, not an official score report."
                 : report.exam === "DUOLINGO"

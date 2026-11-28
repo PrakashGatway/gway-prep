@@ -168,7 +168,11 @@ export function Navbar({ Data }: NavbarProps) {
         return {
           name:
             parent?.seoMeta?.navTitle || parent?.seoMeta?.title || parent?.name,
-          img: parent?.seoMeta?.navIcon || parent?.seoMeta?.image || parent?.image || null,
+          img:
+            parent?.seoMeta?.navIcon ||
+            parent?.seoMeta?.image ||
+            parent?.image ||
+            null,
           slug: getSlug(parent),
           description: parent?.seoMeta?.navSubtitle || "",
           badge: parent?.seoMeta?.badge || null,
@@ -190,7 +194,11 @@ export function Navbar({ Data }: NavbarProps) {
                   child?.seoMeta?.navTitle ||
                   child?.seoMeta?.title ||
                   child?.name,
-                img: child?.seoMeta?.navIcon || child?.seoMeta?.image || child?.image || null,
+                img:
+                  child?.seoMeta?.navIcon ||
+                  child?.seoMeta?.image ||
+                  child?.image ||
+                  null,
                 slug: nestedSlug,
                 description: child?.seoMeta?.navSubtitle || "",
                 badge: child?.seoMeta?.badge || null,
@@ -305,6 +313,19 @@ export function Navbar({ Data }: NavbarProps) {
       spokenEnglishNavItem,
     ],
   );
+
+  React.useEffect(() => {
+    const root = document.documentElement;
+    if (user) {
+      root.dataset.userAuthenticated = "true";
+    } else {
+      delete root.dataset.userAuthenticated;
+    }
+
+    return () => {
+      delete root.dataset.userAuthenticated;
+    };
+  }, [user]);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -444,13 +465,36 @@ export function Navbar({ Data }: NavbarProps) {
             Prepare Smart. Achieve More.
           </p>
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            <div className="flex items-center gap-1.5" aria-label="Social media links">
+            <div
+              className="flex items-center gap-1.5"
+              aria-label="Social media links"
+            >
               {[
-                { label: "Instagram", icon: "/icon/insta.webp", url: "https://www.instagram.com/ooshasprep" },
-                { label: "Facebook", icon: "/icon/facebook.webp", url: "https://www.facebook.com/share/18aH5VifRr/?mibextid=wwXIfr" },
-                { label: "X", icon: "/icon/twitter.webp", url: "https://x.com/ooshasprep" },
-                { label: "WhatsApp", icon: "/icon/whatsapp.webp", url: "https://wa.me/919166146538" },
-                { label: "YouTube", icon: "/icon/youtube.webp", url: "https://youtube.com/@ooshasprep" },
+                {
+                  label: "Instagram",
+                  icon: "/icon/insta.webp",
+                  url: "https://www.instagram.com/ooshasprep",
+                },
+                {
+                  label: "Facebook",
+                  icon: "/icon/facebook.webp",
+                  url: "https://www.facebook.com/share/18aH5VifRr/?mibextid=wwXIfr",
+                },
+                {
+                  label: "X",
+                  icon: "/icon/twitter.webp",
+                  url: "https://x.com/ooshasprep",
+                },
+                {
+                  label: "WhatsApp",
+                  icon: "/icon/whatsapp.webp",
+                  url: "https://wa.me/919166146538",
+                },
+                {
+                  label: "YouTube",
+                  icon: "/icon/youtube.webp",
+                  url: "https://youtube.com/@ooshasprep",
+                },
               ].map((social) => (
                 <a
                   key={social.label}
@@ -460,7 +504,13 @@ export function Navbar({ Data }: NavbarProps) {
                   aria-label={`Ooshas Prep on ${social.label}`}
                   className="grid h-7 w-7 place-items-center rounded-full bg-white/95 transition hover:-translate-y-0.5 hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
                 >
-                  <img src={social.icon} alt="" width={22} height={22} className="h-[22px] w-[22px] object-contain" />
+                  <img
+                    src={social.icon}
+                    alt=""
+                    width={22}
+                    height={22}
+                    className="h-[22px] w-[22px] object-contain"
+                  />
                 </a>
               ))}
             </div>
@@ -468,7 +518,7 @@ export function Navbar({ Data }: NavbarProps) {
               href="mailto:info@ooshasprep.com"
               aria-label="Email Ooshas Prep at info@ooshasprep.com"
               title="info@ooshasprep.com"
-              className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white text-[#B94425] shadow-sm ring-1 ring-white/70 transition hover:-translate-y-0.5 hover:bg-orange-50 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+              className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-white text-[#B94425] -sm ring-1 ring-white/70 transition hover:-translate-y-0.5 hover:bg-orange-50 hover:-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               <Mail size={17} aria-hidden="true" />
             </a>
@@ -487,13 +537,13 @@ export function Navbar({ Data }: NavbarProps) {
           duration-300
           ${
             scrolled
-              ? "border-b border-gray-100 bg-white shadow "
-              : "border-b border-transparent bg-white"
+              ? "border-b border-gray-100 bg-white"
+              : "border-b border-transparent bg-[#FDF4EF]"
           }
         `}
       >
         <div
-          className={`mx-auto w-full max-w-7xl px-3 transition-all md:px-0 ${scrolled ? "py-1.5" : "py-2"}`}
+          className={`mx-auto w-full max-w-7xl px-3 transition-all duration-300 md:px-0 ${scrolled ? "py-1.5" : "py-3"}`}
         >
           <div
             className="
@@ -522,17 +572,18 @@ export function Navbar({ Data }: NavbarProps) {
                 width={280}
                 height={110}
                 priority
-                className="
+                className={`
       h-16
       w-auto
       object-contain
       transition-transform
-      duration-200
+      duration-300
       group-hover:scale-[1.03]
       sm:h-[72px]
       lg:h-20
       xl:h-[60px]
-    "
+      ${scrolled ? "scale-100" : "scale-[1.04]"}
+    `}
               />
             </Link>
 
@@ -622,8 +673,8 @@ export function Navbar({ Data }: NavbarProps) {
    ${navTabUnderline}
   ${
     activeDropdown === item.name || isNavItemActive(item)
-      ? "text-[#D9542D] after:scale-x-0"
-      : "text-[#4B4542] hover:text-[#F36C45] after:scale-x-0"
+       ? "text-[#D9542D] after:scale-x-0"
+       : "text-[#3E3733] hover:text-[#F36C45] after:scale-x-0"
   }
 `}
                     >
@@ -645,7 +696,7 @@ export function Navbar({ Data }: NavbarProps) {
                       href={item.href}
                       onMouseEnter={closeDesktopDropdown}
                       aria-current={isNavItemActive(item) ? "page" : undefined}
-                      className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-2xl px-2.5 py-2.5 text-[14px] font-semibold tracking-[0.01em] transition-all duration-200 ${navTabUnderline} ${isNavItemActive(item) ? "text-[#D9542D] after:scale-x-0" : "text-[#4B4542] hover:text-[#F36C45] after:scale-x-0"}`}
+                      className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-2xl px-2.5 py-2.5 text-[15px] tracking-[0.01em] transition-all duration-200 ${navTabUnderline} ${isNavItemActive(item) ? "text-[#D9542D] after:scale-x-0" : "text-[#3E3733] hover:text-[#F36C45] after:scale-x-0"}`}
                     >
                       {item.name}
                     </Link>
@@ -653,7 +704,7 @@ export function Navbar({ Data }: NavbarProps) {
 
                   <AnimatePresence>
                     {item.hasDropdown && activeDropdown === item.name && (
-                      <div className="absolute left-1/2 top-[calc(100%+0.25rem)] z-[600] w-[calc(100%-2rem)] max-w-7xl -translate-x-1/2 overflow-hidden rounded-3xl border border-white bg-white shadow-[0_18px_38px_rgba(15,23,42,0.16)]">
+                      <div className="absolute left-1/2 top-[calc(100%+0.25rem)] z-[600] w-[calc(100%-2rem)] max-w-7xl -translate-x-1/2 overflow-hidden rounded-3xl border border-white bg-white -[0_18px_38px_rgba(15,23,42,0.16)]">
                         <motion.div
                           initial={{
                             opacity: 0,
@@ -715,7 +766,7 @@ export function Navbar({ Data }: NavbarProps) {
                                       </span>
                                       <span className="min-w-0 flex-1">
                                         <span
-                                          className={`block text-sm font-semibold leading-5 transition group-hover:text-[#F36C45] ${matchesPath(resource.slug) ? "text-[#D9542D]" : "text-slate-900"}`}
+                                          className={`block text-[15px] font-semibold leading-5 transition group-hover:text-[#F36C45] ${matchesPath(resource.slug) ? "text-[#D9542D]" : "text-slate-900"}`}
                                         >
                                           {resource.name}
                                         </span>
@@ -787,11 +838,27 @@ export function Navbar({ Data }: NavbarProps) {
                                         >
                                           {dd.img ? (
                                             <div className="flex h-10 w-10 shrink-0 items-center justify-center">
-                                              <Image src={dd.img} alt={dd.name} width={28} height={28} className="object-contain" />
+                                              <Image
+                                                src={dd.img}
+                                                alt={dd.name}
+                                                width={28}
+                                                height={28}
+                                                className="object-contain"
+                                              />
                                             </div>
                                           ) : (
                                             <div className="flex h-10 w-10 shrink-0 items-center justify-center text-[#F36D45]">
-                                              {dd.slug === "spoken-english" ? <MessageCircle size={21} aria-hidden="true" /> : <GraduationCap size={21} aria-hidden="true" />}
+                                              {dd.slug === "spoken-english" ? (
+                                                <MessageCircle
+                                                  size={21}
+                                                  aria-hidden="true"
+                                                />
+                                              ) : (
+                                                <GraduationCap
+                                                  size={21}
+                                                  aria-hidden="true"
+                                                />
+                                              )}
                                             </div>
                                           )}
 
@@ -943,16 +1010,25 @@ export function Navbar({ Data }: NavbarProps) {
                                                         height={34}
                                                         className="h-8 w-8 object-contain"
                                                       />
-                                                    ) : dd.slug === "spoken-english" ? (
-                                                      <MessageCircle size={20} className="text-[#F36C45]" aria-hidden="true" />
+                                                    ) : dd.slug ===
+                                                      "spoken-english" ? (
+                                                      <MessageCircle
+                                                        size={20}
+                                                        className="text-[#F36C45]"
+                                                        aria-hidden="true"
+                                                      />
                                                     ) : (
-                                                      <GraduationCap size={20} className="text-[#F36C45]" aria-hidden="true" />
+                                                      <GraduationCap
+                                                        size={20}
+                                                        className="text-[#F36C45]"
+                                                        aria-hidden="true"
+                                                      />
                                                     )}
                                                   </div>
 
                                                   <div className="min-w-0 flex-1">
                                                     <span
-                                                      className={`block text-sm font-semibold leading-snug transition-colors group-hover/sub:text-[#F36C45] ${matchesPath(sub.slug) ? "text-[#D9542D]" : "text-gray-800"}`}
+                                                      className={`block text-[15px] font-semibold leading-snug transition-colors group-hover/sub:text-[#F36C45] ${matchesPath(sub.slug) ? "text-[#D9542D]" : "text-gray-800"}`}
                                                     >
                                                       {sub.name}
                                                     </span>
@@ -977,17 +1053,20 @@ export function Navbar({ Data }: NavbarProps) {
               ))}
             </div>
 
-            <div className="hidden items-center gap-3 xl:flex" onMouseEnter={closeDesktopDropdown}>
+            <div
+              className="hidden items-center gap-3 xl:flex"
+              onMouseEnter={closeDesktopDropdown}
+            >
               <motion.a
                 href="tel:+919166146538"
                 aria-label="Consult an Ooshas Prep expert at +91 9166146538"
-                className="flex items-center gap-2 rounded-full border border-[#ee6841] bg-white px-3.5 py-2.5 text-sm font-bold text-[#1c3058] shadow-[0_4px_16px_rgba(243,108,69,0.2)] ring-2 ring-[#F36C45]/25 ring-offset-2 ring-offset-white transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F36C45]"
+                className="flex items-center gap-2 rounded-full border border-[#ee6841] bg-white px-3.5 py-2.5 text-sm font-bold text-[#1c3058] -[0_4px_16px_rgba(243,108,69,0.2)] ring-2 ring-[#F36C45]/25 ring-offset-2 ring-offset-white transition hover:-translate-y-0.5 hover:-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#F36C45]"
                 initial={
                   shouldReduceMotion
                     ? false
                     : {
                         scale: 0.94,
-                        boxShadow: "0 0 0 0 rgba(243, 108, 69, 0)",
+                        box: "0 0 0 0 rgba(243, 108, 69, 0)",
                       }
                 }
                 animate={
@@ -995,7 +1074,7 @@ export function Navbar({ Data }: NavbarProps) {
                     ? undefined
                     : {
                         scale: [1, 1.12, 1, 1.12, 1],
-                        boxShadow: [
+                        box: [
                           "0 4px 16px rgba(243, 108, 69, 0.2)",
                           "0 0 0 9px rgba(243, 108, 69, 0.24), 0 6px 20px rgba(243, 108, 69, 0.35)",
                           "0 4px 16px rgba(243, 108, 69, 0.2)",
@@ -1031,12 +1110,12 @@ export function Navbar({ Data }: NavbarProps) {
                     text-sm
                     font-semibold
                     text-white
-                    shadow-md
-                    shadow-orange-500/20
+                    -md
+                    -orange-500/20
                     transition-all
                     hover:-translate-y-0.5
-                    hover:shadow-xl
-                    hover:shadow-orange-500/30
+                    hover:-xl
+                    hover:-orange-500/30
                     active:translate-y-0
                   "
                 >
@@ -1061,10 +1140,10 @@ export function Navbar({ Data }: NavbarProps) {
                       from-orange-500
                       to-[#F36C45]
                       pr-2
-                      shadow-sm
+                      -sm
                       transition-all
-                      hover:shadow-lg
-                      hover:shadow-orange-500/20
+                      hover:-lg
+                      hover:-orange-500/20
                       active:scale-95
                     "
                   >
@@ -1128,7 +1207,7 @@ export function Navbar({ Data }: NavbarProps) {
                           border
                           border-gray-100
                           bg-white
-                          shadow-[0_20px_50px_rgba(0,0,0,0.14)]
+                          -[0_20px_50px_rgba(0,0,0,0.14)]
                         "
                       >
                         {/* User */}
@@ -1158,7 +1237,7 @@ export function Navbar({ Data }: NavbarProps) {
                               rounded-full
                               bg-white
                               text-gray-500
-                              shadow-sm
+                              -sm
                             "
                           >
                             <User size={24} />
@@ -1336,7 +1415,7 @@ export function Navbar({ Data }: NavbarProps) {
                 flex-col
                 overflow-hidden
                 bg-white
-                shadow-2xl
+                -2xl
                 xl:hidden
               "
               aria-label="Mobile navigation"
@@ -1591,7 +1670,7 @@ export function Navbar({ Data }: NavbarProps) {
                                   transition-colors
                                   ${
                                     isExpanded
-                                      ? "bg-white text-[#F36C45] shadow-sm"
+                                      ? "bg-white text-[#F36C45] -sm"
                                       : "bg-gray-50 text-gray-500"
                                   }
                                 `}
@@ -1684,7 +1763,7 @@ export function Navbar({ Data }: NavbarProps) {
                                                     justify-center
                                                     rounded-lg
                                                     bg-white
-                                                    shadow-sm
+                                                    -sm
                                                   "
                                                 >
                                                   {sub.img ? (
@@ -1934,11 +2013,9 @@ export function Navbar({ Data }: NavbarProps) {
                       <ChevronRight size={16} className="rotate-180" /> All
                       sections
                     </button>
-                    <div className="mb-6 rounded-3xl bg-gradient-to-br from-[#fff1e8] via-white to-orange-50 p-5 ring-1 ring-orange-100">
-                      <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#F36C45]">
-                        Discover
-                      </p>
-                      <h2 className="mt-1 text-3xl font-bold tracking-tight text-slate-900">
+                    <div className="mb-3 rounded-3xl bg-gradient-to-br from-[#fff1e8] via-white to-orange-50 p-5 ring-1 ring-orange-100">
+                     
+                      <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-900">
                         {mobileDropdown}
                       </h2>
                       <p className="mt-2 text-sm leading-6 text-slate-600">
@@ -1947,13 +2024,13 @@ export function Navbar({ Data }: NavbarProps) {
                           : "Choose a topic below to explore courses, guides and exam information."}
                       </p>
                     </div>
-                    <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid gap-2 sm:gap-4 sm:grid-cols-2">
                       {navItems
                         .find((item: any) => item.name === mobileDropdown)
                         ?.dropdownItems?.map((group: any) => (
                           <section
                             key={group.slug}
-                            className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+                            className="rounded-2xl border border-slate-200 bg-white p-4 -sm"
                           >
                             <Link
                               href={navHref(group.slug)}

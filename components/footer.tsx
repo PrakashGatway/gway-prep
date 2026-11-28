@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  ArrowBigRight,
-  Dot,
-  ListChecks,
-} from "lucide-react";
+import { ArrowBigRight, Dot, ListChecks } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -121,16 +117,12 @@ export function Footer({ Data = [] }: FooterProps) {
         {groupedArray.length > 0 && (
           <section className="relative overflow-hidden rounded-3xl  px-4 py-5 sm:px-6 sm:py-6">
             <div className="max-w-7xl mx-auto">
-
               <div className="space-y-3">
                 {groupedArray.map((group) => {
                   const variants = group.variants || [];
 
                   return (
-                    <div
-                      key={group.key}
-                      className=""
-                    >
+                    <div key={group.key} className="">
                       {/* Related / Main Title */}
                       {group.base && (
                         <button
@@ -152,7 +144,8 @@ export function Footer({ Data = [] }: FooterProps) {
                         >
                           {group.base?.seoMeta?.navTitle ||
                             group.base?.name ||
-                            group.key} :
+                            group.key}{" "}
+                          :
                         </button>
                       )}
 
@@ -197,12 +190,12 @@ export function Footer({ Data = [] }: FooterProps) {
           </section>
         )}
       </div>
-      <footer className="site-footer w-full bg-[#FDF4EF] mt-10 overflow-hidden border-x-0 border-t border-[#F3B49F] rounded-t-[2rem] sm:rounded-t-[3rem] lg:rounded-t-[3.5rem]">
+      <footer className="site-footer px-3 w-full bg-[#FDF4EF] mt-10 overflow-hidden border-x-0 border-t border-[#F3B49F] rounded-t-[2rem] sm:rounded-t-[3rem] lg:rounded-t-[3.5rem]">
         {/* ================= TOP ================= */}
-        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-8 sm:py-10 md:py-14">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 md:gap-12 lg:gap-16 items-start">
+        <div className="max-w-7xl mx-auto py-8 sm:py-10 md:py-14">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-6 items-start">
             {/* Logo */}
-            <div className="sm:col-span-2 lg:col-span-2 pr-0 lg:pr-10 space-y-3">
+            <div className="sm:col-span-2 font-semibold lg:col-span-2 pr-0 lg:pr-10 space-y-3">
               <Image
                 src="/image/logo.png"
                 alt="logo"
@@ -210,7 +203,7 @@ export function Footer({ Data = [] }: FooterProps) {
                 height={70}
                 className=""
               />
-              <p className="text-sm leading-6 text-[#514945]">
+              <p className="text-sm leading-6  text-[#514945]">
                 Ooshas Prep is a leading online test prep platform for IELTS,
                 GRE, GMAT, SAT, TOEFL & PTE, offering flexible learning formats
                 and world-class coaching.
@@ -225,16 +218,20 @@ export function Footer({ Data = [] }: FooterProps) {
 
             {/* Quick Links */}
             <div>
-              <h3 className="text-base font-bold tracking-wide text-[#17243A] my-4">Quick Links</h3>
-              <ul className="space-y-2 text-[13px] text-[#444]">
+              <h3 className="text-base font-bold tracking-wide text-[#17243A] my-4">
+                Quick Links
+              </h3>
+              <ul className="space-y-2 text-sm text-gray-700">
                 {quickLinks.map((link) => (
                   <li key={link.label}>
-                    <button
-                      className="cursor-pointer hover:text-primary transition-colors"
+                    <li
+                      className="group relative w-fit cursor-pointer py-px transition-all duration-300 ease-out hover:translate-x-1 hover:text-primary"
                       onClick={() => router.push(link.path)}
                     >
                       {link.label}
-                    </button>
+
+                      <span className="absolute bottom-0 left-0 h-[2px] w-0 rounded-full bg-primary transition-all duration-300 ease-out group-hover:w-full" />
+                    </li>
                   </li>
                 ))}
               </ul>
@@ -242,15 +239,18 @@ export function Footer({ Data = [] }: FooterProps) {
 
             {/* Services */}
             <div>
-              <h3 className="text-base font-bold tracking-wide text-[#17243A] my-4">Our Services</h3>
-              <ul className="space-y-2 text-[13px] text-[#444]">
+              <h3 className="text-base font-bold tracking-wide text-[#17243A] my-4">
+                Our Services
+              </h3>
+              <ul className="space-y-2 text-sm text-gray-700">
                 {courseData.map((item: any) => (
                   <li
                     key={item._id}
                     onClick={() => router.push(`/${item.seoMeta.canonicalUrl}`)}
-                    className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
+                    className="group relative w-fit cursor-pointer py-px transition-all duration-300 ease-out hover:translate-x-1 hover:text-primary"
                   >
                     {item.seoMeta.navTitle}
+                    <span className="absolute bottom-0 left-0 h-[2px] w-0 rounded-full bg-primary transition-all duration-300 ease-out group-hover:w-full" />
                   </li>
                 ))}
               </ul>
@@ -258,16 +258,19 @@ export function Footer({ Data = [] }: FooterProps) {
 
             {/* Resources */}
             <div>
-              <h3 className="text-base font-bold tracking-wide text-[#17243A] my-4">Resources</h3>
-              <ul className="space-y-2 text-[13px] text-[#444]">
+              <h3 className="text-base font-bold tracking-wide text-[#17243A] my-4">
+                Resources
+              </h3>
+              <ul className="space-y-2 text-sm text-gray-700">
                 {calculator.map((resource) => (
                   <li key={resource.slug}>
-                    <button
-                      className="cursor-pointer text-left hover:text-primary transition-colors"
+                    <li
+                      className="group relative w-fit cursor-pointer py-px transition-all duration-300 ease-out hover:translate-x-1 hover:text-primary"
                       onClick={() => router.push(resource.slug)}
                     >
                       {resource?.seoMeta?.navTitle}
-                    </button>
+                      <span className="absolute bottom-0 left-0 h-[2px] w-0 rounded-full bg-primary transition-all duration-300 ease-out group-hover:w-full" />
+                    </li>
                   </li>
                 ))}
               </ul>
@@ -275,15 +278,18 @@ export function Footer({ Data = [] }: FooterProps) {
 
             {/* Exam Details */}
             <div className="lg:block">
-              <h3 className="text-base font-bold tracking-wide text-[#17243A] my-4">Exam Details</h3>
-              <ul className="space-y-2 text-[13px] text-[#444]">
+              <h3 className="text-base font-bold tracking-wide text-[#17243A] my-4">
+                Exam Details
+              </h3>
+              <ul className="space-y-2 text-sm text-gray-700">
                 {courseData1.map((item: any) => (
                   <li
                     key={item._id}
                     onClick={() => router.push(`/${item.seoMeta.canonicalUrl}`)}
-                    className="cursor-pointer hover:text-[#FF6D4D] transition-colors"
+                    className="group relative w-fit cursor-pointer py-px transition-all duration-300 ease-out hover:translate-x-1 hover:text-primary"
                   >
                     {item.seoMeta.navTitle}
+                    <span className="absolute bottom-0 left-0 h-[2px] w-0 rounded-full bg-primary transition-all duration-300 ease-out group-hover:w-full" />
                   </li>
                 ))}
               </ul>
@@ -338,29 +344,28 @@ export function Footer({ Data = [] }: FooterProps) {
             </div>
           </div>
         </div>
-
-        <div className="bg-primary relative">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex flex-wrap justify-center md:justify-start gap-4 sm:gap-6 lg:gap-8 mt-4 md:mt-0">
-              <p className="text-white text-xs text-center sm:text-left">
-                © {new Date().getFullYear()} Ooshas Prep. All rights reserved.
-              </p>
-              <Link href="/privacy-policy" className="text-white text-xs">
-                Privacy Policy
-              </Link>
-              <Link href="/terms-and-conditions" className="text-white text-xs">
-                Terms of Service
-              </Link>
-            </div>
-
-            <img
-              src="/icon/footer.webp"
-              alt="img"
-              className="hidden lg:block h-24 sm:h-28 lg:h-34 absolute right-4 sm:right-6 lg:right-8 bottom-1 opacity-50 sm:opacity-100"
-            />
-          </div>
-        </div>
       </footer>
+      <div className="bg-primary relative">
+        <div className="max-w-7xl mx-auto py-2.5 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-wrap justify-center md:justify-start gap-4 sm:gap-6 lg:gap-8 mt-4 md:mt-0">
+            <p className="text-white text-xs text-center sm:text-left">
+              © {new Date().getFullYear()} Ooshas Prep. All rights reserved.
+            </p>
+            <Link href="/privacy-policy" className="text-white text-xs">
+              Privacy Policy
+            </Link>
+            <Link href="/terms-and-conditions" className="text-white text-xs">
+              Terms of Service
+            </Link>
+          </div>
+
+          <img
+            src="/icon/footer.webp"
+            alt="img"
+            className="hidden lg:block h-24 sm:h-28 lg:h-34 absolute right-4 sm:right-6 lg:right-8 bottom-1 opacity-50 sm:opacity-100"
+          />
+        </div>
+      </div>
     </>
   );
 }

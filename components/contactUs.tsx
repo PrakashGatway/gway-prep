@@ -166,10 +166,10 @@ function ConnectSection({ data }: { data?: any }) {
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 mt-12 " >
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start"  id="form">
+    <section className="mx-auto mt-10 max-w-7xl px-4 sm:mt-12 sm:px-6" >
+      <div className="grid grid-cols-1 items-start gap-8 sm:gap-10 lg:grid-cols-2 lg:gap-16"  id="form">
         <div>
-          <h2 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold my-6" >
+          <h2 className="my-5 text-left text-xl font-bold sm:my-6 sm:text-2xl md:text-3xl" >
             {title} <span className="text-primary">{highlightText}</span>
           </h2>
 
@@ -179,22 +179,22 @@ function ConnectSection({ data }: { data?: any }) {
               return (
                 <div
                   key={idx}
-                  className="bg-[#FFF8F5] border border-[#FFEDE4] p-6 flex items-center gap-5 hover:shadow-md transition-all"
+                  className="flex min-w-0 flex-col items-stretch gap-4 border border-[#FFEDE4] bg-[#FFF8F5] p-4 transition-colors sm:flex-row sm:items-center sm:gap-5 sm:p-5"
                 >
                   <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
+                    className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full sm:h-12 sm:w-12"
                     style={{ backgroundColor: item.color }}
                   >
                     <IconComponent className="text-white" size={28} />
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-lg text-[#1a1a2e]">
+                    <div className="text-base font-semibold text-[#17243A] sm:text-lg">
                       {item.name}
                     </div>
-                    <div className="text-sm text-gray-600">{item.description}</div>
+                    <div className="text-sm text-[#3E3E3E]">{item.description}</div>
                     {item.contact && (
-                      <div className="text-sm font-medium text-gray-700 mt-0.5">
+                      <div className="mt-0.5 text-sm font-medium text-[#4B5563]">
                         <ContactLink value={item.contact} />
                       </div>
                     )}
@@ -204,7 +204,7 @@ function ConnectSection({ data }: { data?: any }) {
                     href={item.link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="px-8 py-3 bg-[#FF5E3A] hover:bg-[#e54a2a] text-white text-sm font-semibold transition-colors whitespace-nowrap"
+                      className="w-full whitespace-nowrap rounded-lg bg-[#F36C45] px-4 py-3.5 text-center text-sm font-semibold text-white transition-colors hover:bg-[#E05A34] sm:w-auto sm:px-5"
                   >
                     {item.buttonText}
                   </a>
@@ -214,11 +214,11 @@ function ConnectSection({ data }: { data?: any }) {
           </div>
         </div>
 
-        <div className="bg-white p-8 lg:p-10 shadow-sm border border-gray-100">
-          <h3 className="text-3xl font-bold text-[#1a1a2e] mb-8">
+        <div className="min-w-0 border border-gray-100 bg-white p-4 sm:p-6 lg:p-10">
+          <h3 className="mb-5 text-2xl font-bold text-[#17243A] sm:mb-8 sm:text-3xl">
             {data?.sections?.["message-section"]?.fields?.title || "Send Us a Message"}
           </h3>
-          <FormSection FORM_CONFIG={FORM_CONFIG} />
+          <FormSection FORM_CONFIG={FORM_CONFIG} shadowless />
         </div>
       </div>
     </section>
@@ -307,35 +307,35 @@ export default function ContactPage({ Data }: any) {
   };
 
   return (
-    <div className="min-h-screen text-gray-800">
+    <div className="contact-page min-h-screen text-[#17243A] [&_button]:shadow-none [&_button:hover]:shadow-none [&_form_button]:rounded-lg">
       {/* ---------------- HERO SECTION ---------------- */}
       <div className="bg-[#fcf4ed]">
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-0 py-8 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative">
-          <div className="space-y-8">
+        <section className="relative mx-auto grid max-w-7xl grid-cols-1 items-center gap-8 px-4 py-8 sm:px-6 md:gap-10 lg:grid-cols-2 lg:gap-12 lg:px-0">
+          <div className="min-w-0 space-y-6 sm:space-y-8">
             <div>
-              <h1 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold mb-2">
+              <h1 className="mb-2 text-left text-3xl font-bold leading-tight tracking-tight text-[#17243A] sm:text-3xl lg:text-4xl">
                 {heroTitle}
               </h1>
-              <h2 className="text-3xl lg:text-4xl font-bold mb-4 text-primary">
+              <h2 className="mb-3 text-2xl font-bold leading-tight tracking-tight text-primary sm:mb-4 sm:text-3xl lg:text-4xl">
                 {heroSubtitle}
               </h2>
-              <p className="text-gray-600 mb-8">{heroDescription}</p>
+              <p className="mb-6 text-sm leading-6 text-[#3E3E3E] sm:mb-8 sm:text-base sm:leading-7">{heroDescription}</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
               {contactCards.map((card: any, idx: number) => {
                 const IconComponent = contactIconMap[card.icon] || Phone;
                 return (
                   <div
                     key={idx}
-                    className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-3"
+                    className="flex min-w-0 items-center gap-3 rounded-xl border border-gray-100 bg-white p-3 sm:p-4"
                   >
                     <div className="bg-[#FEF9F4] p-2 rounded-full text-[#FF5E3A]">
                       <IconComponent size={20} />
                     </div>
-                    <div>
-                      <p className="text-xs text-gray-400">{card.title}</p>
-                      <p className="text-sm font-medium"><ContactLink value={card.value} /></p>
+                    <div className="min-w-0 break-words">
+                      <p className="text-xs text-[#4B4542]">{card.title}</p>
+                      <p className="break-words text-sm font-medium text-[#17243A]"><ContactLink value={card.value} /></p>
                     </div>
                   </div>
                 );
@@ -343,7 +343,7 @@ export default function ContactPage({ Data }: any) {
             </div>
           </div>
 
-          <div className="p-8 relative hidden md:block">
+          <div className="relative hidden min-w-0 p-4 md:block lg:p-8">
             <div className="h-full bg-transparent relative">
               <img
                 src={heroImage}
@@ -427,32 +427,32 @@ export default function ContactPage({ Data }: any) {
       </section> */}
 
       {/* ---------------- BOTTOM CTA (STUDENTS) ---------------- */}
-      <section className="bg-[#FEF9F4] py-16 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center relative z-10">
-          <div className="lg:w-1/2 relative h-64 lg:h-80 w-full flex justify-center lg:justify-start">
+      <section className="relative overflow-hidden bg-[#FEF9F4] py-10 sm:py-12 lg:py-16">
+        <div className="relative z-10 mx-auto flex max-w-7xl flex-col items-center px-4 sm:px-6 lg:flex-row lg:px-8">
+          <div className="relative flex h-48 w-full justify-center sm:h-56 md:h-64 lg:h-80 lg:w-1/2 lg:justify-start">
             <img
               src={ctaImage}
-              className="object-contain h-full w-auto"
+              className="h-full max-w-full object-contain"
               alt={ctaData?.ctaImageAlt || ctaData?.title || "Contact our counsellors"}
             />
           </div>
-          <div className="lg:w-1/2 text-center lg:text-left mt-6 lg:mt-0">
-            <h3 className="text-3xl md:text-4xl font-bold  mb-2">
+          <div className="mt-6 min-w-0 text-center lg:mt-0 lg:w-1/2 lg:text-left">
+            <h3 className="mb-2 text-2xl font-bold leading-tight sm:text-3xl md:text-4xl">
               {ctaTitle}
             </h3>
-            <h3 className="text-2xl md:text-3xl font-bold text-primary mb-4">
+            <h3 className="mb-4 text-xl font-bold leading-tight text-primary sm:text-2xl md:text-3xl">
               {ctaHighlightText}
             </h3>
-            <p className="text-gray-600 mb-6 max-w-md mx-auto lg:mx-0">
+            <p className="mx-auto mb-6 max-w-md text-sm leading-6 text-[#3E3E3E] sm:text-base sm:leading-7 lg:mx-0">
               {ctaDescription}
             </p>
-            <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4">
+            <div className="flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row sm:gap-4 lg:justify-start">
               <a
                 href="tel:+919166146538"
-                className="bg-[#FF5E3A] text-white font-medium py-3 px-8 shadow-md hover:bg-[#e54a2a] transition-colors">
+                className="w-full rounded-lg bg-[#F36C45] px-4 py-3.5 text-center text-sm font-semibold text-white transition-colors hover:bg-[#E05A34] sm:w-auto sm:px-5">
                 {ctaPrimaryButton}
               </a>
-              <a href="#form" className="border border-[#FF5E3A] text-[#FF5E3A] font-medium py-3 px-8 hover:bg-[#FFF6F2] transition-colors">
+              <a href="#form" className="w-full rounded-lg bg-[#525252] px-4 py-3.5 text-center text-sm font-semibold text-white transition-colors hover:bg-[#414141] sm:w-auto sm:px-5">
                 {ctaSecondaryButton}
               </a>
             </div>

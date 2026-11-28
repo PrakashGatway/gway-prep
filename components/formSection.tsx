@@ -69,11 +69,13 @@ interface FormConfig {
 interface RegistrationSectionProps {
   FORM_CONFIG: FormConfig;
   onSubmitted?: (response: any) => void;
+  shadowless?: boolean;
 }
 
 export default function FormSection({
   FORM_CONFIG,
   onSubmitted,
+  shadowless = false,
 }: RegistrationSectionProps) {
   const [step, setStep] = useState(1);
   const [submitted, setSubmitted] = useState(false);
@@ -450,8 +452,8 @@ export default function FormSection({
         disabled={isLoading}
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.97 }}
-        className={`${sizeClasses[submitConfig.size || "large"]} font-bold text-white rounded-xl transition-all shadow-lg
-         hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 w-full`}
+        className={`${sizeClasses[submitConfig.size || "large"]} font-bold text-white rounded-xl transition-all ${shadowless ? "shadow-none hover:shadow-none" : "shadow-lg hover:shadow-xl"}
+         disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 w-full`}
         style={{
           background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor}dd)`,
         }}
@@ -586,10 +588,10 @@ export default function FormSection({
             )}
 
             {/* Dynamic Fields */}
-            <div className=" grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {currentStepFields.map((field) => {
                 const gridClass =
-                  field.grid === "half" ? "col-span-1" : "col-span-2";
+                  field.grid === "half" ? "col-span-1" : "col-span-1 sm:col-span-2";
 
                 const hasError = !!errors[field.name];
 
@@ -621,8 +623,10 @@ export default function FormSection({
                           style={{
                             boxShadow: "none",
                           }}
-                          onFocus={(e) => {
-                            e.currentTarget.style.boxShadow = hasError
+                           onFocus={(e) => {
+                            e.currentTarget.style.boxShadow = shadowless
+                              ? "none"
+                              : hasError
                               ? "0 0 0 4px #ef444420"
                               : "0 0 0 4px #f36d4520";
                           }}
@@ -1102,8 +1106,7 @@ export default function FormSection({
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.95 }}
             onClick={buttonConfig.action}
-            className="px-8 py-3 text-sm font-bold rounded-xl text-white transition-all shadow-lg hover:shadow-xl
-             flex items-center gap-2 cursor-pointer"
+            className={`px-8 py-3 text-sm font-bold rounded-lg text-white transition-all ${shadowless ? "shadow-none hover:shadow-none" : "shadow-lg hover:shadow-xl"} flex items-center gap-2 cursor-pointer`}
             style={{
               background: `linear-gradient(135deg, ${primaryColor}, ${primaryColor})`,
             }}

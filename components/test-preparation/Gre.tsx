@@ -798,7 +798,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
   return (
     <div className="font-medium">
       <section
-        className="relative overflow-visible"
+        className="test-preparation-hero relative overflow-visible"
         style={{
           scrollbarWidth: "none",
           backgroundImage: "url('image/exam-bg.webp')",
@@ -807,10 +807,10 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
           backgroundRepeat: "no-repeat",
         }}
       >
-        <div className="max-w-7xl mx-auto py-8 sm:py-10 px-4 sm:px-2">
+        <div className="max-w-7xl mx-auto py-8 sm:py-10 px-4 sm:px-3">
           {/* Heading */}
-          <div className=" text-center">
-            <h1 className="text-center max-w-4xl mx-auto text-2xl md:text-3xl lg:text-[2.5rem] font-bold leading-11">
+          <div className=" sm:text-center">
+            <h1 className="sm:text-center max-w-4xl mx-auto text-2xl md:text-3xl lg:text-4xl font-bold ">
               {heroSection.title?.split("||")[0]}
               <span className="text-primary">
                 {heroSection.title?.split("||")[1]}
@@ -818,7 +818,7 @@ export default function Gre({ pageInfo, slug }: { pageInfo: any; slug: any }) {
               {heroSection.title?.split("||")[2]}
             </h1>
 
-            <p className="mt-2 max-w-5xl mx-auto text-sm sm:text-base md:text-lg leading-6 sm:leading-7 md:leading-8 px-2">
+            <p className="mt-2 max-w-5xl mx-auto text-base sm:text-base md:text-lg">
               {heroSection.paragraph}
             </p>
           </div>

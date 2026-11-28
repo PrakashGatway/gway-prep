@@ -7,8 +7,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useGlobal } from "@/hooks/AppStateContext";
 
-
-
 export default function About({ sections }: any) {
   // // console.log(sections, 'About data ');
 
@@ -39,40 +37,37 @@ export default function About({ sections }: any) {
 
   // Parse statistics items
   const statsItems = statistics.items || [];
-  const [isPopupOpen,setIsPopupOpen] = useState<boolean>(false);
+  const [isPopupOpen, setIsPopupOpen] = useState<boolean>(false);
 
   return (
-    <main className="about-typography min-h-screen bg-white text-gray-800" id="main-content">
-            <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen}/>
+    <main
+      className="min-h-screen bg-white text-[#3E3E3E] [&_.prose]:font-medium [&_.prose]:leading-7 [&_.prose_p]:my-4 [&_.prose_p]:text-[#3E3E3E] [&_.prose_li]:my-2 [&_.prose_li]:text-[#3E3E3E] [&_.prose_strong]:font-bold [&_.prose_strong]:text-[#C84F31] [&_.prose_b]:font-bold [&_.prose_b]:text-[#C84F31] [&_.prose_h1]:font-bold [&_.prose_h1]:tracking-tight [&_.prose_h1]:text-[#17243A] [&_.prose_h2]:font-bold [&_.prose_h2]:tracking-tight [&_.prose_h2]:text-[#17243A] [&_.prose_h3]:font-semibold [&_.prose_h3]:tracking-tight [&_.prose_h3]:text-[#17243A]"
+      id="main-content"
+    >
+      <PopupModal isPopupOpen={isPopupOpen} setIsPopupOpen={setIsPopupOpen} />
 
       {/* ---------------- Hero ---------------- */}
-      <section
-        className="about-hero bg-cover bg-center bg-no-repeat py-16 lg:py-12 bg-[#FDF4ED]"
-        style={{
-          backgroundImage: "url('/aboutbg.webp')",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "contain",
-        }} // Update with your image path
-      >
-        <div className="max-w-7xl mx-auto px-6 xl:px-1">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-14 items-center">
+      <section className="bg-cover bg-center bg-no-repeat bg-[#FDF4ED] pt-12 px-4">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid items-center gap-2 lg:grid-cols-2 lg:gap-14">
             {/* Left Content */}
-            <div className="order-2 lg:order-1 text-center lg:text-left lg:pl-4">
-              <h1 className="text-left text-2xl md:text-3xl lg:text-5xl font-bold">
+            <div className="order-1 text-center sm:pb-12 lg:order-1 lg:text-left">
+              <h1 className="text-left text-3xl font-bold leading-tight tracking-tight text-[#17243A] md:text-3xl lg:text-4xl">
                 <span className="text-primary">
                   {hero?.title?.split("||")[0]}
                 </span>
                 {hero?.title?.split("||")[1]}
               </h1>
 
-              <p className="mt-3 max-w-xl mx-auto lg:mx-0 text-lg leading-8 ">
+              <p className="mx-auto my-4 max-w-2xl text-left text-base text-[#3E3E3E] lg:mx-0 lg:text-lg">
                 {hero?.subtitle}
               </p>
 
-              <div className="mt-7 flex flex-wrap justify-center lg:justify-start gap-3">
-                <button onClick={() => setIsPopupOpen(true)}
-                 className="about-hero-button cursor-pointer bg-primary px-7 py-3.5 text-white font-semibold transition hover:opacity-90">
+              <div className="mt-3 flex flex-wrap lg:justify-start gap-3">
+                <button
+                  onClick={() => setIsPopupOpen(true)}
+                  className="min-h-12 cursor-pointer rounded-lg bg-primary px-7 py-3.5 text-sm font-semibold text-white transition duration-300 hover:opacity-90"
+                >
                   {hero?.buttons?.primary || "Get Started"}
                 </button>
                 {/* 
@@ -80,22 +75,21 @@ export default function About({ sections }: any) {
                   {hero?.buttons?.secondary || "Learn More"}
                 </button> */}
               </div>
-              
             </div>
 
             {/* Right Image */}
-            <div className="about-hero-image order-1 lg:order-2 flex justify-center">
+            <div className="h-100 w-full order-2 lg:order-2 flex justify-center">
               <img
-                src={hero?.image || "/about.webp"}
+                src={hero?.image || "about/girl.png"}
                 alt="About"
-                className="w-full max-w-xl object-contain"
+                className="max-w-xl w-full object-contain"
               />
             </div>
           </div>
         </div>
       </section>
 
-      {whoWeAre.title && whoWeAre.description && (
+      {/* {whoWeAre.title && whoWeAre.description && (
         <section
           className="bg-white py-12 md:py-16 lg:py-20"
           aria-labelledby="who-are-we"
@@ -107,11 +101,11 @@ export default function About({ sections }: any) {
                 className="text-left text-2xl md:text-3xl lg:text-4xl font-bold"
               >
                 {whoWeAre.title.split("||")[0]}
-                <span className="text-primary">{whoWeAre.title.split("||")[1]}</span>
+                <span className="text-primary">
+                  {whoWeAre.title.split("||")[1]}
+                </span>
               </h2>
-              {/* <div className="mt-4 md:mt-6 text-sm md:text-base text-gray-600 leading-relaxed prose prose-sm max-w-none">
-                {parseHtml(whoWeAre.description)}
-              </div> */}
+             
               <div
                 className="prose max-w-none text-slate-700 
              prose-headings:text-slate-900
@@ -151,9 +145,9 @@ export default function About({ sections }: any) {
             </div>
           </div>
         </section>
-      )}
+      )} */}
 
-      {(features.title || features.description) && (
+      {/* {(features.title || features.description) && (
         <section
           className="relative bg-[#FDF4EF] py-12 md:py-16 lg:py-20 overflow-hidden"
           aria-labelledby="what-will-we-do"
@@ -182,7 +176,9 @@ export default function About({ sections }: any) {
                   className="text-center text-2xl md:text-3xl lg:text-5xl font-bold mb-4"
                 >
                   <span className="">{features.title.split("||")[0]}</span>
-                 <span className="text-[#fa6b2a]">{features.title.split("||")[1]}</span>
+                  <span className="text-[#fa6b2a]">
+                    {features.title.split("||")[1]}
+                  </span>
                 </h2>
               )}
 
@@ -209,109 +205,91 @@ export default function About({ sections }: any) {
                     <h3 className="font-bold text-gray-900 text-sm md:text-base">
                       {ele.title}
                     </h3>
-                    <p className="mt-1 text-xs md:text-sm text-gray-600">
+                    <p className="mt-1 text-xs md:text-sm text-[#3E3E3E]">
                       {ele.description}
                     </p>
                   </article>
                 ))}
-                
               </div>
             </div>
           </div>
         </section>
-      )}
+      )} */}
 
       {leaders.title && leaderItems.length > 0 && (
         <section
-          className="bg-white py-12 md:py-16 lg:py-20"
+          className="relative w-full overflow-hidden bg-white px-4 py-12 sm:px-6 md:py-16 lg:py-20"
           aria-labelledby="people-behind"
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-1">
-            <h2
-              id="people-behind"
-              className="text-center text-2xl md:text-3xl lg:text-5xl font-bold"
-            >
-              {leaders.title.split("||")[0]}
-              <span className="text-primary">
-                {leaders.title.split("||")[1]}
-              </span>
-            </h2>
+          <div className="relative mx-auto w-full max-w-7xl xl:px-1">
+            <div className="mb-10 sm:mb-12">
+              <h2
+                id="people-behind"
+                className="text-left text-2xl font-bold leading-tight tracking-tight text-[#17243A] sm:text-3xl lg:text-4xl"
+              >
+                {leaders.title.split("||")[0]}
+                <span className="text-primary">
+                  {leaders.title.split("||")[1]}
+                </span>
+              </h2>
+            </div>
 
-            <div className="mt-8 md:mt-16 grid sm:grid-cols-2 gap-6 md:gap-8 max-w-5xl mx-auto px-4">
-              {leaderItems.map((person: any, idx: number) => (
-                <article
-                  key={person.name || idx}
-                  className="group relative overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.08)] hover:shadow-[0_20px_50px_-12px_rgba(242,110,70,0.35)] transition-all duration-500 hover:-translate-y-2"
-                >
-                  {/* Decorative gradient blob */}
-                  <div
-                    className={`absolute -top-20 -right-20 w-56 h-56 rounded-full blur-3xl opacity-40 group-hover:opacity-70 transition-opacity duration-700 ${
-                      idx === 0
-                        ? "bg-gradient-to-br from-[#FDD9C4] to-[#f26e46]"
-                        : "bg-gradient-to-br from-[#FDE8DC] to-[#f8b89e]"
-                    }`}
-                  />
+            <div className="flex flex-col gap-8 md:gap-10">
+              {leaderItems
+                .slice()
+                .reverse()
+                .map((person: any, idx: number) => (
+                  <article
+                    key={person.name || idx}
+                    className="relative mx-auto w-full max-w-7xl rounded-[28px] border border-[#17243A]/25 bg-gradient-to-r from-[#FFF9F5] via-white to-[#F7F9FC] px-5 pb-12 pt-16 sm:px-10 sm:pb-14 sm:pt-20"
+                  >
+                    <svg aria-hidden="true" viewBox="0 0 72 60" className="pointer-events-none absolute left-3 top-3 h-12 w-12 rotate-180 fill-[#F36C45] sm:left-5 sm:top-8">
+                     
+                       <path d="M18 3C9.2 3 3 9.2 3 18c0 7.3 5.6 12.5 13 13-1.6 7-5.6 13.4-11.8 18.7l5 5.6C23 47 31 34.7 31 19.6 31 9.7 25.8 3 18 3Zm37 0c-8.8 0-15 6.2-15 15 0 7.3 5.6 12.5 13 13-1.6 7-5.6 13.4-11.8 18.7l5 5.6C60 47 68 34.7 68 19.6 68 9.7 62.8 3 55 3Z" />
+                    </svg>
+                    <svg aria-hidden="true" viewBox="0 0 72 60" className="pointer-events-none absolute bottom-3 right-3 h-12 w-12  fill-[#F36C45] sm:bottom-4 sm:right-5">
+                      <path d="M18 3C9.2 3 3 9.2 3 18c0 7.3 5.6 12.5 13 13-1.6 7-5.6 13.4-11.8 18.7l5 5.6C23 47 31 34.7 31 19.6 31 9.7 25.8 3 18 3Zm37 0c-8.8 0-15 6.2-15 15 0 7.3 5.6 12.5 13 13-1.6 7-5.6 13.4-11.8 18.7l5 5.6C60 47 68 34.7 68 19.6 68 9.7 62.8 3 55 3Z" />
+                    </svg>
 
-                  {/* Top accent bar */}
-                  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[#f26e46] via-[#f8a07a] to-[#f26e46]" />
+                    <div className="absolute left-16 top-0 flex max-w-[calc(100%-2rem)] -translate-y-1/2 items-center gap-2.5 rounded-full bg-white px-3 py-2 text-gray-800 border border-[#17243A] sm:gap-3 sm:px-4 sm:py-2.5">
+                      {person.image ? (
+                        <img
+                          src={person.image}
+                          alt=""
+                          loading="lazy"
+                          className="h-8 w-8 shrink-0 rounded-full border border-[#17243A] object-cover sm:h-9 sm:w-9"
+                        />
+                      ) : (
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#17243A] text-sm font-semibold text-white sm:h-9 sm:w-9">
+                          {person.name?.charAt(0)}
+                        </span>
+                      )}
+                      <h3 className="truncate text-base font-semibold sm:text-xl">
+                        {person.name}
+                      </h3>
+                    </div>
 
-                  {/* Corner number badge */}
-                  {/* <span className="absolute top-4 right-5 text-5xl font-black text-[#f26e46]/10 group-hover:text-[#f26e46]/20 transition-colors leading-none select-none">
-                  0{idx + 1}
-                </span> */}
-
-                  <div className="relative flex flex-col items-center px-6 md:px-8 pt-10 pb-8">
-                    {/* Avatar with ring animation */}
-                    {person.image && (
-                      <figure className="relative">
-                        <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-[#f26e46] to-[#f8a07a] blur-md opacity-60 group-hover:opacity-90 group-hover:scale-110 transition-all duration-500" />
-                        <div className="relative w-28 h-28 md:w-36 md:h-36 rounded-full p-1 bg-gradient-to-tr from-[#f26e46] to-[#f8a07a]">
-                          <img
-                            src={
-                              person.image ||
-                              `https://randomuser.me/api/portraits/${idx === 0 ? "women/50" : "women/55"}.jpg`
-                            }
-                            alt={`Portrait of ${person.name}`}
-                            className="w-full h-full object-cover rounded-full border-4 border-white group-hover:scale-105 transition-transform duration-500"
-                            loading="lazy"
-                          />
-                        </div>
-                      </figure>
-                    )}
-
-                    {/* Name */}
-                    <h3 className="mt-5 text-lg md:text-xl font-bold text-gray-900 tracking-tight">
-                      {person.name}
-                    </h3>
-
-                    {/* Divider */}
-                    <div className="mt-2 h-[3px] w-12 rounded-full bg-gradient-to-r from-[#f26e46] to-[#f8a07a] group-hover:w-20 transition-all duration-500" />
-
-                    {/* Designation */}
                     {person.designation && (
-                      <div className="mt-4 text-center text-sm md:text-[15px] text-gray-600 leading-relaxed">
+                      <div className="mx-auto max-w-6xl text-center text-base font-medium italic leading-7 text-[#17243A] sm:text-xl sm:leading-8 [&_p]:my-0 [&_p]:italic [&_strong]:font-bold [&_strong]:text-[#F36C45] [&_b]:font-bold [&_b]:text-[#F36C45]">
                         {parseHtml(person.designation)}
                       </div>
                     )}
-                  </div>
-                </article>
-              ))}
+                  </article>
+                ))}
             </div>
-
-            
           </div>
         </section>
       )}
 
       {statsItems.length > 0 && (
         <section className="bg-white" aria-label="Key statistics">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 xl:px-1 grid grid-cols-2 sm:grid-cols-4 gap-6 md:gap-10 py-8 md:py-10 border-y-2 border-black text-center">
+          <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 md:gap-10 py-8 md:py-10 border-y-2 border-gray-200 text-center">
             {statsItems.map((stat: any) => (
               <dl key={stat.label}>
-                <dt className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#f26e46]">
+                <dt className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#f26e46]">
                   {stat.value}
                 </dt>
-                <dd className="mt-1 md:mt-2 text-xs md:text-sm text-gray-500">
+                <dd className="mt-1 md:mt-2 text-sm md:text-lg text-gray-700">
                   {stat.label}
                 </dd>
               </dl>
@@ -328,7 +306,10 @@ export default function About({ sections }: any) {
         />
       )}
 
-      {(cta.title || cta.subtitle || cta.primaryButton || cta.primaryButtonUrl) && (
+      {(cta.title ||
+        cta.subtitle ||
+        cta.primaryButton ||
+        cta.primaryButtonUrl) && (
         <CallToActionSection
           title={cta.title}
           subtitle={cta.subtitle}
@@ -366,7 +347,7 @@ function LearningSection({ title, description, items }: any) {
           <div className="col-span-2 row-span-1 flex flex-col justify-center pr-8">
             <h2
               id="world-class-learning"
-              className="text-left text-2xl md:text-3xl lg:text-5xl font-bold"
+              className="text-left text-2xl md:text-3xl lg:text-4xl font-bold"
             >
               {title.split("||")[0] || "World-Class Learning for"}
               <br />
@@ -374,7 +355,7 @@ function LearningSection({ title, description, items }: any) {
                 {title.split("||")[1] || "Anyone, Anywhere"}
               </span>
             </h2>
-            <p className="mt-4 xl:mt-4 max-w-lg text-base xl:text-lg leading-7 xl:leading-8 text-[#6B7280]">
+            <p className="mt-4 xl:mt-4 max-w-lg text-base xl:text-lg leading-7 xl:leading-8 text-[#3E3E3E]">
               {description}
             </p>
           </div>
@@ -409,7 +390,7 @@ function LearningSection({ title, description, items }: any) {
                 {title.split("||")[1] || "Anyone, Anywhere"}
               </span>
             </h2>
-            <p className="mt-4 md:mt-5 text-gray-500 text-base md:text-lg">
+            <p className="mt-4 md:mt-5 text-[#3E3E3E] text-base md:text-lg">
               {description}
             </p>
           </div>
@@ -434,7 +415,7 @@ function LearningSection({ title, description, items }: any) {
                 {title.split("||")[1] || "Anyone, Anywhere"}
               </span>
             </h2>
-            <p className="mt-3 md:mt-4 text-sm text-gray-500">{description}</p>
+            <p className="mt-3 md:mt-4 text-sm text-[#3E3E3E]">{description}</p>
           </div>
 
           <div className="space-y-0">
@@ -465,12 +446,10 @@ function Card({
         ${orange ? "bg-[#f26e46] text-white" : "bg-[#F5F5F5] text-[#3E3E3E]"}
       `}
     >
-      <h3 className="text-xl md:text-2xl xl:text-[30px] font-bold leading-tight">
-        {title}
-      </h3>
+      <h3 className="text-xl md:text-2xl font-bold leading-tight">{title}</h3>
       <p
-        className={`mt-2 sm:mt-3 md:mt-4 xl:mt-5 text-xs sm:text-sm md:text-[15px] leading-5 sm:leading-6 md:leading-7 ${
-          orange ? "text-white/90" : "text-[#6B7280]"
+        className={`mt-2 sm:mt-3 text-sm sm:text-base leading-5 sm:leading-6 md:leading-7 ${
+          orange ? "text-white" : "text-[#3E3E3E]"
         }`}
       >
         {body}
@@ -494,8 +473,7 @@ function CallToActionSection({
 }) {
   const router = useRouter();
   const { user } = useGlobal();
-  const [popup,setpopup] = useState(false);
-
+  const [popup, setpopup] = useState(false);
 
   //   const user = await userInfo();
   //   if (!user) {
@@ -513,17 +491,17 @@ function CallToActionSection({
   //   window.location.assign(destination);
   // };
 
-      const getDashboardDestination = (url: string) => {
-  const dashboardBase = "https://dashboard.ooshasprep.com/";
-  const resourceUrl = new URL(url, dashboardBase);
-  return new URL(
-    `${resourceUrl.pathname}${resourceUrl.search}${resourceUrl.hash}`,
-    dashboardBase,
-  ).href;
-};
-      const navigateToMockTest = () => {
-    if (!primaryButtonUrl){
-      router.push("https://dashboard.ooshasprep.com/tests")
+  const getDashboardDestination = (url: string) => {
+    const dashboardBase = "https://dashboard.ooshasprep.com/";
+    const resourceUrl = new URL(url, dashboardBase);
+    return new URL(
+      `${resourceUrl.pathname}${resourceUrl.search}${resourceUrl.hash}`,
+      dashboardBase,
+    ).href;
+  };
+  const navigateToMockTest = () => {
+    if (!primaryButtonUrl) {
+      router.push("https://dashboard.ooshasprep.com/tests");
     }
 
     const destination = getDashboardDestination(primaryButtonUrl);
@@ -535,7 +513,7 @@ function CallToActionSection({
     router.push(`/auth?redirect=${encodeURIComponent(destination)}`);
   };
   return (
-    <section className="about-cta relative overflow-hidden flex items-center py-6 mt-8 max-w-7xl mx-auto">
+    <section className="relative mx-auto mt-8 flex max-w-7xl items-center overflow-hidden px-4 py-6 sm:px-6 xl:px-1">
       <div
         className="w-full mx-auto bg-[#f26e46] md:rounded-[24px] overflow-hidden 
         flex flex-col md:flex-row items-center justify-between p-6 md:p-8 gap-6 min-h-[160px]"
@@ -580,8 +558,10 @@ function CallToActionSection({
 
           <div className="flex flex-col sm:flex-row gap-3">
             {primaryButton && (
-              <button onClick={navigateToMockTest}
-               className="cursor-pointer sflex-shrink-0 flex items-center gap-2 bg-white text-[#f26e46] font-semibold px-6 py-3 shadow-md hover:bg-opacity-95 transition-all whitespace-nowrap">
+              <button
+                onClick={navigateToMockTest}
+                className="sflex-shrink-0 flex cursor-pointer items-center gap-2 rounded-lg bg-white px-6 py-3 font-semibold text-[#f26e46] transition-all hover:bg-opacity-95 whitespace-nowrap"
+              >
                 {primaryButton}
                 <svg
                   xmlns="http://w3.org"
@@ -600,17 +580,17 @@ function CallToActionSection({
               </button>
             )}
             {secondaryButton && (
-              <button onClick={()=> setpopup(true)}
-               className="cursor-pointer flex-shrink-0 flex items-center gap-2 bg-black text-white font-semibold px-6 py-3 shadow-md hover:bg-gray-800 transition-all whitespace-nowrap">
+              <button
+                onClick={() => setpopup(true)}
+                className="flex-shrink-0 flex cursor-pointer items-center gap-2 rounded-lg bg-[#525252] px-6 py-3 font-semibold text-white transition-all hover:bg-[#414141] whitespace-nowrap"
+              >
                 {secondaryButton}
               </button>
             )}
           </div>
-            <PopupModal isPopupOpen={popup} setIsPopupOpen={setpopup}/>
+          <PopupModal isPopupOpen={popup} setIsPopupOpen={setpopup} />
         </motion.div>
       </div>
     </section>
   );
 }
-
-

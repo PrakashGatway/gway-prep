@@ -10,7 +10,7 @@ export function StudentsSlider({ data }) {
   const [activeIndex, setActiveIndex] = useState(0);
   
   return (
-    <div className="w-full max-w-6xl px-4 mx-auto overflow-hidden">
+    <div className="w-full max-w-7xl mx-auto overflow-hidden">
       <Swiper
         modules={[EffectCoverflow, Autoplay]}
         effect="coverflow"
@@ -19,7 +19,7 @@ export function StudentsSlider({ data }) {
         loop
         grabCursor
         slidesPerView={"auto"}
-        spaceBetween={20}
+        spaceBetween={40}
         speed={700}
         autoplay={{
           delay: 2500,
@@ -30,16 +30,16 @@ export function StudentsSlider({ data }) {
           stretch: 10,
           depth: 80,
           modifier: 1,
-          scale: 0.9,
+          scale: 1,
           slideShadows: false,
         }}
         breakpoints={{
           320: {
-            spaceBetween: 15,
-            coverflowEffect: { stretch: 5, depth: 40, scale: 0.85 }
+            spaceBetween: 2,
+            coverflowEffect: { stretch: 5, depth: 60, scale: 0.8 }
           },
           480: {
-            spaceBetween: 20,
+            spaceBetween: 10,
             coverflowEffect: { stretch: 8, depth: 60, scale: 0.9 }
           },
           640: {
@@ -48,11 +48,11 @@ export function StudentsSlider({ data }) {
           },
           768: {
             spaceBetween: 40,
-            coverflowEffect: { stretch: 20, depth: 100, scale: 0.95 }
+            coverflowEffect: { stretch: 20, depth: 100, scale: 0.9 }
           },
           1024: {
-            spaceBetween: 70,
-            coverflowEffect: { stretch: 30, depth: 120, scale: 0.95 }
+            spaceBetween: 50,
+            coverflowEffect: { stretch: 30, depth: 160, scale: 0.9 }
           }
         }}
         className="students-swiper py-6 sm:py-8 md:py-10 lg:py-12"
